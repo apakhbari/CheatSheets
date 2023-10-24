@@ -4,7 +4,7 @@
 
 Some Personal CheatSheets. 🫠
 
-##
+---
 
 **List of Contents**
 
@@ -18,7 +18,7 @@ Some Personal CheatSheets. 🫠
 
 **/Examples/git_ignore_example.md**
 
-##
+---
 
 **EX180: Red Hat Certified Specialist in Containers and Kubernetes** (Podman - OpenShift)
 
