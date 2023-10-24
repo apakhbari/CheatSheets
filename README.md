@@ -2,6 +2,8 @@
 
 ![cheatsheets_logo.png](cheatsheets_logo.png)
 
+---
+
 ## List of Contents
 
 ### **EX180_CheatSheet -> Red Hat Certified Specialist in Containers and Kubernetes** (Podman - OpenShift)
@@ -80,11 +82,9 @@
 
 ##
 
-**Regular Expression**
+## **Regular Expression**
 
-##
-
-**VIM**
+## **VIM**
 
 <br>
 
