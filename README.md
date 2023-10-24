@@ -2,27 +2,23 @@
 
 ![cheatsheets_logo.png](cheatsheets_logo.png)
 
-Some Personal CheatSheets. 🫠
+## List of Contents
+
+### **EX180_CheatSheet -> Red Hat Certified Specialist in Containers and Kubernetes** (Podman - OpenShift)
+
+### **EX280_CheatSheet -> Red Hat OpenShift Administration**
+
+### **RegularExpression_CheatSheet**
+
+### **VIM_CheatSheet**
+
+### **/Examples/git_ignore_example**
 
 ---
 
-**List of Contents**
+## **EX180: Red Hat Certified Specialist in Containers and Kubernetes** (Podman - OpenShift)
 
-**/Notes/RedHat/EX180/EX180_CheatSheet.md -> Red Hat Certified Specialist in Containers and Kubernetes** (Podman - OpenShift)
-
-**/Notes/RedHat/EX280/EX180_CheatSheet.md -> Red Hat OpenShift Administration**
-
-**/Notes/RegularExpression_CheatSheet.md**
-
-**/Notes/VIM_CheatSheet.md**
-
-**/Examples/git_ignore_example.md**
-
----
-
-**EX180: Red Hat Certified Specialist in Containers and Kubernetes** (Podman - OpenShift)
-
-**Index:**
+### **Index:**
 
 **Module 1:** Container Fundamentals
 
@@ -52,9 +48,9 @@ Some Personal CheatSheets. 🫠
 
 ##
 
-**EX280: Red Hat OpenShift Administration**
+## **EX280: Red Hat OpenShift Administration**
 
-**Index:**
+### **Index:**
 
 **Module 1:** Managing OpenShift Clusters
 
