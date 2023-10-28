@@ -1,5 +1,3 @@
-##
-
 **Linux**
 
 ———————————————
@@ -48,7 +46,8 @@
 
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**/proc/sys/kernel/randomize_va_space —>** Address Space Layout Randomization (**ASLR**) can help defeat certain types of buffer overflow attacks. ASLR can locate the base, libraries, heap, and stack at random positions in a process's address space, which makes it difficult for an attacking program to predict the memory address of the next instruction. values: **0**: Disable ASLR. This setting is applied if the kernel is booted with the norandmaps boot parameter.
   **1**: Randomize the positions of the stack, virtual dynamic shared object (**VDSO**) page, and shared memory regions. The base address of the data segment is located immediately after the end of the executable code segment.
-  **2**: Randomize the positions of the stack, VDSO page, shared memory regions, and the data segment. This is the default setting.<span class="Apple-converted-space"> </span>
+  **2**: Randomize the positions of the stack, VDSO page, shared memory regions, and the data segment. This is the default setting.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/sysctl.conf —> tune networking parameters for a network interface.<span class="Apple-converted-space"> </span> the Linux system uses when interacting with the network interface. such as to disable responding to ICMP messages by setting the icmp_echo_ignore_broadcasts value to 1, or if your system has multiple network interface cards, to disable packet forwarding by setting the ip_forward value to 0
 
 ———————————————
 
@@ -64,6 +63,9 @@
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>or use the newer chrony daemon (chronyd)
 
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>rsyslogd: For logs
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>systemd-networkd: Linux systems that utilize the systemd initialization method normally use this daemon to detect network interfaces and automatically create entries for them in the network configuration files.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>systemd-resolved: The DNS server is defined and resolved by this program
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>dhcpd
 
 ———————————————
 
@@ -73,6 +75,476 @@
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>5800+n TCP: The VNC server is flexible in that you can also use a Java-enabled web browser to access it via TCP
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>3389 TCP: Xrdp server for tunneling GUI
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>631 : CUPS (Printing)
+
+<table cellspacing="0" cellpadding="0" class="t1" style="border-collapse: collapse;">
+
+<tbody>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Port
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Protocol
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Application
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+20
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+FTP (File Transfer Protocol)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+21
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+FTP control messages
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+22
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+SSH (Secure Shell)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+23
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Tellnet interactive protocol
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+25
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+SMTP (Simple Mail Transfer Protocol)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+53
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP & UDP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Domain Name System (DNS)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+80
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+HTTP (Hyper Text Transfer Protocol)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+110
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+POP3 (Post Office Protocol Version 3)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+123
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+UDP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+NTP (Network Time Protocol)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+139
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+NetBIOS Session Service
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+143
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+IMAP (Internet Message Access Protocol)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+161
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+UDP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+SNMP (Simple Network Management Protocol)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+162
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+UDP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Simple Network Management Protocol trap
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+389
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+LDAP (Lightweight Directory Access Protocol)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+443
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+HTTP (Hypertext Transfer protocol) over TLS/SSL
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+465
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+SMTPS (Authenticated SMTP
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+514
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP & UDP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Remote Shell [TCP] or Syslog [UDP]
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+636
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+LDAPS (Lightwheight Directory Access Protocol over TLS/SSL)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+993
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+LDAPS (Internet Meeassage Access Protocol over TLS/SSL)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+995
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+TCP
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+POP3S (Post Office Protocol 3 over TLS/SSL)
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 ———————————————
 
@@ -4001,6 +4473,268 @@ employing persistent storage. (Default is 10% of current space.)
 
 1.  Application Layer: Where all the action happens. where the network programs process the data sent across the network and then return a result. Most network applications behave using the client/server paradigm. one network device acts as the server, offering some type of service to multiple network clients (such as a web server offering content via web pages). The server listens for incoming connections on a specific transport layer port assigned to the application. The clients must know what transport layer port to use to send requests to the server application. To simplify that process, both TCP and UDP use well-known reserved ports to represent common applications.
 
+Configuring Network
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>systemd-networkd: Linux systems that utilize the systemd initialization method normally use this daemon to detect network interfaces and automatically create entries for them in the network configuration files.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>no single standard configuration file exists that all distributions use.
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Debian-based: /etc/network/interfaces file
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Red Hat–based: /etc/sysconfig/network-scripts directory
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>OpenSUSE: /etc/sysconfig/network file
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>You need to define a DNS server so that the system can use DNS host names.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For systemd systems, the DNS server is generated by the systemd-resolved program.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For legacy SysVinitsystems, that’s handled in the /etc/resolv.confconfiguration file:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>domain [mydomain.com](http://mydomain.com) —> defines the domain name assigned to the network. By default, the system will append this domain name to any host names you specify
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>search [mytest.com](http://mytest.com) —> defines any additional domains used to search for host names.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>nameserver 192.168.1.1 —> where you specify the DNS server assigned to your network.
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Some networks can have more than one DNS server, just add multiple nameserver entries in the file.
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Linux command-line tools to set the network configuration information:<span class="Apple-converted-space"> </span>
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ nmtui —> Provides a simple text-based menu tool
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ nmcli —> Provides a text-only command-line tool
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Legacy tools (utilities from the net-tools package)
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ ethtool —> Displays Ethernet settings for a network interface
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ ifconfig —> Displays or sets the IP address and netmask values for a network interface
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ iwconfig —> Sets the SSID and encryption key for a wireless interface
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ route —> Sets the default router address
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ ip (iproute2 Package) —> show / manipulate routing, network devices, interfaces and tunnels
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/sysctl.conf —> tune networking parameters for a network interface.<span class="Apple-converted-space"> </span> the Linux system uses when interacting with the network interface. such as to disable responding to ICMP messages by setting the icmp_echo_ignore_broadcasts value to 1, or if your system has multiple network interface cards, to disable packet forwarding by setting the ip_forward value to 0
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Three common DHCP programs are available for Linux systems:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>dhcpcd
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>dhclient
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>pump
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Bonding allows you to aggregate multiple interfaces into one virtual network device.
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Load balancing: Network traffic is shared between two or more network interfaces.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Aggregation: Two or more network interfaces are combined to create one larger network pipe.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Active/passive: One network interface is live, and the other is used as a backup for fault tolerance.
+
+<table cellspacing="0" cellpadding="0" class="t1" style="border-collapse: collapse;">
+
+<tbody>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Mode
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Name
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Description
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+0
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+balance-rr
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Provides load balancing and fault tolerance using interfaces in a round-robin approach
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+1
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+active-backup
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Provides fault tolerance using one interface as the primary and the other as a backup
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+2
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+balance-xor
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Provides load balancing and fault tolerance by transmitting on one interface and receiving on the second
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+3
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+broadcast
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Transmits all packets on all interfaces
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+4
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+802.3ad
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Aggregates the interfaces to create one connection combining the interface bandwidths
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+5
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+balance-tlb
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Provides load balancing and fault tolerance based on the current transmit load on each interface
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+6
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+balance-alb
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Provides load balancing and fault tolerance based on the current receive load on each interface
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>To initialize network interface bonding, you must first load the bonding module in the Linux kernel:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ sudo modprobe bonding
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>This creates a bond0 network interface, which you can then define using the ip utility:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ sudo ip link add bond0 type bond mode 4
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Once you’ve defined the bond type, you can add the appropriate network interfaces to the bond using the ip utility:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ sudo ip link set eth0 master bond0
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ sudo ip link set eth1 master bond0
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The Linux system will then treat the bond0 device as a single network interface utilizing the load balancing or aggregation method you defined.
+
+Troubleshooting
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>One way to test network connectivity is to send test packets to known hosts. Linux provides the ping and ping6 commands to do that. They send ICMP packets, If the remote host supports ICMP, it will send a reply packet back when it receives a ping packet.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ ping —> send ICMP ECHO_REQUEST to network hosts
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ ping -c 4 8.8.8.8
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ traceroute --> print the route packets trace to network host (use ICMP packets)
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ tracepath --> traces path to a network host discovering MTU along this path (use UDP packets)
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ host --> DNS lookup utility, returns all IP adresses assigned to a host name
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ dig --> DNS lookup utility, display all data records associated with a specific host or network
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ nslookup --> query internet name servers interactively
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ netstat --> Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ ss --> another utility to investigate sockets
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ nc --> arbitrary TCP and UDP connections and listens
+
 ———————————————
 
 **directories:**
@@ -4583,6 +5317,17 @@ Logs
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/log directory —> most Linux distributions create log files in here
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/systemd/journald.conf —> The systemd-journald service reads its configuration from this configuration file.
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/run/systemd/journal/syslog —> when journald logs are forwarded to rsyslog program, this file act as a socket for rsyslog to read them
+
+Network
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>no single standard configuration file exists that all distributions use for configuring systemd-networkd
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Debian-based: /etc/network/interfaces file
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Red Hat–based: /etc/sysconfig/network-scripts directory
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>OpenSUSE: /etc/sysconfig/network file
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/resolv.conf —> DNS server is defined here, legacy SysVinit systems
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/sysctl.conf —> tune networking parameters for a network interface.<span class="Apple-converted-space"> </span> the Linux system uses when interacting with the network interface. such as to disable responding to ICMP messages by setting the icmp_echo_ignore_broadcasts value to 1, or if your system has multiple network interface cards, to disable packet forwarding by setting the ip_forward value to 0
 
 ———————————————
 
