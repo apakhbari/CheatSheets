@@ -6,15 +6,11 @@
 
 ## List of Contents
 
+![tree.png](tree.png)
+
 ### **EX180_CheatSheet -> Red Hat Certified Specialist in Containers and Kubernetes** (Podman - OpenShift)
 
 ### **EX280_CheatSheet -> Red Hat OpenShift Administration**
-
-### **RegularExpression_CheatSheet**
-
-### **VIM_CheatSheet**
-
-### **/Examples/git_ignore_example**
 
 ---
 
