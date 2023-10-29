@@ -1,9 +1,12 @@
+##
+
 **Linux**
 
 ———————————————
 
 **Index**
 
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Directories
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Concepts
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Kernel Parameters
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Daemons
@@ -31,7 +34,625 @@
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Configure Printing
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Log & Journlaing
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Network
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Directories
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Securing system
+
+———————————————
+
+**directories:**
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>A standard format has been defined for the Linux virtual directory called the Linux filesystem hierarchy standard (FHS).
+
+<table cellspacing="0" cellpadding="0" class="t1" style="border-collapse: collapse;">
+
+<tbody>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+/
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+<span class="Apple-converted-space"> </span>The root filesystem
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+bin
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Essential command binaries
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+boot
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Static files of the boot loader
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+dev
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Device files
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+dev/mapper
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+maps physical block devices to virtual block devices
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+etc
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Host-specific system configuration (editable text config files of system and applications)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+home
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Home directory of the users (Contains user data files)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+lib
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Essential shared libraries and kernel modules
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+lib/module
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+where modules can be found, individual hardware driver files that can be linked into the kernel at runtime
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+media
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Mount point for removable devices
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+mnt
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Mount point for mounting a filesystem temporarily (for removable devices)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+opt
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Add-on application software packages (data for optional third-party programs)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+proc
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+virtual directory kernel dynamically populates to provide access to information about the system hardware settings and status
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+<span class="Apple-converted-space"> </span>/proc/dma
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Direct Memory Access channels send data from a hardware device directly to memory on the system, without having to wait for the CPU
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+/proc/ioports
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+locations in memory where the CPU can send data to and receive data from the hardware device
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+/proc/interrupts
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+assign each hardware device installed on the system a unique interrupt requests address
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+root
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Home directory of the root user
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+run
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+It is home to lots of **data used at runtime**. It is temporary
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+sbin
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Essential system binaries
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+srv
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Data for services provided by this system (/srv/mysql for savnig databases data)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+tmp
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Temporary files created by system users
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+usr
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+Secondary hierarchy (data for standard Linux programs)
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+usr/bin
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+local user programs and data
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+usr/lib
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+libraries for programming and software packages
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+usr/local
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+data for programs unique to the local installation
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+usr/sbin
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+data for system programs and data
+
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+var
+
+</td>
+
+<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+
+variable data files, including system and application logs
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/machine-id —> system’s machine ID is a unique hexadecimal 32-character identifier
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>cat /proc/sys/kernel/random/entropy_avail —> to check entropy number of system
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/usr/local/bin —> for adding something binary to your terminal
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**/usr/lib/firewalld/services —>** where firewalld configs are saved as .xml files.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**/etc/ssh/sshd_config<span class="Apple-converted-space"> </span>**
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**/etc/sysconfig/selinux<span class="Apple-converted-space"> </span>**
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/proc/net/xt_recent —> address of iptables’ workflow made by Conntrack module
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/login.defs —> some password related stuff, some are being override with PAM
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/lib/systemd/system/suricata.service —> all services are here
+
+VS
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>media vs mnt: new standard is that /media is where the system mounts removable media, and /mnt is for you to mount things manually.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>sys vs dev: The /sys filesystem (sysfs) contains files that provide information about devices: whether it's powered on, the vendor name and model, what bus the device is plugged into, etc. It's of interest to applications that manage devices. The /dev filesystem contains files that allow programs to access the devices themselves: write data to a serial port, read a hard disk, etc. It's of interest to applications that access devices. A metaphor is that /sys provides access to the packaging, while /dev provides access to the content of the box.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>sda vs hda
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For PATA devices, raw device file is named /dev/hda, /dev/hdb ...
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For SATA and SCSI devices, raw device file is named /dev/sda, /dev/sdb …
+
+GRUB
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>GRUB Legacy stores the menu commands in a standard text config file /boot/grub/menu.list (Debian) or /boot/grub/grub.conf (RH)
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>GRUB2 system changes the config file name to grub.cfg. where the file stored depends on system’s firmware:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>BIOS: /boot/grub/grub.cfg or /boot/grub2/grub.cfg
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>UEFI: /boot/efi/EFI/[distro-name]/grub.cfg
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>for global commands, /etc/default/grub config file is used
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Although GRUB2 uses the /boot/grub/grub.cfg file as the configuration file, you should never modify that file. Instead, there are separate configuration files stored in the /etc/grub.d folder.
+
+Systemd
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>systemd service unit files can be found in these directories: (if a file is found in two different directory locations, one will have precedence over the other)
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/systemd/system/
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/run/systemd/system/
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/usr/lib/systemd/system/
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/lib/systemd/system —> where all units are
+
+SysVinit
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/inittab : SysVinit systems employ a configuration file that sets the default runlevel
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/init.d/ : each service must have an initialization script which are responsible for starting, stopping, restarting, reloading, and displaying the status of various system services.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/init.d/ or the /etc/rc.d/ : The program that calls these initialization scripts is the rc script, and it can be found here
+
+Notifying User
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/issue: Contains text to be displayed on the tty terminal login screens (prior to logging into the system).
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/issue.net: Contains logon screen messages for remote logins.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/motd: Called the Message of the Day file, contains text that is displayed after a user has logged into a tty terminal.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/bin/notify-send (or /usr/bin/notify-send): Sends messages to a user employing the GUI but who is not logged into a tty terminal or does not have a GUI terminal emulator open.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/bin/wall (or /usr/bin/wall): Sends messages (called wall messages) to users logged into a tty terminal or who have a GUI terminal emulator open and have their message status set to “yes”. $ mesg: Viewing your message status
+
+Hardware Devices
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev —> After kernel communicates with a device on an interface, it must be able to transfer data to and from the device.<span class="Apple-converted-space"> </span> To retrieve data from a specific device, a program just needs to read the Linux device file associated with that device. To send data to the device, the program just needs to write to the Linux device file. This is a lot easier than requiring each application to know how to directly interact with a device. There are 2 kind of device files: Character device files, Block device files
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/mapper/ —> show lvm and raid and luks mappings
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>sda vs hda
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For PATA devices, raw device file is named /dev/hda, /dev/hdb ...
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For SATA and SCSI devices, raw device file is named /dev/sda, /dev/sdb …
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk —> udev create links to the /dev storage device files based on unique attributes of the drive. udev creates four separate directories for storing links:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk/by-id —> Links storage devices by their manufacturer make, model, and serial number
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk/by-label —> Links storage devices by the label assigned to them
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk/by-path —> Links storage devices by the physical hardware port they are connected to
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk/by-uuid —> Links storage devices by the 128-bit universally unique identifier (UUID) assigned to the device
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/mapper/mpathN -> where N is the number of the multipath drive. Acts as a normal device file to the Linux system, allowing you to create partitions and filesystems on the multipath device
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/fstab -> Indicate which drive devices should be mounted to the virtual directory at boot time. a table that indicates:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The drive device file (either the raw file or one of its permanent udev filenames)
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The mount point location
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The filesystem type, ...
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/proc/partitions - /proc/mounts —> where commands such as $ lsblk read to generate a report
+
+Modules
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/lib/modules —> individual hardware driver files that can be linked into the kernel at runtime
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/modules —> The modules the kernel will load at boot time
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/modules.conf —> The kernel module configurations
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/lib/modules/version/modules.dep —> determines the module dependencies
+
+GUI
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/X11/xorg.conf (Typically this file is no longer used.) —> The X.Org package keeps track of display card, monitor, and input device information in a configuration file, using the original XFree86 format.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/X11/xorg.conf.d<span class="Apple-converted-space"> </span> —> individual applications or devices store their own X11 settings in separate files stored in this directory.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>~/.xsession-errors —> If something goes wrong with the display process, the X.Org server generates the .xsession-errors file in your Home directory
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/X11/xdm/xdm-config —> XDM display manager is somewhat generic, there are some configuration features you can modify to change things a bit. In most situations, you’ll never need to modify any of these settings.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/xrdp/xrdp.ini —> determine the various Xrdp configuration settings. An important setting in this file is the security_layer directive.
+
+Shell
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/$HOME/.bashrc —> If you need to permanently change the Environemtnal variables or add aliases, you’ll need to add the export command to this file so that it runs each time you log in.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/profile —> is the main default startup file for the Bash shell. Whenever you log into the Linux system, Bash executes the commands in the /etc/profile startup file.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Those three other startup files are all used for the same function, to provide a user specific startup file for defining user-specific environment variables. Most Linux distributions use only one of these three:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$HOME/.bash_profile
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$HOME/.bash_login
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$HOME/.profile
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>.bashrc file in the user’s HOME directory (~/.bashrc) does two things:
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>checks for a common /etc/bash.bashrc file. The common bash.babshrc file provides a way for you to set scripts and variables used by all users who start an interactive shell.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>provides a place for the user to enter personal aliases and private script functions.
+
+Time
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/timezone (Debian-based) & /etc/localtime (Red Hat–based) —> These files are not in a text format, so you can’t simply edit. To change the time zone for a Linux system, copy or link the appropriate time zone template file from the /usr/share/zoneinfo folder to the /etc/timezone or /etc/localtime location. e.g: /usr/share/zoneinfo/US/Eastern.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/ntp.conf —> It contains, among other directives, the NTP time servers you wish to use.The directive name for setting these, On CentOS is server & On Ubuntu is pool
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/chrony.conf or /etc/chrony/chrony.conf —> primary configuration file for chrony. The directive name for setting these is either server or pool. The server directive is typically used for a single time server designation. pool indicates a server pool. rtcsync directive directs chrony to periodically update the hardware time (real-time clock).
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/spool/at —> where<span class="Apple-converted-space"> </span> jobs submitted using the at command are being saved
+
+User & Group
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/login.defs —> typically installed by default on most Linux distributions. contains directives for use in various shadow password suite commands. such as the useradd, userdel, and passwd commands. The directives in this configuration file control: password length, how long until the user is required to change the account’s password, whether or not a home directory is created by default, and so on. The file is typically filled with comments and commented-out directives.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/default/useradd —> directs the process of creating accounts.
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ cat /etc/default/useradd , or $ sudo useradd -D ,
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/skel —><span class="Apple-converted-space"> </span> The skeleton directory as it is commonly called, holds files. If a home directory is created for a user, these files are to be copied to the user account’s home directory, when the account is created. These files are account environment files as well as a configuration file directory
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/sbin/nologin or /bin/false —> Prevent an Account from Interactively Logging in<span class="Apple-converted-space"> </span> by entering one of these two records in record 7 of /etc/passwd which is for default shell. /sbin/nologin displays a brief message and logs you off before you reach a command prompt. you can modify the message shown by creating the file /etc/nologin.txt
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/group —> where information about groupds are being saved
+
+Mail
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/bin/mail (or /usr/bin/mail) —> default location of binmail which is a MDA program
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/spool/mail directory (can be configed to read $HOME/mail file instead) —> where binmail read email messeges
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/aliases —> where email aliases are stored
+
+Print
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/cups —> The configuration files of CUPS software are stored in here
+
+Logs
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/log/boot (Debian distros) , /var/log/boot.log (RH distros) —> information about boot process
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/log/syslog —> where rsyslog logs are stored
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/rsyslogd.conf file or \*.conf files in the /etc/rsyslog.d/ directory —> define rules on what events to listen for and how to handle them using The rsyslogd program
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/logrotate.conf —> configuration file to determine how each log file is managed by logrotate
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/log directory —> most Linux distributions create log files in here
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/systemd/journald.conf —> The systemd-journald service reads its configuration from this configuration file.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/run/systemd/journal/syslog —> when journald logs are forwarded to rsyslog program, this file act as a socket for rsyslog to read them
+
+Network
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>no single standard configuration file exists that all distributions use for configuring systemd-networkd
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Debian-based: /etc/network/interfaces file
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Red Hat–based: /etc/sysconfig/network-scripts directory
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>OpenSUSE: /etc/sysconfig/network file
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/resolv.conf —> DNS server is defined here, legacy SysVinit systems
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/sysctl.conf —> tune networking parameters for a network interface.<span class="Apple-converted-space"> </span> the Linux system uses when interacting with the network interface. such as to disable responding to ICMP messages by setting the icmp_echo_ignore_broadcasts value to 1, or if your system has multiple network interface cards, to disable packet forwarding by setting the ip_forward value to 0
+
+SSH
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>~/.ssh/known_hosts —> The OpenSSH application keeps track of any previously connected hosts here. data contains the remote servers’ public keys.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>~/.ssh/config —> Contains OpenSSH client configurations. May be overridden by ssh command options. For an individual user’s connections to a remote system.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/ssh/ssh_config —> Contains OpenSSH client configurations. May be overridden by ssh command options or settings in the ~/.ssh/config file. For every user’s connection to a remote system
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/ssh/sshd_config —> Contains the OpenSSH daemon (sshd) configurations. For incoming SSH connection requests.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/ssh/ —> where OpenSSH will save its system’s public/private key pairs
+
+Services
+
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/xinetd.conf —> primary configuration file of xinetd. contains only global default options.
 
 ———————————————
 
@@ -558,6 +1179,9 @@ POP3S (Post Office Protocol 3 over TLS/SSL)
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/sbin/nologin is typically set for system service account records. System services (daemons) do need to have system accounts, but they do not interactively log in. Instead, they run in the background under their own account name. If a malicious person attempted to interactively log in using the account they are politely kicked off the system.<span class="Apple-converted-space"> </span> /sbin/nologin displays a brief message and logs you off before you reach a command prompt. you can modify the message shown by creating the file /etc/nologin.txt and adding the desired text.
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/bin/false shell is a little more brutal than later. If this is set as a user account’s default shell, no messages are shown, and the user is just logged out of the system.
 
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>By convention, the exit status of a command that successfully completes is 0\. If a command completes with an error, then a positive integer value appears as the exit status.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The Ctrl+C key combination generates a SIGINT signal and sends it to any processes currently running in the shell. SIGINT signal interrupts the running process, which for most processes causes them to stop.
+
 ———————————————
 
 **When you go to a system for first time:**
@@ -582,6 +1206,13 @@ POP3S (Post Office Protocol 3 over TLS/SSL)
 
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ systemctl status chronyd
 
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ alias -p
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ atq —> allows you to view what jobs are pending on the system for execution using at command
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ crontab -l —> To list an existing cron table.<span class="Apple-converted-space"> </span>
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ who —><span class="Apple-converted-space"> </span> shows all the current system users, the terminal they are using, the date and time they entered the system, and in cases of remote users, their remote IP address
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ w —> The first displayed line shows the current time, how long the system has been up, how many users are currently accessing the system, the CPU load averages for the last 1, 5, and 15 minutes. The next several lines concern current system user information. USER, TTY, LOGIN, IDLE, JCPU, PCPU, WHAT. The w utility pulls user information from the /var/run/utmp file. It also gathers additional data for display from the /proc/ directory files.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ last —> The last command pulls information from the /var/log/wtmp file and displays a list of accounts showing the last time they logged in or out of the system or if they are still logged on.
+
 ———————————————
 
 **Periodic check & Cron jobs:**
@@ -596,6 +1227,7 @@ for systems with ntpd (chrony is recommended since its newer and better)
 Cron Jobs
 
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>logrotate —> It automatically splits rsyslogdlog files into archive files based on a time or the size of the file.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span># find / -perm /6000 -type f > SUID-SGID_Audit.txt —> check that all the files listed should have those permissions.
 
 ———————————————
 
@@ -4737,604 +5369,49 @@ Troubleshooting
 
 ———————————————
 
-**directories:**
+**Securing System:**
 
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>A standard format has been defined for the Linux virtual directory called the Linux filesystem hierarchy standard (FHS).
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ nmap —> Network exploration tool and security / port scanner.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ netstat —> Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ ss —> another utility to investigate sockets
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ systemctl list-unit-files --type=socket --no-pager —> To find the potential network socket systemd configuration (unit) files. A disabled value only means systemd does not manage that particular network socket; it does not mean the service is disabled.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ systemctl cat rpcbind.socket —> Take a look at the contents of each enabled network socket’s unit file.
 
-<table cellspacing="0" cellpadding="0" class="t1" style="border-collapse: collapse;">
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ lsof —> list open files
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ fuser —> identify processes using files or sockets
 
-<tbody>
+Disabling the Services:
 
-<tr>
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>First, stop the service, if it is running, and check that it is stopped.
 
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ systemctl stop SERVICE-NAME
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ systemctl status SERVICE-NAME
 
-/
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>When the service is stopped, be sure to disable it, employing super user privileges, so that when the system reboots, it won’t start.
 
-</td>
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ systemctl disable SERVICE-NAME
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ systemctl is-enabled SERVICE-NAME
 
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>To disable a network service on a Debian-based distro, use super user privileges and the following command:
 
-<span class="Apple-converted-space"> </span>The root filesystem
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ update-rc.d -f SERVICE-NAME remove
 
-</td>
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Super Server: some network services can employ a super server (also called a super daemon) to act as a guard for them. Instead of the network service, the super server directly listens for packets containing the designated port number. When such a packet comes into the system, after initial processing the super server starts the network service and hands the packet off to it.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>inetd was the original super server on Linux systems.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>xinetd (extended super daemon) has additional security features.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/xinetd.conf —> primary configuration file of xinetd. contains only global default options.
 
-</tr>
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>TCP Wrappers
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>If a service can employ TCP Wrappers, it will have the libwrap library compiled with it.
 
-<tr>
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ who —><span class="Apple-converted-space"> </span> shows all the current system users, the terminal they are using, the date and time they entered the system, and in cases of remote users, their remote IP address
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ w —> The first displayed line shows the current time, how long the system has been up, how many users are currently accessing the system, the CPU load averages for the last 1, 5, and 15 minutes. The next several lines concern current system user information. USER, TTY, LOGIN, IDLE, JCPU, PCPU, WHAT. The w utility pulls user information from the /var/run/utmp file. It also gathers additional data for display from the /proc/ directory files.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ last —> The last command pulls information from the /var/log/wtmp file and displays a list of accounts showing the last time they logged in or out of the system or if they are still logged on.
 
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ ulimit —> get and set user, Login, Process, and Memory Limits
 
-bin
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Essential command binaries
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-boot
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Static files of the boot loader
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-dev
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Device files
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-dev/mapper
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-maps physical block devices to virtual block devices
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-etc
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Host-specific system configuration (editable text config files of system and applications)
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-home
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Home directory of the users (Contains user data files)
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-lib
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Essential shared libraries and kernel modules
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-lib/module
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-where modules can be found, individual hardware driver files that can be linked into the kernel at runtime
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-media
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Mount point for removable devices
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-mnt
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Mount point for mounting a filesystem temporarily (for removable devices)
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-opt
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Add-on application software packages (data for optional third-party programs)
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-proc
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-virtual directory kernel dynamically populates to provide access to information about the system hardware settings and status
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-<span class="Apple-converted-space"> </span>/proc/dma
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Direct Memory Access channels send data from a hardware device directly to memory on the system, without having to wait for the CPU
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-/proc/ioports
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-locations in memory where the CPU can send data to and receive data from the hardware device
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-/proc/interrupts
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-assign each hardware device installed on the system a unique interrupt requests address
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-root
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Home directory of the root user
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-run
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-It is home to lots of **data used at runtime**. It is temporary
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-sbin
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Essential system binaries
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-srv
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Data for services provided by this system (/srv/mysql for savnig databases data)
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-tmp
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Temporary files created by system users
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-usr
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-Secondary hierarchy (data for standard Linux programs)
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-usr/bin
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-local user programs and data
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-usr/lib
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-libraries for programming and software packages
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-usr/local
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-data for programs unique to the local installation
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-usr/sbin
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-data for system programs and data
-
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-var
-
-</td>
-
-<td valign="top" class="td1" style="border-style: solid; border-width: 1px; border-color: rgb(154, 154, 154); padding: 1px 5px;">
-
-variable data files, including system and application logs
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/machine-id —> system’s machine ID is a unique hexadecimal 32-character identifier
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>cat /proc/sys/kernel/random/entropy_avail —> to check entropy number of system
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/usr/local/bin —> for adding something binary to your terminal
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**/usr/lib/firewalld/services —>** where firewalld configs are saved as .xml files.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**/etc/ssh/sshd_config<span class="Apple-converted-space"> </span>**
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**/etc/sysconfig/selinux<span class="Apple-converted-space"> </span>**
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/proc/net/xt_recent —> address of iptables’ workflow made by Conntrack module
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/login.defs —> some password related stuff, some are being override with PAM
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/lib/systemd/system/suricata.service —> all services are here
-
-VS
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>media vs mnt: new standard is that /media is where the system mounts removable media, and /mnt is for you to mount things manually.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>sys vs dev: The /sys filesystem (sysfs) contains files that provide information about devices: whether it's powered on, the vendor name and model, what bus the device is plugged into, etc. It's of interest to applications that manage devices. The /dev filesystem contains files that allow programs to access the devices themselves: write data to a serial port, read a hard disk, etc. It's of interest to applications that access devices. A metaphor is that /sys provides access to the packaging, while /dev provides access to the content of the box.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>sda vs hda
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For PATA devices, raw device file is named /dev/hda, /dev/hdb ...
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For SATA and SCSI devices, raw device file is named /dev/sda, /dev/sdb …
-
-GRUB
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>GRUB Legacy stores the menu commands in a standard text config file /boot/grub/menu.list (Debian) or /boot/grub/grub.conf (RH)
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>GRUB2 system changes the config file name to grub.cfg. where the file stored depends on system’s firmware:
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>BIOS: /boot/grub/grub.cfg or /boot/grub2/grub.cfg
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>UEFI: /boot/efi/EFI/[distro-name]/grub.cfg
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>for global commands, /etc/default/grub config file is used
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Although GRUB2 uses the /boot/grub/grub.cfg file as the configuration file, you should never modify that file. Instead, there are separate configuration files stored in the /etc/grub.d folder.
-
-Systemd
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>systemd service unit files can be found in these directories: (if a file is found in two different directory locations, one will have precedence over the other)
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/systemd/system/
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/run/systemd/system/
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/usr/lib/systemd/system/
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/lib/systemd/system —> where all units are
-
-SysVinit
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/inittab : SysVinit systems employ a configuration file that sets the default runlevel
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/init.d/ : each service must have an initialization script which are responsible for starting, stopping, restarting, reloading, and displaying the status of various system services.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/init.d/ or the /etc/rc.d/ : The program that calls these initialization scripts is the rc script, and it can be found here
-
-Notifying User
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/issue: Contains text to be displayed on the tty terminal login screens (prior to logging into the system).
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/issue.net: Contains logon screen messages for remote logins.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/motd: Called the Message of the Day file, contains text that is displayed after a user has logged into a tty terminal.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/bin/notify-send (or /usr/bin/notify-send): Sends messages to a user employing the GUI but who is not logged into a tty terminal or does not have a GUI terminal emulator open.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/bin/wall (or /usr/bin/wall): Sends messages (called wall messages) to users logged into a tty terminal or who have a GUI terminal emulator open and have their message status set to “yes”. $ mesg: Viewing your message status
-
-Hardware Devices
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev —> After kernel communicates with a device on an interface, it must be able to transfer data to and from the device.<span class="Apple-converted-space"> </span> To retrieve data from a specific device, a program just needs to read the Linux device file associated with that device. To send data to the device, the program just needs to write to the Linux device file. This is a lot easier than requiring each application to know how to directly interact with a device. There are 2 kind of device files: Character device files, Block device files
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/mapper/ —> show lvm and raid and luks mappings
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>sda vs hda
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For PATA devices, raw device file is named /dev/hda, /dev/hdb ...
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>For SATA and SCSI devices, raw device file is named /dev/sda, /dev/sdb …
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk —> udev create links to the /dev storage device files based on unique attributes of the drive. udev creates four separate directories for storing links:
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk/by-id —> Links storage devices by their manufacturer make, model, and serial number
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk/by-label —> Links storage devices by the label assigned to them
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk/by-path —> Links storage devices by the physical hardware port they are connected to
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/disk/by-uuid —> Links storage devices by the 128-bit universally unique identifier (UUID) assigned to the device
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/dev/mapper/mpathN -> where N is the number of the multipath drive. Acts as a normal device file to the Linux system, allowing you to create partitions and filesystems on the multipath device
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/fstab -> Indicate which drive devices should be mounted to the virtual directory at boot time. a table that indicates:
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The drive device file (either the raw file or one of its permanent udev filenames)
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The mount point location
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The filesystem type, ...
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/proc/partitions - /proc/mounts —> where commands such as $ lsblk read to generate a report
-
-Modules
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/lib/modules —> individual hardware driver files that can be linked into the kernel at runtime
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/modules —> The modules the kernel will load at boot time
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/modules.conf —> The kernel module configurations
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/lib/modules/version/modules.dep —> determines the module dependencies
-
-GUI
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/X11/xorg.conf (Typically this file is no longer used.) —> The X.Org package keeps track of display card, monitor, and input device information in a configuration file, using the original XFree86 format.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/X11/xorg.conf.d<span class="Apple-converted-space"> </span> —> individual applications or devices store their own X11 settings in separate files stored in this directory.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>~/.xsession-errors —> If something goes wrong with the display process, the X.Org server generates the .xsession-errors file in your Home directory
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/X11/xdm/xdm-config —> XDM display manager is somewhat generic, there are some configuration features you can modify to change things a bit. In most situations, you’ll never need to modify any of these settings.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/xrdp/xrdp.ini —> determine the various Xrdp configuration settings. An important setting in this file is the security_layer directive.
-
-Shell
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/$HOME/.bashrc —> If you need to permanently change the Environemtnal variables, you’ll need to add the export command to this file so that it runs each time you log in.
-
-Time
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/timezone (Debian-based) & /etc/localtime (Red Hat–based) —> These files are not in a text format, so you can’t simply edit. To change the time zone for a Linux system, copy or link the appropriate time zone template file from the /usr/share/zoneinfo folder to the /etc/timezone or /etc/localtime location. e.g: /usr/share/zoneinfo/US/Eastern.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/ntp.conf —> It contains, among other directives, the NTP time servers you wish to use.The directive name for setting these, On CentOS is server & On Ubuntu is pool
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/chrony.conf or /etc/chrony/chrony.conf —> primary configuration file for chrony. The directive name for setting these is either server or pool. The server directive is typically used for a single time server designation. pool indicates a server pool. rtcsync directive directs chrony to periodically update the hardware time (real-time clock).
-
-User & Group
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/login.defs —> typically installed by default on most Linux distributions. contains directives for use in various shadow password suite commands. such as the useradd, userdel, and passwd commands. The directives in this configuration file control: password length, how long until the user is required to change the account’s password, whether or not a home directory is created by default, and so on. The file is typically filled with comments and commented-out directives.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/default/useradd —> directs the process of creating accounts.
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ cat /etc/default/useradd , or $ sudo useradd -D ,
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/skel —><span class="Apple-converted-space"> </span> The skeleton directory as it is commonly called, holds files. If a home directory is created for a user, these files are to be copied to the user account’s home directory, when the account is created. These files are account environment files as well as a configuration file directory
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/sbin/nologin or /bin/false —> Prevent an Account from Interactively Logging in<span class="Apple-converted-space"> </span> by entering one of these two records in record 7 of /etc/passwd which is for default shell. /sbin/nologin displays a brief message and logs you off before you reach a command prompt. you can modify the message shown by creating the file /etc/nologin.txt
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/group —> where information about groupds are being saved
-
-Mail
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/bin/mail (or /usr/bin/mail) —> default location of binmail which is a MDA program
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/spool/mail directory (can be configed to read $HOME/mail file instead) —> where binmail read email messeges
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/aliases —> where email aliases are stored
-
-Print
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/cups —> The configuration files of CUPS software are stored in here
-
-Logs
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/log/boot (Debian distros) , /var/log/boot.log (RH distros) —> information about boot process
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/log/syslog —> where rsyslog logs are stored
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/rsyslogd.conf file or \*.conf files in the /etc/rsyslog.d/ directory —> define rules on what events to listen for and how to handle them using The rsyslogd program
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/logrotate.conf —> configuration file to determine how each log file is managed by logrotate
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/var/log directory —> most Linux distributions create log files in here
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/systemd/journald.conf —> The systemd-journald service reads its configuration from this configuration file.
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/run/systemd/journal/syslog —> when journald logs are forwarded to rsyslog program, this file act as a socket for rsyslog to read them
-
-Network
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>no single standard configuration file exists that all distributions use for configuring systemd-networkd
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Debian-based: /etc/network/interfaces file
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Red Hat–based: /etc/sysconfig/network-scripts directory
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>OpenSUSE: /etc/sysconfig/network file
-
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/resolv.conf —> DNS server is defined here, legacy SysVinit systems
-- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/sysctl.conf —> tune networking parameters for a network interface.<span class="Apple-converted-space"> </span> the Linux system uses when interacting with the network interface. such as to disable responding to ICMP messages by setting the icmp_echo_ignore_broadcasts value to 1, or if your system has multiple network interface cards, to disable packet forwarding by setting the ip_forward value to 0
-
-———————————————
-
-question
-
-$ apropos
-
-$ whatis
-
-how to check for aliases
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>~/.ssh/known_hosts —> The OpenSSH application keeps track of any previously connected hosts here. data contains the remote servers’ public keys.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>~/.ssh/config —> Contains OpenSSH client configurations. May be overridden by ssh command options. For an individual user’s connections to a remote system.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/ssh/ssh_config —> Contains OpenSSH client configurations. May be overridden by ssh command options or settings in the ~/.ssh/config file. For every user’s connection to a remote system
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/ssh/sshd_config —> Contains the OpenSSH daemon (sshd) configurations. For incoming SSH connection requests.
+- <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>/etc/ssh/ —> where OpenSSH will save its system’s public/private key pairs
