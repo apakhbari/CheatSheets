@@ -6,7 +6,7 @@
 
 ## List of Contents
 
-![tree.png](tree.png)
+![tree_view.png](tree_view.png)
 
 <br>
 
