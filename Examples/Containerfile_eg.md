@@ -1,5 +1,5 @@
 FROM centos:7 (ub or ub8 : red hat universal base image)
-MAINTAINER Sander <mail@yo.com>
+MAINTAINER APA <mail@yo.com>
 
 # Add repo file
 
