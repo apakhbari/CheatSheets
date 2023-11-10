@@ -1,3 +1,5 @@
+##
+
 **Red Hat EX180**
 
 **Red Hat Certified Specialist in Containers and Kubernetes<span class="Apple-converted-space"> </span>** (Podman - OpenShift)
@@ -33,6 +35,10 @@ RedHat Certified specialist in containers and Kubernetes: Red Hat EX180
 9- Using Source-to-image
 
 10- Troubleshooting OpenShift
+
+**Module 4: **The Red Hat Certified Specialist in Containers and Kubernetes exam (EX180) Sample Exam
+
+11- EX180 Sample Exam
 
 **——————————————————**
 
@@ -379,35 +385,35 @@ buildah
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Image management functionality is also integrated in podman, but buildah has the advantage that it includes a scripting language, which allows you to builda an image from scratch, such that it is not based on any base image
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Consider building an image from scratch, using buildah, it has nothing but the stuff that you’ll put in there
 
-buildah from ubi8/ubi:latest —> creates a new image based RHEL8
+$ buildah from ubi8/ubi:latest —> creates a new image based RHEL8
 
-buildah images —> shows that NO image was created, we still have to create it
+$ buildah images —> shows that NO image was created, we still have to create it
 
-buildah containers —> shows that a new buildah-based container was started (ubi8-working-container)
+$ buildah containers —> shows that a new buildah-based container was started (ubi8-working-container)
 
-curl -sSl [http://ftpmirror.gnu.org/hello-2.10.tar.gz](http://ftpmirror.gnu.org/hello-2.10.tar.gz) -o hello-2.10.tar.gz —> downloads a file
+$ curl -sSl [http://ftpmirror.gnu.org/hello-2.10.tar.gz](http://ftpmirror.gnu.org/hello-2.10.tar.gz) -o hello-2.10.tar.gz —> downloads a file
 
-buildah copy ubi8-working-container hello-2.10.tar.gz /tmp/hello-2.10.tar.gz
+$ buildah copy ubi8-working-container hello-2.10.tar.gz /tmp/hello-2.10.tar.gz
 
-buildah run ubi8-working-container yum install -y tar gzip gcc make
+$ buildah run ubi8-working-container yum install -y tar gzip gcc make
 
-buildah run ubi8-working-container yum clean all
+$ buildah run ubi8-working-container yum clean all
 
-buildah run ubi8-working-container tar xzvf /tmp/hello-2.10.tar.gz -C /opt
+$ buildah run ubi8-working-container tar xzvf /tmp/hello-2.10.tar.gz -C /opt
 
-buildah config —workingdir /opt/hello-2.10 ubi-working-container
+$ buildah config —workingdir /opt/hello-2.10 ubi-working-container
 
-buildah run ubi8-working-container ./configure
+$ buildah run ubi8-working-container ./configure
 
-buildah run ubi8-working-container make
+$ buildah run ubi8-working-container make
 
-buildah run ubi8-working-container make install
+$ buildah run ubi8-working-container make install
 
-buildah run ubi8-working-container hello -v
+$ buildah run ubi8-working-container hello -v
 
-buildah config —entrypoint /usr/local/bin/hello ubi8-working-container
+$ buildah config —entrypoint /usr/local/bin/hello ubi8-working-container
 
-buildah commit —format docker ubi8-working-container hello:latest
+$ buildah commit —format docker ubi8-working-container hello:latest
 
 **_———————————————_**
 
@@ -910,5 +916,9 @@ Application Access Troubleshooting
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Create a route, and access the route URL
 
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>make sure this URL can be resolved using DNS, it may require manually adding a line /etc/hosts
+
+**——————————————————**
+
+**11- Ex180 sample exam<span class="Apple-converted-space"> </span>**
 
 **——————————————————**
