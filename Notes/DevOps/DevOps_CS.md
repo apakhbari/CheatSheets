@@ -181,6 +181,11 @@ $ git merge --no-ff release/my-new-feature
 $ git checkout main
 $ git merge -no-ff release/my-new-feature
 $ git push
+
+$ git remote add origin git@<GIT_URL/repo.git>
+$ git add -A
+$ git commit -m "message"
+$ git push --set-upstream origin main --> set-upstream is assigned to origin remote
 ```
 
 ---
