@@ -157,6 +157,34 @@ Restoring changes
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>1 approval needed to check-in code on UAT and 2 for Prod
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Build and Deploy should be successful before chick-in the code onto UAT as well as Prod
 
+---
+Best Practice for starting a repo:
+```
+$ mkdir myapp
+$ cd myapp
+$ git init
+$ git branch -m main --> change master branch name to main (best practice)
+$ touch app.yaml
+$ git add app.yaml
+$ git commit -m "Initial commit"
+$ git checkout -b develop --> create and switch to a new branch
+$ git checkout -b feature/my-new-feature  --> short lived branch to add my new feature
+$ vim app.yaml
+$ git add app.yaml
+$ git commit -m "Added my new feature"
+$ git checkout develop
+$ git merge --no-ff my-new-feature (name of feature branch) --> no-fastforward
+$ git checkout -n release/my-new-feature
+$ vim app.yaml
+$ git commit -m "releaseing my new feature"
+$ git merge --no-ff release/my-new-feature
+$ git checkout main
+$ git merge -no-ff release/my-new-feature
+$ git push
+```
+
+---
+
 **——————————————————**
 
 **2\. Maven**
