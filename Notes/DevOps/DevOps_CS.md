@@ -158,6 +158,8 @@ Restoring changes
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>Build and Deploy should be successful before chick-in the code onto UAT as well as Prod
 
 ---
+- ``` $ git revert <COMMIT_HASH>..HEAD``` --> change git head to a desired commit
+---
 Best Practice for starting a repo:
 ```
 $ mkdir myapp
