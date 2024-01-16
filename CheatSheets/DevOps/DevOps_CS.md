@@ -189,7 +189,7 @@ $ git add -A
 $ git commit -m "message"
 $ git push --set-upstream origin main --> set-upstream is assigned to origin remote
 ```
-
+- for Excluding a file from git changes: ```$ git add -- . ':!node_modules' ```
 ---
 
 **——————————————————**
