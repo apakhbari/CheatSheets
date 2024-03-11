@@ -48,8 +48,8 @@
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>kubectcl config use-context <namespace> —> change context
 
 ## Don't know
-restart statefulset --> $ kubectl --kubeconfig ./kubeconfig rollout restart statefulset shopping-stage-back-pgha1-mbrq
-
+- restart statefulset --> $ kubectl --kubeconfig ./kubeconfig rollout restart statefulset <shopping-stage-back-pgha1-mbrq>
+- change namespace --> $ kubectl config set-context --current --namespace=my-namespace
 —————————
 
 **Programs:**
