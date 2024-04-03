@@ -1,4 +1,4 @@
-# GitLab-CI
+ # GitLab-CI
 ```
    _____ _ _   _           _            _____ _____ 
   / ____(_) | | |         | |          / ____|_   _|
@@ -8,7 +8,9 @@
   \_____|_|\__|______\__,_|_.__/       \_____|_____|
 ```
 
-```$ tree | grep .mp4 | sed -r 's/^.{4}//' | rev |  cut -c5- | rev | ts "##"```
+``` $ tree | grep .mp4 | sed -r 's/^.{4}//' | rev |  cut -c5- | rev | sort -n | ts "##" ```
+
+
 **Course: https://www.udemy.com/course/gitlab-cicd-course/**
 
 ## Table of Contents:
@@ -129,24 +131,197 @@ Prerequisits:
 
 File: 3- Simple Pipeline > .gitlab-ci.yml
 ## 5. Pipeline Execution Logs Explained
-06:59
-
-
 
 # 4. Artifacts with Nodejs Application
+
+## 1. Creating Nodejs Application
+
+## 2. Writing GitLab Pipeline
+- If You write a series a jobs, they will start parallelly by default . Order of jobs does not matter
+
+## 3. Stage & Stages in a Pipeline
+- Stage vs Stages are very different things:
+   - stage: keyword is used in a job to define which stage that job is part of.
+   - stages: define the order of execution of jobs or group of jobs. Is global in all pipeline
+- If a job does not specify a stage, the job is assigned the *test* stage.
+- Jobs in the same stage run in parallel.
+- Jobs in the next stage run after the jobs from the previous stage complete successfully
+- Gitlab has 5 default stages, which execute in the below order, so you don't need to assign them to a stages section in order to run after each other:
+1. .pre
+2. build
+3. test
+4. deploy
+5. .post
+
+- You can not change order of pre / post jobs.
+
+## 4. Writing GitLab Pipeline Continued
+- Artifacrs: Job Artifacts are a list of files and directories created by a job once it finishes
+- Artifacts expiry date is by default 30 days.
+
+## 5. Running Jobs in Background
+- Default execution time before returning an error is 1 hour.
+- In servers, deploy job will never finishes since its nature is to listen on a certain port. After 1 hour it is going to be finished as failed.
+- add ```  > /dev/null 2>&1 & ``` to end of a script line in order to send it to background
+
+## 6. Optimizing the Pipeline
+- Gitlab by default runs a ruby image.
+- assign right docker  image to each job.
+
 # 5. GitLab Runners and Installation
+
+## 1. Introduction to GitLab Runners
+- An Application that works with Gitlab CI/CD to pick and execute CI/CD jobs.
+- Open-Source and written in Go language.
+- You can add or remove runners into your GitLab architecture.
+- GitLab offers several shared runners available to every project in a GitLab instance.
+- Gitlab runner application can be installed on infrastructure that you own or manage.
+
+## 2. Shared GitLab Runners
+- Each share runner has sets of tags assigned to it, so its work is pre-determind.
+- Pending job means all runners with related tags are in use, so you have to wait so that those runners are being finished and can pick up your new job.
+- It is possible to assign a job to a specific runner via [tag: ] 
+
+## 3. Installing GitLab Runner (Things to keep in mind)
+- Should install GitLab Runner on a machine seperate from the one that hosts GitLab instance.
+- Runner can be installed on an os that can compile a Go library.
+- Runners are created by an administrator and are visible in the GitLab UI.
+- Gitlab Runner should be of the same version as Gitlab.
+- After Application installation, register individual runners.
+- When you register a runnerm, you must choose an executer.
+
+## 4. Install GitLab Runner in Local Machine
+
 # 6. Run Pipelines using Local Runners
+
+## 1. Create Python App & Dockerfile
+## 2. Write GitLab Pipeline
+## 3. Run the Pipeline locally
+- add gitlab-runner to docker group ```$ sudo usermod -aG docker gitlab-runner ```
+
+## 4. Improvising the Pipeline
+
 # 7. Variables in GitLab CICD
+
+## 1. What are GitLab CICD Variables
+- Variables store information
+- For security & reusability
+- Variables help to maintain consistency of the code
+- CI/CD variables are a useful way to customize pipelines based on their environment.
+- Two ways to use variables:
+   - Predifined set of CI/CD variables
+   - Create your own custom variables
+
+## 2. Predefined GitLab Variables
+https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+
+## 3. Create Custom Variables
+- Variables section is globally, you can override a variable inside a specific job
+
+## 4. Secret Variables in GitLab
+- General > CI/CD > Variables > Add Variable [maintainer users only can do this]
+
+## 5. Pipeline Continued
+
 # 8. Project - Requirements & Setup (Python Application)
+
+## 1. Project Requirements
+## 2. Designing Project Workflow
+## 3. How to add SSH keys in GitLab
+## 4. Create Model for Python App
+## 5. Create Front-end for Python App
+## 6. Writing the Application Logic
+
 # 9. Project - Create GitLab CI Pipeline
+
+## 1. Lint Tests with Flake8
+- Lint Test: a technique of automated checking for any programmatic and stylistic errors. Like importing a library that's not used in code
+
+## 2. Add Lint Tests in Pipeline
+- In order for our test job to keep artifact by the time test is not passed, we use ``` when: always ``` in artifact section
+
+## 3. Write Smoke Tests using pytest
+## 4. Write Unit Tests using pytest 
+## 6. Add Testing Stage in Pipeline
+## 8. Writing Dockerfile to Build Project Image
+## 9. Adding Build Stage in Pipeline
+## 10. Push Docker Image to GitLab Container Registry
+- Gitlab Container Registry:
+ - Introduced in GitLab c 8.8
+ - Open-Source
+ - Secure and private registry for storing Docker images
+ - Requires no additional installation
+ - Free to use
+- To push image to GitLab Registry: <Registry URL>/<namespace (=Username)>/<project>/<image>
+ - Best practice: $CI_REGISTRY_IMAGE/project-image:$CI_COMMIT_REF_SLUG
+ - registry.gitlab.com/username/project:mytag
+ - registry.gitlab.com/username/project/myimage:mytag
+ - registry.gitlab.com/username/project/my/image:mytag
+
+- For authentication of registry: Create Token with scope of read_registry + write_registry
+
+- Docekr images are two kinds: 1-Docekr stable client 2-Dind (docker in docker) --> Docekr stable client has everything thats needed to connect to a docekr daemon. If you want to have more daemon side work, you need to use dind (docker in docker) service.
+- For Build / Push Docker images inside CI/CD jobs you need to use Dind (docker in docker)
+
 # 10. Project - Create GitLab CD Pipeline (Deployment to Heroku)
+
+## 1. Different Deployment Options
+## 2. Getting Started with Heroku
+## 3. Deploy to Staging Environment
+## 4. Deploy to Staging Environment Continued
+## 5. Automated Testing in Pipeline
+## 6. Assignment
+## 8. Deploy to Production Environment
+## 9. Controlling the Production Deployments
+- With use of only condition, you can specify when a job is going to be done.For example to only execute in main branche:
+- only: - main
+## 10. Running the Final CICD Pipeline
+
 # 11. Static Environments in GitLab CICD
+
+## 1. Enhancing the Pipeline Workflow
+## 2. What are Environments & Deployments in GitLab
+- Environmets describe where the code is deployed.
+- Each time Gitlab CI/CD deploys a version of code to an environmet, a deployment is created.
+- You can control the CD of your software all within Gitlab by defining yhem in projects .gitlab-ci.yml
+- Deployments are created when jobs deploy versions of code to environments, so every environment can have one or more deployments
+- With adding environments, you can always know what is currently being deployed on your servers
+- Gitlab provides a full history of deployments per every environment.
+- Create environments from:
+1. Gitlab UI
+2. IN project
+
+## 3. Adding Static Environments in Pipeline
+## 4. Rollback Deployments
+
 # 12. Dynamic Environments in GitLab CICD
 # 13. Stop Dynamic Environments
+
 # 14. Miscellaneous
+## 1. CI Lint Tool in GitLab
+- In top right of pipeline, for checking syntax errors of pipeline itself
+
+## 2. How to Schedule Pipelines
+- CI/CD > Schedules
+- can run a pipeline on cuncurrent based jobs
+- min interval on 2 pipelines is 60 minutes
+
+## 3. Timeout in GitLab
+- The maximum amount of time in that a job is able to run
+- Types:
+ - Job-level
+ - Runner-specific
+ - Project-level
+
+- If both job level and project level timeout is specified; the jobs for which job level timeout is sesified will come under the job level timeout and the rest one will follow the projcet level timeout.
+- THe job-level timeout can exceed the project-level timeout but can't exceed the Runner-specific timeout.
+- If the job surpasses the threshold time, it is marked as failed.
+- Default timeout is set to 1 hour by Gitlab.
+- Project-level --> For In UI: Settings > CI/CD > General Pipelines > Timeout
+- Job-level --> specify in gitlab-ci.yml
+ 
 # 15. Additional Learnings
-
-
+ 
 # acknowledgment
 ## Contributors
 
