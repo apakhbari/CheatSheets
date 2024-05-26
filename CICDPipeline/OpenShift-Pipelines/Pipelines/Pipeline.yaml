@@ -1,0 +1,68 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-and-deploy  #Unique name of this Pipeline.
+spec:     #Specifies the definition and structure of the Pipeline.
+  workspaces:     #List of Workspaces shared between the Tasks defined in the Pipeline. A Pipeline can define as many Workspaces as required. In this example, only one Workspace named shared-workspace is declared.
+  - name: shared-workspace
+  params:    #Parameters used across all the Tasks in the Pipeline.
+  - name: deployment-name
+    type: string
+    description: name of the deployment to be patched
+  - name: git-url
+    type: string
+    description: url of the git repo for the code of deployment
+  - name: git-revision
+    type: string
+    description: revision to be used from repo of the code for deployment
+    default: "master"
+  - name: IMAGE
+    type: string
+    description: image to be built from the code
+  tasks:      #Specifies the list of Tasks used in the Pipeline.
+  - name: fetch-repository
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+    - name: url
+      value: $(params.git-url)
+    - name: subdirectory
+      value: ""
+    - name: deleteExisting
+      value: "true"
+    - name: revision
+      value: $(params.git-revision)
+  - name: build-image     #Task build-image, which uses the buildah ClusterTask to build application images from a given Git repository.
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    params:
+    - name: IMAGE
+      value: $(params.IMAGE)
+    workspaces:   #List of Workspaces used in the build-image Task. A Task definition can include as many Workspaces as it requires. However, it is recommended that a Task uses at most one writable Workspace.
+    - name: source    #Name that uniquely identifies the Workspace used in the Task. This Task uses one Workspace named source.
+      workspace: shared-workspace   #Name of the Pipeline Workspace used by the Task. Note that the Workspace source in turn uses the Pipeline Workspace named shared-workspace.
+    runAfter:
+    - fetch-repository
+  - name: apply-manifests     #Task apply-manifests, which uses a user-defined Task with the same name.
+    taskRef:
+      name: apply-manifests
+    workspaces:
+    - name: source    #List of Workspaces used in the apply-manifests Task. Note that this Task shares the source Workspace with the build-image Task.
+      workspace: shared-workspace
+    runAfter:
+    - build-image   #Specifies the sequence in which Tasks are run in a Pipeline. In this example, the apply-manifests Task is run only after the build-image Task is completed.
+  - name: update-deployment
+    taskRef:
+      name: update-deployment
+    params:
+    - name: deployment
+      value: $(params.deployment-name)
+    - name: IMAGE
+      value: $(params.IMAGE)
+    runAfter:
+    - apply-manifests

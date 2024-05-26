@@ -1,0 +1,23 @@
+# nginx.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://gitlab.com/[your username]/samplegitopsapp.git'
+    path: mychart   #Where Manifests are inside repo
+    targetRevision: main
+    helm:
+      releaseName: nginx
+      values: |
+        replicaCount: 2
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true

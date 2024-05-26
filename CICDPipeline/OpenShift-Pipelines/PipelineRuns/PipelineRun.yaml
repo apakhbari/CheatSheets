@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1 
+kind: PipelineRun 
+metadata:
+  name: build-deploy-api-pipelinerun    #Unique name to identify this pipeline run.
+spec:
+  pipelineRef:
+    name: build-and-deploy  #Name of the pipeline to be run. In this example, build-and-deploy.
+  params:    #The list of parameters required to run the pipeline.
+  - name: deployment-name
+    value: vote-api
+  - name: git-url
+    value: https://github.com/openshift-pipelines/vote-api.git
+  - name: IMAGE
+    value: image-registry.openshift-image-registry.svc:5000/pipelines-tutorial/vote-api
+  workspaces:   #Specifies the list of Pipeline Workspaces for which volume binding will be provided in the PipelineRun.
+  - name: shared-workspace  #The name of the Workspace in the Pipeline for which the volume is being provided.
+    volumeClaimTemplate:    #Specifies a volume claim template that creates a persistent volume claim to define the storage volume for the workspace.
+
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi

@@ -1,0 +1,14 @@
+#TriggerBinding: extracts the Git repository information from the received event payload
+
+apiVersion: triggers.tekton.dev/v1alpha1 
+kind: TriggerBinding 
+metadata:
+  name: vote-app    #Unique name to identify the TriggerBinding resource.
+spec:
+  params:     #List of parameters which will be extracted from the received event payload and passed to the TriggerTemplate resource. In this example, the Git repository URL, name, and revision are extracted from the body of the event payload.
+  - name: git-repo-url
+    value: $(body.repository.url)
+  - name: git-repo-name
+    value: $(body.repository.name)
+  - name: git-revision
+    value: $(body.head_commit.id)

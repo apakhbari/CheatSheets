@@ -1,0 +1,19 @@
+# nginx.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+  namespace: argocd   #Must Be NameSpace where Argo is on
+spec:
+  project: default    #A Collection of Applications in ArgoCD
+  source:
+    repoURL: 'https://gitlab.com/[your username]/samplegitopsapp.git'   #Authenticate using connected Repo we have done before
+    path: manifests   #Where Manifests are inside repo
+    targetRevision: main    #Branch/Tag of git we want argo to monitor
+  destination:    #Cluster we want to be deployed on
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true    #Alwaysd keep cluster sync with cluster
+      prune: true   #Argo delete resources that are not part of current git version

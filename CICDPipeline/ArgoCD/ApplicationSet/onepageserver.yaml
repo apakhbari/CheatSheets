@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: guestbook
+spec:
+  generators:
+  - list:
+    elements:
+    - cluster: production
+    url: https://192.168.2.35:6443
+    revision: main
+    - cluster: development
+    url: https://192.168.2.36:6443
+    revision: dev
+  template:
+    metadata:
+      name: '{{cluster}}-onepageserver'
+    spec:
+      project: default
+      source:
+        repoURL: https://gitlab.com/abohmeed/samplegitopsapp.git
+        targetRevision: '{{revision}}'
+        path: onepageserver
+      destination:
+        server: '{{url}}'
+        namespace: default

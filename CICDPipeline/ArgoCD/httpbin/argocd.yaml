@@ -1,0 +1,20 @@
+# an Argo App to manage other apps
+# Two differnces with applciation, 1- path 2- destination namespace
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd   #Must Be NameSpace where Argo is on
+spec:
+  project: default
+  source:
+    repoURL: 'https://gitlab.com/[your username]/samplegitopsapp.git'   #Authenticate using connected Repo we have done before
+    path: argo-cd   #Monitor manifests stored by argocd directory
+    targetRevision: main    #Branch/Tag of git we want argo to monitor
+  destination:    #Cluster we want to be deployed on
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      selfHeal: true    #Alwaysd keep cluster sync with cluster
+      prune: true   #Argo delete resources that are not part of current git version

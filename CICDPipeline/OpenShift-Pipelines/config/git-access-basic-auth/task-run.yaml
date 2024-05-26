@@ -1,0 +1,8 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: build-push-task-run-2 #NAME OF TASK RUN - CHANGE IT!
+spec:
+  serviceAccountName: <YOUR_PROJECT>-build-bot #Name of the service account - CHANGE IT!
+  taskRef:
+    name: build-push #NAME OF TASK

@@ -1,0 +1,8 @@
+# most common one, It is also possible to chenage value to disable and other methods won't work either
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+    labels:
+      istio-injection: enabled

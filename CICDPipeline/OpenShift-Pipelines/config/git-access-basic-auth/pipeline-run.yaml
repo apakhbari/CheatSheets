@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: demo-pipeline #Name of the pipeline run
+  namespace: default
+spec:
+  serviceAccountName: <YOUR_PROJECT>-build-bot #Name of the service account - CHANGE IT!
+  pipelineRef:
+    name: demo-pipeline #Name of the pipeline
