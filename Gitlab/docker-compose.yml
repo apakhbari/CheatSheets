@@ -1,0 +1,26 @@
+version: '3.6'
+services:
+  web:
+    image: 'gitlab/gitlab-ee:latest'
+    restart: always
+    hostname: '192.168.22.22'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://192.168.22.22'
+        initial_license_file = "/path/to/license/file"
+        GITLAB_ACTIVATION_CODE=your_activation_code
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '22:22'
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+      - '$GITLAB_HOME/key/:/opt/gitlab/embedded/service/gitlab-rails' #look for .license_encryption_key.pub
+      - '$GITLAB_HOME/backup/var_opt_gitlab_backups:/var/opt/gitlab/backups'
+      - '$GITLAB_HOME/backup/opt_gitlab_embedded_bin:/opt/gitlab/embedded/bin/'
+      - '$GITLAB_HOME/backup/secret_gitlab:/secret/gitlab'
+      - '$GITLAB_HOME/backup/etc_gitlab_config_backup:/etc/gitlab/config_backup'
+    shm_size: '256m'
