@@ -1,0 +1,196 @@
+{
+  'annotations':
+    {
+      'list':
+        [
+          {
+            'builtIn': 1,
+            'datasource': { 'type': 'grafana', 'uid': '-- Grafana --' },
+            'enable': true,
+            'hide': true,
+            'iconColor': 'rgba(0, 211, 255, 1)',
+            'name': 'Annotations & Alerts',
+            'type': 'dashboard',
+          },
+        ],
+    },
+  'editable': true,
+  'fiscalYearStartMonth': 0,
+  'graphTooltip': 0,
+  'id': 9,
+  'links': [],
+  'liveNow': false,
+  'panels':
+    [
+      {
+        'datasource':
+          { 'type': 'loki', 'uid': 'c66ad50c-de8e-4767-ac8c-dcfe063948d1' },
+        'fieldConfig':
+          {
+            'defaults':
+              {
+                'color': { 'mode': 'palette-classic' },
+                'custom':
+                  {
+                    'axisCenteredZero': false,
+                    'axisColorMode': 'text',
+                    'axisLabel': '',
+                    'axisPlacement': 'auto',
+                    'barAlignment': 0,
+                    'drawStyle': 'line',
+                    'fillOpacity': 0,
+                    'gradientMode': 'none',
+                    'hideFrom':
+                      { 'legend': false, 'tooltip': false, 'viz': false },
+                    'lineInterpolation': 'linear',
+                    'lineWidth': 1,
+                    'pointSize': 5,
+                    'scaleDistribution': { 'type': 'linear' },
+                    'showPoints': 'auto',
+                    'spanNulls': false,
+                    'stacking': { 'group': 'A', 'mode': 'none' },
+                    'thresholdsStyle': { 'mode': 'off' },
+                  },
+                'mappings': [],
+                'thresholds':
+                  {
+                    'mode': 'absolute',
+                    'steps':
+                      [
+                        { 'color': 'green', 'value': null },
+                        { 'color': 'red', 'value': 80 },
+                      ],
+                  },
+              },
+            'overrides': [],
+          },
+        'gridPos': { 'h': 10, 'w': 17, 'x': 0, 'y': 0 },
+        'id': 1,
+        'options':
+          {
+            'legend':
+              {
+                'calcs': [],
+                'displayMode': 'list',
+                'placement': 'bottom',
+                'showLegend': true,
+              },
+            'tooltip': { 'mode': 'single', 'sort': 'none' },
+          },
+        'targets':
+          [
+            {
+              'datasource':
+                {
+                  'type': 'loki',
+                  'uid': 'c66ad50c-de8e-4767-ac8c-dcfe063948d1',
+                },
+              'editorMode': 'code',
+              'expr': 'sum(count_over_time({job="nginx"} | pattern `<_> - - <_> "<method> <_> <_>" <status> <_> <_> "<_>" <_>` [1m])) by (status)',
+              'key': 'Q-b1aadd0b-ce49-4595-9f52-c7addbb47c92-0',
+              'queryType': 'range',
+              'refId': 'A',
+            },
+          ],
+        'title': 'New Panel',
+        'type': 'timeseries',
+      },
+      {
+        'datasource':
+          { 'type': 'loki', 'uid': 'c66ad50c-de8e-4767-ac8c-dcfe063948d1' },
+        'fieldConfig':
+          {
+            'defaults':
+              {
+                'color': { 'mode': 'thresholds' },
+                'mappings': [],
+                'thresholds':
+                  {
+                    'mode': 'absolute',
+                    'steps':
+                      [
+                        { 'color': 'green', 'value': null },
+                        { 'color': 'red', 'value': 80 },
+                      ],
+                  },
+              },
+            'overrides': [],
+          },
+        'gridPos': { 'h': 22, 'w': 6, 'x': 17, 'y': 0 },
+        'id': 3,
+        'options':
+          {
+            'displayMode': 'lcd',
+            'minVizHeight': 10,
+            'minVizWidth': 0,
+            'orientation': 'horizontal',
+            'reduceOptions':
+              { 'calcs': ['lastNotNull'], 'fields': '', 'values': false },
+            'showUnfilled': true,
+            'valueMode': 'color',
+          },
+        'pluginVersion': '10.0.0',
+        'targets':
+          [
+            {
+              'datasource':
+                {
+                  'type': 'loki',
+                  'uid': 'c66ad50c-de8e-4767-ac8c-dcfe063948d1',
+                },
+              'editorMode': 'code',
+              'expr': 'sum(count_over_time({job="nginx"} | pattern `<remote_addr> - - ` [$__range])) by (remote_addr)',
+              'queryType': 'range',
+              'refId': 'A',
+            },
+          ],
+        'title': 'Panel Title',
+        'type': 'bargauge',
+      },
+      {
+        'datasource':
+          { 'type': 'loki', 'uid': 'c66ad50c-de8e-4767-ac8c-dcfe063948d1' },
+        'gridPos': { 'h': 12, 'w': 17, 'x': 0, 'y': 10 },
+        'id': 2,
+        'options':
+          {
+            'dedupStrategy': 'none',
+            'enableLogDetails': true,
+            'prettifyLogMessage': false,
+            'showCommonLabels': false,
+            'showLabels': false,
+            'showTime': false,
+            'sortOrder': 'Descending',
+            'wrapLogMessage': false,
+          },
+        'targets':
+          [
+            {
+              'datasource':
+                {
+                  'type': 'loki',
+                  'uid': 'c66ad50c-de8e-4767-ac8c-dcfe063948d1',
+                },
+              'editorMode': 'code',
+              'expr': '{job="nginx"}',
+              'queryType': 'range',
+              'refId': 'A',
+            },
+          ],
+        'title': 'Panel Title',
+        'type': 'logs',
+      },
+    ],
+  'refresh': false,
+  'schemaVersion': 38,
+  'style': 'dark',
+  'tags': [],
+  'templating': { 'list': [] },
+  'time': { 'from': 'now-30m', 'to': 'now' },
+  'timepicker': {},
+  'timezone': '',
+  'title': 'Nginx Example',
+  'uid': 'bdfddcc9-7bfb-4a48-b606-0c273806d474',
+  'version': 6,
+  'weekStart': '',
+}

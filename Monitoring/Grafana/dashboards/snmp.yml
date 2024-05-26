@@ -1,0 +1,464 @@
+{
+  'annotations':
+    {
+      'list':
+        [
+          {
+            'builtIn': 1,
+            'datasource': '-- Grafana --',
+            'enable': true,
+            'hide': true,
+            'iconColor': 'rgba(0, 211, 255, 1)',
+            'name': 'Annotations & Alerts',
+            'target':
+              {
+                'limit': 100,
+                'matchAny': false,
+                'tags': [],
+                'type': 'dashboard',
+              },
+            'type': 'dashboard',
+          },
+        ],
+    },
+  'description': 'A sample template from https://sbcode.net/grafana/import-snmp-influxdb-telegraf-dashboard/',
+  'editable': true,
+  'fiscalYearStartMonth': 0,
+  'gnetId': null,
+  'graphTooltip': 0,
+  'id': 29,
+  'iteration': 1639300920753,
+  'links':
+    [
+      {
+        'asDropdown': false,
+        'icon': 'external link',
+        'includeVars': false,
+        'keepTime': false,
+        'tags': [],
+        'targetBlank': true,
+        'title': 'SBCODE Grafana',
+        'tooltip': '',
+        'type': 'link',
+        'url': 'https://sbcode.net/grafana/',
+      },
+      {
+        'asDropdown': false,
+        'icon': 'external link',
+        'includeVars': false,
+        'keepTime': false,
+        'tags': [],
+        'targetBlank': true,
+        'title': 'Course Coupons',
+        'tooltip': '',
+        'type': 'link',
+        'url': 'https://sbcode.net/coupons',
+      },
+    ],
+  'liveNow': false,
+  'panels':
+    [
+      {
+        'datasource': 'InfluxDB',
+        'description': '',
+        'fieldConfig':
+          {
+            'defaults':
+              {
+                'color': { 'mode': 'thresholds' },
+                'mappings': [],
+                'thresholds':
+                  {
+                    'mode': 'absolute',
+                    'steps':
+                      [
+                        { 'color': 'dark-red', 'value': null },
+                        { 'color': 'semi-dark-green', 'value': 0.5 },
+                      ],
+                  },
+                'unit': 'd',
+              },
+            'overrides': [],
+          },
+        'gridPos': { 'h': 3, 'w': 3, 'x': 0, 'y': 0 },
+        'id': 6,
+        'options':
+          {
+            'colorMode': 'value',
+            'graphMode': 'area',
+            'justifyMode': 'auto',
+            'orientation': 'vertical',
+            'reduceOptions':
+              { 'calcs': ['lastNotNull'], 'fields': '', 'values': false },
+            'text': {},
+            'textMode': 'auto',
+          },
+        'pluginVersion': '8.2.5',
+        'targets':
+          [
+            {
+              'query': "from(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"snmp\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"uptime\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"${source}\")\r\n  |> map(fn: (r) => ({ r with _value: float(v: r._value) / 86400.0 / 100.0 }))\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r.source}))\r\n  |> last()",
+              'refId': 'A',
+            },
+          ],
+        'title': 'Uptime',
+        'type': 'stat',
+      },
+      {
+        'datasource': 'InfluxDB',
+        'description': '',
+        'fieldConfig':
+          {
+            'defaults':
+              {
+                'color': { 'mode': 'thresholds' },
+                'custom':
+                  {
+                    'align': 'auto',
+                    'displayMode': 'auto',
+                    'filterable': false,
+                  },
+                'mappings': [],
+                'thresholds':
+                  {
+                    'mode': 'absolute',
+                    'steps':
+                      [
+                        { 'color': 'green', 'value': null },
+                        { 'color': 'red', 'value': 80 },
+                      ],
+                  },
+              },
+            'overrides':
+              [
+                {
+                  'matcher': { 'id': 'byName', 'options': 'ifAdminStatus' },
+                  'properties': [{ 'id': 'custom.width', 'value': 119 }],
+                },
+                {
+                  'matcher': { 'id': 'byName', 'options': 'ifInDiscards' },
+                  'properties': [{ 'id': 'custom.width', 'value': 125 }],
+                },
+              ],
+          },
+        'gridPos': { 'h': 3, 'w': 21, 'x': 3, 'y': 0 },
+        'id': 17,
+        'options': { 'frameIndex': 0, 'showHeader': true, 'sortBy': [] },
+        'pluginVersion': '8.2.5',
+        'targets':
+          [
+            {
+              'query': "from(bucket: \"telegraf\")\r\n    |> range(start: -1m)\r\n    |> filter(fn: (r) => r[\"_measurement\"] == \"interface\")\r\n    |> filter(fn: (r) => r[\"source\"] == \"${source}\")\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))\r\n    |> last()   \r\n",
+              'refId': 'A',
+            },
+          ],
+        'title': 'Interface',
+        'transformations':
+          [
+            { 'id': 'seriesToRows', 'options': {} },
+            {
+              'id': 'organize',
+              'options':
+                {
+                  'excludeByName': { 'Time': true },
+                  'indexByName': {},
+                  'renameByName': {},
+                },
+            },
+            { 'id': 'rowsToFields', 'options': {} },
+            {
+              'id': 'organize',
+              'options':
+                {
+                  'excludeByName':
+                    {
+                      'ifInNUcastPkts': true,
+                      'ifInUcastPkts': true,
+                      'ifInUnknownProtos': true,
+                      'ifLastChange': true,
+                      'ifOutNUcastPkts': true,
+                      'ifOutQLen': true,
+                      'ifOutUcastPkts': true,
+                      'ifPhysAddress': true,
+                      'ifSpecific': true,
+                      'ifSpeed': true,
+                      'ifType': true,
+                    },
+                  'indexByName': {},
+                  'renameByName': {},
+                },
+            },
+          ],
+        'type': 'table',
+      },
+      {
+        'datasource': 'InfluxDB',
+        'description': 'The total number of octets received on the interface, including framing characters.',
+        'fieldConfig':
+          {
+            'defaults':
+              {
+                'color': { 'mode': 'palette-classic' },
+                'custom':
+                  {
+                    'axisLabel': '',
+                    'axisPlacement': 'auto',
+                    'barAlignment': 0,
+                    'drawStyle': 'line',
+                    'fillOpacity': 0,
+                    'gradientMode': 'none',
+                    'hideFrom':
+                      { 'legend': false, 'tooltip': false, 'viz': false },
+                    'lineInterpolation': 'linear',
+                    'lineWidth': 1,
+                    'pointSize': 5,
+                    'scaleDistribution': { 'type': 'linear' },
+                    'showPoints': 'auto',
+                    'spanNulls': false,
+                    'stacking': { 'group': 'A', 'mode': 'none' },
+                    'thresholdsStyle': { 'mode': 'off' },
+                  },
+                'mappings': [],
+                'thresholds':
+                  {
+                    'mode': 'absolute',
+                    'steps':
+                      [
+                        { 'color': 'green', 'value': null },
+                        { 'color': 'red', 'value': 80 },
+                      ],
+                  },
+              },
+            'overrides': [],
+          },
+        'gridPos': { 'h': 8, 'w': 12, 'x': 0, 'y': 3 },
+        'id': 12,
+        'options':
+          {
+            'legend':
+              { 'calcs': [], 'displayMode': 'list', 'placement': 'bottom' },
+            'tooltip': { 'mode': 'single' },
+          },
+        'targets':
+          [
+            {
+              'query': "from(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"interface\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ifInOctets\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"${source}\")\r\n  |> derivative(unit: 1s, nonNegative: true)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r.ifDescr}))\r\n  ",
+              'refId': 'A',
+            },
+          ],
+        'title': 'In Octets',
+        'type': 'timeseries',
+      },
+      {
+        'datasource': 'InfluxDB',
+        'description': 'The total number of octets transmitted out of the interface, including framing characters.',
+        'fieldConfig':
+          {
+            'defaults':
+              {
+                'color': { 'mode': 'palette-classic' },
+                'custom':
+                  {
+                    'axisLabel': '',
+                    'axisPlacement': 'auto',
+                    'barAlignment': 0,
+                    'drawStyle': 'line',
+                    'fillOpacity': 0,
+                    'gradientMode': 'none',
+                    'hideFrom':
+                      { 'legend': false, 'tooltip': false, 'viz': false },
+                    'lineInterpolation': 'linear',
+                    'lineWidth': 1,
+                    'pointSize': 5,
+                    'scaleDistribution': { 'type': 'linear' },
+                    'showPoints': 'auto',
+                    'spanNulls': false,
+                    'stacking': { 'group': 'A', 'mode': 'none' },
+                    'thresholdsStyle': { 'mode': 'off' },
+                  },
+                'mappings': [],
+                'thresholds':
+                  {
+                    'mode': 'absolute',
+                    'steps':
+                      [
+                        { 'color': 'green', 'value': null },
+                        { 'color': 'red', 'value': 80 },
+                      ],
+                  },
+              },
+            'overrides': [],
+          },
+        'gridPos': { 'h': 8, 'w': 12, 'x': 12, 'y': 3 },
+        'id': 13,
+        'options':
+          {
+            'legend':
+              { 'calcs': [], 'displayMode': 'list', 'placement': 'bottom' },
+            'tooltip': { 'mode': 'single' },
+          },
+        'targets':
+          [
+            {
+              'query': "from(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"interface\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ifOutOctets\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"${source}\")\r\n  |> derivative(unit: 1s, nonNegative: true)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r.ifDescr}))",
+              'refId': 'A',
+            },
+          ],
+        'title': 'Out Octets',
+        'type': 'timeseries',
+      },
+      {
+        'datasource': 'InfluxDB',
+        'description': 'The number of inbound packets which were chosen to be discarded even though no errors had been detected to prevent their being deliverable to a higher-layer protocol. One possible reason for discarding such a packet could be to free up buffer space',
+        'fieldConfig':
+          {
+            'defaults':
+              {
+                'color': { 'mode': 'palette-classic' },
+                'custom':
+                  {
+                    'axisLabel': '',
+                    'axisPlacement': 'auto',
+                    'barAlignment': 0,
+                    'drawStyle': 'line',
+                    'fillOpacity': 0,
+                    'gradientMode': 'none',
+                    'hideFrom':
+                      { 'legend': false, 'tooltip': false, 'viz': false },
+                    'lineInterpolation': 'linear',
+                    'lineWidth': 1,
+                    'pointSize': 5,
+                    'scaleDistribution': { 'type': 'linear' },
+                    'showPoints': 'auto',
+                    'spanNulls': false,
+                    'stacking': { 'group': 'A', 'mode': 'none' },
+                    'thresholdsStyle': { 'mode': 'off' },
+                  },
+                'mappings': [],
+                'thresholds':
+                  {
+                    'mode': 'absolute',
+                    'steps':
+                      [
+                        { 'color': 'green', 'value': null },
+                        { 'color': 'red', 'value': 80 },
+                      ],
+                  },
+              },
+            'overrides': [],
+          },
+        'gridPos': { 'h': 8, 'w': 12, 'x': 0, 'y': 11 },
+        'id': 14,
+        'options':
+          {
+            'legend':
+              { 'calcs': [], 'displayMode': 'list', 'placement': 'bottom' },
+            'tooltip': { 'mode': 'single' },
+          },
+        'targets':
+          [
+            {
+              'query': "from(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"interface\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ifInDiscards\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"${source}\")\r\n  |> derivative(unit: 1s, nonNegative: true)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r.ifDescr}))\r\n  ",
+              'refId': 'A',
+            },
+          ],
+        'title': 'Discards',
+        'type': 'timeseries',
+      },
+      {
+        'datasource': 'InfluxDB',
+        'description': 'The number of inbound packets that contained errors preventing them from being deliverable to a higher-layer protocol.',
+        'fieldConfig':
+          {
+            'defaults':
+              {
+                'color': { 'mode': 'palette-classic' },
+                'custom':
+                  {
+                    'axisLabel': '',
+                    'axisPlacement': 'auto',
+                    'barAlignment': 0,
+                    'drawStyle': 'line',
+                    'fillOpacity': 0,
+                    'gradientMode': 'none',
+                    'hideFrom':
+                      { 'legend': false, 'tooltip': false, 'viz': false },
+                    'lineInterpolation': 'linear',
+                    'lineWidth': 1,
+                    'pointSize': 5,
+                    'scaleDistribution': { 'type': 'linear' },
+                    'showPoints': 'auto',
+                    'spanNulls': false,
+                    'stacking': { 'group': 'A', 'mode': 'none' },
+                    'thresholdsStyle': { 'mode': 'off' },
+                  },
+                'mappings': [],
+                'thresholds':
+                  {
+                    'mode': 'absolute',
+                    'steps':
+                      [
+                        { 'color': 'green', 'value': null },
+                        { 'color': 'red', 'value': 80 },
+                      ],
+                  },
+              },
+            'overrides': [],
+          },
+        'gridPos': { 'h': 8, 'w': 12, 'x': 12, 'y': 11 },
+        'id': 15,
+        'options':
+          {
+            'legend':
+              { 'calcs': [], 'displayMode': 'list', 'placement': 'bottom' },
+            'tooltip': { 'mode': 'single' },
+          },
+        'targets':
+          [
+            {
+              'query': "from(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"interface\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ifInErrors\")\r\n  |> filter(fn: (r) => r[\"source\"] == \"${source}\")\r\n  |> derivative(unit: 1s, nonNegative: true)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r.ifDescr}))\r\n  ",
+              'refId': 'A',
+            },
+          ],
+        'title': 'Errors',
+        'type': 'timeseries',
+      },
+    ],
+  'refresh': '5s',
+  'schemaVersion': 32,
+  'style': 'dark',
+  'tags': [],
+  'templating':
+    {
+      'list':
+        [
+          {
+            'allValue': null,
+            'current':
+              { 'selected': false, 'text': 'Grafana', 'value': 'Grafana' },
+            'datasource': 'InfluxDB',
+            'definition': "from(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"snmp\")\r\n  |> group()\r\n  |> distinct(column: \"source\")",
+            'description': null,
+            'error': null,
+            'hide': 0,
+            'includeAll': false,
+            'label': 'Source Host',
+            'multi': false,
+            'name': 'source',
+            'options': [],
+            'query': "from(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"snmp\")\r\n  |> group()\r\n  |> distinct(column: \"source\")",
+            'refresh': 1,
+            'regex': '',
+            'skipUrlSync': false,
+            'sort': 0,
+            'type': 'query',
+          },
+        ],
+    },
+  'time': { 'from': 'now-30m', 'to': 'now' },
+  'timepicker': {},
+  'timezone': '',
+  'title': 'SNMP Interfaces',
+  'uid': 'Hfi86oh7z',
+  'version': 21,
+}
