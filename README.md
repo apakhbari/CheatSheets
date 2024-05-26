@@ -13,7 +13,7 @@
 
 <br>
 
-# **© APA, 2022-2023**
+# **© APA, All rights reserved, 2021-2023**
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
