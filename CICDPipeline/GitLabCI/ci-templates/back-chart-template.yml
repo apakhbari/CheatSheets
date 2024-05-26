@@ -1,0 +1,11 @@
+apiVersion: v2
+name: backend-${name}
+description: An umbrella chart for the backend-${name} application
+type: application
+version: 0.1.0
+dependencies:
+- name: webapp-base
+  version: 0.1.0
+  repository: "file://../../../base/webapp-base"
+  alias: web
+  condition: web.enabled

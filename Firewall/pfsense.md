@@ -1,4 +1,14 @@
-# pfSense
+# pfsense
+
+```
+ _______  _______  _______  _______  __    _  _______  _______ 
+|       ||       ||       ||       ||  |  | ||       ||       |
+|    _  ||    ___||  _____||    ___||   |_| ||  _____||    ___|
+|   |_| ||   |___ | |_____ |   |___ |       || |_____ |   |___ 
+|    ___||    ___||_____  ||    ___||  _    ||_____  ||    ___|
+|   |    |   |     _____| ||   |___ | | |   | _____| ||   |___ 
+|___|    |___|    |_______||_______||_|  |__||_______||_______|
+```
 
 ## Index
 
@@ -12,9 +22,9 @@
   - Services Tab
   - Vlan
   - Plugins
-
+ 
 ---
-
+## Tips and Tricks
 # Section1: Theoritical
 
 ---
@@ -26,7 +36,7 @@
 - DNS is on UDP
 
 - ---
-
+## first time setup (using wizard)
 # Section2: Configuration
 
 ---
@@ -41,7 +51,7 @@ by deafult, after setting up wizard, pfsense is pretty secure
 - step 5 of 9: Change LAN IP Address, default is 192.168.1.1, since this default is being used in lots of environments and you might want to use VPN some times to access your LAN network, it is convenient to change this. 192.168.55.1 is pretty good.
 - After completion: change & edit dashboard via drag and using upper + . also it is good to remove support section.
 
-### System Tab
+## System Tab
 System &gt; Advanced &gt; Admin Access:
 
 - Web Configurator &gt; TCP Port: Default config of pfSense is to leave a HTTPS open in LAN-side. It is convenient to change TCP Port of this HTTPS since 443 is pretty common on lots of services and you might face some conflicts with other services. Recommended time is: 10443
@@ -57,11 +67,10 @@ System &gt; User Manager:
 - Create a user with admin privileges here.
 - then disable "admin" user from entering system
 
+## FireWall Tab
 FireWall &gt; Rules &gt; Lan
 
 - Anti-lockout rule: lan is where you want this rule to exist. its a rule that will stop you from writing a rule that lock you out of system. It purposes is to not allow you to stop yourself from logging in to pfsense.
-
-### FireWall Tab
 
 FireWall &gt; Rules &gt; Lan &gt; Edit
 
@@ -72,25 +81,21 @@ FireWall &gt; Aliases
 
 - It is being used for the times you want to assign a name to a set of IP addresses, just for ease of use
 
-### Interface Tab
-
-
+## Interface Tab
 Interface &gt; Interface Assignment &gt; \[INTERFACE_NAME\]
 
 - pfsense does not care whether an interdace is LAN or WAN. Such thing will be set based on gateway an interface has.
 - Static IPV4 Configuration: its for the times you want interface to work as a WAN. so you assign upstream gateway on it to be working as desired.
 - Don't forget to apply changes when you are finished
 
-### Service Tab
-
+## Services Tab
 Services &gt; DHCP Server:
 
 - for every interface you create (vlan or physical interface), pfsense create a list on DHCP server.
 - Define a range for IPs
 - on up-right of screen there is an icon with description of "related log entries", when you click on it you can see DHCP Leases, so what you have is going to be listed
 
-### VLAN Tab
-
+## VLan
 - By default all traffic is flowing on Vlan1, so never use it
 - convenient to use when you don't have luxury of using different physical interfaces.
 - although Vlans share physical interface and share same bandwidth, they are really good at segmenting things.
@@ -102,18 +107,17 @@ Interfaces &gt; Assignment
 - we have to know which VLan is being assigned to which interface, which means what shared physical interface we are using for vlan
 - Also don't forget to assign DHCP Server to each VLAN
 
-### Status Tab
+## Status Tab
 Top of most services has "related status page" icon, where you are redirected to related statuses
 
 - <span style="color: rgb(255, 255, 255)">Status &gt; Captive portal: You can use Captive Portal so new users are being shown a window to login</span>
 
-### Diagnostics Tab
+## Diagnostics Tab
 - Packet Capture: really good tool that is like wireshark
 - DNS lookup
 - Test port
 
-### Plugins
-
+## Plugins
 Q: Where does plugins show up? A: EveryWhere :) since there is not a centralized place for it, each plugin is going to end up where it belongs.
 
 - acme (automated certificate management environment) --&gt; good for lets encrypt and haproxy. shows in Services
@@ -124,3 +128,32 @@ Q: Where does plugins show up? A: EveryWhere :) since there is not a centralized
 - openvpn-client-export
 - status-traffic-totals --&gt; gives you an overview of traffic over day/week/month. shows in Status tab
 - suricata
+
+# acknowledgment
+## Contributors
+
+APA 🖖🏻
+
+## Links
+
+```                                                                                                       
+  aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
+  a::::::::::::a p::::ppp:::::::::p    a::::::::::::a  
+  aaaaaaaaa:::::ap:::::::::::::::::p   aaaaaaaaa:::::a 
+           a::::app::::::ppppp::::::p           a::::a 
+    aaaaaaa:::::a p:::::p     p:::::p    aaaaaaa:::::a 
+  aa::::::::::::a p:::::p     p:::::p  aa::::::::::::a 
+ a::::aaaa::::::a p:::::p     p:::::p a::::aaaa::::::a 
+a::::a    a:::::a p:::::p    p::::::pa::::a    a:::::a 
+a::::a    a:::::a p:::::ppppp:::::::pa::::a    a:::::a 
+a:::::aaaa::::::a p::::::::::::::::p a:::::aaaa::::::a 
+ a::::::::::aa:::ap::::::::::::::pp   a::::::::::aa:::a
+  aaaaaaaaaa  aaaap::::::pppppppp      aaaaaaaaaa  aaaa
+                  p:::::p                              
+                  p:::::p                              
+                 p:::::::p                             
+                 p:::::::p                             
+                 p:::::::p                             
+                 ppppppppp                             
+                                                       
+```

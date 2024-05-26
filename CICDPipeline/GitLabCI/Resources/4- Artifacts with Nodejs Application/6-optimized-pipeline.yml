@@ -1,0 +1,23 @@
+stages:
+  - build
+  - deploy
+
+build:
+  image: node
+  stage: build
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules
+      - package-lock.json
+    # expire_in: 1 week 
+
+deploy:
+  image: node
+  stage: deploy
+  script:
+    - node index.js > /dev/null 2>&1 & 
+
+---
+# Or You Can set image Globally

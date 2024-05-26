@@ -1,0 +1,10 @@
+build:
+  script:
+    - apt update -y
+    - apt install npm -y
+    - npm install
+deploy:
+  script:
+    - apt update -y
+    - apt install nodejs -y
+    - node index.js

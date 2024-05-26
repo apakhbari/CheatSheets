@@ -1,0 +1,9 @@
+variables:
+    name: 'John'
+    message: 'How are you?'
+
+display_message:
+    variables:
+        name: 'Mark'
+    script:
+        - echo "Hello $name, $message"

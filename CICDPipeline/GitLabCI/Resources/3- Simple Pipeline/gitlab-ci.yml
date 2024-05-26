@@ -1,0 +1,4 @@
+job-to-run-the-code:    #Name of jof
+#Can define to which stage this job belongs, if not specified default is test
+  script:
+    - python hello.py   #run hello.py file with python

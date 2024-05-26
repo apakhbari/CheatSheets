@@ -1,0 +1,12 @@
+sleepy_job1:
+    script:
+        - echo "Job starts"
+        - sleep 30m
+        - echo "Job ends"
+    timeout: 20m
+        
+sleepy_job2:
+    script:
+        - echo "Job starts"
+        - sleep 15m
+        - echo "Job ends"

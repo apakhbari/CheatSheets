@@ -1,0 +1,205 @@
+#image: $CACHE_REGISTRY_URL/library/docker:dind
+#
+## cache reg: images that need to be pulled from docker.io
+## reg: custom images made by us
+#
+#services:
+#  - $CACHE_REGISTRY_URL/library/docker:dind
+#
+stages:
+  - predeploy
+  - package-installation
+  - build
+  - test
+  - push
+  - deploy
+  
+variables:
+  name: $CI_PROJECT_NAMESPACE
+  url: $CI_PROJECT_NAME.${name}.adak.neor.space
+  image: $REGISTRY_URL/$CI_PROJECT_PATH
+  gitlabUrl: gitlab.adak.neor.space
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^(v|V)?[0-9]{1,2}\.[0-9]{1,3}\.[0-9]{1,3}[^\s\\]{0,48}$/'
+      variables:
+        version: $CI_COMMIT_TAG
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      variables:
+        version: $CI_COMMIT_SHORT_SHA
+
+package-installation:
+  stage: package-installation
+  script:
+    - sudo docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $REGISTRY_URL
+    - sudo docker build --target package-installation -t ${image}:package-installation --build-arg CACHE_REGISTRY_URL=$CACHE_REGISTRY_URL --build-arg NPM_REGISTRY=$NPM_REGISTRY .
+    - sudo docker push ${image}:package-installation
+  except:
+    refs:
+      - tags
+  only:
+    changes:
+      - "**/package*.json"
+      - Dockerfile
+  when: always
+  tags:
+    - build
+.build:
+  stage: build
+  script:
+    - echo "$BASE_ENV" > .env
+    - echo "$instanceEnv" >> .env
+    - echo -e "\nversion=$version-$CI_JOB_NAME" >> .env
+    - cat .env
+    - source .env
+    - echo $version
+    - sudo docker build -t ${image}:$version --build-arg CACHE_REGISTRY_URL=$CACHE_REGISTRY_URL .
+  allow_failure: false
+  when: always
+  artifacts:
+    paths:
+      - .env
+    expire_in: 2 week
+  tags:
+    - build
+
+#build-develop:
+#  extends: .build
+#  variables:
+#    instanceEnv: $DEV_ENV
+  
+
+build-stage:
+  extends: .build
+  variables:
+    instanceEnv: $STAGE_ENV
+
+#build-production:
+#  extends: .build
+#  variables:
+#    instanceEnv: $PRODUCTION_ENV
+
+##############
+# test to be #
+#############
+
+.push:
+  stage: push
+  script:
+    - source .env
+    - sudo docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $REGISTRY_URL
+    - sudo docker image push ${image}:$version
+    - sudo docker image tag ${image}:$version ${image}:latest
+    - sudo docker image push ${image}:latest
+  allow_failure: false
+  artifacts:
+    paths:
+      - .env
+    expire_in: 2 week
+  tags:
+    - push
+  when: on_success  
+
+#push-develop:
+#  extends: .push
+#  variables:
+#    instanceEnv: $DEV_ENV
+#  needs:
+#    - job: build-develop
+#      artifacts: true
+
+push-stage:
+  extends: .push
+  variables:
+    instanceEnv: $STAGE_ENV
+  needs:
+    - job: build-stage
+      artifacts: true
+
+#push-production:
+#  extends: .push
+#  variables:
+#    instanceEnv: $PRODUCTION_ENV
+#  needs:
+#    - job: build-production
+#      artifacts: true
+
+.predeploy:
+  stage: predeploy
+  variables:
+    appDir: ./apps-templates/frontend/${instance}/${name}
+  script:
+    - which envsubst || sudo apt-get install gettext-base -y
+    - git clone https://oauth2:$CICD_BOT_ACCESS_TOKEN@${gitlabUrl}/devops/apps-templates.git
+    - git clone https://oauth2:$CICD_BOT_ACCESS_TOKEN@${gitlabUrl}/devops/ci-templates.git
+    - mkdir -p ${appDir} ${appDir}/../apps/ 
+    - envsubst < ci-templates/front-values-template.yml | tee ${appDir}/values.yaml
+    - envsubst < ci-templates/front-chart-template.yml | tee ${appDir}/Chart.yaml
+    - envsubst < ci-templates/front-app-template.yml | tee ${appDir}/../apps/${name}.yaml
+    - ls ${appDir}/values.yaml
+    - cat ${appDir}/values.yaml
+    - cd ./apps-templates
+    - git config user.email "$CICD_BOT_EMAIL"
+    - git config user.name "CICD_BOT_USER"
+    - git status
+    - git add -A
+    - git commit -m 'automatically initialized app in predeploy stage of front-ci'
+    - git push -u origin main
+  allow_failure: true
+  tags:
+    - predeploy
+
+#predeploy-production:
+#  extends: .predeploy
+#  variables:
+#    instance: prd
+#predeploy-stage:
+#  extends: .predeploy
+#  variables:
+#    instance: stage
+
+
+
+.deploy-ArgoCD:
+  stage: deploy
+  variables:
+    valuesPath: ./frontend/${instance}/${name}/values.yaml
+  script:
+    - which yq || sudo snap install yq
+    - source .env
+    - git clone https://oauth2:$CICD_BOT_ACCESS_TOKEN@${gitlabUrl}/devops/apps-templates.git
+    - cd ./apps-templates
+    - yq -i ".web.image.tag = \"${version}\"" ${valuesPath}
+    - yq -i ".web.image.repository = \"${image}\"" ${valuesPath}
+    - cat ${valuesPath}
+    - git config user.email "$CICD_BOT_EMAIL"
+    - git config user.name "CICD_BOT_USER"
+    - git status
+    - git add ${valuesPath}
+    - git commit -m 'automatically initialized app in predeploy stage of front-ci'
+    - git push -u origin main
+  allow_failure: false
+  tags:
+    - deploy
+
+
+deploy-stage:
+  extends: .deploy-ArgoCD
+  variables:
+    instance: stage
+  needs:
+    - job: push-stage
+      artifacts: true
+  # when should be changed to manual
+  when: on_success  
+
+#deploy-production:
+#  extends: .deploy-ArgoCD
+#  variables:
+#    instance: prd
+#  needs:
+#    - job: push-production
+#      artifacts: true
+#  # when should be changed to manual
+#  when: on_success

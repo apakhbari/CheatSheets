@@ -1,0 +1,29 @@
+stages:
+  - test
+  - build
+  - deploy
+
+pre-job:
+  stage: .pre
+  script:
+    - echo 'This message is from .pre-job'
+
+build-job:
+  stage: build
+  script:
+    - echo 'This message is from build-job'
+
+test-job:
+  stage: test
+  script:
+    - echo 'This message is from test-job'
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo 'This message is from deploy-job'
+    
+post-job:
+  stage: .post
+  script:
+    - echo 'This message is from .post-job'

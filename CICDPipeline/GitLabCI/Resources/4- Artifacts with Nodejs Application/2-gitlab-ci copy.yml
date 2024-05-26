@@ -1,0 +1,24 @@
+stages:
+  - build
+  - deploy
+
+build:
+  image: node
+  stage: build
+  script:
+    # - apt update -y
+    # - apt install npm -y
+    - npm install
+  artifacts:
+    paths:
+      - node_modules
+      - package-lock.json
+    # expire_in: 1 week 
+
+deploy:
+  image: node
+  stage: deploy
+  script:
+    # - apt update -y
+    # - apt install nodejs -y
+    - node index.js > /dev/null 2>&1 &
