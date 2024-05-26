@@ -130,7 +130,7 @@ Configuration (with the authentication token) was saved in "/etc/gitlab-runner/c
 ### ssh connection was refused
 - Problem: 
 ```
-adak@adak-HP-EliteDesk-800-G5-SFF:~$ ssh -Tv git@192.168.2.20
+apa@apa-system:~$ ssh -Tv git@192.168.2.20
 debug1: connect to address 192.168.2.20 port 22: Connection refused
 ssh: connect to host 192.168.2.20 port 22: Connection refused
 ```

@@ -16,9 +16,9 @@ stages:
   
 variables:
   name: $CI_PROJECT_NAMESPACE
-  url: $CI_PROJECT_NAME.${name}.adak.neor.space
+  url: $CI_PROJECT_NAME.${name}.{url.com}
   image: $REGISTRY_URL/$CI_PROJECT_PATH
-  gitlabUrl: gitlab.adak.neor.space
+  gitlabUrl: gitlab.{url.com}
 
 workflow:
   rules:
