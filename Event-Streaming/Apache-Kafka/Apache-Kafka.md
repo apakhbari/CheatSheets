@@ -246,6 +246,15 @@ $ bin/kafka-consumer-groups.sh \
 ### 52 - Diagrams for the course
 
 ## 10 - EXAMPLE 1 Topic with Multiple Partitions
+### 53 - SECTION 9 Introduction
+### 54 - If you use remote Kafka brokers.
+### 55 - Cleaning up existing kafka installation
+### 56 - Creating topic with multiple partitions
+### 57 - How messages were spread across different partitions
+### 58 - Reading messages from specific partition
+### 59 - Reading messages from specific offset in specific partition
+### 60 - Reading details about topic and consumeroffsets topic
+### 61 - Summary for multiple partitions example
 
 ## 11 - EXAMPLE 2 Kafka Cluster with Multiple Brokers
 
