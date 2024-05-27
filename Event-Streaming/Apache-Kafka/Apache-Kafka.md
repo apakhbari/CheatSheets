@@ -340,6 +340,8 @@ $ bin/kafka-consumer-groups.sh \
 
 
 ## 15 - PROJECT 1 Java
+### 98 - SECTION 14 Introduction
+### 99 - If you use remote Kafka brokers.
 ### 100 - Project Files for the Java section
 ### 101 - Installing IntelliJ editor
 ### 102 - Creating and configuring Maven project
@@ -358,8 +360,7 @@ $ bin/kafka-consumer-groups.sh \
 ### 115 - Consumer with Partitions Assignment
 ### 116 - Launching multipile consumers in the same consumer group
 ### 117 - CHALLENGE Subscribe vs Assign with consumer groups
-### 98 - SECTION 14 Introduction
-### 99 - If you use remote Kafka brokers.
+
 
 ## 16 - PROJECT 2 Nodejs
 
