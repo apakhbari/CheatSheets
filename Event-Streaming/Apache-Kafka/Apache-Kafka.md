@@ -124,6 +124,7 @@ Topic Cities:
 |    Zookeeper    | 2182 |
 
 ## Commands
+### Broker / Zookeeper
 
 - START ZOOKEEPER
 ```
@@ -135,6 +136,17 @@ $ bin/zookeeper-server-start.sh config/zookeeper.properties
 $ bin/kafka-server-start.sh config/server.properties
 ```
 
+- GET INFORMATION FROM ZOOKEEPER ABOUT ACTIVE BROKER IDS
+```
+$ bin/zookeeper-shell.sh localhost:2181 ls /brokers/ids
+```
+
+- GET INFORMATION FROM ZOOKEEPER ABOUT SPECIFIC BROKER BY ID
+```
+$ bin/zookeeper-shell.sh localhost:2181 get /brokers/ids/0
+```
+
+### Topics
 - CREATE TOPIC
 ``` $ bin/kafka-topics.sh \
 --bootstrap-server localhost:9092 \
@@ -158,6 +170,7 @@ $ bin/kafka-topics.sh \
 --topic test
 ```
 
+### Consumer / Producer
 - START CONSOLE PRODUCER
 ```
 $ bin/kafka-console-producer.sh \
