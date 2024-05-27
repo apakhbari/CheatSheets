@@ -132,12 +132,14 @@ Topic Cities:
 ## 3 - Installing Apache Kafka on the remote Ubuntu server
 ## 4 - Installing Apache Kafka on Windows
 ## 5 - Starting Apache Zookeeper and Kafka Broker
+
 ## 6 - Creating and exploring Kafka Topic
 ### 22 - SECTION 5 Introduction
 ### 23 - How to connect to Kafka cluster
 ### 24 - Create new Kafka topic
 ### 25 - What happened after creation of the new topic
 ### 26 - Read details about topic
+
 ## 7 - Producing and consuming Messages
 ### 27 - SECTION 6 Introduction
 ### 28 - Send some messages using Kafka Console Producer
@@ -146,6 +148,7 @@ Topic Cities:
 ### 31 - Running multiple consumers
 ### 32 - Running multiple producers
 ### 33 - What was changed in the Kafka logs
+
 ## 8 - What is Apache Kafka and how it works
 ### 34 - SECTION 7 Introduction
 ### 35 - What is Apache Kafka
@@ -165,14 +168,26 @@ Topic Cities:
 ### 49 - How Consumers read messages from the topic
 
 ## 9 - GitHub Repository and Diagrams for the course
+### 50 - SECTION 8 Introduction
+### 51 - GitHub repository and list of basic Kafka commands
+### 52 - Diagrams for the course
+
 ## 10 - EXAMPLE 1 Topic with Multiple Partitions
+
 ## 11 - EXAMPLE 2 Kafka Cluster with Multiple Brokers
+
 ## 12 - EXAMPLE 3 Multiple Brokers and Topic with Replication
+
 ## 13 - EXAMPLE 4 Kafka Consumer Groups
+
 ## 14 - EXAMPLE 5 Performance Testing
+
 ## 15 - PROJECT 1 Java
+
 ## 16 - PROJECT 2 Nodejs
+
 ## 17 - PROJECT 3 Python
+
 ## 18 - Course Summary
 
 # acknowledgment
