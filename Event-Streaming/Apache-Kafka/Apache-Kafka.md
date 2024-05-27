@@ -32,7 +32,7 @@ cat names.txt | sed 's/^/### /' | sed 's/.\{4\}$//'
 # Theoritical
 
 ## Components
-### Apache Kafka
+### Apache Kafka 
 - Apache Kafka is distributed publish-subscribe messaging system
 
 ### Broker
@@ -41,6 +41,10 @@ graph LR
 A[Producer] -->B[Broker]
 B --> C[Consumer]
 ```
+- If there are multiple brokers on 1 server, it must have:
+1. Unique port
+2. Unique broker ID
+3. Unique log directory
 
 ### Controller
 - One of the brokers serves as the controller, which is responsible for managing the states of partitionins and replicas and for performing administrative tasks like reassigning partitions.
