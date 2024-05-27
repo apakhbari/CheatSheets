@@ -38,7 +38,7 @@ cat names.txt | sed 's/^/### /' | sed 's/.\{4\}$//'
 ### Broker
 ```mermaid
 graph LR
-A[Producer] -->B[Broker]
+A[Producer] -->B[Leader Broker]
 B --> C[Consumer]
 ```
 - If there are multiple brokers on 1 server, it must have:
@@ -307,6 +307,16 @@ $ bin/kafka-consumer-groups.sh \
 ### 72 - Summary for broker cluster and topic without replication
 
 ## 12 - EXAMPLE 3 Multiple Brokers and Topic with Replication
+### 73 - SECTION 11 Introduction
+### 74 - Preparing for the next example with replication
+### 75 - Launching brokers and creating topic with replication
+### 76 - Observing logs folder and details of the topic
+### 77 - Producing and consuming messages in the topic with replication
+### 78 - Observing how messages were stored in the partitions on different brokers
+### 79 - Bringing down one of three brokers and observing changes
+### 80 - Bringing down another broker in the cluster
+### 81 - Bringing back both brokers
+### 82 - Summary for replication
 
 ## 13 - EXAMPLE 4 Kafka Consumer Groups
 
