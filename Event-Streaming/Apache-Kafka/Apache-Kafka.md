@@ -72,6 +72,8 @@ B --> C[Consumer]
 - Producers and Consumers don't know about each other
 - Producers and Consumers may appear and disappear. but Kafka doesn't care about that. It's job is to store messages and recive or send them on demand
 - Every consumer must be part of a consumer group
+- *__consumer_offsets* is a topic which stores location of every consumer in messaging consumption process
+- Every consumer has to be part of a consumer group
 
 ### Messages
 - New messages will append at the end. You can not insert any messages before previous messages.
@@ -96,10 +98,12 @@ Topic Cities:
 ## policies
 - Kafka doesn't store all messages forever and after specific amount of time (or when size of the log exceeds configured max size) messages are deleted.
 - Default log retention period is *7 Days (168 hours)*
+- Segment.bytes in topic is maximum size of log file of a specific partition in a topic, it is 1 GB. After a log file reaches 1 GB, another log file will be created.
 
 ## Tips & Tricks
 - ReplicationFactor of Topics means how many times a topic should be replicated on different kafka servers/brokers.
 - If Brokers should be publicly accessible you need to adjust "advertised.listeners" property in Broker config
+- If you consume messages from a certain partition, order of messages won't change. But if you consume messages from all partitions, order of messages might change.
 
 # Hands On
 ## Directories
