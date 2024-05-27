@@ -172,6 +172,15 @@ $ bin/kafka-console-consumer.sh \
 --from-beginning
 ```
 
+- START CONSOLE CONSUMER AND READ MESSAGES FROM BEGINNING FROM SPECIFIC PARTITION
+```
+$ bin/kafka-console-consumer.sh \
+--bootstrap-server localhost:9092 \
+--partition 1 \
+--topic test \
+--from-beginning
+```
+
 - START CONSOLE CONSUMER WITH SPECIFIC CONSUMER GROUP
 ``` $
 bin/kafka-console-consumer.sh \
@@ -187,8 +196,6 @@ $ bin/kafka-consumer-groups.sh \
 --bootstrap-server localhost:9092 \
 --list
 ```
-
-
 
 - CONSUMER GROUP DETAILS
 ```
