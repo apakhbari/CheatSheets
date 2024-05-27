@@ -330,6 +330,14 @@ $ bin/kafka-consumer-groups.sh \
 ### 90 - Summary for consumer groups
 
 ## 14 - EXAMPLE 5 Performance Testing
+### 91 - SECTION 13 Introduction
+### 92 - Overview of the performance testing example
+### 93 - Starting cluster and launching basic performance test
+### 94 - Increasing performance test parameters
+### 95 - Testing consumer performance
+### 96 - Getting nonzero LAG values for consumers
+### 97 - Performance test example summary
+
 
 ## 15 - PROJECT 1 Java
 
