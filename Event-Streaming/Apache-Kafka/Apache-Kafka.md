@@ -116,15 +116,88 @@ Topic Cities:
 |    Zookeeper    | 2182 |
 
 ## Commands
-### Topics
-- Creating Topics --> ``` $ bin/kafka-topics.sh --create --bootstrap-server localhost:9092 (Kafka Sever/Broker Port) --topics cities ```
-- Listing Topics --> ``` $ bin/kafka-topics.sh --list --zookeeper localhost:2182 ```
-- Describe Topics --> ``` $ bin/kafka-topics.sh --describe --zookeeper localhost:2182 --topic cities ```
 
-### Consumer / Producer
-- Using Kafka built-in producer ``` $ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic cities ```
-- Using Kafka built-in consumer ``` $ bin/kafka-console-consumer.sh --botstrap-server localhost:9092 --topic cities ```
-- Using Kafka built-in consumer, to read from the beginning of producer ``` $ bin/kafka-console-consumer.sh --botstrap-server localhost:9092 --topic cities --from-beginning ```
+- START ZOOKEEPER
+```
+$ bin/zookeeper-server-start.sh config/zookeeper.properties
+```
+
+- START KAFKA BROKER
+``` 
+$ bin/kafka-server-start.sh config/server.properties
+```
+
+- CREATE TOPIC
+``` $ bin/kafka-topics.sh \
+--bootstrap-server localhost:9092 \
+--create \
+--replication-factor 1 \
+--partitions 3 \
+--topic test
+ ```
+
+- LIST TOPICS
+``` $ bin/kafka-topics.sh \
+--bootstrap-server localhost:9092 \
+--list
+```
+
+- TOPIC DETAILS
+```
+$ bin/kafka-topics.sh \
+--bootstrap-server localhost:9092 \
+--describe \
+--topic test
+```
+
+- START CONSOLE PRODUCER
+```
+$ bin/kafka-console-producer.sh \
+--broker-list localhost:9092 \
+--topic test
+```
+
+- START CONSOLE CONSUMER
+```
+$ bin/kafka-console-consumer.sh \
+--bootstrap-server localhost:9092 \
+--topic test
+```
+
+- START CONSOLE CONSUMER AND READ MESSAGES FROM BEGINNING
+```
+$ bin/kafka-console-consumer.sh \
+--bootstrap-server localhost:9092 \
+--topic test \
+--from-beginning
+```
+
+- START CONSOLE CONSUMER WITH SPECIFIC CONSUMER GROUP
+``` $
+bin/kafka-console-consumer.sh \
+--bootstrap-server localhost:9092 \
+--topic test \
+--group test \
+--from-beginning
+```
+
+- LIST CONSUMER GROUPS
+```
+$ bin/kafka-consumer-groups.sh \
+--bootstrap-server localhost:9092 \
+--list
+```
+
+
+
+- CONSUMER GROUP DETAILS
+```
+$ bin/kafka-consumer-groups.sh \
+--bootstrap-server localhost:9092 \
+--group test \
+--describe
+```
+
 
 # Contents of course
 ## 1 - Introduction
