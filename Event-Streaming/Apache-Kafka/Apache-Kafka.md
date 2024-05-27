@@ -107,7 +107,8 @@ Topic Cities:
 ## Tips & Tricks
 - ReplicationFactor of Topics means how many times a topic should be replicated on different kafka servers/brokers.
 - If Brokers should be publicly accessible you need to adjust "advertised.listeners" property in Broker config
-- If you consume messages from a certain partition, order of messages won't change. But if you consume messages from all partitions, order of messages might change.
+- If you consume messages from a certain partition, order of messages won't change. But if you consume messages from all partitions, order of messages might change, This is because messages are being written in different partitions.
+- If you are running producer and consumer, then the order of messages won't change
 
 # Hands On
 ## Directories
