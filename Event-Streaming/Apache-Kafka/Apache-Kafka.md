@@ -277,6 +277,17 @@ $ bin/kafka-consumer-groups.sh \
 ### 61 - Summary for multiple partitions example
 
 ## 11 - EXAMPLE 2 Kafka Cluster with Multiple Brokers
+### 62 - SECTION 10 Introduction
+### 63 - Example overview run multiple brokers
+### 64 - Creating separate configuration files for brokers
+### 65 - Launching three brokers
+### 66 - Getting cluster information and broker details from Zookeeper
+### 67 - Creating multiplepartition topic in the Kafka cluster
+### 68 - Looking at logs folders of every broker
+### 69 - Producing and consuming messages in the cluster
+### 70 - Details about topic in the cluster
+### 71 - Simulating broker failure in the cluster
+### 72 - Summary for broker cluster and topic without replication
 
 ## 12 - EXAMPLE 3 Multiple Brokers and Topic with Replication
 
