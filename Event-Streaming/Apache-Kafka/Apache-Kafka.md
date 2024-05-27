@@ -320,6 +320,14 @@ $ bin/kafka-consumer-groups.sh \
 ### 82 - Summary for replication
 
 ## 13 - EXAMPLE 4 Kafka Consumer Groups
+### 83 - SECTION 12 Introduction
+### 84 - Example with consumer groups overview
+### 85 - Exploring default consumer groups
+### 86 - Starting consumer in the custom consumer group
+### 87 - Starting second consumer in the same consumer group
+### 88 - Launching one more consumer in the same group
+### 89 - Idle consumers in the group
+### 90 - Summary for consumer groups
 
 ## 14 - EXAMPLE 5 Performance Testing
 
