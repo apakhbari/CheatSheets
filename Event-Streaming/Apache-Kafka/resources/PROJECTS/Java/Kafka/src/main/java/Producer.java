@@ -8,10 +8,10 @@ public class Producer {
         String clientId = "my-producer";
 
         Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092, localhost:9093, localhost:9094");
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("acks", "all");
+        props.put("bootstrap.servers", "localhost:9092, localhost:9093, localhost:9094");       # MANDATORY PROPERTY
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");       # MANDATORY PROPERTY
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");       # MANDATORY PROPERTY
+        props.put("acks", "all");       # acknowledgments from all followers must be recieved by leader
         props.put("client.id", clientId);
 
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(props);

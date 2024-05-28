@@ -283,16 +283,7 @@ $ bin/kafka-consumer-perf-test.sh \
 
 
 ## 15 - PROJECT 1 Java
-### 98 - SECTION 14 Introduction
-### 99 - If you use remote Kafka brokers.
-### 100 - Project Files for the Java section
-### 101 - Installing IntelliJ editor
-### 102 - Creating and configuring Maven project
-### 103 - Starting Kafka Cluster
-### 104 - Creating Java Producer
-### 105 - Continue Creating Java Producer
-### 106 - Launching Java Producer
-### 107 - Explaining most common Producer parameters
+
 ### 108 - Modifying Serializer type
 ### 109 - Producing meaningful messages with delay
 ### 110 - Refactoring Producer by adding previous example
