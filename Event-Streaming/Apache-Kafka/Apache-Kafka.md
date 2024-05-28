@@ -264,7 +264,7 @@ $ bin/kafka-producer-perf-test.sh \
 --record-size 1000 \
 --producer-props bootstrap.servers=localhost:9092
 ```
-
+ 
   - num-records: how many messages in totall will be produced
   - throughput: how many messages per second
   - record-size: size of each message in bytes
@@ -279,15 +279,6 @@ $ bin/kafka-consumer-perf-test.sh \
 ```
 
 # Contents of course
-
-## 14 - EXAMPLE 5 Performance Testing
-### 91 - SECTION 13 Introduction
-### 92 - Overview of the performance testing example
-### 93 - Starting cluster and launching basic performance test
-### 94 - Increasing performance test parameters
-### 95 - Testing consumer performance
-### 96 - Getting nonzero LAG values for consumers
-### 97 - Performance test example summary
 
 
 ## 15 - PROJECT 1 Java
