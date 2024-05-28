@@ -81,6 +81,7 @@ B --> C[Consumer]
 - Why consumer groups exist? Let's imagine tere is some topic with multiple producers who send messages to it at the very high rate, single consumer may not be able to consume all produced messages at the same high rates, That's why consumers may be organized into consumer groups to share consumption of the messages
 - Consumer group is automatically deleted when the last committed offset for the group expires (offset.retention.minutes - default 24 hours)
 - If there is 1 consumer inside consumer group, all of partitions are being read by that one consumer
+- Each message is consumed once only by single consumer in the group
 
 ### Messages
 - New messages will append at the end. You can not insert any messages before previous messages.
@@ -238,13 +239,19 @@ $ bin/kafka-consumer-groups.sh \
 --group test \
 --describe
 ```
-Output:
+Output for 2 consumers in a group:
+| Group |  Topic  | Partition | Current-Offset | Log-End_Offset | LAG |             Consumer-ID            |    Host    |    Client-ID    |
+|:-----:|:-------:|:---------:|:--------------:|:--------------:|:---:|:----------------------------------:|:----------:|:---------------:|
+|  nums | numbers |     0     |        0       |        0       |  0  | consumer-nums-1-234123-14321-21313 | /127.0.0.1 | consumer-nums-1 |
+|  nums | numbers |     1     |        0       |        0       |  0  | consumer-nums-1-234123-14321-21313 | /127.0.0.1 | consumer-nums-1 |
+|  nums | numbers |     2     |        0       |        0       |  0  | consumer-nums-1-234123-14321-21313 | /127.0.0.1 | consumer-nums-1 |
+|  nums | numbers |     3     |        4       |        4       |  0  |   consumer-nums-1-54675-6556-5464  | /127.0.0.1 | consumer-nums-1 |
+|  nums | numbers |     4     |        1       |        1       |  0  |   consumer-nums-1-54675-6556-5464  | /127.0.0.1 | consumer-nums-1 |
 
-
-    - Current-offset: committed offsets (last offset recieved by consumer)
-    - Log-End-Offset: Last offset of the messages in the partition
-    - LAG: Lag will be non-zero if Current-offset is less than Log-End-Offset. It means consumer has not yet consumed all messages in the partition.
-    - Client-ID: same for all consumers in specific consumer group
+  - Current-offset: committed offsets (last offset recieved by consumer)
+  - Log-End-Offset: Last offset of the messages in the partition
+  - LAG: Lag will be non-zero if Current-offset is less than Log-End-Offset. It means consumer has not yet consumed all messages in the partition.
+  - Client-ID: same for all consumers in specific consumer group
 
 # Contents of course
 
