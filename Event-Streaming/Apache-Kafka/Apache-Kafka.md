@@ -284,12 +284,6 @@ $ bin/kafka-consumer-perf-test.sh \
 
 ## 15 - PROJECT 1 Java
 
-### 108 - Modifying Serializer type
-### 109 - Producing meaningful messages with delay
-### 110 - Refactoring Producer by adding previous example
-### 111 - Creating consumer with autocommitting PART 1
-### 112 - Creating consumer with autocommitting PART 2
-### 113 - Consumer parameters overview
 ### 114 - Consumer with Manual Committing
 ### 115 - Consumer with Partitions Assignment
 ### 116 - Launching multipile consumers in the same consumer group
