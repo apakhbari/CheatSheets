@@ -253,6 +253,27 @@ Output for 2 consumers in a group:
   - LAG: Lag will be non-zero if Current-offset is less than Log-End-Offset. It means consumer has not yet consumed all messages in the partition.
   - Client-ID: same for all consumers in specific consumer group
 
+### Performance Testing
+
+- PRODUCER PERFORMANCE TEST
+```
+$ bin/kafka-producer-perf-test.sh \
+--topic perf2 \
+--num-records 1000 \
+--throughput 10 \
+--record-size 1000 \
+--producer-props \
+bootstrap.servers=localhost:9092
+```
+
+- CONSUMER PERFORMANCE TEST
+```
+$ bin/kafka-consumer-perf-test.sh \
+--broker-list localhost:9092 \
+--topic perf \
+--messages 1000000
+```
+
 # Contents of course
 
 ## 14 - EXAMPLE 5 Performance Testing
