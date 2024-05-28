@@ -79,6 +79,8 @@ B --> C[Consumer]
 - *__consumer_offsets* is a topic which stores location of every consumer in messaging consumption process
 - Every consumer has to be part of a consumer group. By default it is going to be created automatically, a unique & random number.
 - Why consumer groups exist? Let's imagine tere is some topic with multiple producers who send messages to it at the very high rate, single consumer may not be able to consume all produced messages at the same high rates, That's why consumers may be organized into consumer groups to share consumption of the messages
+- Consumer group is automatically deleted when the last committed offset for the group expires (offset.retention.minutes - default 24 hours)
+- If there is 1 consumer inside consumer group, all of partitions are being read by that one consumer
 
 ### Messages
 - New messages will append at the end. You can not insert any messages before previous messages.
@@ -187,7 +189,7 @@ $ bin/kafka-console-consumer.sh \
 --topic test
 ```
 
-- START CONSOLE CONSUMER AND READ MESSAGES FROM BEGINNING
+- START CONSOLE CONSUMER AND READ MESSAGES *FROM BEGINNING*
 ```
 $ bin/kafka-console-consumer.sh \
 --bootstrap-server localhost:9092 \
@@ -195,7 +197,7 @@ $ bin/kafka-console-consumer.sh \
 --from-beginning
 ```
 
-- START CONSOLE CONSUMER AND READ MESSAGES FROM BEGINNING FROM SPECIFIC PARTITION
+- START CONSOLE CONSUMER AND READ MESSAGES FROM BEGINNING FROM *SPECIFIC PARTITION*
 ```
 $ bin/kafka-console-consumer.sh \
 --bootstrap-server localhost:9092 \
@@ -204,7 +206,7 @@ $ bin/kafka-console-consumer.sh \
 --from-beginning
 ```
 
-- START CONSOLE CONSUMER AND READ MESSAGES FROM SPECIFIC OFFSET FROM SPECIFIC PARTITION
+- START CONSOLE CONSUMER AND READ MESSAGES *FROM SPECIFIC OFFSET* FROM SPECIFIC PARTITION
 ```
 $ bin/kafka-console-consumer.sh \
 --bootstrap-server localhost:9092 \
@@ -213,7 +215,7 @@ $ bin/kafka-console-consumer.sh \
 --offset 0
 ```
 
-- START CONSOLE CONSUMER WITH SPECIFIC CONSUMER GROUP
+- START CONSOLE CONSUMER WITH *SPECIFIC CONSUMER GROUP*
 ``` $
 bin/kafka-console-consumer.sh \
 --bootstrap-server localhost:9092 \
@@ -236,89 +238,15 @@ $ bin/kafka-consumer-groups.sh \
 --group test \
 --describe
 ```
+Output:
 
+
+    - Current-offset: committed offsets (last offset recieved by consumer)
+    - Log-End-Offset: Last offset of the messages in the partition
+    - LAG: Lag will be non-zero if Current-offset is less than Log-End-Offset. It means consumer has not yet consumed all messages in the partition.
+    - Client-ID: same for all consumers in specific consumer group
 
 # Contents of course
-## 1 - Introduction
-## 2 - Apache Kafka Installation Overview
-## 3 - Installing Apache Kafka on the remote Ubuntu server
-## 4 - Installing Apache Kafka on Windows
-## 5 - Starting Apache Zookeeper and Kafka Broker
-
-## 6 - Creating and exploring Kafka Topic
-### 22 - SECTION 5 Introduction
-### 23 - How to connect to Kafka cluster
-### 24 - Create new Kafka topic
-### 25 - What happened after creation of the new topic
-### 26 - Read details about topic
-
-## 7 - Producing and consuming Messages
-### 27 - SECTION 6 Introduction
-### 28 - Send some messages using Kafka Console Producer
-### 29 - Consuming messages using Kafka Console Consumer
-### 30 - Consuming messages from the beginning
-### 31 - Running multiple consumers
-### 32 - Running multiple producers
-### 33 - What was changed in the Kafka logs
-
-## 8 - What is Apache Kafka and how it works
-### 34 - SECTION 7 Introduction
-### 35 - What is Apache Kafka
-### 36 - Broker
-### 37 - Broker cluster
-### 38 - Zookeeper
-### 39 - Zookeeper ensemble
-### 40 - Multiple Kafka clusters
-### 41 - Default ports of Zookeeper and Broker
-### 42 - Kafka Topic
-### 43 - Message structure
-### 44 - Topics and Partitions
-### 45 - Spreading messages across partitions
-### 46 - Partition Leader and Followers
-### 47 - Controller and its responsibilities
-### 48 - How Producers write messages to the topic
-### 49 - How Consumers read messages from the topic
-
-## 9 - GitHub Repository and Diagrams for the course
-### 50 - SECTION 8 Introduction
-### 51 - GitHub repository and list of basic Kafka commands
-### 52 - Diagrams for the course
-
-## 10 - EXAMPLE 1 Topic with Multiple Partitions
-### 53 - SECTION 9 Introduction
-### 54 - If you use remote Kafka brokers.
-### 55 - Cleaning up existing kafka installation
-### 56 - Creating topic with multiple partitions
-### 57 - How messages were spread across different partitions
-### 58 - Reading messages from specific partition
-### 59 - Reading messages from specific offset in specific partition
-### 60 - Reading details about topic and consumeroffsets topic
-### 61 - Summary for multiple partitions example
-
-## 11 - EXAMPLE 2 Kafka Cluster with Multiple Brokers
-### 62 - SECTION 10 Introduction
-### 63 - Example overview run multiple brokers
-### 64 - Creating separate configuration files for brokers
-### 65 - Launching three brokers
-### 66 - Getting cluster information and broker details from Zookeeper
-### 67 - Creating multiplepartition topic in the Kafka cluster
-### 68 - Looking at logs folders of every broker
-### 69 - Producing and consuming messages in the cluster
-### 70 - Details about topic in the cluster
-### 71 - Simulating broker failure in the cluster
-### 72 - Summary for broker cluster and topic without replication
-
-## 12 - EXAMPLE 3 Multiple Brokers and Topic with Replication
-### 73 - SECTION 11 Introduction
-### 74 - Preparing for the next example with replication
-### 75 - Launching brokers and creating topic with replication
-### 76 - Observing logs folder and details of the topic
-### 77 - Producing and consuming messages in the topic with replication
-### 78 - Observing how messages were stored in the partitions on different brokers
-### 79 - Bringing down one of three brokers and observing changes
-### 80 - Bringing down another broker in the cluster
-### 81 - Bringing back both brokers
-### 82 - Summary for replication
 
 ## 13 - EXAMPLE 4 Kafka Consumer Groups
 ### 83 - SECTION 12 Introduction
