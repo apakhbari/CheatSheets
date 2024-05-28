@@ -260,7 +260,7 @@ Output for 2 consumers in a group:
 $ bin/kafka-producer-perf-test.sh \
 --topic perf2 \
 --num-records 1000 \
---throughput 10 \
+--throughput 100 \
 --record-size 1000 \
 --producer-props bootstrap.servers=localhost:9092
 ```
