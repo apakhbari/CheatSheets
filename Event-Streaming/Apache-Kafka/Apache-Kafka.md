@@ -77,7 +77,8 @@ B --> C[Consumer]
 - Producers and Consumers may appear and disappear. but Kafka doesn't care about that. It's job is to store messages and recive or send them on demand
 - Every consumer must be part of a consumer group
 - *__consumer_offsets* is a topic which stores location of every consumer in messaging consumption process
-- Every consumer has to be part of a consumer group
+- Every consumer has to be part of a consumer group. By default it is going to be created automatically, a unique & random number.
+- Why consumer groups exist? Let's imagine tere is some topic with multiple producers who send messages to it at the very high rate, single consumer may not be able to consume all produced messages at the same high rates, That's why consumers may be organized into consumer groups to share consumption of the messages
 
 ### Messages
 - New messages will append at the end. You can not insert any messages before previous messages.
