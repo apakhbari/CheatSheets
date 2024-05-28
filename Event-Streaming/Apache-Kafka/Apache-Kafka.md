@@ -34,6 +34,7 @@ cat names.txt | sed 's/^/### /' | sed 's/.\{4\}$//'
 ## Components
 ### Apache Kafka 
 - Apache Kafka is distributed publish-subscribe messaging system
+- It was written in Java
 
 ### Broker
 ```mermaid
