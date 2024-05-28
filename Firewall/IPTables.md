@@ -32,7 +32,6 @@ $ iptables -A INPUT -p udp -s x.x.x.x --dport 161 -j ACCEPT
 
 
 - Insert an INPUT rule at line number
-
 ```
 # Inserts Accept TCP 3306 for ip x.x.x.x at INPUT chain line 6.
 $ iptables -I INPUT 6 -p tcp -s x.x.x.x --dport 3306 -j ACCEPT
@@ -41,10 +40,9 @@ $ iptables -I INPUT 6 -p tcp -s x.x.x.x --dport 3306 -j ACCEPT
 $ iptables -I INPUT 4 -p udp -s x.x.x.x --dport 161 -j ACCEPT
 ```
 
+
 - Block a port
 - After allowing a rule, you can block a port for every other IP address not already specifically accepted.
-
-
 ```
 # Block UDP 161 for all IP addresses
 $ iptables -A INPUT -p udp --dport 161 -j DROP
@@ -53,42 +51,50 @@ $ iptables -A INPUT -p udp --dport 161 -j DROP
 $ iptables -A INPUT -p tcp --dport 9100 -j DROP
 ```
 
-- Delete a rule at line number
 
+- Delete a rule at line number
 ```
 # Deletes the rule on INPUT chain at line 3
 $ iptables -D INPUT 3
 ```
 
-Create a NAT PREROUTING rule
-
+- Create a NAT PREROUTING rule
+```
 # Redirects external TCP port 443 requests onto localhost port 3000
-sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 3000
-List NAT rules
-
-iptables -t nat -L
-Persisting IPTables rules.
-After rebooting a server, you many lose your IPTables rules. So to prevent that, you can install iptables-persistent.
+$ sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 3000
+```
 
 
-sudo apt install iptables-persistent
-This will save your settings into two files called,
-
-/etc/iptables/rules.v4
-
-/etc/iptables/rules.v6
-
-Any changes you make to the iptables configuration won't be auto saved to these persistent files, so if you want to update these files with any changes, then use the commands,
+- List NAT rules
+```
+$ iptables -t nat -L
+```
 
 
-iptables-save > /etc/iptables/rules.v4
+### Persisting IPTables rules.
+- After rebooting a server, you many lose your IPTables rules. So to prevent that, you can install iptables-persistent.
+```
+$ sudo apt install iptables-persistent
+```
+- This will save your settings into two files called,
 
-iptables-save > /etc/iptables/rules.v6
-## IPTables Help
+``` /etc/iptables/rules.v4 ```
+
+``` /etc/iptables/rules.v6 ```
+
+- Any changes you make to the iptables configuration won't be auto saved to these persistent files, so if you want to update these files with any changes, then use the commands,
+
+
+``` iptables-save > /etc/iptables/rules.v4 ```
+
+``` iptables-save > /etc/iptables/rules.v6 ```
+
+### IPTables Help
 ```
 $ iptables -h
 ```
 
+```
 iptables v1.8.4
 
 Usage: iptables -[ACD] chain rule-specification [options]
@@ -158,3 +164,33 @@ Options:
   --modprobe=<command>          try to insert modules using this command
   --set-counters PKTS BYTES     set the counter during insert/append
 [!] --version   -V              print package version.
+```
+
+# acknowledgment
+
+## Contributors
+
+APA 🖖🏻
+
+## Links
+
+```
+  aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
+  a::::::::::::a p::::ppp:::::::::p    a::::::::::::a
+  aaaaaaaaa:::::ap:::::::::::::::::p   aaaaaaaaa:::::a
+           a::::app::::::ppppp::::::p           a::::a
+    aaaaaaa:::::a p:::::p     p:::::p    aaaaaaa:::::a
+  aa::::::::::::a p:::::p     p:::::p  aa::::::::::::a
+ a::::aaaa::::::a p:::::p     p:::::p a::::aaaa::::::a
+a::::a    a:::::a p:::::p    p::::::pa::::a    a:::::a
+a::::a    a:::::a p:::::ppppp:::::::pa::::a    a:::::a
+a:::::aaaa::::::a p::::::::::::::::p a:::::aaaa::::::a
+ a::::::::::aa:::ap::::::::::::::pp   a::::::::::aa:::a
+  aaaaaaaaaa  aaaap::::::pppppppp      aaaaaaaaaa  aaaa
+                  p:::::p
+                  p:::::p
+                 p:::::::p
+                 p:::::::p
+                 p:::::::p
+                 ppppppppp
+```
