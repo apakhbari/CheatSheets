@@ -262,9 +262,13 @@ $ bin/kafka-producer-perf-test.sh \
 --num-records 1000 \
 --throughput 10 \
 --record-size 1000 \
---producer-props \
-bootstrap.servers=localhost:9092
+--producer-props bootstrap.servers=localhost:9092
 ```
+
+  - num-records: how many messages in totall will be produced
+  - throughput: how many messages per second
+  - record-size: size of each message in bytes
+
 
 - CONSUMER PERFORMANCE TEST
 ```
