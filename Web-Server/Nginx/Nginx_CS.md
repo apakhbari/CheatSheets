@@ -9,6 +9,8 @@
 |_|  |__||_______||___| |_|  |__||__| |__|
 ```
 
+https://github.com/veryacademy/yt-nginx-mastery-series
+
 # Table of Contents
 
 - Theoritical
