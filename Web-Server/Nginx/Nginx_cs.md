@@ -12,7 +12,7 @@
 # Table of Contents
 
 - Theoritical
-  - Apache Kafka
+  - Nginx
   - Components
   - policies
   - Tips & Tricks
@@ -20,7 +20,6 @@
   - Directories
   - configs
   - commands
-- Contents of course
 - acknowledgment
 
 # Theoritical
@@ -31,12 +30,51 @@
     - Reverse Proxy
     - Caching
     - Load Balancing
-    - Media Streaming 
+    - Media Streaming
+
+
+```mermaid
+graph TD;
+    Master Process-->Worker-1;
+    Master Process-->Worker-2;
+    Master Process-->Worker-3;
+    Master Process-->Worker-4;
+    OS-->Worker1;
+    OS-->Worker2;
+    OS-->Worker3;
+    OS-->Worker4;
+```
 
 
 # Hands On
 
 ## Directories
+- Location of / --> ` /usr/share/nginx/html `
+
+## configs
+
+## commands
+### Basic Commands
+- Start Service
+```
+$ nginx start
+```
+
+- Stop Service
+```
+$ nginx stop
+```
+
+- Check Configuration is OK
+```
+$ nginx -t
+$ nginx -T      # MORE INFORMATION
+```
+
+- Send Signals to process
+```
+$ nginx -s start/stop/reload
+```
 
 
 # acknowledgment
@@ -67,6 +105,4 @@ a:::::aaaa::::::a p::::::::::::::::p a:::::aaaa::::::a
                  p:::::::p
                  p:::::::p
                  ppppppppp
-
-
 ```
