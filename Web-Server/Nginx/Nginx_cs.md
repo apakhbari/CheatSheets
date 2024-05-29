@@ -45,8 +45,8 @@ A[Master Process]-->B[Worker-1];
 A[Master Process]-->C[Worker-2];
 A[Master Process]-->D[Worker-3];
 A[Master Process]-->F[Worker-4];
-B[Worker1]-->G[OS];
-C[Worker2]-->G[OS];
+B[Worker1]<--G[OS];
+C[Worker2]<--G[OS];
 D[Worker3]-->G[OS];
 F[Worker4]-->G[OS];
 ```
