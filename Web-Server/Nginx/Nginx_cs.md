@@ -40,10 +40,10 @@ A[Master Process]-->B[Worker-1];
 A[Master Process]-->C[Worker-2];
 A[Master Process]-->D[Worker-3];
 A[Master Process]-->F[Worker-4];
-B[Worker-1]-- Socket -->G[OS];
-C[Worker-2]-- Socket -->G[OS];
-D[Worker-3]-- Socket -->G[OS];
-F[Worker-4]-- Socket -->G[OS];
+G[OS]-- Socket -->B[Worker-1];
+CG[OS]-- Socket -->C[Worker-2];
+G[OS]-- Socket -->D[Worker-3];
+G[OS]-- Socket -->F[Worker-4];
 H[User]-- Requests/Connections --> G[OS] ;
 ```
 
@@ -76,7 +76,7 @@ H[User]-- Requests/Connections --> G[OS] ;
 - Location of configs --> ` /etc/nginx/nginx.conf `
 - Location of logs --> ` /var/log/nginx/access.log ` + ` /var/log/nginx/error.log`
 
-
+ 
 
 ## configs
 
