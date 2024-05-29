@@ -25,6 +25,18 @@
 
 # Theoritical
 
+## Nginx
+- use cases:
+    - Web Server
+    - Reverse Proxy
+    - Caching
+    - Load Balancing
+    - Media Streaming 
+
+
+# Hands On
+
+## Directories
 
 
 # acknowledgment
