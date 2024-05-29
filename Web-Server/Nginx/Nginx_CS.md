@@ -9,7 +9,12 @@
 |_|  |__||_______||___| |_|  |__||__| |__|
 ```
 
-https://github.com/veryacademy/yt-nginx-mastery-series
+- https://github.com/veryacademy/yt-nginx-mastery-series
+
+- https://www.youtube.com/watch?v=1BwPU17IIVo&list=PLOLrQ9Pn6cawvMA5JjhzoQrnKbYGYQqx1&index=6
+
+24:00
+
 
 # Table of Contents
 
