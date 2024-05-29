@@ -32,17 +32,23 @@
     - Load Balancing
     - Media Streaming
 
-s
+
 ```mermaid
-graph LR;
-Master Process-->Worker-1;
-Master Process-->Worker-2;
-Master Process-->Worker-3;
-Master Process-->Worker-4;
-OS-->Worker1;
-OS-->Worker2;
-OS-->Worker3;
-OS-->Worker4;
+graph LR
+A[Producer] -->B[Leader Broker]
+B --> C[Consumer]
+```
+
+```mermaid
+graph TD;
+A[Master Process]-->B[Worker-1];
+A[Master Process]-->C[Worker-2];
+A[Master Process]-->D[Worker-3];
+A[Master Process]-->F[Worker-4];
+G[OS]-->B[Worker1];
+G[OS]-->C[Worker2];
+G[OS]-->D[Worker3];
+G[OS]-->F[Worker4];
 ```
 
 
