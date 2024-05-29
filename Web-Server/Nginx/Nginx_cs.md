@@ -41,7 +41,7 @@ A[Master Process]-->C[Worker-2];
 A[Master Process]-->D[Worker-3];
 A[Master Process]-->F[Worker-4];
 G[OS]-- Socket -->B[Worker-1];
-CG[OS]-- Socket -->C[Worker-2];
+G[OS]-- Socket -->C[Worker-2];
 G[OS]-- Socket -->D[Worker-3];
 G[OS]-- Socket -->F[Worker-4];
 H[User]-- Requests/Connections --> G[OS] ;
