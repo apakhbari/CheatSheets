@@ -32,17 +32,17 @@
     - Load Balancing
     - Media Streaming
 
-
+s
 ```mermaid
-graph TD;
-    Master Process-->Worker-1;
-    Master Process-->Worker-2;
-    Master Process-->Worker-3;
-    Master Process-->Worker-4;
-    OS-->Worker1;
-    OS-->Worker2;
-    OS-->Worker3;
-    OS-->Worker4;
+graph LR;
+Master Process-->Worker-1;
+Master Process-->Worker-2;
+Master Process-->Worker-3;
+Master Process-->Worker-4;
+OS-->Worker1;
+OS-->Worker2;
+OS-->Worker3;
+OS-->Worker4;
 ```
 
 
