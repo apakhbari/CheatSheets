@@ -76,6 +76,7 @@ G[OS]-- Socket -->F[Worker-4];
 - It is best practice to set `worker_process` number to number of cpu cores
 - Caching requests are based on Cache key, which is consisted of URL +  Cookie of request. since it is unique per user, default caching is per user, not per page
 - By defining config in `/etc/nginx/conf.d/*.conf` you don't need to include it in `http {}` block, since inside `/etc/nginx/nginx.conf` it is by default included
+- It is possible to use env variables for default.config, it needs some naming convictions though
 
 # Hands On
 
