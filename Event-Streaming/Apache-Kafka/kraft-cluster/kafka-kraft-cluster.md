@@ -163,18 +163,18 @@ cat kafka-1.csr.json
 {
     "CN": "kafka-1",
     "names": [{
-        "C": "DE",
-        "L": "Karlsruhe",
-        "O": "awesome information technology GmbH",
-        "OU": "IT",
-        "ST": "Baden-Wuerttemberg"
+        "C": "IR",
+        "L": "Tehran",
+        "O": "SLS",
+        "OU": "DevOps",
+        "ST": "Tehran"
     }],
     "key": {
         "algo": "rsa",
         "size": 4096
     },
     "hosts": [
-        "kafka-1.example.com","localhost"    
+        "192.168.9.194","localhost"    
     ]
 }
 ```
@@ -185,9 +185,55 @@ $ cfssl gencert -ca out/intermediate-ca.pem -ca-key out/intermediate-ca-key.pem 
 - This must be repeated for all Kafka nodes i.e. kafka-1, kafka-2 and kafka-3.
 
 ### Kafka Client Certificates
+- Now we can create client certificates for the Kafka clients. For testing purpose, we will create two users: admin-1 and client-1. While we grant full access for the administrative user, the client will get limited access for a specific topic.
+
+- Let’s create the CSR config for admin-1. Make sure that you include the username as common name (CN) in the certificate:
+```
+cat admin-1-csr.json
+{
+    "CN": "admin-1",
+    "names": [{
+        "C": "IR",
+        "L": "Tehran",
+        "O": "SLS",
+        "OU": "DevOps",
+        "ST": "Tehran"
+    }],
+    "key": {
+        "algo": "rsa",
+        "size": 4096
+    }
+        ,
+    "hosts": []
+}
+```
+- Create a client certificate for admin-1:
+```
+$ cfssl gencert -ca out/intermediate-ca.pem -ca-key out/intermediate-ca-key.pem -config intermediate-ca-config.json -profile client admin-1-csr.json | cfssl-json -bare out/admin-1
+```
+- This must be repeated for all users i.e. admin-1 and client-1.
+
+### Java Trust- & KeyStores
+- Because it is Java and to increase the level of complexity (because it’s Java), we need to create Java Trust- and KeyStores for our CA certificate and for each of our certificates.
+
+### TrustStore
+- Let’s start with the TrustStore including a full-chain certificate of your authority as follows:
+```
+$ keytool -import -noprompt -keystore out/intermediate-full-chain.truststore.jks -alias intermediate-ca -trustcacerts -storepass a-very-secret-secret out/intermediate-full-chain.pem
+```
+### KeyStores
+- We need to create a KeyStore for each certificate. To do so, we need to create a PKCS#12 archive first, including the certificate and its key as well as the full-chain certificate of the authority. So for kafka-1, we do as follows:
+```
+$ openssl pkcs12 -export -inkey out/kafka-1-key.pem -in out/kafka-1.pem -certfile out/intermediate-full-chain.pem -passout pass: -out out/kafka-1.p12
 ```
 
+- Note that you could pass a password in -passout for this archive. But the Java KeyStore does also support a password protection, so we skip using a password for the PKCS#12 archive.
+
+- Now we can create the Java KeyStore as follows:
 ```
+$ keytool -importkeystore -noprompt -srckeystore out/kafka-1.p12 -srcstoretype pkcs12 -srcstorepass "" -destkeystore out/kafka-1.keystore.jks -deststorepass a-very-secret-secret 
+```
+
 
 
 
