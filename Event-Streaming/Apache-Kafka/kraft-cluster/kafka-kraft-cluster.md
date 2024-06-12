@@ -247,6 +247,7 @@ APA 🖖🏻
 - https://awesome-it.de/blog/apache-kafka-cluster-with-kraft-mtls/
 - https://docs.confluent.io/platform/current/kafka/authentication_ssl.html
 - https://github.com/MdAhosanHabib/kafka_SSL
+- system service: https://www.digitalocean.com/community/tutorials/introduction-to-kafka
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
