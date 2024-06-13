@@ -11,6 +11,7 @@
 
 ```
 # Table Of Contents
+- Servers
 - Directories
 - Setup
     - Initial Steps: 1- Certificates
@@ -38,6 +39,11 @@
 - acknowledgment
     - Contributors
     - Links 
+
+# Servers
+- 192.168.9.194
+- 192.168.9.195
+- 192.168.9.196
 
 # Directories
 - ``` /opt/kafka_2.13-3.7.0/ ```
@@ -209,7 +215,7 @@ $ cat kafka-1.csr.json
         "size": 4096
     },
     "hosts": [
-        "192.168.9.194","localhost"    
+        "192.168.9.194","kafka-1","localhost"    
     ]
 }
 ```
@@ -351,7 +357,7 @@ inter.broker.listener.name=SSL
 
 # Listener name, hostname and port the broker will advertise to clients.
 # If not set, it uses the value for "listeners".
-advertised.listeners=SSL://:9092
+advertised.listeners=SSL://kafka-1:9092
 
 # A comma-separated list of the names of the listeners used by the controller.
 # If no explicit mapping set in `listener.security.protocol.map`, default will be using PLAINTEXT protocol
