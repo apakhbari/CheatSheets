@@ -233,9 +233,42 @@ $ openssl pkcs12 -export -inkey out/kafka-1-key.pem -in out/kafka-1.pem -certfil
 ```
 $ keytool -importkeystore -noprompt -srckeystore out/kafka-1.p12 -srcstoretype pkcs12 -srcstorepass "" -destkeystore out/kafka-1.keystore.jks -deststorepass a-very-secret-secret 
 ```
+### Creating a unit Service
+```
+$ sudo nano /etc/systemd/system/kafka.service
+```
 
+```
+[Unit]
+Description=kafka-server
 
+[Service]
+Type=simple
+User=kafka
+ExecStart=/bin/sh -c '/opt/kafka_2.13-3.7.0/bin/kafka-server-start.sh /opt/kafka_2.13-3.7.>
+RemainAfterExit=true
+ExecStop=/opt/kafka_2.13-3.7.0/bin/kafka-server-stop.sh
+Restart=on-abnormal
 
+[Install]
+WantedBy=multi-user.target
+```
+
+### Generating UUID
+- On 1 node:
+```
+$ KAFKA_CLUSTER_ID="$(/opt/kafka_2.13-3.7.0/bin/kafka-storage.sh random-uuid)"
+```
+- - On other nodes:
+```
+KAFKA_CLUSTER_ID="<UUID>"
+```
+
+### Formatting storage and log
+```
+$ sudo -u kafka /opt/kafka_2.13-3.7.0/bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c /opt/kafka_2.13-3.7.0/config/kraft/server.properties
+
+```
 
 # acknowledgment
 
