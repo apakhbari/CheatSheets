@@ -233,6 +233,20 @@ $ openssl pkcs12 -export -inkey out/kafka-1-key.pem -in out/kafka-1.pem -certfil
 ```
 $ keytool -importkeystore -noprompt -srckeystore out/kafka-1.p12 -srcstoretype pkcs12 -srcstorepass "" -destkeystore out/kafka-1.keystore.jks -deststorepass a-very-secret-secret 
 ```
+
+- For Veriying Certificate is valid:
+```
+$ openssl verify -CAfile intermediate-full-chain.pem kafka-1.pem
+```
+### IPTables Rules
+```
+-A CHECK_INPUT -p tcp -m tcp --dport 9092 -j ACCEPT
+-A CHECK_INPUT -p tcp -m tcp --dport 9093 -j ACCEPT
+-A CHECK_INPUT -p udp -m udp --dport 9092 -j ACCEPT
+-A CHECK_INPUT -p udp -m udp --dport 9093 -j ACCEPT
+```
+
+
 ### Creating a unit Service
 ```
 $ sudo nano /etc/systemd/system/kafka.service
@@ -258,6 +272,7 @@ WantedBy=multi-user.target
 - On 1 node:
 ```
 $ KAFKA_CLUSTER_ID="$(/opt/kafka_2.13-3.7.0/bin/kafka-storage.sh random-uuid)"
+$ echo $KAFKA_CLUSTER_ID
 ```
 - - On other nodes:
 ```
