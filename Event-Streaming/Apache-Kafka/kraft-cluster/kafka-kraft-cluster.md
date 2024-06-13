@@ -316,7 +316,7 @@ WantedBy=multi-user.target
 ```
 $ apt update
 $ apt install default-jre
-$ curl -L https://downloads.apache.org/kafka/3.6.1/kafka_2.13-3.6.1.tgz -o /tmp/kafka.tgz
+$ curl -L https://downloads.apache.org/kafka/3.7.0/kafka_2.13-3.7.0.tgz -o /tmp/kafka.tgz
 $ cd /opt
 $ tar -xvzf /tmp/kafka.tgz
 ```
