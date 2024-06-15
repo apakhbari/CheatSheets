@@ -52,7 +52,49 @@
     - output of kafka Unit: ``` /var/kafka/kafka.log ```
     - KRaft log directory: ``` /var/kafka/kraft-combined-logs ```
  # Setup
- ## Initial Steps: 1- Certificates
+ ## Initial Steps: 1- Certificates using openssl (method-1)
+
+### Create Certification Authority key / cert pair
+
+- Creates a ca.key and ca.crt file for the key and cert respectively. The private key will be used to sign the client & server certs. Both the Kafka server and clients will be configured to trust the ca.crt certificate as a certification authority (i.e. inherently trust any certificates signed by this CA)
+```
+$ openssl req -new -x509 -keyout ca.key -out ca.crt -days 365 -subj /CN=ca.kafka.sls.ir/OU=DevOps/O=SLS/L=Tehran/C=IR -passin pass:sls1234567 -passout pass:sls1234567
+```
+
+### Create server key / cert pair
+
+- The result of the commands below are a keystore file containing a key/cert that is signed by the CA and a truststore file containing the CA cert (meaning the Kafka server will trust any client certs signed by the CA)
+
+#### Create a private key
+```
+$ keytool -genkey -alias lydtech-server -dname “CN=localhost, OU=TEST, O=LYDTECH, L=London, S=LN, C=UK” -keystore kafka.server.keystore.jks -keyalg RSA -storepass sls1234567 -keypass sls1234567
+```
+
+#### Create CSR
+```
+$ keytool -keystore kafka.server.keystore.jks -alias lydtech-server -certreq -file kafka-server.csr -storepass sls1234567 -keypass sls1234567
+```
+#### Create cert signed by CA
+```
+$ openssl x509 -req -CA ca.crt -CAkey ca.key -in kafka-server.csr -out kafka-server-ca1-signed.crt -days 9999 -CAcreateserial -passin pass:sls1234567
+```
+#### Import CA cert into keystore
+```
+$ keytool -keystore kafka.server.keystore.jks -alias CARoot -import -noprompt -file ca.crt -storepass sls1234567 -keypass sls1234567
+```
+#### Import signed cert into keystore
+```
+$ keytool -keystore kafka.server.keystore.jks -alias lydtech-server -import -noprompt -file kafka-server-ca1-signed.crt -storepass sls1234567 -keypass sls1234567
+```
+#### import CA cert into truststore
+```
+$ keytool -keystore kafka.server.truststore.jks -alias CARoot -import -noprompt -file ca.crt -storepass sls1234567 -keypass sls1234567
+```
+#### Copy to directory that is used as a docker volume
+```
+$ cp kafka.server.*.jks secrets/server/
+```
+ ## Initial Steps: 1- Certificates using cfssl (method-2)
  ### Certificate Authority
 
  - In order to create a CA, we install the *CFSSL toolkit* from https://github.com/cloudflare/cfssl as follows:
