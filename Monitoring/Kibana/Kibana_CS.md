@@ -52,7 +52,25 @@
 - Default HTTP Port: 9200
 - Default cluster name: Elasticsearch
 
+## Kibana
+### Features of Elasticsearch
+- Data Exploration and anlaytic tool
+- Web based app
+- open source
+- integrates with elasticsearch
+- Provides Effective Search capabilities
 
+### How can it be useful?
+- Provides various visualization options
+  - Charts
+  - Maps
+  - Data Tables & Metrics
+
+- Can be used for:
+  - Log Management
+  - Security and Compliance Monitoring
+  - Application monitoring
+  - Business intelligence
 
 # acknowledgment
 
