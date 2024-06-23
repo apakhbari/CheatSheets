@@ -10,7 +10,28 @@
 |___| |_||___| |_______||__| |__||_|  |__||__| |__|
 ```
 
+# Table of Contents
 
+
+# Introduction
+- ELK stack:
+  - Logstash: Collect & transform
+  - Elasticsearch: Search & analyze
+  - Kibana: Visualize & Manage
+
+## Elasticsearch
+- Is Apache Lucene based real-time ditributed and open source data analytic engine
+- Heart of Elastic stack
+- Stores data in JSON Format Documents
+
+### Features of Elasticsearch
+- Easy to scale
+- HA
+- RESTful API
+- Advanced searc features
+- Multi Tenancy
+- Big data
+- Open Source
 
 # acknowledgment
 

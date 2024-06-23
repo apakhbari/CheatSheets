@@ -526,6 +526,8 @@ APA 🖖🏻
 - https://github.com/MdAhosanHabib/kafka_SSL
 - https://www.digitalocean.com/community/tutorials/introduction-to-kafka
 - https://www.digitalocean.com/community/tutorials/how-to-set-up-a-multi-node-kafka-cluster-using-kraft#configuring-second-and-third-node
+---
+- https://dzone.com/articles/running-kafka-in-kubernetes-with-kraft-mode-and-ss
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
