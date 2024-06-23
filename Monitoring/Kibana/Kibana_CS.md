@@ -72,6 +72,15 @@
   - Application monitoring
   - Business intelligence
 
+### Configuration File
+- Kibana.yml
+
+## Logstash
+- is an open source, data processing pipeline tool that can fetch and transform logs from multiple sources simultaneouslt sends it to destinations
+
+### Beats
+- an open source data shipper designed to collect and forward the log data
+
 # acknowledgment
 
 ## Contributors
