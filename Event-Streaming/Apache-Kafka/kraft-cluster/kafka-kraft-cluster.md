@@ -66,21 +66,22 @@ $ openssl req -new -x509 -keyout ca.key -out ca.crt -days 365 -subj /CN=ca.kafka
 - The result of the commands below are a keystore file containing a key/cert that is signed by the CA and a truststore file containing the CA cert (meaning the Kafka server will trust any client certs signed by the CA)
 
 #### Create a private key
+- method 1: 
 ```
 $ sudo keytool -genkey -alias kafka-2 -dname "CN=kafka-2, OU=DevOps, O=SLS, L=Tehran, ST=Tehran, C=IR" -keystore kafka-2.keystore.jks -keyalg RSA -storepass sls1234567 -keypass sls1234567
 ```
-
+- method 2: 
 ```
-$ sudo keytool -keystore kafka-1.keystore.jks -alias kafka-1 -validity 3650 -genkey -storepass sls1234567 -keypass sls1234567 -dname "CN=kafka-1" -ext SAN=dns:kafka-1 -keyalg RSA -storetype pkcs12
+$ sudo keytool -keystore kafka-3.keystore.jks -alias kafka-3 -validity 3650 -genkey -storepass sls1234567 -keypass sls1234567 -dname "CN=kafka-3" -ext SAN=dns:kafka-3 -keyalg RSA -storetype pkcs12
 ```
 
 #### Create CSR
 ```
-$ sudo keytool -keystore kafka-1.keystore.jks -alias kafka-1 -certreq -file kafka-1.csr -storepass sls1234567 -keypass sls1234567
+$ sudo keytool -keystore kafka-3.keystore.jks -alias kafka-3 -certreq -file kafka-3.csr -storepass sls1234567 -keypass sls1234567
 ```
 #### Create cert signed by CA
 ```
-$ sudo openssl x509 -req -CA ca.crt -CAkey ca.key -in kafka-1.csr -out kafka-1-ca1-signed.crt -days 9999 -CAcreateserial -passin pass:sls1234567
+$ sudo openssl x509 -req -CA ca.crt -CAkey ca.key -in kafka-3.csr -out kafka-3-ca1-signed.crt -days 9999 -CAcreateserial -passin pass:sls1234567
 ```
 
 ---
@@ -89,15 +90,15 @@ INSIDE EACH SERVER RUN:
 
 #### Import CA cert into keystore
 ```
-$ sudo keytool -keystore kafka-1.keystore.jks -alias CARoot -import -noprompt -file ca.crt -storepass sls1234567 -keypass sls1234567
+$ sudo keytool -keystore kafka-3.keystore.jks -alias CARoot -import -noprompt -file ca.crt -storepass sls1234567 -keypass sls1234567
 ```
 #### Import signed cert into keystore
 ```
-$ sudo keytool -keystore kafka-1.keystore.jks -alias kafka-1 -import -noprompt -file kafka-1-ca1-signed.crt -storepass sls1234567 -keypass sls1234567
+$ sudo keytool -keystore kafka-3.keystore.jks -alias kafka-3 -import -noprompt -file kafka-3-ca1-signed.crt -storepass sls1234567 -keypass sls1234567
 ```
 #### import CA cert into truststore
 ```
-$ sudo keytool -keystore kafka-1.truststore.jks -alias CARoot -import -noprompt -file ca.crt -storepass sls1234567 -keypass sls1234567
+$ sudo keytool -keystore kafka-3.truststore.jks -alias CARoot -import -noprompt -file ca.crt -storepass sls1234567 -keypass sls1234567
 ```
 #### Copy to directory that is used as a docker volume
 ```
