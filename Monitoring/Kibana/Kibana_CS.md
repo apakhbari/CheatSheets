@@ -33,6 +33,27 @@
 - Big data
 - Open Source
 
+### Basic Terms
+- Cluster: Provide organized indexing and search capabilities - identified by name
+- Node: identified by name
+- Index: Collection of Documents with similar charecteristics - Similar to Relational DB - identified by name
+- Document: Basic unit of indexed information - Expressed in JSON - similar to objects in an object oriented programming language - Each document has unique ID
+- Shard: Subdivision of Index into multiple pieces - Allow horizontally scal the content volume  Increase performance throughput - Number of shard can be secified while creating an index
+- Replicas: copies of shards - Provides HA
+- Type: Used to store different types of document in the same index - Removed from latest version of elasticsearch
+- Mapping: Defines how a document and its fields get stored and indexed - Can eiter be defined explicitly, or will be generated automatically when a document is indexed - Each index has one mapping type which determines how the document will be indexed
+
+### Configuration Files
+- elasticsearch.yml
+- jvm.options
+- log4j2.properties
+
+### Default Setting
+- Default HTTP Port: 9200
+- Default cluster name: Elasticsearch
+
+
+
 # acknowledgment
 
 ## Contributors
