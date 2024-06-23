@@ -106,10 +106,6 @@ $ sudo keytool -keystore kafka-2.keystore.jks -alias kafka-2 -import -noprompt -
 $ sudo keytool -keystore kafka-2.truststore.jks -alias CARoot -import -noprompt -file ca.crt -storepass sls1234567 -keypass sls1234567 && echo $?
 ```
 
-kafka-1
-kafka-1
-kafka-1
-
 #### Copy to directory that is used as a docker volume
 ```
 $ sudo chown -R kafka:kafka /etc/ssl/kafka/
