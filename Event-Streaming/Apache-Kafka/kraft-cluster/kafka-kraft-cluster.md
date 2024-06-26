@@ -341,6 +341,11 @@ $ keytool -importkeystore -noprompt -srckeystore out/kafka-1.p12 -srcstoretype p
 ```
 $ openssl verify -CAfile intermediate-full-chain.pem kafka-1.pem
 ```
+
+- For listing certificates:
+```
+$ keytool --list -keystore kafka-1.truststore.jks -storepass sls1234567
+```
 ## Initial Steps: 3- IPTables Rules
 ```
 -A CHECK_INPUT -p tcp -m tcp --dport 9092 -j ACCEPT
