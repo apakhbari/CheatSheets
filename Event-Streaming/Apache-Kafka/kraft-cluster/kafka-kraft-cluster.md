@@ -109,6 +109,7 @@ $ sudo keytool -keystore kafka-2.truststore.jks -alias CARoot -import -noprompt 
 #### Copy to directory that is used as a docker volume
 ```
 $ sudo chown -R kafka:kafka /etc/ssl/kafka/
+$ sudo chmod -R 777 /etc/ssl/kafka/
 ```
  ## Initial Steps: 1- Certificates using cfssl (method-2)
  ### Certificate Authority
