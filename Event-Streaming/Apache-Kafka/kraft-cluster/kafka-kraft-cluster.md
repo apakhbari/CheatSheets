@@ -532,6 +532,7 @@ APA 🖖🏻
 - https://dzone.com/articles/running-kafka-in-kubernetes-with-kraft-mode-and-ss
 ---
 - https://learn.microsoft.com/en-us/azure/hdinsight/kafka/apache-kafka-ssl-encryption-authentication
+---
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
