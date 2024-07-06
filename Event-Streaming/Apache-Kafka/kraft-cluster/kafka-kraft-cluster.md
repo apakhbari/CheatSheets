@@ -367,7 +367,7 @@ $ openssl pkcs12 -export -in kafka-all.pem -inkey kafka-all-key.pem -out kafka-a
 
 ### Step 2-2: Create Java KeyStore and import kafka-3.p12
 ```
-$ keytool -importkeystore -deststorepass sls1234567 -destkeypass sls1234567 -destkeystore kafka-3-keystore.jks -srckeystore kafka-3.p12 -srcstoretype PKCS12 -srcstorepass sls1234567 -alias kafka-3 && echo $?
+$ keytool -importkeystore -deststorepass sls1234567 -destkeypass sls1234567 -destkeystore kafka-all-keystore.jks -srckeystore kafka-all.p12 -srcstoretype PKCS12 -srcstorepass sls1234567 -alias kafka-all && echo $?
 ```
 
 ### Step 2-3: Convert root-ca.pem to DER format
