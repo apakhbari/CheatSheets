@@ -417,7 +417,7 @@ $ apt update
 $ apt install default-jre
 $ curl -L https://downloads.apache.org/kafka/3.7.0/kafka_2.13-3.7.0.tgz -o /tmp/kafka.tgz
 $ cd /opt
-$ tar -xvzf /tmp/kafka.tgz
+$ sudo tar -xvzf /tmp/kafka.tgz
 ```
 - Note, that we will run Kafka not as root but as dedicated user kafka, so let’s create the user as:
 ```
