@@ -1,0 +1,17 @@
+{
+    "CN": "kafka-3",
+    "names": [{
+        "C": "IR",
+        "L": "Tehran",
+        "O": "SLS",
+        "OU": "DevOps",
+        "ST": "Tehran"
+    }],
+    "key": {
+        "algo": "rsa",
+        "size": 4096
+    },
+    "hosts": [
+        "kafka-3","localhost","192.168.9.196"    
+    ]
+}
