@@ -377,7 +377,7 @@ $ openssl x509 -outform der -in root-ca.pem -out root-ca.der && echo $?
 
 ### Step 2-4: Create Java TrustStore and import root-ca.der
 ```
-$ keytool -import -trustcacerts -file root-ca.der -alias root-ca -keystore kafka-3-truststore.jks -storepass sls1234567 -noprompt && echo $?
+$ keytool -import -trustcacerts -file root-ca.der -alias root-ca -keystore kafka-all-truststore.jks -storepass sls1234567 -noprompt && echo $?
 ```
 
 
