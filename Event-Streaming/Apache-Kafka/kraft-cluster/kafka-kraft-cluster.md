@@ -52,7 +52,7 @@
     - output of kafka Unit: ``` /var/kafka/kafka.log ```
     - KRaft log directory: ``` /var/kafka/kraft-combined-logs ```
  # Setup
- ## Initial Steps: 1- Certificates using openssl (method-1)
+ ## (method-1) Initial Steps: 1- Certificates using openssl 
 
 ### Create Certification Authority key / cert pair
 
@@ -111,7 +111,7 @@ $ sudo keytool -keystore kafka-2.truststore.jks -alias CARoot -import -noprompt 
 $ sudo chown -R kafka:kafka /etc/ssl/kafka/
 $ sudo chmod -R 777 /etc/ssl/kafka/
 ```
- ## Initial Steps: 1- Certificates using cfssl (method-2)
+ ## (method-2) Initial Steps: 1- Certificates using cfssl 
  ### Certificate Authority
 
  - In order to create a CA, we install the *CFSSL toolkit* from https://github.com/cloudflare/cfssl as follows:
@@ -346,6 +346,41 @@ $ openssl verify -CAfile intermediate-full-chain.pem kafka-1.pem
 ```
 $ keytool --list -keystore kafka-1.truststore.jks -storepass sls1234567
 ```
+
+ ## (method-3) using cfssl
+
+### Step 1-1: Craete Root CA
+```
+$ cfssl gencert -initca root-ca-csr.json | cfssl-json -bare out/root-ca && echo $?
+```
+
+### Step 1-2: Create kafka Cert
+```
+$ cfssl gencert -ca=root-ca.pem -ca-key=root-ca-key.pem -config=root-ca-config.json -profile=kafka kafka-3.csr.json | cfssljson -bare kafka-3
+```
+
+
+### Step 2-1: Convert kafka-3 certificate and key to PKCS12 format
+```
+$ openssl pkcs12 -export -in kafka-3.pem -inkey kafka-3-key.pem -out kafka-3.p12 -name kafka-3 -password pass:sls1234567 && echo $?
+```
+
+### Step 2-2: Create Java KeyStore and import kafka-3.p12
+```
+$ keytool -importkeystore -deststorepass sls1234567 -destkeypass sls1234567 -destkeystore kafka-3-keystore.jks -srckeystore kafka-3.p12 -srcstoretype PKCS12 -srcstorepass sls1234567 -alias kafka-3 && echo $?
+```
+
+### Step 2-3: Convert root-ca.pem to DER format
+```
+$ openssl x509 -outform der -in root-ca.pem -out root-ca.der && echo $?
+```
+
+### Step 2-4: Create Java TrustStore and import root-ca.der
+```
+$ keytool -import -trustcacerts -file root-ca.der -alias root-ca -keystore kafka-3-truststore.jks -storepass sls1234567 -noprompt && echo $?
+```
+
+
 ## Initial Steps: 3- IPTables Rules
 ```
 -A CHECK_INPUT -p tcp -m tcp --dport 9092 -j ACCEPT
