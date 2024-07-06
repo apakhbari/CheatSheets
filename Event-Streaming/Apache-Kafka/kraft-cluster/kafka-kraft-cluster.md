@@ -362,7 +362,7 @@ $ cfssl gencert -ca=root-ca.pem -ca-key=root-ca-key.pem -config=root-ca-config.j
 
 ### Step 2-1: Convert kafka-3 certificate and key to PKCS12 format
 ```
-$ openssl pkcs12 -export -in kafka-3.pem -inkey kafka-3-key.pem -out kafka-3.p12 -name kafka-3 -password pass:sls1234567 && echo $?
+$ openssl pkcs12 -export -in kafka-all.pem -inkey kafka-all-key.pem -out kafka-all.p12 -name kafka-all -password pass:sls1234567 && echo $?
 ```
 
 ### Step 2-2: Create Java KeyStore and import kafka-3.p12
