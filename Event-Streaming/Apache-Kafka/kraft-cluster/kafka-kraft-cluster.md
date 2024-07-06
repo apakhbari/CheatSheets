@@ -356,7 +356,7 @@ $ cfssl gencert -initca root-ca-csr.json | cfssl-json -bare out/root-ca && echo 
 
 ### Step 1-2: Create kafka Cert
 ```
-$ cfssl gencert -ca=root-ca.pem -ca-key=root-ca-key.pem -config=root-ca-config.json -profile=kafka kafka-3.csr.json | cfssljson -bare kafka-3
+$ cfssl gencert -ca=root-ca.pem -ca-key=root-ca-key.pem -config=root-ca-config.json -profile=kafka kafka-all.csr.json | cfssljson -bare kafka-all && echo $?
 ```
 
 
