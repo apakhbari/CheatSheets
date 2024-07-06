@@ -347,7 +347,7 @@ $ openssl verify -CAfile intermediate-full-chain.pem kafka-1.pem
 $ keytool --list -keystore kafka-1.truststore.jks -storepass sls1234567
 ```
 
- ## (method-3) using cfssl
+ ## (method-3) using a mutual certificate using cfssl
 
 ### Step 1-1: Craete Root CA
 ```
