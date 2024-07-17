@@ -161,6 +161,10 @@ APA 🖖🏻
 
 ## Links
 https://hub.docker.com/r/gitlab/gitlab-ce/tags
+---
+https://gitlab-com.gitlab.io/support/toolbox/upgrade-path
+---
+https://docs.gitlab.com/ee/update/
 
 ```                                                                                                       
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
