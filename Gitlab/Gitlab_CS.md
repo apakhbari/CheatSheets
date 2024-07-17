@@ -166,6 +166,8 @@ https://gitlab-com.gitlab.io/support/toolbox/upgrade-path
 ---
 https://docs.gitlab.com/ee/update/
 ---
+https://docs.gitlab.com/ee/update/plan_your_upgrade.html
+---
 
 ```                                                                                                       
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
