@@ -1,1 +1,18 @@
 $ sudo cat /etc/iptables/rules.v4
+
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [5:904]
+:CHECK_INPUT - [0:0]
+
+-A INPUT -j CHECK_INPUT
+-A INPUT -j DROP
+
+-A CHECK_INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A CHECK_INPUT -i lo -j ACCEPT
+-A CHECK_INPUT -i ens160 -p icmp -j ACCEPT
+-A CHECK_INPUT -i ens160 -j ACCEPT
+
+
+COMMIT
