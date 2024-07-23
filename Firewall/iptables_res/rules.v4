@@ -1,3 +1,5 @@
+$ sudo sh -c '/sbin/iptables-save > /etc/iptables/rules.v4'
+
 $ sudo cat /etc/iptables/rules.v4
 
 *filter
