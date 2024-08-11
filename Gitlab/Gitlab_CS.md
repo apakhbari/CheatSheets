@@ -162,11 +162,13 @@ APA 🖖🏻
 ## Links
 https://hub.docker.com/r/gitlab/gitlab-ce/tags
 ---
-https://gitlab-com.gitlab.io/support/toolbox/upgrade-path
----
 https://docs.gitlab.com/ee/update/
 ---
 https://docs.gitlab.com/ee/update/plan_your_upgrade.html
+---
+Upgrade Path: https://gitlab-com.gitlab.io/support/toolbox/upgrade-path
+---
+Get Packages Oflline: https://packages.gitlab.com/gitlab/
 ---
 
 ```                                                                                                       
