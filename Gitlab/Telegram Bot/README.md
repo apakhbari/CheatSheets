@@ -8,7 +8,32 @@
   |   |  |   |___ |       ||   |___ |   |_| ||   |  | ||   _   || ||_|| |    | |_|   ||       |  |   |      |   |_| ||   |   |   |  |       ||   _   || |_|   |
   |___|  |_______||_______||_______||_______||___|  |_||__| |__||_|   |_|    |_______||_______|  |___|      |_______||___|   |___|  |_______||__| |__||_______|
 ```
+# Table of contents
 
+## Telegram Bot Features
+- Inputs
+  - Text
+  - Commands
+  - Buttons
+  - Chat and User Selection
+- Interactions
+  - Inline
+  - Deep Linking
+  - Attachment Menu
+- Integration
+  - Mini Apps
+  - Bots for Business
+  - Payments
+  - Web Login
+  - HTML5 Games
+  - Stickers
+- Language Support
+- Bot Management
+  - Privacy Mode
+  - Testing Your Bot
+  - Status Alerts
+  - Local API
+- BotFather, creating and managing bots
 
 # acknowledgment
 ## Contributors
