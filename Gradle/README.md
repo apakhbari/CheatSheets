@@ -18,6 +18,13 @@
 - Build tools make testing & packaging possible
 - Gradle has **incremental build** which means you don't need to recompile app if nothing has changed from last build
 - Gradle has a very advanced dependency management
+- Gradl Project: highest-level construct representing the application you want to build, including the configuration of how to build it. So if you've got an application's source code sitting in a repository, an accompanying Gradle project also gets commited into the repository with all the information needed to build the application
+
+## Components
+- Projects
+- build scripts
+- tasks
+- plugins
 
 ## Maven VS Gradle
 - Gradle use a code-based approach for build script rather than maven's XML-based approach
@@ -40,7 +47,14 @@
 
 
 ## Files
-- build.gradle --> build script
+- settings.gradle --> high-level setting for project, i.e. Project's name
+- build.gradle --> build script configuration file
+- gradlew --> wrapper for linux and mac enviornments, makes using gradle without installing it. When executed, it cache gradle locally.
+- gradlew.bat --> wrapper for Windows enviornments, makes using gradle without installing it. When executed, it cache gradle locally.
+
+
+## Commands
+- ``` $ gradlew tasks ``` --> a list of available tasks for this project 
 
 # acknowledgment
 ## Contributors
