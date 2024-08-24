@@ -25,12 +25,18 @@
 
 ## Gradle init
 - for starting a gradle project, you are being asked these questions
+
 1- Type of project:
-    - basic
-    - app
-    - library
-    - gradle plugin
-2- 
+- basic
+- app
+- library
+- gradle plugin
+
+2- build script DSL
+- Groovy
+- Kotlin
+
+3- Project Name
 
 
 ## Files
