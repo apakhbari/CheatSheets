@@ -23,6 +23,15 @@
 - Gradle use a code-based approach for build script rather than maven's XML-based approach
 - gradle is faster than maven
 
+## Gradle init
+- for starting a gradle project, you are being asked these questions
+1- Type of project:
+    - basic
+    - app
+    - library
+    - gradle plugin
+2- 
+
 
 ## Files
 - build.gradle --> build script
