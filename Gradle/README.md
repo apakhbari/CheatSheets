@@ -21,10 +21,10 @@
 - Gradl Project: highest-level construct representing the application you want to build, including the configuration of how to build it. So if you've got an application's source code sitting in a repository, an accompanying Gradle project also gets commited into the repository with all the information needed to build the application
 
 ## Components
-- Projects
+- Projects: highest level, a container for all gradle things
 - build scripts
-- tasks
-- plugins
+- tasks: Individual gradle tasks that can be done using command line
+- plugins: a series of defined tasks
 
 ## Maven VS Gradle
 - Gradle use a code-based approach for build script rather than maven's XML-based approach
@@ -52,6 +52,10 @@
 - gradlew --> wrapper for linux and mac enviornments, makes using gradle without installing it. When executed, it cache gradle locally.
 - gradlew.bat --> wrapper for Windows enviornments, makes using gradle without installing it. When executed, it cache gradle locally.
 
+
+## Groovy DSL
+- runs on jvm
+- script-based language
 
 ## Commands
 - ``` $ gradlew tasks ``` --> a list of available tasks for this project 
