@@ -168,7 +168,9 @@ https://docs.gitlab.com/ee/update/plan_your_upgrade.html
 ---
 Upgrade Path: https://gitlab-com.gitlab.io/support/toolbox/upgrade-path
 ---
-Get Packages Oflline: https://packages.gitlab.com/gitlab/
+Get Gitlab Packages: https://packages.gitlab.com/gitlab/
+---
+Get Gitlab-Runner Packages: https://packages.gitlab.com/runner/gitlab-runner
 ---
 
 ```                                                                                                       
