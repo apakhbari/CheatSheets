@@ -9,11 +9,39 @@
 |___| |_||_______||_______|
 ```
 
+# Table of contents
+- Tips & Tricks
+- Directories
+- Ports
+- Commands
+- Kubernetes Course
+- Advanced Kubernetes Course
+
+## Tips & Tricks
+## Directories
+## Ports
+## Commands
+
+# Kubernetes Course
+# Sessions
+## Session 1
+## Session 2
+## Session 3
+## Session 4
+## Session 5
+## Session 6
+## Session 7
+## Session 8
+## Session 9
+## Session 10
+## Session 11
+## Session 12
 
 
 # Advanced Kubernetes Course
-# Session2 - HA Master Nodes
-
+# Sessions
+## Session 1
+## Session 2
 - Master node resources:
 
   - Minimum: 8 GB Ram + 4 core CPU
@@ -21,6 +49,18 @@
 
 - Worker node resources:
   - Minimum: 16 GB Ram + 16 core CPU
+## Session 3
+## Session 4
+## Session 5
+## Session 6
+## Session 7
+## Session 8
+## Session 9
+## Session 10
+## Session 11
+## Session 12
+
+# Session2 - HA Master Nodes
 
 # acknowledgment
 ## Contributors
