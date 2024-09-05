@@ -1,3 +1,8 @@
+
+
+
+
+# Advanced Kubernetes
 # Session2 - HA Master Nodes
 
 - Master node resources:
