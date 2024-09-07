@@ -4,9 +4,20 @@ $ sudo certbot certonly --manual --preferred-challenges=dns \
 -d yourdomain.com -d *.yourdomain.com
 ```
 
-## Automate the renewal:
+## Check Existing Certificates
+```
+$ sudo certbot certificates
+```
+
+## Renew Certificates:
 ```
 $ sudo certbot renew --dry-run
+$ sudo certbot renew
+```
+
+## Renew a Specific Certificate Manually
+```
+$ sudo certbot certonly --force-renewal -d yourdomain.com -d www.yourdomain.com
 ```
 
 # View
