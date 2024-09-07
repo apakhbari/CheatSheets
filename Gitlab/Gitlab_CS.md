@@ -126,7 +126,7 @@ Result would be
 Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"
 ```
 
-## Reconfigure
+## Reconfigure based on gitlab.rb
 ```
 $ sudo gitlab-ctl reconfigure
 ```
