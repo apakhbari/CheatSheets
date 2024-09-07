@@ -126,6 +126,11 @@ Result would be
 Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml"
 ```
 
+## Reconfigure
+```
+$ sudo gitlab-ctl reconfigure
+```
+
 ## Cases
 ### ssh connection was refused
 - Problem: 
