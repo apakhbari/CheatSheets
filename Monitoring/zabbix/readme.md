@@ -14,6 +14,7 @@
 
 # Theoretical
 ## Introduction
+- Zabbix is an enterprise-class open source distributed monitoring solution.
 
 ## Components
 
