@@ -52,6 +52,9 @@ $ docker run -d --name zabbix-web-apache-mysql --restart=always
 zabbix/zabbix-web-apache-mysql
 ```
 
+
+13:39
+https://www.youtube.com/watch?v=_qPH5JgcI7E&t=523s
 ## Commands
 
 # acknowledgment
