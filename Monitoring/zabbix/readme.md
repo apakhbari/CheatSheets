@@ -22,6 +22,20 @@
 ## Files & directories
 
 
+## Starting Up
+```
+$ docker run --name mysql-server --restart=always
+-p 10050:10050
+-p 10051:10051
+-v /srv/Docker/MySQL:/var/lib/mysql
+-e DB_SERVER_HOST="mysql-world"
+-e MYSQL_USER="zabbixworld"
+-e MYSQL_DATABASE="zabbixworld"
+-e MYSQL_PASSWORD=""
+-d zabbix/zabbix-server-mysql
+--character-set-server=utf8mb4
+--collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+```
 ## Commands
 
 # acknowledgment
