@@ -23,8 +23,9 @@
 
 
 ## Starting Up
+- Zabbix server mysql
 ```
-$ docker run --name mysql-server --restart=always
+$ docker run -d --name mysql-server --restart=always
 -p 10050:10050
 -p 10051:10051
 -v /srv/Docker/MySQL:/var/lib/mysql
@@ -32,10 +33,23 @@ $ docker run --name mysql-server --restart=always
 -e MYSQL_USER="zabbixworld"
 -e MYSQL_DATABASE="zabbixworld"
 -e MYSQL_PASSWORD=""
--d zabbix/zabbix-server-mysql
+zabbix/zabbix-server-mysql
 --character-set-server=utf8mb4
 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
 ```
+
+- Zabbix web apache mysql
+```
+$ docker run -d --name zabbix-web-apache-mysql --restart=always
+-p 800:8080
+-e DB_SERVER_HOST="172.17.0.5"
+-e MYSQL_USER="root"
+-e MYSQL_PASSWORD="test"
+-e ZBX_SERVER_HOST="172.17.0.6"
+-e PHP_TZ="Europe/Riga"
+zabbix/zabbix-web-apache-mysql
+```
+
 ## Commands
 
 # acknowledgment
