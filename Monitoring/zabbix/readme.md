@@ -41,7 +41,9 @@ zabbix/zabbix-server-mysql
 - Zabbix web apache mysql
 ```
 $ docker run -d --name zabbix-web-apache-mysql --restart=always
--p 800:8080
+-p 80:80
+-p 8080:8080
+-p 443:443
 -e DB_SERVER_HOST="172.17.0.5"
 -e MYSQL_USER="root"
 -e MYSQL_PASSWORD="test"
