@@ -48,11 +48,11 @@
 - high-level (business) view of monitored resources
 
 #### Historical data storage
-data stored in a database
-configurable history
-built-in housekeeping procedure
-Easy configuration
+- data stored in a database
+- configurable history
+- built-in housekeeping procedure
 
+#### Easy configuration
 add monitored devices as hosts
 hosts are picked up for monitoring, once in the database
 apply templates to monitored devices
