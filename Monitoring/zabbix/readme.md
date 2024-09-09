@@ -17,6 +17,12 @@
 - Zabbix is an enterprise-class open source distributed monitoring solution.
 
 ## Components
+- Server, Frontend Agent
+- Proxy
+- Agent
+- Agent 2
+- Java Gateway
+- Web Service
 
 
 ## Files & directories
@@ -56,6 +62,8 @@ $ docker run -d --name zabbix-web-apache-mysql --restart=always
 zabbix/zabbix-web-apache-mysql
 ```
 - Default user: Admin / Default password: zabbix
+
+## Installing Agent
 
 ## Commands
 
