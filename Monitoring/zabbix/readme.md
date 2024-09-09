@@ -14,7 +14,14 @@
 - Theoretical
   - Introduction
   - Features
-  - 
+  - Components
+  - Files & directories
+  - Tips & Tricks
+- Hands On
+- acknowledgment
+  - Contributors
+  - Links
+
 
 # Theoretical
 ## Introduction
@@ -109,6 +116,10 @@
 ## Tips & Tricks
 - changes take up to 5 minutes, it's not straight away.
 
+## Commands
+
+# Hands On
+
 ## Starting Up
 - Zabbix server mysql
 ```
@@ -146,7 +157,6 @@ zabbix/zabbix-web-apache-mysql
 
 ## Installing Agent
 
-## Commands
 
 # acknowledgment
 ## Contributors
