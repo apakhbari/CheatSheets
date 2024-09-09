@@ -35,19 +35,19 @@
 - automatic actions include remote commands
 
 #### Real-time graphing
-monitored items are immediately graphed using the built-in graphing functionality
-Web monitoring capabilities
+- monitored items are immediately graphed using the built-in graphing functionality
 
-Zabbix can follow a path of simulated mouse clicks on a web site and check for functionality and response time
-Extensive visualization options
+#### Web monitoring capabilities
+- Zabbix can follow a path of simulated mouse clicks on a web site and check for functionality and response time
 
-ability to create custom graphs that can combine multiple items into a single view
-network maps
-slideshows in a dashboard-style overview
-reports
-high-level (business) view of monitored resources
-Historical data storage
+#### Extensive visualization options
+- ability to create custom graphs that can combine multiple items into a single view
+- network maps
+- slideshows in a dashboard-style overview
+- reports
+- high-level (business) view of monitored resources
 
+#### Historical data storage
 data stored in a database
 configurable history
 built-in housekeeping procedure
