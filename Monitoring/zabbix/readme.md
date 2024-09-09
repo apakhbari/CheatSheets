@@ -55,7 +55,7 @@ $ docker run -d --name zabbix-web-apache-mysql --restart=always
 -v /srv/Docker/containers/certs/zabbix.domain.com/etc/ssl/apache2
 zabbix/zabbix-web-apache-mysql
 ```
-
+- Default user: Admin / Default password: zabbix
 
 ## Commands
 
