@@ -62,33 +62,33 @@
 - templates can inherit other templates
 
 #### Network discovery
-automatic discovery of network devices
-agent autoregistration
-discovery of file systems, network interfaces and SNMP OIDs
+- automatic discovery of network devices
+- agent autoregistration
+- discovery of file systems, network interfaces and SNMP OIDs
 
 #### Fast web interface
-a web-based frontend in PHP
-accessible from anywhere
-you can click your way through
-audit log
+- a web-based frontend in PHP
+- accessible from anywhere
+- you can click your way through
+- audit log
 
 #### Zabbix API
-Zabbix API provides programmable interface to Zabbix for mass manipulations, third-party software integration and other purposes.
+- Zabbix API provides programmable interface to Zabbix for mass manipulations, third-party software integration and other purposes.
 
 #### Permissions system
-secure user authentication
-certain users can be limited to certain views
+- secure user authentication
+- certain users can be limited to certain views
 
 #### Full featured and easily extensible agent
-deployed on monitoring targets
-can be deployed on both Linux and Windows
+- deployed on monitoring targets
+- can be deployed on both Linux and Windows
 
 #### Binary daemons
-written in C, for performance and small memory footprint
-easily portable
+- written in C, for performance and small memory footprint
+- easily portable
 
 #### Ready for complex environments
-remote monitoring made easy by using a Zabbix proxy
+- remote monitoring made easy by using a Zabbix proxy
 
 ## Components
 - Server, Frontend Agent
