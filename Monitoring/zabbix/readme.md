@@ -49,6 +49,10 @@ $ docker run -d --name zabbix-web-apache-mysql --restart=always
 -e MYSQL_PASSWORD="test"
 -e ZBX_SERVER_HOST="172.17.0.6"
 -e PHP_TZ="Europe/Riga"     // THIS ONE IS FOR TIMEZONE
+-e VIRTUAL_HOST=zabbix.domain.com
+-e LETSENCRYPT_EMAIL=support@domain.com
+-e LETSENCRYPT_HOST=zabbix.domain.com
+-v /srv/Docker/containers/certs/zabbix.domain.com/etc/ssl/apache2
 zabbix/zabbix-web-apache-mysql
 ```
 
