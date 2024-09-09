@@ -28,6 +28,9 @@
 ## Files & directories
 
 
+## Tips & Tricks
+- changes take up to 5 minutes, it's not straight away.
+
 ## Starting Up
 - Zabbix server mysql
 ```
