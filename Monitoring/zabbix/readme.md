@@ -48,13 +48,11 @@ $ docker run -d --name zabbix-web-apache-mysql --restart=always
 -e MYSQL_USER="root"
 -e MYSQL_PASSWORD="test"
 -e ZBX_SERVER_HOST="172.17.0.6"
--e PHP_TZ="Europe/Riga"
+-e PHP_TZ="Europe/Riga"     // THIS ONE IS FOR TIMEZONE
 zabbix/zabbix-web-apache-mysql
 ```
 
 
-13:39
-https://www.youtube.com/watch?v=_qPH5JgcI7E&t=523s
 ## Commands
 
 # acknowledgment
