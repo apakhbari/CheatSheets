@@ -179,6 +179,16 @@ zabbix/zabbix-web-apache-mysql
 
 
 ## Proxies
+
+```mermaid
+flowchart LR
+
+B(Zabbix Server) -->|Poller requests data via TCP 10050| A[Passive Agent]
+A -->|Agent responds with value| B
+C[Active Agent] -->|Connects to the trapper port via TCP 10051| B
+C -->|Pushes requested data via TCP 10051| B
+```
+
 ### Community Answers
 - Q: Which DB to use?
 - A: Also MySQL really doesn't do well with time series data. Which is basically what Zabbix data is. Postgreql will do better (for a bunch of reasons) But also you can use TimeScaleDB on Postgreql with Zabbix and it will be even better. And of you combine PostgreSQL with ZFS and compression you get bonkers performance.
