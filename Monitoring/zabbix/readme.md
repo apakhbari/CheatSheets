@@ -118,6 +118,16 @@ Zabbix proxy can collect performance and availability data on behalf of Zabbix s
 
 ### Agent
 Zabbix agents are deployed on monitoring targets to actively monitor local resources and applications and report the gathered data to Zabbix server. Since Zabbix 4.4, there are two types of agents available: the Zabbix agent (lightweight, supported on many platforms, written in C) and the Zabbix agent 2 (extra-flexible, easily extendable with plugins, written in Go).
+#### Active Agent VS Passive Agent
+
+```mermaid
+flowchart LR
+
+B(Zabbix Server) -->|Poller requests data via TCP 10050| A[Passive Agent]
+A -->|Agent responds with value| B
+C[Active Agent] -->|Connects to the trapper port via TCP 10051| B
+C -->|Pushes requested data via TCP 10051| B
+```
 
 ### Data flow
 In addition it is important to take a step back and have a look at the overall data flow within Zabbix. In order to create an item that gathers data you must first create a host. Moving to the other end of the Zabbix spectrum you must first have an item to create a trigger. You must have a trigger to create an action. Thus if you want to receive an alert that your CPU load is too high on Server X you must first create a host entry for Server X followed by an item for monitoring its CPU, then a trigger which activates if the CPU is too high, followed by an action which sends you an email. While that may seem like a lot of steps, with the use of templating it really isn't. However, due to this design it is possible to create a very flexible setup.
@@ -180,14 +190,6 @@ zabbix/zabbix-web-apache-mysql
 
 ## Proxies
 
-```mermaid
-flowchart LR
-
-B(Zabbix Server) -->|Poller requests data via TCP 10050| A[Passive Agent]
-A -->|Agent responds with value| B
-C[Active Agent] -->|Connects to the trapper port via TCP 10051| B
-C -->|Pushes requested data via TCP 10051| B
-```
 
 ### Community Answers
 - Q: Which DB to use?
