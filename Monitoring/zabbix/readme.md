@@ -181,10 +181,12 @@ zabbix/zabbix-web-apache-mysql
 ## Proxies
 ### Community Answers
 - Q: Which DB to use?
-  - A: Also MySQL really doesn't do well with time series data. Which is basically what Zabbix data is. Postgreql will do better (for a bunch of reasons) But also you can use TimeScaleDB on Postgreql with Zabbix and it will be even better. And of you combine PostgreSQL with ZFS and compression you get bonkers performance.
+- A: Also MySQL really doesn't do well with time series data. Which is basically what Zabbix data is. Postgreql will do better (for a bunch of reasons) But also you can use TimeScaleDB on Postgreql with Zabbix and it will be even better. And of you combine PostgreSQL with ZFS and compression you get bonkers performance.
 
 - Q: Active vs Passive proxy?
-
+- A: 99% of our monitoring is Active.It allows us to monitor 13,000 Hosts and 7000 VPS with minimal load on the Proxies. The only monitoring we have set to Passive is things like
+  - ICMP Ping: Ensure port is running externally. We check the port is bound from the OS side AND from outside the VM, a little overkill but we've had issues in the past where a port looks bound and working but was uncontactable outside the VM.
+  - Zabbix Agent Hostname: We use this item to get the nice Green box in Host Availability and as part of a Trigger around agent comms working/not working. 
 
 
 
