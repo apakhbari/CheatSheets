@@ -178,6 +178,18 @@ zabbix/zabbix-web-apache-mysql
 ## Installing Agent
 
 
+## Proxies
+### Community Answers
+- Q: Which DB to use?
+  - A: Also MySQL really doesn't do well with time series data. Which is basically what Zabbix data is. Postgreql will do better (for a bunch of reasons) But also you can use TimeScaleDB on Postgreql with Zabbix and it will be even better. And of you combine PostgreSQL with ZFS and compression you get bonkers performance.
+
+- Q: Active vs Passive proxy?
+
+
+
+
+
+
 # acknowledgment
 ## Contributors
 
