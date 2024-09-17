@@ -47,6 +47,17 @@ psql (PostgreSQL) 9.2.9
 ALTER USER user_name WITH PASSWORD 'new_password';
 ```
 
+# Cases
+## Giving Zabbix permissions
+```
+GRANT CONNECT ON DATABASE zabbix_proxy TO zabbix;
+GRANT USAGE ON SCHEMA public TO zabbix;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO zabbix;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO zabbix;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO zabbix;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO zabbix;
+```
+
 # acknowledgment
 ## Contributors
 
