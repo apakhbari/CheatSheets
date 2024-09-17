@@ -8,6 +8,29 @@
 |___|    |_______||_______|  |___|  |_______||___|  |_||_______||_______||____||_||_______|
 ```
 # Commands
+
+## See Version
+### Server version:
+```
+=> SELECT version();
+                                                   version                                                    
+--------------------------------------------------------------------------------------------------------------
+ PostgreSQL 9.2.9 on x86_64-unknown-linux-gnu, compiled by gcc (GCC) 4.4.7 20120313 (Red Hat 4.4.7-4), 64-bit
+
+=> SHOW server_version;
+ server_version 
+----------------
+ 9.2.9
+
+=> SHOW server_version_num;
+ server_version_num 
+--------------------
+ 90209
+ ```
+- If more curious, try => ``` SHOW all; ```.
+
+### 
+
 ## List & View
 \l - Display database
 \c - Connect to database
