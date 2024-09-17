@@ -29,7 +29,11 @@
  ```
 - If more curious, try => ``` SHOW all; ```.
 
-### 
+### Client version
+```
+=> \! psql -V
+psql (PostgreSQL) 9.2.9
+```
 
 ## List & View
 \l - Display database
