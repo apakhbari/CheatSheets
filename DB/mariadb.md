@@ -8,7 +8,11 @@
 |_|   |_||__| |__||___|  |_||___| |__| |__||______| |_______|
 ```
 
+# Commands
+## List & View
 
+
+## Change Password
 
 # acknowledgment
 ## Contributors
