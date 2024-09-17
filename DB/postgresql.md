@@ -5,3 +5,8 @@
 \dt - List tables inside public schemas
 \dt schema1.* - List tables inside a particular schema.
                 For example: 'schema1'.
+
+## Change Password
+```
+ALTER USER user_name WITH PASSWORD 'new_password';
+```
