@@ -1,15 +1,15 @@
 version: '3.8'
 services:
   pgsql-dev:
-    image: postgres
+    image: postgres:15.8-bookworm
     container_name: pgsql-dev
     environment:
       POSTGRES_PASSWORD: test1234
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres-docker:/var/lib/postgresql/data
-      - /path/to/custom/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ($pwd)/data:/var/lib/postgresql/data
+      - ($pwd)/postgresql.conf:/etc/postgresql/postgresql.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
