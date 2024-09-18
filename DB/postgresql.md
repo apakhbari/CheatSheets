@@ -47,6 +47,9 @@ psql (PostgreSQL) 9.2.9
 ALTER USER user_name WITH PASSWORD 'new_password';
 ```
 
+# Dockerized
+
+
 # Cases
 ## Giving Zabbix permissions
 ```
