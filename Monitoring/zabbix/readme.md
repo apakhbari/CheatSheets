@@ -146,6 +146,7 @@ In addition it is important to take a step back and have a look at the overall d
 
 ## Tips & Tricks
 - changes take up to 5 minutes, it's not straight away.
+- install zabbix-get ``` $ sudo apt install zabbix-get ``` and use it via ``` $ zabbix_get ```
 
 ## Commands
 
