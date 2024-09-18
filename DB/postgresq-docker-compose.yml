@@ -14,4 +14,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.95'    # Limits CPU usage to 95% of one core
+          memory: 950M     # Limits memory usage to 950MB
     restart: unless-stopped
