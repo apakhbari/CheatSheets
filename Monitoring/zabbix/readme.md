@@ -201,7 +201,7 @@ zabbix/zabbix-web-apache-mysql
   - ICMP Ping: Ensure port is running externally. We check the port is bound from the OS side AND from outside the VM, a little overkill but we've had issues in the past where a port looks bound and working but was uncontactable outside the VM.
   - Zabbix Agent Hostname: We use this item to get the nice Green box in Host Availability and as part of a Trigger around agent comms working/not working. 
 
-
+## Monitor Docker Containers with Zabbix
 
 
 
