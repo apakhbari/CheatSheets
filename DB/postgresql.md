@@ -48,6 +48,21 @@ ALTER USER user_name WITH PASSWORD 'new_password';
 ```
 
 # Dockerized
+- Run the PostgreSQL Docker Container:
+```
+$ docker run \
+  --name pgsql-dev \
+  –rm \   # this removes the container when it’s stopped.
+  -e POSTGRES_PASSWORD=test1234 \
+  -p 5432:5432 postgres
+```
+
+- This command lets you connect to the PostgreSQL CLI running inside the Docker container:
+```
+$ docker exec -it pgsql-dev bash
+root@6b7f283ad618:/#
+```
+
 
 
 # Cases
