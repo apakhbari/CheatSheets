@@ -69,6 +69,9 @@ root@6b7f283ad618:/#
 $ psql -h localhost -U postgres
 ```
 
+# Enabling SSL/TLS encryption
+- You can achieve this by providing the necessary SSL certificates and modifying the ```postgresql.conf``` file to enforce SSL connections.
+
 # Backup Process
 - Backup your data periodically. You can do this by running the ```pg_dump``` command:
 ```
