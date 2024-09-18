@@ -69,6 +69,13 @@ root@6b7f283ad618:/#
 $ psql -h localhost -U postgres
 ```
 
+# Backup Process
+- Backup your data periodically. You can do this by running the ```pg_dump``` command:
+```
+pg_dump -U<user_name> --column-inserts --data-only <db_name> > \
+  backup_data.sql
+```
+
 # Cases
 ## Giving Zabbix permissions
 ```
