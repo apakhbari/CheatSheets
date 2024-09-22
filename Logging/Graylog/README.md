@@ -27,6 +27,19 @@
 - Free & Open-source centralized logging platform, can create co-relations queries and alerts
 ## Features
 ## Components
+```mermaid
+flowchart TD
+
+A[/Server/Device\] --> B(Defined input Port & Type)
+B -->|Agent responds with value| C{Matches Ectractor}
+C -->|YES| D(Paresed into fields)
+C -->|NO| F(Paresed & Unparsed Data)
+D --> F
+F --> G{Matches Stream Rules}
+G --> |NO| I(Default Indexer)
+G --> |YES| H(Index Defined in Stream)
+```
+
 ## Files & directories
 ## Tips & Tricks
 

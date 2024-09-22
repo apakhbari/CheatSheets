@@ -124,7 +124,7 @@ Zabbix agents are deployed on monitoring targets to actively monitor local resou
 flowchart LR
 
 B(Zabbix Server) -->|Poller requests data via TCP 10050| A[Passive Agent]
-A -->|Agent responds with value| B
+A --> B
 C[Active Agent] -->|Connects to the trapper port via TCP 10051| B
 C -->|Pushes requested data via TCP 10051| B
 ```
