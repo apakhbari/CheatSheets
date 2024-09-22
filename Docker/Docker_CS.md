@@ -23,6 +23,11 @@
 
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>docker-compose -f docker-compose.ymI -f docker-compose.dev.ymI up -d
 
+
+- ``` $ docker-compose up ```
+- ``` $ docker-compose down ```
+- ``` $ docker-compose down -v ``` --> frees up all mount points
+
 —————————
 
 **Tips & Tricks**
