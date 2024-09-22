@@ -27,6 +27,8 @@
 - Free & Open-source centralized logging platform, can create co-relations queries and alerts
 ## Features
 ## Components
+
+- How graylog Parses Data
 ```mermaid
 flowchart TD
 
