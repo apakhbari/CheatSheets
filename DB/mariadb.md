@@ -11,6 +11,17 @@
 # Commands
 ## List & View
 
+```
+$ SHOW DATABASES;
+```
+
+```
+$ USE SQLQueue;
+```
+
+```
+$ SHOW FULL TABLES;
+```
 
 ## Change Password
 
