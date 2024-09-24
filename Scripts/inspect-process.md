@@ -72,3 +72,33 @@ $ top -p <PID>
 ```
 
 - using htop: Run htop and search for the PID by pressing / and entering the PID number.
+
+
+# Inspect a Process for Port and network
+
+## Method 1: Using netstat
+```
+$ sudo netstat -tulnp | grep 100
+
+-t : Show TCP connections.
+-u : Show UDP connections.
+-l : Show listening ports.
+-n : Show numerical addresses and ports.
+-p : Show the PID and program name of the process.
+```
+
+## Method 2: Using ss (Socket Statistics)
+```
+$ sudo ss -tulnp | grep 100
+```
+
+## Method 3: Using lsof (List Open Files)
+```
+$ sudo lsof -Pan -p 100 -i
+
+-P : Show port numbers instead of service names.
+-a : Combine multiple conditions (e.g., process and network interface).
+-n : Show numerical addresses instead of resolving hostnames.
+-p 100 : Filter by the process ID (PID 100).
+-i : Show only internet (network) files.
+```
