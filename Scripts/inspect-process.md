@@ -102,3 +102,5 @@ $ sudo lsof -Pan -p 100 -i
 -p 100 : Filter by the process ID (PID 100).
 -i : Show only internet (network) files.
 ```
+
+
