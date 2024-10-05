@@ -126,15 +126,16 @@ docker-compose ps
 
 ## Step 4: Migrate Zabbix Proxy and PostgreSQL Database
 
-    Backup Zabbix Proxy PostgreSQL Database: Similar to the Zabbix server, back up the proxy database:
+1. Backup Zabbix Proxy PostgreSQL Database: Similar to the Zabbix server, back up the proxy database:
 
-    bash
-
+```
 sudo -u postgres pg_dump zabbix_proxy_db > /backup/zabbix_proxy_db_backup_$(date +%F).sql
+```
 
-Create Docker Compose File for Zabbix Proxy: Create a docker-compose.yml for the Zabbix proxy:
+2. Create Docker Compose File for Zabbix Proxy: Create a docker-compose.yml for the Zabbix proxy:
 
-yaml
+```
+docker-compose.yml
 
 version: '3.7'
 services:
@@ -160,28 +161,26 @@ services:
       - POSTGRES_DB=zabbix_proxy_db
     volumes:
       - ./pgsql_proxy_data:/var/lib/postgresql/data
+```
 
-Initialize Docker Volumes for Proxy:
-
-bash
-
+3. Initialize Docker Volumes for Proxy:
+```
 mkdir -p /docker/zabbix_proxy/zabbix_proxy_data
 mkdir -p /docker/zabbix_proxy/pgsql_proxy_data
+```
 
-Restore Proxy PostgreSQL Backup: Start the PostgreSQL proxy container and restore the backup:
-
-bash
-
+4. Restore Proxy PostgreSQL Backup: Start the PostgreSQL proxy container and restore the backup:
+```
 docker-compose up -d postgresql
 cat /backup/zabbix_proxy_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix_proxy -d zabbix_proxy_db
+```
 
-Start Zabbix Proxy:
+5. Start Zabbix Proxy:
+```
+docker-compose up -d
+```
 
-bash
-
-    docker-compose up -d
-
-    Verify Zabbix Proxy: Check the logs and ensure the proxy is working correctly.
+6. Verify Zabbix Proxy: Check the logs and ensure the proxy is working correctly.
 
 Step 5: Monitor the New Setup
 
