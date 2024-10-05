@@ -52,19 +52,17 @@ sudo -u postgres psql zabbix_db_test < /backup/zabbix_db_backup.sql
 
 ## Step 2: Prepare for Migration to Docker
 
-    Pull Docker Images for Zabbix and PostgreSQL:
-
-    bash
-
+1. Pull Docker Images for Zabbix and PostgreSQL:
+```
 docker pull zabbix/zabbix-server-pgsql:latest
 docker pull postgres:15
+```
 
-Stop Services: Before migration, gracefully stop your Zabbix server and database services:
-
-bash
-
-    sudo systemctl stop zabbix-server
-    sudo systemctl stop postgresql
+2. Stop Services: Before migration, gracefully stop your Zabbix server and database services:
+```
+sudo systemctl stop zabbix-server
+sudo systemctl stop postgresql
+```
 
 ## Step 3: Migrate Zabbix Server to Docker and Upgrade
 
