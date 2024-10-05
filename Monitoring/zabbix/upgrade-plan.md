@@ -1,5 +1,4 @@
 # Zabbix Upgrade plan
-zabbix upgrade plan
 
 ```
  _______  _______  _______  _______  ___   __   __ 
@@ -18,6 +17,7 @@ zabbix upgrade plan
     - Step 2: Prepare for Migration to Docker
     - Step 3: Migrate Zabbix Server to Docker and Upgrade
     - Step 4: Migrate Zabbix Proxy and PostgreSQL Database
+- Worklog
 - acknowledgment
 
 # What i want to do
@@ -205,6 +205,10 @@ sudo systemctl disable postgresql
 ```
 sudo apt remove zabbix-server postgresql
 ```
+
+# Worklog
+## Testbed
+- postgresql: 10.23-4.pgdg22.04+1 --> 15.8 
 
 # acknowledgment
 ## Contributors
