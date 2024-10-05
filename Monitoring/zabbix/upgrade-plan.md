@@ -14,6 +14,11 @@ zabbix upgrade plan
 # Table of Contents
 - What i want to do
 - how to do it
+    - Step 1: Backup Zabbix Server and PostgreSQL Database
+    - Step 2: Prepare for Migration to Docker
+    - Step 3: Migrate Zabbix Server to Docker and Upgrade
+    - Step 4: Migrate Zabbix Proxy and PostgreSQL Database
+- acknowledgment
 
 # What i want to do
 - Zabbix server (Version 6): Currently on linux unit service, migrate from unit service to docker image, upgrade to version 7
