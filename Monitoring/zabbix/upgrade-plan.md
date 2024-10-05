@@ -12,6 +12,7 @@
 
 # Table of Contents
 - What i want to do
+- how to do it
 
 # What i want to do
 - Zabbix server (Version 6): Currently on linux unit service, migrate from unit service to docker image, upgrade to version 7
@@ -19,7 +20,7 @@
 - Zabbix proxy (Version 5): Currently on linux unit service, upgrade to version 7
 - Zabbix proxy postgresql DB (Version 10): Currently on linux unit service, Backup, migrate from unit service to docker image, upgrade to version 15
 
-# How to
+# How to do it
 Prerequisites
 
     Backup Strategy: Ensure you have reliable backups of both your Zabbix configurations and PostgreSQL databases.
