@@ -195,20 +195,16 @@ docker logs zabbix-proxy
 3. Test Zabbix Alerts: Trigger some test alerts to verify that notifications are working as expected.
 
 ## Step 6: Clean Up and Decommission Old Services
-
-    Stop Old Services: Once you have verified the new Docker-based setup is working fine, stop the old unit services:
-
-    bash
-
+1. Stop Old Services: Once you have verified the new Docker-based setup is working fine, stop the old unit services:
+```
 sudo systemctl disable zabbix-server
 sudo systemctl disable postgresql
+```
 
-Remove Old Installations (optional): You can remove the old Zabbix server and PostgreSQL installations if no rollback is needed.
-
-bash
-
+2. Remove Old Installations (optional): You can remove the old Zabbix server and PostgreSQL installations if no rollback is needed.
+```
 sudo apt remove zabbix-server postgresql
-
+```
 
 # acknowledgment
 ## Contributors
