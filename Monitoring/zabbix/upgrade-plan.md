@@ -66,9 +66,9 @@ sudo systemctl stop postgresql
 
 ## Step 3: Migrate Zabbix Server to Docker and Upgrade
 
-    Create Docker Compose File for Zabbix Server: Create a docker-compose.yml for the Zabbix server:
-
-    yaml
+1. Create Docker Compose File for Zabbix Server: Create a docker-compose.yml for the Zabbix server:
+```
+docker-compose.yml
 
 version: '3.7'
 services:
@@ -94,41 +94,35 @@ services:
       - POSTGRES_DB=zabbix_db
     volumes:
       - ./pgsql_data:/var/lib/postgresql/data
+```
 
-Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
-
-bash
-
+2. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
+```
 mkdir -p /docker/zabbix/zabbix_data
 mkdir -p /docker/zabbix/pgsql_data
+```
 
-Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
-
-bash
-
+3. Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
+```
 docker-compose up -d postgresql
+```
 
-Then, restore the database backup:
-
-bash
-
+- Then, restore the database backup:
+```
 cat /backup/zabbix_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix -d zabbix_db
+```
 
-Start Zabbix Server: Bring up the entire Zabbix environment:
-
-bash
-
+4. Start Zabbix Server: Bring up the entire Zabbix environment:
+```
 docker-compose up -d
+```
 
-Verify Zabbix Server:
+5. Verify Zabbix Server:
+```
+docker-compose ps
+```
 
-    Check that Zabbix is running:
-
-    bash
-
-        docker-compose ps
-
-        Verify connectivity via the Zabbix frontend.
+- Verify connectivity via the Zabbix frontend.
 
 ## Step 4: Migrate Zabbix Proxy and PostgreSQL Database
 
