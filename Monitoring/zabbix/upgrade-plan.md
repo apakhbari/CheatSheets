@@ -1,4 +1,5 @@
 # Zabbix Upgrade plan
+zabbix upgrade plan
 
 ```
  _______  _______  _______  _______  ___   __   __ 
@@ -21,13 +22,13 @@
 - Zabbix proxy postgresql DB (Version 10): Currently on linux unit service, Backup, migrate from unit service to docker image, upgrade to version 15
 
 # How to do it
-Prerequisites
+## Prerequisites
 
-    Backup Strategy: Ensure you have reliable backups of both your Zabbix configurations and PostgreSQL databases.
-    Docker Setup: Ensure Docker and Docker Compose are installed and properly configured on your production servers.
-    Storage Configuration: Prepare for Docker volumes to persist your Zabbix data and PostgreSQL data.
+- Backup Strategy: Ensure you have reliable backups of both your Zabbix configurations and PostgreSQL databases.
+- Docker Setup: Ensure Docker and Docker Compose are installed and properly configured on your production servers.
+- Storage Configuration: Prepare for Docker volumes to persist your Zabbix data and PostgreSQL data.
 
-Step 1: Backup Zabbix Server and PostgreSQL Database
+## Step 1: Backup Zabbix Server and PostgreSQL Database
 
     Backup Zabbix Configuration Files:
 
@@ -47,7 +48,7 @@ bash
 
     sudo -u postgres psql zabbix_db_test < /backup/zabbix_db_backup.sql
 
-Step 2: Prepare for Migration to Docker
+## Step 2: Prepare for Migration to Docker
 
     Pull Docker Images for Zabbix and PostgreSQL:
 
@@ -63,7 +64,7 @@ bash
     sudo systemctl stop zabbix-server
     sudo systemctl stop postgresql
 
-Step 3: Migrate Zabbix Server to Docker and Upgrade
+## Step 3: Migrate Zabbix Server to Docker and Upgrade
 
     Create Docker Compose File for Zabbix Server: Create a docker-compose.yml for the Zabbix server:
 
@@ -129,7 +130,7 @@ Verify Zabbix Server:
 
         Verify connectivity via the Zabbix frontend.
 
-Step 4: Migrate Zabbix Proxy and PostgreSQL Database
+## Step 4: Migrate Zabbix Proxy and PostgreSQL Database
 
     Backup Zabbix Proxy PostgreSQL Database: Similar to the Zabbix server, back up the proxy database:
 
