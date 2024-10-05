@@ -182,20 +182,19 @@ docker-compose up -d
 
 6. Verify Zabbix Proxy: Check the logs and ensure the proxy is working correctly.
 
-Step 5: Monitor the New Setup
+## Step 5: Monitor the New Setup
 
-    Check Logs: Regularly check the logs of both Zabbix and PostgreSQL containers to ensure there are no errors:
+1. Check Logs: Regularly check the logs of both Zabbix and PostgreSQL containers to ensure there are no errors:
+```
+docker logs zabbix-server
+docker logs zabbix-proxy
+```
 
-    bash
+2. Check Zabbix Health: Log into the Zabbix frontend and ensure that all hosts, proxies, and data are being correctly monitored.
 
-    docker logs zabbix-server
-    docker logs zabbix-proxy
+3. Test Zabbix Alerts: Trigger some test alerts to verify that notifications are working as expected.
 
-    Check Zabbix Health: Log into the Zabbix frontend and ensure that all hosts, proxies, and data are being correctly monitored.
-
-    Test Zabbix Alerts: Trigger some test alerts to verify that notifications are working as expected.
-
-Step 6: Clean Up and Decommission Old Services
+## Step 6: Clean Up and Decommission Old Services
 
     Stop Old Services: Once you have verified the new Docker-based setup is working fine, stop the old unit services:
 
