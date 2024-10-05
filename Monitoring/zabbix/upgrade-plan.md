@@ -35,23 +35,20 @@ zabbix upgrade plan
 
 ## Step 1: Backup Zabbix Server and PostgreSQL Database
 
-    Backup Zabbix Configuration Files:
-
-    bash
-
+1. Backup Zabbix Configuration Files:
+```
 sudo cp -r /etc/zabbix /backup/zabbix_config_$(date +%F)
+```
 
-Backup Zabbix PostgreSQL Database: Use pg_dump to create a backup of the PostgreSQL database:
-
-bash
-
+2. Backup Zabbix PostgreSQL Database: Use pg_dump to create a backup of the PostgreSQL database:
+```
 sudo -u postgres pg_dump zabbix_db > /backup/zabbix_db_backup_$(date +%F).sql
+```
 
-Test Restore of Backup: Test your backup by restoring it to a non-production environment:
-
-bash
-
-    sudo -u postgres psql zabbix_db_test < /backup/zabbix_db_backup.sql
+3. Test Restore of Backup: Test your backup by restoring it to a non-production environment:
+```
+sudo -u postgres psql zabbix_db_test < /backup/zabbix_db_backup.sql
+```
 
 ## Step 2: Prepare for Migration to Docker
 
