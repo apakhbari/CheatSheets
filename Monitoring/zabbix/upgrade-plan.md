@@ -74,6 +74,7 @@ version: '3.7'
 services:
   zabbix-server:
     image: zabbix/zabbix-server-pgsql:7.0-latest
+    container_name: zabbix-server-pgsql
     ports:
       - "10051:10051"
     environment:
@@ -85,15 +86,19 @@ services:
       - postgresql
     volumes:
       - ./zabbix_data:/var/lib/zabbix
+    restart: unless-stopped
 
   postgresql:
-    image: postgres:15
+    image: postgres:15.8-bookworm
+    container_name: pgsql-dev
     environment:
       - POSTGRES_USER=zabbix
       - POSTGRES_PASSWORD=yourpassword
       - POSTGRES_DB=zabbix_db
     volumes:
-      - ./pgsql_data:/var/lib/postgresql/data
+      - /home/apa/postgres/data:/var/lib/postgresql/data
+      - /home/apa/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+    restart: unless-stopped
 ```
 
 2. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
