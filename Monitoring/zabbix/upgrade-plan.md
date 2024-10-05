@@ -11,18 +11,7 @@
 ```
 
 # Table of Contents
-- Theoretical
-  - Introduction
-  - Features
-  - Components
-  - Files & directories
-  - Tips & Tricks
-- Hands On
-  - Starting Up
-  - Installing Agents
-- acknowledgment
-  - Contributors
-  - Links
+- What i want to do
 
 # What i want to do
 - Zabbix server (Version 6): Currently on linux unit service, migrate from unit service to docker image, upgrade to version 7
@@ -30,7 +19,201 @@
 - Zabbix proxy (Version 5): Currently on linux unit service, upgrade to version 7
 - Zabbix proxy postgresql DB (Version 10): Currently on linux unit service, Backup, migrate from unit service to docker image, upgrade to version 15
 
+# How to
+Prerequisites
 
+    Backup Strategy: Ensure you have reliable backups of both your Zabbix configurations and PostgreSQL databases.
+    Docker Setup: Ensure Docker and Docker Compose are installed and properly configured on your production servers.
+    Storage Configuration: Prepare for Docker volumes to persist your Zabbix data and PostgreSQL data.
+
+Step 1: Backup Zabbix Server and PostgreSQL Database
+
+    Backup Zabbix Configuration Files:
+
+    bash
+
+sudo cp -r /etc/zabbix /backup/zabbix_config_$(date +%F)
+
+Backup Zabbix PostgreSQL Database: Use pg_dump to create a backup of the PostgreSQL database:
+
+bash
+
+sudo -u postgres pg_dump zabbix_db > /backup/zabbix_db_backup_$(date +%F).sql
+
+Test Restore of Backup: Test your backup by restoring it to a non-production environment:
+
+bash
+
+    sudo -u postgres psql zabbix_db_test < /backup/zabbix_db_backup.sql
+
+Step 2: Prepare for Migration to Docker
+
+    Pull Docker Images for Zabbix and PostgreSQL:
+
+    bash
+
+docker pull zabbix/zabbix-server-pgsql:latest
+docker pull postgres:15
+
+Stop Services: Before migration, gracefully stop your Zabbix server and database services:
+
+bash
+
+    sudo systemctl stop zabbix-server
+    sudo systemctl stop postgresql
+
+Step 3: Migrate Zabbix Server to Docker and Upgrade
+
+    Create Docker Compose File for Zabbix Server: Create a docker-compose.yml for the Zabbix server:
+
+    yaml
+
+version: '3.7'
+services:
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:7.0-latest
+    ports:
+      - "10051:10051"
+    environment:
+      - DB_SERVER_HOST=postgresql
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=zabbix_db
+    depends_on:
+      - postgresql
+    volumes:
+      - ./zabbix_data:/var/lib/zabbix
+
+  postgresql:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=zabbix_db
+    volumes:
+      - ./pgsql_data:/var/lib/postgresql/data
+
+Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
+
+bash
+
+mkdir -p /docker/zabbix/zabbix_data
+mkdir -p /docker/zabbix/pgsql_data
+
+Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
+
+bash
+
+docker-compose up -d postgresql
+
+Then, restore the database backup:
+
+bash
+
+cat /backup/zabbix_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix -d zabbix_db
+
+Start Zabbix Server: Bring up the entire Zabbix environment:
+
+bash
+
+docker-compose up -d
+
+Verify Zabbix Server:
+
+    Check that Zabbix is running:
+
+    bash
+
+        docker-compose ps
+
+        Verify connectivity via the Zabbix frontend.
+
+Step 4: Migrate Zabbix Proxy and PostgreSQL Database
+
+    Backup Zabbix Proxy PostgreSQL Database: Similar to the Zabbix server, back up the proxy database:
+
+    bash
+
+sudo -u postgres pg_dump zabbix_proxy_db > /backup/zabbix_proxy_db_backup_$(date +%F).sql
+
+Create Docker Compose File for Zabbix Proxy: Create a docker-compose.yml for the Zabbix proxy:
+
+yaml
+
+version: '3.7'
+services:
+  zabbix-proxy:
+    image: zabbix/zabbix-proxy-pgsql:7.0-latest
+    ports:
+      - "10051:10051"
+    environment:
+      - DB_SERVER_HOST=postgresql
+      - POSTGRES_USER=zabbix_proxy
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=zabbix_proxy_db
+    depends_on:
+      - postgresql
+    volumes:
+      - ./zabbix_proxy_data:/var/lib/zabbix
+
+  postgresql:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=zabbix_proxy
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=zabbix_proxy_db
+    volumes:
+      - ./pgsql_proxy_data:/var/lib/postgresql/data
+
+Initialize Docker Volumes for Proxy:
+
+bash
+
+mkdir -p /docker/zabbix_proxy/zabbix_proxy_data
+mkdir -p /docker/zabbix_proxy/pgsql_proxy_data
+
+Restore Proxy PostgreSQL Backup: Start the PostgreSQL proxy container and restore the backup:
+
+bash
+
+docker-compose up -d postgresql
+cat /backup/zabbix_proxy_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix_proxy -d zabbix_proxy_db
+
+Start Zabbix Proxy:
+
+bash
+
+    docker-compose up -d
+
+    Verify Zabbix Proxy: Check the logs and ensure the proxy is working correctly.
+
+Step 5: Monitor the New Setup
+
+    Check Logs: Regularly check the logs of both Zabbix and PostgreSQL containers to ensure there are no errors:
+
+    bash
+
+    docker logs zabbix-server
+    docker logs zabbix-proxy
+
+    Check Zabbix Health: Log into the Zabbix frontend and ensure that all hosts, proxies, and data are being correctly monitored.
+
+    Test Zabbix Alerts: Trigger some test alerts to verify that notifications are working as expected.
+
+Step 6: Clean Up and Decommission Old Services
+
+    Stop Old Services: Once you have verified the new Docker-based setup is working fine, stop the old unit services:
+
+    bash
+
+sudo systemctl disable zabbix-server
+sudo systemctl disable postgresql
+
+Remove Old Installations (optional): You can remove the old Zabbix server and PostgreSQL installations if no rollback is needed.
+
+bash
+
+sudo apt remove zabbix-server postgresql
 
 
 # acknowledgment
