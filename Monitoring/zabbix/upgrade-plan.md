@@ -86,7 +86,7 @@ services:
       - postgresql
     volumes:
       - /home/apa/docker_vol/zabbix/data:/var/lib/zabbix
-      - /home/apa/docker_vol/zabbix/config:/etc/zabbix/
+      #- /home/apa/docker_vol/zabbix/config:/etc/zabbix/
     restart: unless-stopped
 
   postgresql:
@@ -100,7 +100,7 @@ services:
       - POSTGRES_DB=zabbix_db
     volumes:
       - /home/apa/docker_vol/postgres/data:/var/lib/postgresql/data
-      - /home/apa/docker_vol/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      #- /home/apa/docker_vol/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
     restart: unless-stopped
 
   zabbix-web-nginx-pgsql:
@@ -119,7 +119,7 @@ services:
       - zabbix-server
       - postgresql
     volumes:
-      - /home/user/docker_vol/zabbix-web/config:/etc/zabbix/web
+      #- /home/user/docker_vol/zabbix-web/config:/etc/zabbix/web
     restart: unless-stopped
 ```
 
