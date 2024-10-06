@@ -121,6 +121,16 @@ services:
     volumes:
       #- /home/user/docker_vol/zabbix-web/config:/etc/zabbix/web
     restart: unless-stopped
+
+  zabbix-agent2:
+    image: zabbix/zabbix-agent2:7.0-ubuntu-latest
+    container_name: zabbix-agent2
+    environment:
+      - ZBX_SERVER_HOST=zabbix-server-pgsql
+    depends_on:
+      - zabbix-server
+    network_mode: "host"  
+    restart: unless-stopped
 ```
 
 2. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
