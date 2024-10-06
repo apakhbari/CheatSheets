@@ -73,7 +73,7 @@ docker-compose.yml
 version: '3.7'
 services:
   zabbix-server:
-    image: zabbix/zabbix-server-pgsql:7.0-latest
+    image: zabbix/zabbix-server-pgsql:7.0-ubuntu-latest
     container_name: zabbix-server-pgsql
     ports:
       - "10055:10051"
@@ -102,12 +102,32 @@ services:
       - /home/apa/docker_vol/postgres/data:/var/lib/postgresql/data
       - /home/apa/docker_vol/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
     restart: unless-stopped
+
+  zabbix-web-nginx-pgsql:
+    image: zabbix/zabbix-web-nginx-pgsql:7.0-ubuntu-latest
+    container_name: zabbix-web
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - DB_SERVER_HOST=postgresql
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=zabbix_db
+      - ZBX_SERVER_HOST=zabbix-server-pgsql
+    depends_on:
+      - zabbix-server
+      - postgresql
+    volumes:
+      - /home/user/docker_vol/zabbix-web/config:/etc/zabbix/web
+    restart: unless-stopped
 ```
 
 2. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
 ```
 mkdir -p /home/apa/docker_vol/zabbix/data
 mkdir -p /home/apa/docker_vol/zabbix/config
+mkdir -p /home/apa/docker_vol/zabbix-web/config
 mkdir -p /home/apa/docker_vol/postgres/data
 ```
 
@@ -119,6 +139,12 @@ docker-compose up -d postgresql
 - Then, restore the database backup:
 ```
 cat /backup/zabbix_db_backup.sql | docker exec -i $(docker ps -q -f "name=pgsql-dev") psql -U zabbix -d zabbix_db
+```
+
+- Check things work
+```
+docker exec -it pgsql-dev bin/bash
+psql -h localhost -p 5432 -U zabbix -d zabbix_db
 ```
 
 4. Start Zabbix Server: Bring up the entire Zabbix environment:
