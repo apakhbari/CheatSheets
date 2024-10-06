@@ -85,8 +85,8 @@ services:
     depends_on:
       - postgresql
     volumes:
-      - /home/apa/zabbix/zabbix_data:/var/lib/zabbix
-      - /home/apa/zabbix/zabbix_config:/etc/zabbix/
+      - /home/apa/docker_vol/zabbix/data:/var/lib/zabbix
+      - /home/apa/docker_vol/zabbix/zabbix_config:/etc/zabbix/
     restart: unless-stopped
 
   postgresql:
@@ -99,8 +99,8 @@ services:
       - POSTGRES_PASSWORD=yourpassword
       - POSTGRES_DB=zabbix_db
     volumes:
-      - /home/apa/postgres/data:/var/lib/postgresql/data
-      - /home/apa/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - /home/apa/docker_vol/postgres/data:/var/lib/postgresql/data
+      - /home/apa/docker_vol/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
     restart: unless-stopped
 ```
 
