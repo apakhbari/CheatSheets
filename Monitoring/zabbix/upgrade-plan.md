@@ -86,7 +86,7 @@ services:
       - postgresql
     volumes:
       - /home/apa/docker_vol/zabbix/data:/var/lib/zabbix
-      - /home/apa/docker_vol/zabbix/zabbix_config:/etc/zabbix/
+      - /home/apa/docker_vol/zabbix/config:/etc/zabbix/
     restart: unless-stopped
 
   postgresql:
@@ -106,8 +106,9 @@ services:
 
 2. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
 ```
-mkdir -p /docker/zabbix/zabbix_data
-mkdir -p /docker/zabbix/pgsql_data
+mkdir -p /home/apa/docker_vol/zabbix/data
+mkdir -p /home/apa/docker_vol/zabbix/config
+mkdir -p /home/apa/docker_vol/postgres/data
 ```
 
 3. Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
