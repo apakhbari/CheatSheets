@@ -259,7 +259,11 @@ sudo apt remove zabbix-server postgresql
 
 # Worklog
 ## Testbed
-- postgresql: 10.23-4.pgdg22.04+1 --> 15.8 
+- postgresql: 10.23-4.pgdg22.04+1 --> 15.8
+
+## Need further investigation
+
+
 
 # acknowledgment
 ## Contributors
