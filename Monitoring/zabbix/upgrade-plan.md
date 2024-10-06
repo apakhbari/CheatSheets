@@ -132,9 +132,9 @@ services:
       - zabbix-server
     ports:
       - "10060:10060"
-    volumes:
-      - /home/apa/docker_vol/zabbix-agent2/zabbix_agent2.conf:/etc/zabbix/zabbix_agent2.conf
-    network_mode: "host"
+    #volumes:
+      #- /home/apa/docker_vol/zabbix-agent2/zabbix_agent2.conf:/etc/zabbix/zabbix_agent2.conf
+    #network_mode: "host"
     restart: unless-stopped
 
 ```
