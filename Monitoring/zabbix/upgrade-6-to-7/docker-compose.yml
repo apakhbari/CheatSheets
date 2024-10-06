@@ -1,0 +1,63 @@
+version: '3.7'
+services:
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:7.0-ubuntu-latest
+    container_name: zabbix-server-pgsql
+    ports:
+      - "10055:10051"
+    environment:
+      - DB_SERVER_HOST=postgresql
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=zabbix_db
+    depends_on:
+      - postgresql
+    volumes:
+      - /home/apa/docker_vol/zabbix/data:/var/lib/zabbix
+      #- /home/apa/docker_vol/zabbix/config:/etc/zabbix/
+    restart: unless-stopped
+
+  postgresql:
+    image: postgres:15.8-bookworm
+    container_name: pgsql-dev
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=zabbix_db
+    volumes:
+      - /home/apa/docker_vol/postgres/data:/var/lib/postgresql/data
+        # - /home/apa/docker_vol/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+    restart: unless-stopped
+
+  zabbix-web-nginx-pgsql:
+    image: zabbix/zabbix-web-nginx-pgsql:7.0-ubuntu-latest
+    container_name: zabbix-web
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - DB_SERVER_HOST=postgresql
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=yourpassword
+      - POSTGRES_DB=zabbix_db
+      - ZBX_SERVER_HOST=zabbix-server-pgsql
+    depends_on:
+      - zabbix-server
+      - postgresql
+        #volumes:
+      #- /home/apa/docker_vol/zabbix-web/config:/etc/zabbix/web
+    restart: unless-stopped
+
+  zabbix-agent2:
+    image: zabbix/zabbix-agent2:7.0-ubuntu-latest
+    container_name: zabbix-agent2
+    environment:
+      - ZBX_SERVER_HOST=zabbix-server-pgsql
+      - ZBX_LISTEN_PORT=10060
+    depends_on:
+      - zabbix-server
+    ports:
+      - "10060:10060"
+    restart: unless-stopped
