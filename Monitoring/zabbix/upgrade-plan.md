@@ -118,7 +118,7 @@ docker-compose up -d postgresql
 
 - Then, restore the database backup:
 ```
-cat /backup/zabbix_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix -d zabbix_db
+cat /backup/zabbix_db_backup.sql | docker exec -i $(docker ps -q -f "name=pgsql-dev") psql -U zabbix -d zabbix_db
 ```
 
 4. Start Zabbix Server: Bring up the entire Zabbix environment:
