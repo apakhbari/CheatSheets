@@ -76,7 +76,7 @@ services:
     image: zabbix/zabbix-server-pgsql:7.0-latest
     container_name: zabbix-server-pgsql
     ports:
-      - "10051:10051"
+      - "10055:10051"
     environment:
       - DB_SERVER_HOST=postgresql
       - POSTGRES_USER=zabbix
@@ -85,12 +85,15 @@ services:
     depends_on:
       - postgresql
     volumes:
-      - ./zabbix_data:/var/lib/zabbix
+      - /home/apa/zabbix/zabbix_data:/var/lib/zabbix
+      - /home/apa/zabbix/zabbix_config:/etc/zabbix/
     restart: unless-stopped
 
   postgresql:
     image: postgres:15.8-bookworm
     container_name: pgsql-dev
+    ports:
+      - "5435:5432"
     environment:
       - POSTGRES_USER=zabbix
       - POSTGRES_PASSWORD=yourpassword
