@@ -127,10 +127,16 @@ services:
     container_name: zabbix-agent2
     environment:
       - ZBX_SERVER_HOST=zabbix-server-pgsql
+      - ZBX_LISTEN_PORT=10060
     depends_on:
       - zabbix-server
-    network_mode: "host"  
+    ports:
+      - "10060:10060"
+    volumes:
+      - /home/apa/docker_vol/zabbix-agent2/zabbix_agent2.conf:/etc/zabbix/zabbix_agent2.conf
+    network_mode: "host"
     restart: unless-stopped
+
 ```
 
 2. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
