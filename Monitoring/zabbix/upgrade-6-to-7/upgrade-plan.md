@@ -64,6 +64,7 @@ sudo systemctl stop zabbix-server
 sudo systemctl stop postgresql
 ```
 
+
 ## Step 3: Migrate Zabbix Server to Docker and Upgrade
 
 1. Create Docker Compose File for Zabbix Server: Create a docker-compose.yml for the Zabbix server:
