@@ -15,7 +15,7 @@ services:
     image: zabbix/zabbix-server-pgsql:7.0-ubuntu-latest
     container_name: zabbix-server-pgsql
     ports:
-      - "10055:10051"
+      - "10051:10051"
     environment:
       - DB_SERVER_HOST=postgresql
       - POSTGRES_USER=zabbix
@@ -34,7 +34,7 @@ services:
     image: postgres:15.8-bookworm
     container_name: pgsql-dev
     ports:
-      - "5435:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_USER=zabbix
       - POSTGRES_PASSWORD=yourpassword
@@ -71,14 +71,14 @@ services:
     container_name: zabbix-agent2
     environment:
       - ZBX_SERVER_HOST=zabbix-server-pgsql
-      - ZBX_LISTEN_PORT=10060
+      - ZBX_LISTEN_PORT=10050
       - ZBX_TLSCONNECT=psk    # Enable PSK encryption
       - ZBX_TLSPSKIDENTIFIER=PSK_001  # Define PSK identifier
       - ZBX_TLSPSK=yourpsksecret  # Replace with your actual PSK
     depends_on:
       - zabbix-server
     ports:
-      - "10060:10060"
+      - "10050:10050"
     restart: unless-stopped
 ```
 
