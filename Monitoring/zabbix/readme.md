@@ -141,7 +141,7 @@ In addition it is important to take a step back and have a look at the overall d
 
 
 ## Files & directories
--  zabbix_server.conf
+- zabbix_server.conf
 - zabbix_agentd.conf
 
 ## Tips & Tricks
