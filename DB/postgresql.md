@@ -1,3 +1,5 @@
+# PostgreSQL
+
 ```
  _______  _______  _______  _______  _______  ______    _______  _______  _______  ___     
 |       ||       ||       ||       ||       ||    _ |  |       ||       ||       ||   |    
@@ -7,7 +9,21 @@
 |   |    |       | _____| |  |   |  |   |_| ||   |  | ||   |___  _____| ||      | |       |
 |___|    |_______||_______|  |___|  |_______||___|  |_||_______||_______||____||_||_______|
 ```
+# Connection String
+```
+$ psql -h <REMOTE HOST> -p <REMOTE PORT> -U <DB_USER> <DB_NAME>
+```
+
 # Commands
+
+## List & View
+```
+\l - Display database
+\c - Connect to database
+\dn - List schemas
+\dt - List tables inside public schemas
+\dt schema1.* - List tables inside a particular schema. For example: 'schema1'.
+```
 
 ## See Version
 ### Server version:
@@ -35,12 +51,6 @@
 psql (PostgreSQL) 9.2.9
 ```
 
-## List & View
-\l - Display database
-\c - Connect to database
-\dn - List schemas
-\dt - List tables inside public schemas
-\dt schema1.* - List tables inside a particular schema. For example: 'schema1'.
 
 ## Change Password
 ```
