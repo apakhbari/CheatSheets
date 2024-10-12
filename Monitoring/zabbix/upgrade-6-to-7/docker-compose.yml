@@ -28,9 +28,9 @@ services:
       - POSTGRES_DB=zabbix_db
     volumes:
       - /home/apa/docker_vol/postgres/data:/var/lib/postgresql/data
-      # - /home/apa/docker_vol/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - /home/apa/docker_vol/postgres/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     restart: unless-stopped
-    command: /bin/bash -c "apt-get update && apt-get install -y postgresql-client && docker-entrypoint.sh postgres"
+    command: /bin/bash -c "apt-get update && apt-get install -y postgresql-client && docker-entrypoint.sh postgres -c config_file=/etc/postgresql/postgresql.conf"
 
   zabbix-web-nginx-pgsql:
     image: zabbix/zabbix-web-nginx-pgsql:7.0-ubuntu-latest
