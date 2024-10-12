@@ -16,6 +16,11 @@
 ```
 sudo -u postgres psql
 ```
+- or on docker:
+```
+docker exec -it 784097dd8e69 bin/bash
+root@784097dd8e69:/# psql -h postgresql -U zabbix -d zabbix_db
+```
 
 - Add the user.
 ```

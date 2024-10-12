@@ -16,7 +16,7 @@ $ SHOW DATABASES;
 ```
 
 ```
-$ USE SQLQueue;
+$ USE DB;
 ```
 
 ```
