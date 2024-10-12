@@ -1,0 +1,102 @@
+version: '3.7'
+services:
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:7.0-ubuntu-latest
+    container_name: zabbix-server-pgsql
+    ports:
+      - "10051:10051"
+    environment:
+      - DB_SERVER_HOST=postgresql
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=zabbix_db
+    depends_on:
+      - postgresql
+    volumes:
+      - /home/apa/vol_docker/zabbix/data:/var/lib/zabbix
+      - /home/apa/vol_docker/zabbix/config:/etc/zabbix
+    networks:
+      - zabbix-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zabbix -d zabbix_db -h postgresql"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  postgresql:
+    image: postgres:15.8-bookworm
+    container_name: pgsql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=zabbix_db
+    volumes:
+      - /home/apa/vol_docker/postgres/data:/var/lib/postgresql/data
+    networks:
+      - zabbix-net
+    restart: unless-stopped
+    command: postgres -c 'config_file=/var/lib/postgresql/data/postgresql.conf'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zabbix -d zabbix_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  zabbix-web-nginx-pgsql:
+    image: zabbix/zabbix-web-nginx-pgsql:7.0-ubuntu-latest
+    container_name: zabbix-web
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - DB_SERVER_HOST=postgresql
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=zabbix_db
+      - ZBX_SERVER_HOST=zabbix-server-pgsql
+    depends_on:
+      - zabbix-server
+      - postgresql
+    volumes:
+      - /home/apa/vol_docker/zabbix-web/config:/etc/zabbix/web
+    networks:
+      - zabbix-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  zabbix-agent2:
+    image: zabbix/zabbix-agent2:7.0-ubuntu-latest
+    container_name: zabbix-agent2
+    environment:
+      - ZBX_SERVER_HOST=zabbix-server-pgsql,172.18.0.0/16
+      - ZBX_HOSTNAME=zabbix-agent-2
+    depends_on:
+      - zabbix-server
+    ports:
+      - "10050:10050"
+    networks:
+      - zabbix-net
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run
+      - /home/apa/vol_docker/zabbix-agent2/zabbix_agentd.conf.d:/etc/zabbix/zabbix_agentd.d:ro
+    privileged: true
+
+zabbix_agentd.conf.d/postgresql.conf
+
+UserParameter=pgsql.version,psql -V
+UserParameter=pgsql.connections,psql -U zbx_monitor -d zabbix_db -c "SELECT count(*) FROM pg_stat_activity;"
+UserParameter=pgsql.uptime,psql -U zbx_monitor -d zabbix_db -c "SELECT date_trunc('second', current_timestamp - pg_postmaster_start_time())::text AS uptime;"
+
+
+networks:
+  zabbix-net:
+    driver: bridge
