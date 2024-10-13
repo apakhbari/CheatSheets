@@ -79,7 +79,7 @@ services:
     image: zabbix/zabbix-agent2:7.0-ubuntu-latest
     container_name: zabbix-agent2
     environment:
-      - ZBX_SERVER_HOST=zabbix-server
+      - ZBX_SERVER_HOST=zabbix-server,127.0.0.1,172.18.0.0/16
       - ZBX_HOSTNAME=zabbix-agent
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
