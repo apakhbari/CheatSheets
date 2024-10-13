@@ -14,7 +14,7 @@ services:
       - postgresql
     volumes:
       - /home/apa/vol_docker/zabbix/data:/var/lib/zabbix
-      - /home/apa/vol_docker/zabbix/config:/etc/zabbix
+        #- /home/apa/vol_docker/zabbix/config:/etc/zabbix
     networks:
       - zabbix-net
     restart: unless-stopped
@@ -60,8 +60,8 @@ services:
     depends_on:
       - zabbix-server
       - postgresql
-    volumes:
-      - /home/apa/vol_docker/zabbix-web/config:/etc/zabbix/web
+        #volumes:
+      #- /home/apa/vol_docker/zabbix-web/config:/etc/zabbix/web
     networks:
       - zabbix-net
     restart: unless-stopped
@@ -92,13 +92,6 @@ services:
       - /:/rootfs:ro
       - /var/run:/var/run
     privileged: true
-
-zabbix_agentd.conf.d/postgresql.conf
-
-UserParameter=pgsql.version,psql -V
-UserParameter=pgsql.connections,psql -U zbx_monitor -d zabbix_db -c "SELECT count(*) FROM pg_stat_activity;"
-UserParameter=pgsql.uptime,psql -U zbx_monitor -d zabbix_db -c "SELECT date_trunc('second', current_timestamp - pg_postmaster_start_time())::text AS uptime;"
-
 
 networks:
   zabbix-net:

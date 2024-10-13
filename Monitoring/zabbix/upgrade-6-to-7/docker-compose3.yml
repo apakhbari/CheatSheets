@@ -16,7 +16,7 @@ services:
       - /home/apa/vol_docker/zabbix/data:/var/lib/zabbix
       - /home/apa/vol_docker/zabbix/data-snmptraps:/var/lib/zabbix/snmptraps
       - /home/apa/vol_docker/zabbix/data-export:/var/lib/zabbix/export
-      - /home/apa/vol_docker/zabbix/config:/etc/zabbix
+      #- /home/apa/vol_docker/zabbix/config:/etc/zabbix
     networks:
       - zabbix-net
     restart: unless-stopped
@@ -64,8 +64,8 @@ services:
       - zabbix-server
       - postgresql
     volumes:
-      - /home/apa/vol_docker/zabbix-web/config:/etc/zabbix/web
       - /home/apa/vol_docker/zabbix-web/data:/usr/share/zabbix
+      #- /home/apa/vol_docker/zabbix-web/config:/etc/zabbix/web
     networks:
       - zabbix-net
     restart: unless-stopped
