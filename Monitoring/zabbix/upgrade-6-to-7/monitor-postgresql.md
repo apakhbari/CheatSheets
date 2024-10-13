@@ -93,6 +93,10 @@ sudo service zabbix-agent status
 
 - Press Update and after some time, you will see new values populating in Monitoring → Latest Data
 
+regarding of zabbix stack wholely setup on  docker containers, i have problems monitoring postgresql container of zabbix [Status: PROBLEM - Host: zabbix-postgresql - Problem: Service is down] & docker socket of server [Status: PROBLEM - Host: docker-socket - Problem: Service is down]. I am using a zabbix-agent2 container on port 10050 and all of these services are on 1 server. What went wrong and how to fix it? Give me a thourough step-by-step instruction
+This is my docker-compose.yml file:
+
+write a command for me that using iptables, inside INPUT Chain drops all packets on port 443 except the ones that are coming from IP Address 100.200.300.400
 
 # acknowledgment
 ## Contributors

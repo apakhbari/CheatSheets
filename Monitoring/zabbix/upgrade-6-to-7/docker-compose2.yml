@@ -77,6 +77,10 @@ services:
     environment:
       - ZBX_SERVER_HOST=zabbix-server-pgsql,172.18.0.0/16
       - ZBX_HOSTNAME=zabbix-agent-2
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=zabbix_db
+      - POSTGRES_HOST=pgsql
     depends_on:
       - zabbix-server
     ports:
@@ -87,7 +91,6 @@ services:
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run
-      - /home/apa/vol_docker/zabbix-agent2/zabbix_agentd.conf.d:/etc/zabbix/zabbix_agentd.d:ro
     privileged: true
 
 zabbix_agentd.conf.d/postgresql.conf
