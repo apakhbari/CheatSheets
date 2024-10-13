@@ -63,8 +63,8 @@ services:
     depends_on:
       - zabbix-server
       - postgresql
-    volumes:
-      - /home/apa/vol_docker/zabbix-web/data:/usr/share/zabbix
+    #volumes:
+      #- /home/apa/vol_docker/zabbix-web/data:/usr/share/zabbix
       #- /home/apa/vol_docker/zabbix-web/config:/etc/zabbix/web
     networks:
       - zabbix-net
