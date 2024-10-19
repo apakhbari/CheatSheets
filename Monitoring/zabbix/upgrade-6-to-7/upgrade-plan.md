@@ -33,6 +33,9 @@
 - Docker Setup: Ensure Docker and Docker Compose are installed and properly configured on your production servers.
 - Storage Configuration: Prepare for Docker volumes to persist your Zabbix data and PostgreSQL data.
 
+> Consider running two parallel SSH sessions during the upgrade: one for executing the upgrade steps and another for monitoring server/proxy logs. For example, run tail -f zabbix_server.log or tail -f zabbix_proxy.log in the second session to view the latest log entries and possible errors in real time. This can be critical for production instances.
+
+
 ## Step 1: Backup Zabbix Server and PostgreSQL Database
 
 1. Backup Zabbix Configuration Files:
