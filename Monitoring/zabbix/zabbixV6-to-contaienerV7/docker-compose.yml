@@ -88,14 +88,20 @@ services:
     image: zabbix/zabbix-agent2:7.0-ubuntu-latest
     container_name: zabbix-agent2
     environment:
+      # Zabbix Server Settings
       - ZBX_SERVER_HOST=zabbix-server,127.0.0.1,172.18.0.0/16
       - ZBX_HOSTNAME=zabbix-agent
+      - ZBX_SERVER_PORT=10051
+      - ZBX_SERVER_ALLOWED_IPS=127.0.0.1,zabbix-server,172.18.0.0/16
+      # DB Settings
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=pgsql
-      - ZBX_SERVER_PORT=10051
-      - ZBX_SERVER_ALLOWED_IPS=127.0.0.1,zabbix-server,172.18.0.0/16
+      # PSK (Pre-Shared Key) Settings
+      - ZBX_TLSACCEPT=psk,unencrypted
+      - ZBX_TLSPSKIDENTITY=${ZBX_TLSPSKIDENTITY}
+      - ZBX_TLSPSKKEY=${ZBX_TLSPSKKEY}
     depends_on:
       - zabbix-server
     ports:
