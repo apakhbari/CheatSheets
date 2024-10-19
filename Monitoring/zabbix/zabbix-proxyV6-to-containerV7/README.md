@@ -74,46 +74,7 @@ sudo systemctl stop zabbix-server
 sudo systemctl stop postgresql
 ```
 
-
-## Step 3: Migrate Zabbix Server to Docker and Upgrade
-
-1. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
-```
-mkdir -p /home/apa/docker_vol/zabbix/data
-mkdir -p /home/apa/docker_vol/zabbix/config
-mkdir -p /home/apa/docker_vol/zabbix-web/config
-mkdir -p /home/apa/docker_vol/postgres/data
-```
-
-2. Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
-```
-docker-compose up -d postgresql
-```
-
-- Then, restore the database backup:
-```
-cat /backup/zabbix_db_backup.sql | docker exec -i $(docker ps -q -f "name=pgsql-dev") psql -U zabbix -d zabbix_db
-```
-
-- Check things work
-```
-docker exec -it pgsql-dev bin/bash
-psql -h localhost -p 5432 -U zabbix -d zabbix_db
-```
-
-3. Start Zabbix Server: Bring up the entire Zabbix environment:
-```
-docker-compose up -d
-```
-
-4. Verify Zabbix Server:
-```
-docker-compose ps
-```
-
-- Verify connectivity via the Zabbix frontend.
-
-## Step 4: Migrate Zabbix Proxy and PostgreSQL Database
+## Step 3: Migrate Zabbix Proxy and PostgreSQL Database
 
 1. Backup Zabbix Proxy PostgreSQL Database: Similar to the Zabbix server, back up the proxy database:
 
@@ -123,34 +84,6 @@ sudo -u postgres pg_dump zabbix_proxy_db > /backup/zabbix_proxy_db_backup_$(date
 
 2. Create Docker Compose File for Zabbix Proxy: Create a docker-compose.yml for the Zabbix proxy:
 
-```
-docker-compose.yml
-
-version: '3.7'
-services:
-  zabbix-proxy:
-    image: zabbix/zabbix-proxy-pgsql:7.0-latest
-    ports:
-      - "10051:10051"
-    environment:
-      - DB_SERVER_HOST=postgresql
-      - POSTGRES_USER=zabbix_proxy
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=zabbix_proxy_db
-    depends_on:
-      - postgresql
-    volumes:
-      - ./zabbix_proxy_data:/var/lib/zabbix
-
-  postgresql:
-    image: postgres:15
-    environment:
-      - POSTGRES_USER=zabbix_proxy
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=zabbix_proxy_db
-    volumes:
-      - ./pgsql_proxy_data:/var/lib/postgresql/data
-```
 
 3. Initialize Docker Volumes for Proxy:
 ```
