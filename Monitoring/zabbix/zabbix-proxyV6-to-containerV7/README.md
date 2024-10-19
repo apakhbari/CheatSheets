@@ -112,6 +112,7 @@ docker-compose ps
 ```
 
 - Verify connectivity via the Zabbix frontend.
+
 ## Step 4: Migrate Zabbix Proxy and PostgreSQL Database
 
 1. Backup Zabbix Proxy PostgreSQL Database: Similar to the Zabbix server, back up the proxy database:
