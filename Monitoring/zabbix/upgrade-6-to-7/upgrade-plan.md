@@ -43,6 +43,13 @@
 sudo cp -r /etc/zabbix /backup/zabbix_config_$(date +%F)
 ```
 
+1-1. For PHP files and Zabbix binaries, run:
+
+```
+sudo cp -R /usr/share/zabbix/ /backup/zabbix-backup/
+sudo cp -R /usr/share/zabbix-* /backup/zabbix-backup/
+```
+
 2. Backup Zabbix PostgreSQL Database: Use pg_dump to create a backup of the PostgreSQL database:
 ```
 sudo -u postgres pg_dump zabbix_db > /backup/zabbix_db_backup_$(date +%F).sql
@@ -70,80 +77,7 @@ sudo systemctl stop postgresql
 
 ## Step 3: Migrate Zabbix Server to Docker and Upgrade
 
-1. Create Docker Compose File for Zabbix Server: Create a docker-compose.yml for the Zabbix server:
-```
-docker-compose.yml
-
-version: '3.7'
-services:
-  zabbix-server:
-    image: zabbix/zabbix-server-pgsql:7.0-ubuntu-latest
-    container_name: zabbix-server-pgsql
-    ports:
-      - "10055:10051"
-    environment:
-      - DB_SERVER_HOST=postgresql
-      - POSTGRES_USER=zabbix
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=zabbix_db
-    depends_on:
-      - postgresql
-    volumes:
-      - /home/apa/docker_vol/zabbix/data:/var/lib/zabbix
-      #- /home/apa/docker_vol/zabbix/config:/etc/zabbix/
-    restart: unless-stopped
-
-  postgresql:
-    image: postgres:15.8-bookworm
-    container_name: pgsql-dev
-    ports:
-      - "5435:5432"
-    environment:
-      - POSTGRES_USER=zabbix
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=zabbix_db
-    volumes:
-      - /home/apa/docker_vol/postgres/data:/var/lib/postgresql/data
-      #- /home/apa/docker_vol/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-    restart: unless-stopped
-
-  zabbix-web-nginx-pgsql:
-    image: zabbix/zabbix-web-nginx-pgsql:7.0-ubuntu-latest
-    container_name: zabbix-web
-    ports:
-      - "8080:8080"
-      - "8443:8443"
-    environment:
-      - DB_SERVER_HOST=postgresql
-      - POSTGRES_USER=zabbix
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=zabbix_db
-      - ZBX_SERVER_HOST=zabbix-server-pgsql
-    depends_on:
-      - zabbix-server
-      - postgresql
-    volumes:
-      #- /home/user/docker_vol/zabbix-web/config:/etc/zabbix/web
-    restart: unless-stopped
-
-  zabbix-agent2:
-    image: zabbix/zabbix-agent2:7.0-ubuntu-latest
-    container_name: zabbix-agent2
-    environment:
-      - ZBX_SERVER_HOST=zabbix-server-pgsql
-      - ZBX_LISTEN_PORT=10060
-    depends_on:
-      - zabbix-server
-    ports:
-      - "10060:10060"
-    #volumes:
-      #- /home/apa/docker_vol/zabbix-agent2/zabbix_agent2.conf:/etc/zabbix/zabbix_agent2.conf
-    #network_mode: "host"
-    restart: unless-stopped
-
-```
-
-2. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
+1. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
 ```
 mkdir -p /home/apa/docker_vol/zabbix/data
 mkdir -p /home/apa/docker_vol/zabbix/config
@@ -151,7 +85,7 @@ mkdir -p /home/apa/docker_vol/zabbix-web/config
 mkdir -p /home/apa/docker_vol/postgres/data
 ```
 
-3. Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
+2. Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
 ```
 docker-compose up -d postgresql
 ```
@@ -167,18 +101,17 @@ docker exec -it pgsql-dev bin/bash
 psql -h localhost -p 5432 -U zabbix -d zabbix_db
 ```
 
-4. Start Zabbix Server: Bring up the entire Zabbix environment:
+3. Start Zabbix Server: Bring up the entire Zabbix environment:
 ```
 docker-compose up -d
 ```
 
-5. Verify Zabbix Server:
+4. Verify Zabbix Server:
 ```
 docker-compose ps
 ```
 
 - Verify connectivity via the Zabbix frontend.
-
 ## Step 4: Migrate Zabbix Proxy and PostgreSQL Database
 
 1. Backup Zabbix Proxy PostgreSQL Database: Similar to the Zabbix server, back up the proxy database:
@@ -260,6 +193,10 @@ sudo systemctl disable postgresql
 ```
 sudo apt remove zabbix-server postgresql
 ```
+
+
+## Step 7: Clear web browser cookies and cache
+After the upgrade, you may need to clear web browser cookies and web browser cache for the Zabbix web interface to work properly.
 
 # Worklog
 ## Testbed
