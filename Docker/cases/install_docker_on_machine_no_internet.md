@@ -1,3 +1,4 @@
+## Download Required Packages
 ```
 sudo apt update
 sudo apt-get download containerd.io
@@ -9,4 +10,7 @@ sudo apt-get download containerd.io
 4. docker-ce-cli_5%3a24.0.2-1~ubuntu.18.04~bionic_amd64.deb
 5. docker-compose-plugin_2.18.1-1~ubuntu.18.04~bionic_amd64.deb
 
-
+## Install Required Packages
+```
+sudo dpkg -i *.deb
+```
