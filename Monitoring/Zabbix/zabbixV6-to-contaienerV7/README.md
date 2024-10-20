@@ -92,14 +92,15 @@ mkdir -p ./vol_docker/postgres/data
 2. Copy directories to their related vol_docker
 - zabbix-web:
 ```
-sudo cp -r /var/lib/zabbix ./vol_docker/zabbix-server/data
-sudo cp -r /etc/zabbix ./vol_docker/zabbix-server/config
-sudo cp -r /usr/share/zabbix ./vol_docker/zabbix-server/share
+sudo cp -r /usr/share/zabbix/* ./vol_docker/zabbix-web/data/
+sudo cp -r /etc/zabbix/web/* ./vol_docker/zabbix-web/config/
 ```
 
 - zabbix-server:
 ```
-
+sudo cp -r /var/lib/zabbix/* ./vol_docker/zabbix-server/data/
+sudo cp -r /etc/zabbix/* ./vol_docker/zabbix-server/config/
+sudo cp -r /usr/share/zabbix/* ./vol_docker/zabbix-server/share/
 ```
 
 3. Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
