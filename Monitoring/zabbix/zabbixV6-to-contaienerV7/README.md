@@ -51,7 +51,7 @@ sudo cp -r /etc/zabbix /backup/zabbix_config_$(date +%F)
 1-1. For PHP files and Zabbix binaries, run:
 
 ```
-sudo cp -R /usr/share/zabbix/ /backup/zabbix-backup/
+sudo cp -R /usr/share/zabbix/ /backup/zabbix_share_$(date +%F)
 sudo cp -R /usr/share/zabbix-* /backup/zabbix-backup/
 ```
 
