@@ -52,12 +52,11 @@ sudo cp -r /etc/zabbix /backup/zabbix_config_$(date +%F)
 
 ```
 sudo cp -R /usr/share/zabbix/ /backup/zabbix_share_$(date +%F)
-sudo cp -R /usr/share/zabbix-* /backup/zabbix-backup/
 ```
 
 2. Backup Zabbix PostgreSQL Database: Use pg_dump to create a backup of the PostgreSQL database:
 ```
-sudo -u postgres pg_dump zabbix_db > /backup/zabbix_db_backup_$(date +%F).sql
+sudo -u postgres pg_dump zabbix > /backup/zabbix_backup_$(date +%F).sql
 ```
 
 3. Test Restore of Backup: Test your backup by restoring it to a non-production environment:
