@@ -113,12 +113,12 @@ docker-compose up -d postgresql
 
 - Then, restore the database backup:
 ```
-cat /backup/zabbix_backup.sql | docker exec -i $(docker ps -q -f "name=pgsql-dev") psql -U zabbix -d zabbix
+cat /backup/zabbix_backup.sql | docker exec -i $(docker ps -q -f "name=pgsql") psql -U zabbix -d zabbix
 ```
 
 - Check things work
 ```
-docker exec -it pgsql-dev bin/bash
+docker exec -it pgsql bin/bash
 psql -h localhost -p 5432 -U zabbix -d zabbix
 ```
 
