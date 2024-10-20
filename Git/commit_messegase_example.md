@@ -50,5 +50,3 @@
    - `ci: update GitHub Actions pipeline for deployment`
    - `build: switch from npm to yarn for dependency management`
    - `ci: fix deployment script to work with new environment variables`
-
-These commit messages are clear, concise, and follow conventional commit standards, which help keep your project's history organized and meaningful.
