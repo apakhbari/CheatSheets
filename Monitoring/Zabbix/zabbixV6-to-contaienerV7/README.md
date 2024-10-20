@@ -93,7 +93,8 @@ mkdir -p ./vol_docker/postgres/data
 - zabbix-web:
 ```
 sudo cp -r /var/lib/zabbix ./vol_docker/zabbix-server/data
-sudo cp -r /etc/zabbix /backup/zabbix_config_$(date +%F)
+sudo cp -r /etc/zabbix ./vol_docker/zabbix-server/config
+sudo cp -r /usr/share/zabbix ./vol_docker/zabbix-server/share
 ```
 
 - zabbix-server:
