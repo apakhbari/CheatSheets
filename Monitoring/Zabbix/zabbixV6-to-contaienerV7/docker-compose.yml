@@ -23,7 +23,7 @@ services:
     volumes:
       - /home/apa/vol_docker/zabbix-server/data:/var/lib/zabbix
       #- /home/apa/vol_docker/zabbix-server/config:/etc/zabbix
-      #- /home/apa/vol_docker/zabbix-server/share:/usr/share/zabbix/
+      #- /home/apa/vol_docker/zabbix-server/share:/usr/share/zabbix
     networks:
       - zabbix-net
     restart: unless-stopped
