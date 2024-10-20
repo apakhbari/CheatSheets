@@ -130,7 +130,7 @@ docker-compose up -d
 
 5. Verify Zabbix Server:
 ```
-docker-compose ps
+docker ps
 ```
 
 - Verify connectivity via the Zabbix frontend.
