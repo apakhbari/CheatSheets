@@ -120,6 +120,7 @@ cat /backup/zabbix_backup.sql | docker exec -i $(docker ps -q -f "name=pgsql") p
 ```
 docker exec -it pgsql bin/bash
 psql -h localhost -p 5432 -U zabbix -d zabbix
+zabbix=# \l
 ```
 
 4. Start Zabbix Server: Bring up the entire Zabbix environment:
