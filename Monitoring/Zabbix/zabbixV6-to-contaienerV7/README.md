@@ -134,65 +134,8 @@ docker-compose ps
 
 - Verify connectivity via the Zabbix frontend.
 
-## Step 4: Migrate Zabbix Proxy and PostgreSQL Database
 
-1. Backup Zabbix Proxy PostgreSQL Database: Similar to the Zabbix server, back up the proxy database:
-
-```
-sudo -u postgres pg_dump zabbix_proxy_db > /backup/zabbix_proxy_db_backup_$(date +%F).sql
-```
-
-2. Create Docker Compose File for Zabbix Proxy: Create a docker-compose.yml for the Zabbix proxy:
-
-```
-docker-compose.yml
-
-version: '3.7'
-services:
-  zabbix-proxy:
-    image: zabbix/zabbix-proxy-pgsql:7.0-latest
-    ports:
-      - "10051:10051"
-    environment:
-      - DB_SERVER_HOST=postgresql
-      - POSTGRES_USER=zabbix_proxy
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=zabbix_proxy_db
-    depends_on:
-      - postgresql
-    volumes:
-      - ./zabbix_proxy_data:/var/lib/zabbix
-
-  postgresql:
-    image: postgres:15
-    environment:
-      - POSTGRES_USER=zabbix_proxy
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=zabbix_proxy_db
-    volumes:
-      - ./pgsql_proxy_data:/var/lib/postgresql/data
-```
-
-3. Initialize Docker Volumes for Proxy:
-```
-mkdir -p /docker/zabbix_proxy/zabbix_proxy_data
-mkdir -p /docker/zabbix_proxy/pgsql_proxy_data
-```
-
-4. Restore Proxy PostgreSQL Backup: Start the PostgreSQL proxy container and restore the backup:
-```
-docker-compose up -d postgresql
-cat /backup/zabbix_proxy_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix_proxy -d zabbix_proxy_db
-```
-
-5. Start Zabbix Proxy:
-```
-docker-compose up -d
-```
-
-6. Verify Zabbix Proxy: Check the logs and ensure the proxy is working correctly.
-
-## Step 5: Monitor the New Setup
+## Step 4: Monitor the New Setup
 
 1. Check Logs: Regularly check the logs of both Zabbix and PostgreSQL containers to ensure there are no errors:
 ```
@@ -204,7 +147,7 @@ docker logs zabbix-proxy
 
 3. Test Zabbix Alerts: Trigger some test alerts to verify that notifications are working as expected.
 
-## Step 6: Clean Up and Decommission Old Services
+## Step 5: Clean Up and Decommission Old Services
 1. Stop Old Services: Once you have verified the new Docker-based setup is working fine, stop the old unit services:
 ```
 sudo systemctl disable zabbix-server
@@ -217,7 +160,7 @@ sudo apt remove zabbix-server postgresql
 ```
 
 
-## Step 7: Clear web browser cookies and cache
+## Step 6: Clear web browser cookies and cache
 After the upgrade, you may need to clear web browser cookies and web browser cache for the Zabbix web interface to work properly.
 
 # Worklog
