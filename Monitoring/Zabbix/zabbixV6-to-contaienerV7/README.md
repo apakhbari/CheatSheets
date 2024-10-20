@@ -61,7 +61,7 @@ sudo -u postgres pg_dump zabbix > /backup/zabbix_backup_$(date +%F).sql
 
 3. Test Restore of Backup: Test your backup by restoring it to a non-production environment:
 ```
-sudo -u postgres psql zabbix_db_test < /backup/zabbix_db_backup.sql
+sudo -u postgres psql zabbix < /backup/zabbix_backup.sql
 ```
 
 ## Step 2: Prepare for Migration to Docker
@@ -113,13 +113,13 @@ docker-compose up -d postgresql
 
 - Then, restore the database backup:
 ```
-cat /backup/zabbix_db_backup.sql | docker exec -i $(docker ps -q -f "name=pgsql-dev") psql -U zabbix -d zabbix_db
+cat /backup/zabbix_backup.sql | docker exec -i $(docker ps -q -f "name=pgsql-dev") psql -U zabbix -d zabbix
 ```
 
 - Check things work
 ```
 docker exec -it pgsql-dev bin/bash
-psql -h localhost -p 5432 -U zabbix -d zabbix_db
+psql -h localhost -p 5432 -U zabbix -d zabbix
 ```
 
 4. Start Zabbix Server: Bring up the entire Zabbix environment:
