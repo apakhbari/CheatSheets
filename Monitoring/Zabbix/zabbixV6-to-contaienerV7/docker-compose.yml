@@ -7,7 +7,7 @@ services:
       - "${PORT_ZBX_SERVER}:10051"
     environment:
       #DB Settings
-      - DB_SERVER_HOST=postgresql
+      - DB_SERVER_HOST=${DB_SERVER_HOST}
       - DB_SERVER_PORT=${DB_SERVER_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -61,7 +61,7 @@ services:
       - "${PORT_ZBX_WEB}:8080"
       - "${PORT_ZBX_WEB_SSL}:8443"
     environment:
-      - DB_SERVER_HOST=postgresql
+      - DB_SERVER_HOST=${DB_SERVER_HOST}
       - DB_SERVER_PORT=${DB_SERVER_PORT}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
