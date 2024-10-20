@@ -21,10 +21,9 @@ services:
     depends_on:
       - postgresql
     volumes:
-      - /home/apa/vol_docker/zabbix/data:/var/lib/zabbix
-      - /home/apa/vol_docker/zabbix/data-snmptraps:/var/lib/zabbix/snmptraps
-      - /home/apa/vol_docker/zabbix/data-export:/var/lib/zabbix/export
-      #- /home/apa/vol_docker/zabbix/config:/etc/zabbix
+      - /home/apa/vol_docker/zabbix-server/data:/var/lib/zabbix
+      #- /home/apa/vol_docker/zabbix-server/config:/etc/zabbix
+      #- /home/apa/vol_docker/zabbix-server/share:/usr/share/zabbix/
     networks:
       - zabbix-net
     restart: unless-stopped
