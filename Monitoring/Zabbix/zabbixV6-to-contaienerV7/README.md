@@ -83,10 +83,10 @@ sudo systemctl stop postgresql
 
 1. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
 ```
-mkdir -p /home/apa/docker_vol/zabbix/data
-mkdir -p /home/apa/docker_vol/zabbix/config
-mkdir -p /home/apa/docker_vol/zabbix-web/config
-mkdir -p /home/apa/docker_vol/postgres/data
+mkdir -p vol_docker/zabbix/data
+mkdir -p vol_docker/zabbix/config
+mkdir -p vol_docker/zabbix-web/config
+mkdir -p vol_docker/postgres/data
 ```
 
 2. Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
