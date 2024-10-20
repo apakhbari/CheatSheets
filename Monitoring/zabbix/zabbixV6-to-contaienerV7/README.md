@@ -38,6 +38,11 @@
 
 ## Step 1: Backup Zabbix Server and PostgreSQL Database
 
+Use this for RAM + CPU Restrictions:
+```
+sudo prlimit --cpu=50 --as=2G -- cp -r /example_directory /backup/
+```
+
 1. Backup Zabbix Configuration Files:
 ```
 sudo cp -r /etc/zabbix /backup/zabbix_config_$(date +%F)
