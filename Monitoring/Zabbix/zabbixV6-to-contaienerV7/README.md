@@ -83,11 +83,14 @@ sudo systemctl stop postgresql
 
 1. Initialize Docker Volumes: Create the necessary volumes for Zabbix data and PostgreSQL data persistence:
 ```
-mkdir -p ./vol_docker/zabbix-server/data
-mkdir -p ./vol_docker/zabbix-server/config
-mkdir -p ./vol_docker/zabbix-web/data
-mkdir -p ./vol_docker/zabbix-web/config
-mkdir -p ./vol_docker/postgres/data
+sudo mkdir -p ./vol_docker/zabbix-server/data
+sudo mkdir -p ./vol_docker/zabbix-server/config
+sudo mkdir -p ./vol_docker/zabbix-server/share
+
+sudo mkdir -p ./vol_docker/zabbix-web/data
+sudo mkdir -p ./vol_docker/zabbix-web/config
+
+sudo mkdir -p ./vol_docker/postgres/data
 ```
 2. Copy directories to their related vol_docker
 - zabbix-web:
