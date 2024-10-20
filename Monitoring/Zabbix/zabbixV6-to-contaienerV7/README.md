@@ -106,6 +106,12 @@ sudo cp -r /etc/zabbix/* ./vol_docker/zabbix-server/config/
 sudo cp -r /usr/share/zabbix/* ./vol_docker/zabbix-server/share/
 ```
 
+3. Give proper Permissions
+```
+sudo chown zabbix:zabbix -R ./vol_docker
+sudo chmod 644 -R ./vol_docker
+```
+
 3. Restore the PostgreSQL Backup into Docker: Start the PostgreSQL container:
 ```
 docker-compose up -d postgresql
