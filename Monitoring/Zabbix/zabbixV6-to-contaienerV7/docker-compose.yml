@@ -22,6 +22,8 @@ services:
       - postgresql
     volumes:
       - /home/apa/vol_docker/zabbix-server/data:/var/lib/zabbix
+      - /home/apa/vol_docker/zabbix-server/share:/usr/lib/zabbix
+      - /home/apa/vol_docker/zabbix-server/config/zabbix_server.conf:/etc/zabbix/zabbix_server.conf
       #- /home/apa/vol_docker/zabbix-server/config:/etc/zabbix
       #- /home/apa/vol_docker/zabbix-server/share:/usr/share/zabbix
     networks:
@@ -32,7 +34,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
+      
   postgresql:
     image: postgres:15.8-bookworm
     container_name: pgsql
