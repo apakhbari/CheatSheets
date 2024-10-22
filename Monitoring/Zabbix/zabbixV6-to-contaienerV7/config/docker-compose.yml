@@ -1,7 +1,7 @@
-version: '3.7'
+version: "3.7"
 services:
   zabbix-server:
-    image: zabbix/zabbix-server-pgsql:7.0-ubuntu-latest
+    image: zabbix-server-with-python:latest
     container_name: zabbix-server
     ports:
       - "${PORT_ZBX_SERVER}:10051"
@@ -21,11 +21,11 @@ services:
     depends_on:
       - postgresql
     volumes:
-      - /home/apa/vol_docker/zabbix-server/data:/var/lib/zabbix
-      - /home/apa/vol_docker/zabbix-server/share:/usr/lib/zabbix
-      - /home/apa/vol_docker/zabbix-server/config/zabbix_server.conf:/etc/zabbix/zabbix_server.conf
-      #- /home/apa/vol_docker/zabbix-server/config:/etc/zabbix
-      #- /home/apa/vol_docker/zabbix-server/share:/usr/share/zabbix
+      - /opt/zabbix_stack/vol_docker/zabbix-server/lib:/usr/lib/zabbix
+      - /opt/zabbix_stack/vol_docker/zabbix-server/config/zabbix_server.conf:/etc/zabbix/zabbix_server.conf
+      #- /opt/zabbix_stack/vol_docker/zabbix-server/data:/var/lib/zabbix
+      #- /opt/zabbix_stack/vol_docker/zabbix-server/config:/etc/zabbix
+      #- /opt/zabbix_stack/vol_docker/zabbix-server/share:/usr/share/zabbix
     networks:
       - zabbix-net
     restart: unless-stopped
@@ -34,7 +34,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      
+
   postgresql:
     image: postgres:15.8-bookworm
     container_name: pgsql
@@ -45,11 +45,11 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-      - /home/apa/vol_docker/postgres/data:/var/lib/postgresql/data
+      - /data/dockerized_postgresql/pgsql_docker_volume/data:/var/lib/postgresql/data
     networks:
       - zabbix-net
     restart: unless-stopped
-    command: postgres -c 'config_file=/var/lib/postgresql/data/postgresql.conf'
+    command: postgres -c config_file=/var/lib/postgresql/data/postgresql.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U zabbix -d zabbix"]
       interval: 30s
@@ -74,8 +74,8 @@ services:
       - zabbix-server
       - postgresql
     #volumes:
-      #- /home/apa/vol_docker/zabbix-web/data:/usr/share/zabbix
-      #- /home/apa/vol_docker/zabbix-web/config:/etc/zabbix/web
+      #- /opt/zabbix_stack/vol_docker/zabbix-web/data:/usr/share/zabbix
+      #- /opt/zabbix_stack/vol_docker/zabbix-web/config:/etc/zabbix/web
     networks:
       - zabbix-net
     restart: unless-stopped
