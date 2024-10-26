@@ -1,98 +1,62 @@
-It seems I misunderstood your requirement initially. Since Zabbix does not provide an official Docker image for Zabbix Proxy with PostgreSQL, you will need to create the image from scratch. Here's how you can do that.
+To create a Docker image for Zabbix Proxy version 7 with PostgreSQL support, we can start from scratch by downloading the Zabbix Proxy source code, compiling it with PostgreSQL support, and creating the necessary Docker configuration. Here’s a detailed guide:
 
-### Step 1: Create the `Dockerfile`
-You can base your Dockerfile on a minimal image (like Ubuntu or Alpine) and install the necessary Zabbix Proxy components along with PostgreSQL client tools.
+### Step 1: Create a Dockerfile for Zabbix Proxy 7 with PostgreSQL
 
-Here's an example of a `Dockerfile` that installs Zabbix Proxy and configures it with PostgreSQL support:
+1. **Create a new directory** (e.g., `zabbix-proxy-7`) to store your Docker build files.
+2. Inside this directory, create a `Dockerfile`.
+
+Here’s a sample `Dockerfile` for Zabbix Proxy version 7:
 
 ```Dockerfile
-# Use a lightweight base image
-FROM ubuntu:22.04
+# Start with a minimal base image
+FROM debian:bookworm-slim
 
-# Set environment variables for PostgreSQL
+# Environment variables for PostgreSQL
 ENV DB_SERVER_HOST=postgresql-server \
     DB_SERVER_PORT=5432 \
     POSTGRES_DB=zabbix \
     POSTGRES_USER=zabbix \
     POSTGRES_PASSWORD=zabbixpassword
 
-# Install necessary packages
+# Install necessary packages and dependencies
 RUN apt-get update && \
-    apt-get install -y wget gnupg2 postgresql-client lsb-release && \
-    wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu$(lsb_release -sr)_all.deb && \
-    dpkg -i zabbix-release_6.0-4+ubuntu$(lsb_release -sr)_all.deb && \
-    apt-get update && \
-    apt-get install -y zabbix-proxy-pgsql
+    apt-get install -y \
+    wget \
+    gnupg \
+    lsb-release \
+    postgresql-client \
+    build-essential \
+    libpcre3-dev \
+    libssl-dev \
+    libsnmp-dev \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copy your custom Zabbix Proxy configuration
-COPY zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf
+# Download Zabbix Proxy version 7 source code
+RUN wget https://cdn.zabbix.com/zabbix/sources/stable/7.0/zabbix-7.0.0.tar.gz && \
+    tar -zxvf zabbix-7.0.0.tar.gz && \
+    cd zabbix-7.0.0 && \
+    ./configure --enable-proxy --with-libcurl --with-net-snmp --with-openssl --with-postgresql && \
+    make install
+
+# Add Zabbix user and group
+RUN groupadd --system zabbix && useradd --system -g zabbix zabbix
+
+# Copy configuration file (if you have custom configurations)
+COPY zabbix_proxy.conf /usr/local/etc/zabbix_proxy.conf
 
 # Expose Zabbix Proxy port
 EXPOSE 10051
 
-# Set entrypoint to run Zabbix Proxy
-ENTRYPOINT ["zabbix_proxy", "--foreground"]
-
-# Default command
-CMD ["-c", "/etc/zabbix/zabbix_proxy.conf"]
+# Run Zabbix Proxy
+CMD ["zabbix_proxy", "-c", "/usr/local/etc/zabbix_proxy.conf"]
 ```
 
-### Step 2: Build the Docker image
-Once you've created the `Dockerfile`, you can build the image using the following command:
+### Step 2: Configuration File
 
-```bash
-docker build -t my-zabbix-proxy-pgsql .
-```
-
-### Step 3: Prepare `docker-compose.yml` (Optional)
-If you want to manage PostgreSQL and Zabbix Proxy together using Docker Compose, here is an example `docker-compose.yml` file:
-
-```yaml
-version: '3'
-services:
-  zabbix-proxy:
-    build: .
-    container_name: zabbix-proxy
-    environment:
-      DB_SERVER_HOST: postgres
-      DB_SERVER_PORT: 5432
-      POSTGRES_DB: zabbix
-      POSTGRES_USER: zabbix
-      POSTGRES_PASSWORD: zabbixpassword
-    ports:
-      - "10051:10051"
-    depends_on:
-      - postgres
-    volumes:
-      - ./zabbix_proxy.conf:/etc/zabbix/zabbix_proxy.conf
-
-  postgres:
-    image: postgres:15.8-bookworm
-    environment:
-      POSTGRES_DB: zabbix
-      POSTGRES_USER: zabbix
-      POSTGRES_PASSWORD: zabbixpassword
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-```
-
-### Step 4: Start the Services
-After preparing the Dockerfile and `docker-compose.yml`, you can start the services:
-
-1. **Build the Zabbix Proxy image:**
-   ```bash
-   docker-compose build
-   ```
-
-2. **Start the services:**
-   ```bash
-   docker-compose up -d
-   ```
-
-### Step 5: Configuration (`zabbix_proxy.conf`)
-Make sure you have a valid `zabbix_proxy.conf` file. Here’s an example configuration for Zabbix Proxy with PostgreSQL:
+Create a `zabbix_proxy.conf` file with the PostgreSQL configuration. Place it in the same directory as your `Dockerfile`:
 
 ```ini
 # Zabbix Proxy configuration
@@ -103,26 +67,84 @@ DBName=zabbix
 DBUser=zabbix
 DBPassword=zabbixpassword
 
-# Log to console
+# Other necessary configurations
 LogType=console
-
-# Server details
-Server=zabbix-server-address
-Hostname=my-zabbix-proxy
-
-# ProxyMode: 0 - active, 1 - passive
-ProxyMode=0
+LogFileSize=0
+Server=your_zabbix_server_address
+Hostname=your_proxy_name
 ```
 
-### Step 6: Additional Considerations
+### Step 3: Build the Docker Image
 
-1. **Persistent Data**: PostgreSQL should use a volume to persist its data (`postgres-data`), so you don’t lose data when containers are restarted.
-2. **Zabbix Proxy Logs**: Ensure you capture logs properly and monitor the Proxy for any database connection or other runtime issues.
-3. **Database Performance**: Monitor your PostgreSQL instance for performance bottlenecks, as Zabbix Proxy can generate significant load.
+Run the following command to build your Docker image:
 
-### Things to Be Concerned About:
-- **PostgreSQL Performance**: Ensure your PostgreSQL instance is optimized for the expected load.
-- **Scaling**: If you expect a large amount of data from monitored hosts, ensure that your Docker resources (CPU, memory, disk I/O) are sufficient for both Zabbix Proxy and PostgreSQL.
-- **Security**: Secure the PostgreSQL instance by properly setting up user permissions and strong passwords. You may want to use Docker secrets for passing credentials securely.
+```bash
+docker build -t zabbix-proxy:7.0 .
+```
 
-Once everything is running, monitor the logs and fine-tune the configuration to fit your use case. Let me know if you encounter any issues or need further customization.
+### Step 4: Run the Container with PostgreSQL (Docker Compose Setup)
+
+To simplify the setup, use Docker Compose to run Zabbix Proxy with a PostgreSQL container.
+
+1. Create a `docker-compose.yml` file:
+
+   ```yaml
+   version: '3'
+   services:
+     zabbix-proxy:
+       image: zabbix-proxy:7.0
+       environment:
+         DB_SERVER_HOST: postgres
+         DB_SERVER_PORT: 5432
+         POSTGRES_DB: zabbix
+         POSTGRES_USER: zabbix
+         POSTGRES_PASSWORD: zabbixpassword
+       depends_on:
+         - postgres
+       ports:
+         - "10051:10051"
+       volumes:
+         - ./zabbix_proxy.conf:/usr/local/etc/zabbix_proxy.conf
+       networks:
+         - zabbix-net
+
+     postgres:
+       image: postgres:15.8-bookworm
+       environment:
+         POSTGRES_DB: zabbix
+         POSTGRES_USER: zabbix
+         POSTGRES_PASSWORD: zabbixpassword
+       ports:
+         - "5432:5432"
+       volumes:
+         - postgres-data:/var/lib/postgresql/data
+       networks:
+         - zabbix-net
+
+   volumes:
+     postgres-data:
+
+   networks:
+     zabbix-net:
+       driver: bridge
+   ```
+
+2. **Start the services**:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+### Step 5: Verify Setup
+
+- Access Zabbix Proxy logs to ensure the proxy connects correctly to the PostgreSQL database and your Zabbix server.
+- Monitor PostgreSQL and Zabbix Proxy to confirm they operate correctly.
+
+### Concerns and Best Practices:
+
+1. **Resource Management**: Running both Zabbix Proxy and PostgreSQL in a Docker environment requires resources. Monitor CPU and memory usage to ensure stable operation.
+2. **Data Persistence**: Ensure the PostgreSQL data is stored in a persistent volume (`postgres-data`) to avoid data loss on container restarts.
+3. **Environment Variables**: For production, consider using Docker secrets or environment variables to securely manage sensitive information like database credentials.
+4. **Security Updates**: Since Zabbix 7 lacks official Docker images, check for updates on the Zabbix website and rebuild the image when new versions or security patches are available.
+
+This setup should allow you to run Zabbix Proxy version 7 with PostgreSQL in a Dockerized environment. Let me know if you need further assistance with specific configurations!
