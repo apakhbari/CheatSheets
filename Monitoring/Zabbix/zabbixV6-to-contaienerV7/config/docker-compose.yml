@@ -3,6 +3,7 @@ services:
   zabbix-server:
     image: zabbix-server-with-python:latest
     container_name: zabbix-server
+    hostname: ZBX-DOCKER
     ports:
       - "${PORT_ZBX_SERVER}:10051"
     environment:
