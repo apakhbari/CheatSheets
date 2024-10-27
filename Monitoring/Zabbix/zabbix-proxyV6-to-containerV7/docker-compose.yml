@@ -1,3 +1,5 @@
+version: '3.7'
+services:
   zabbix-proxy:
     image: zabbix/zabbix-proxy-pgsql:7.0-latest
     container_name: zabbix-proxy
