@@ -1,7 +1,7 @@
 version: '3.7' 
 services:
   zabbix-proxy:
-    image: zabbix/zabbix-proxy-pgsql:7.0-latest
+    image: zabbix-proxy:7.0
     container_name: zabbix-proxy
     hostname: ZBX-PROXY
     ports:
@@ -20,9 +20,9 @@ services:
       - ZBX_PROXYMODE=0 # 0 = active, 1 = passive
     depends_on:
       - postgresql
-    volumes:
-      - /opt/zabbix_stack/vol_docker/zabbix-proxy/lib:/var/lib/zabbix
-      - /opt/zabbix_stack/vol_docker/zabbix-proxy/config/zabbix_proxy.conf:/etc/zabbix/zabbix_proxy.conf
+    #volumes:
+      #- /opt/zabbix_stack/vol_docker/zabbix-proxy/lib:/var/lib/zabbix
+      #- /opt/zabbix_stack/vol_docker/zabbix-proxy/config/zabbix_proxy.conf:/etc/zabbix/zabbix_proxy.conf
     networks:
       - zabbix-net
     restart: unless-stopped
