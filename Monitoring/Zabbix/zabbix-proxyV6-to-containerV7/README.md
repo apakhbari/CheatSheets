@@ -36,7 +36,7 @@ mkdir -p /docker/zabbix_proxy/pgsql_proxy_data
 4. Restore Proxy PostgreSQL Backup: Start the PostgreSQL proxy container and restore the backup:
 ```
 docker-compose up -d postgresql
-cat /backup/zabbix_proxy_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix_proxy -d zabbix_proxy_db
+cat /backup/zabbix_proxy_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix_proxy -d zabbix
 ```
 
 5. Start Zabbix Proxy:
