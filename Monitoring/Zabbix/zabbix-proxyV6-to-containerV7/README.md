@@ -53,22 +53,6 @@ docker-compose up -d
 docker compose -f logs
 ```
 
-## Step 6: Clean Up and Decommission Old Services
-1. Stop Old Services: Once you have verified the new Docker-based setup is working fine, stop the old unit services:
-```
-sudo systemctl disable zabbix-server
-sudo systemctl disable postgresql
-```
-
-2. Remove Old Installations (optional): You can remove the old Zabbix server and PostgreSQL installations if no rollback is needed.
-```
-sudo apt remove zabbix-server postgresql
-```
-
-
-## Step 7: Clear web browser cookies and cache
-After the upgrade, you may need to clear web browser cookies and web browser cache for the Zabbix web interface to work properly.
-
 # Worklog
 ## Testbed
 - postgresql: 10.23-4.pgdg22.04+1 --> 15.8
