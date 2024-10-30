@@ -53,22 +53,6 @@ docker-compose up -d
 docker compose -f logs
 ```
 
-# Worklog
-## Testbed
-- postgresql: 10.23-4.pgdg22.04+1 --> 15.8
-```
-Name                          Version             Architecture
-zabbix-server-pgsql           1:6.0.6-1+ubuntu18. amd64
-zabbix-agent                  1:6.0.6-1+ubuntu18. amd64
-zabbix-frontend-php           1:6.0.6-1+ubuntu18. all
-
-postgresql-10                 10.23-0ubuntu0.18.0 amd64
-```
-
-## Need further investigation
-
-
-
 # acknowledgment
 ## Contributors
 
