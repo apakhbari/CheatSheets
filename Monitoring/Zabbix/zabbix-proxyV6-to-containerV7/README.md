@@ -36,7 +36,7 @@ mkdir -p /docker/zabbix_proxy/pgsql_proxy_data
 4. Restore Proxy PostgreSQL Backup: Start the PostgreSQL proxy container and restore the backup:
 ```
 docker-compose up -d postgresql
-cat /backup/zabbix_proxy_db_backup.sql | docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix_proxy -d zabbix
+docker exec -i $(docker ps -q -f "name=postgresql") psql -U zabbix_proxy -d zabbix
 ```
 
 5. Start Zabbix Proxy:
@@ -50,13 +50,8 @@ docker-compose up -d
 
 1. Check Logs: Regularly check the logs of both Zabbix and PostgreSQL containers to ensure there are no errors:
 ```
-docker logs zabbix-server
-docker logs zabbix-proxy
+docker compose -f logs
 ```
-
-2. Check Zabbix Health: Log into the Zabbix frontend and ensure that all hosts, proxies, and data are being correctly monitored.
-
-3. Test Zabbix Alerts: Trigger some test alerts to verify that notifications are working as expected.
 
 ## Step 6: Clean Up and Decommission Old Services
 1. Stop Old Services: Once you have verified the new Docker-based setup is working fine, stop the old unit services:
