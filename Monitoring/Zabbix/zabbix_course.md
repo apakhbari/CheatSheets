@@ -22,7 +22,9 @@
   - Links
 
 # Session 1
-- MOnitoring vs log 
+- Monitoring consists of: Data collection - Problem detection - alerting
+- Monitoring vs log collection : Log collection is mostly data collection only
+
 
 ---
 
