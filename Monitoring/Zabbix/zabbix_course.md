@@ -24,7 +24,10 @@
 # Session 1
 - Monitoring consists of: Data collection - Problem detection - alerting
 - Monitoring vs log collection : Log collection is mostly data collection only
-
+- MTTR: mean time to recover
+- MTTF: Mean time to failures
+- MTBF: Mean time between failures
+- Availabilty = (MTTF/MTTR)*100
 
 ---
 
