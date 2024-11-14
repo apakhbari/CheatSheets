@@ -11,6 +11,7 @@
 ```
 
 # Table of Contents
+- Sessions
 - Theoretical
   - Introduction
   - Components
@@ -28,6 +29,8 @@
 - MTTF: Mean time to failures
 - MTBF: Mean time between failures
 - Availabilty = (MTTF/MTTR)*100
+
+# Session 2
 
 ---
 
