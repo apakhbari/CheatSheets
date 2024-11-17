@@ -36,6 +36,9 @@
 - Zabbix DB consists of two sets of Tables in DB: History and Trend
 - History: cconsisted of 5 tables, save exact data 
 - Trend:
+
+- Active Zabbix Proxy: sends data automatically to server
+- Passive Zabbix Proxy: Server have to request proxy to send data in response
 ---
 s
 # Theoretical
