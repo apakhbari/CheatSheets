@@ -35,7 +35,7 @@
 # Session 3
 - Zabbix DB consists of two sets of Tables in DB: History and Trend
 - History: cconsisted of 5 tables, save exact data 
-
+- Trend
 ---
 s
 # Theoretical
