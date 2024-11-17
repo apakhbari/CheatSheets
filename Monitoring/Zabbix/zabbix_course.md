@@ -44,6 +44,7 @@
 - BSS : Business support system: CRM - Recommendation system - Billing
 - OSS: Operation support system: 
 
+- 
 ---
 
 # Theoretical
