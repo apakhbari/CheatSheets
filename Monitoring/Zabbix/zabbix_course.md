@@ -37,7 +37,7 @@
 - History: cconsisted of 5 tables, save exact data 
 - Trend:
 
-- Active Zabbix Proxy: sends data automatically to server. Better for complex situations where server can't see proxy due to firewalls
+- Active Zabbix Proxy: sends data automatically to server. Better for complex situations where server can't see proxy due to firewalls. 
 - Passive Zabbix Proxy: Server have to request proxy to send data in response. Better for complex situations where proxy can't see server due to firewalls
 
 
