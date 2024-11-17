@@ -41,6 +41,9 @@
 - Passive Zabbix Proxy: Server have to request proxy to send data in response. Better for complex situations where proxy can't see server due to firewalls
 
 
+- BSS : Business support system: CRM - Recommendation system - Billing
+- OSS: Operation support system: 
+
 ---
 
 # Theoretical
