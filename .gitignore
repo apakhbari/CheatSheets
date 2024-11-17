@@ -21,3 +21,4 @@ Event-Streaming/Apache-Kafka/kraft-cluster/cfssl/cfssl-kafka-3/root-ca.pem
 Event-Streaming/Apache-Kafka/kraft-cluster/cfssl/cfssl-kafka-all/kafka-all-key.pem
 Event-Streaming/Apache-Kafka/kraft-cluster/cfssl/cfssl-kafka-all/kafka-all.pem
 Event-Streaming/Apache-Kafka/kraft-cluster/cfssl/cfssl-kafka-all/root-ca-key.pem
+.DS_STORE
