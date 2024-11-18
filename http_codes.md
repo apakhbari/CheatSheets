@@ -91,7 +91,6 @@
 APA 🖖🏻
 
 ## Links
-- Course: https://www.udemy.com/course/apache_kafka/?couponCode=2021PM20
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
