@@ -10,7 +10,6 @@
                                                                                     
 ```
 
-# HTTP Status Codes Explained Individually
 
 ## Table of Contents
 - [Overview of Status Codes](#overview-of-status-codes)
