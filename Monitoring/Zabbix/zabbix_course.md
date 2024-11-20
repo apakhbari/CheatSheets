@@ -48,8 +48,10 @@
 - Zabbix agent developed using C
 - Zabbix agent 2 developed using Go
 - In any given zabbix stack, there is only one active zabbix server
+- Metric collection categorization:
+1. whether it is white box or black box: 
 - Zabbix features:
-1. Metrice Collection:
+1. Metric Collection:
 
 
 ---
