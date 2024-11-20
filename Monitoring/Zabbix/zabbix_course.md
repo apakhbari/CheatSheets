@@ -47,7 +47,7 @@
 # Session 4
 - Zabbix agent developed using C
 - Zabbix agent 2 developed using Go
-
+- In any given zabbix stack, there is only one active zabbix server
 
 
 ---
