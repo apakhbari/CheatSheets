@@ -54,6 +54,9 @@
 - in monitoring log files, you need to use zabbix agnet in active mode, since it is evet-based 
 - Zabbix features:
 1. Metric Collection:
+- Custom zabbix monitoring:
+1. 
+2. 
 
 
 ---
