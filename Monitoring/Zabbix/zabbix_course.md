@@ -59,6 +59,10 @@
 2. External Check: Script is on zabbix server/proxy, whenever/however it need to be executed is uppon zabbix server/proxy 
 3. Script: Is using Java script, it is on zabbix server/proxy whenever/however it need to be executed is uppon zabbix server/proxy
 
+- Monitored numeric data has differnet forms:
+1. Cummulative: like age, machine kilometer, number of all services from firs day --> this metric won't reduce it is whether constant or adds up. Each time you monitor this it is related to last time
+2. Gauge: current speed of car, -- > Each time you monitor this it is not related to last time
+
 ---
 
 # Theoretical
