@@ -54,7 +54,7 @@
 - in monitoring log files, you need to use zabbix agnet in active mode, since it is evet-based 
 - Zabbix features:
 1. Metric Collection:
-- Custom zabbix monitoring:
+- Custom zabbix Metric Collection:
 1. Zabbix Trapper: Script is on host, whenever/however it executed the response is be sent to zabbix server 
 2. External Check: Script is on zabbix server/proxy, whenever/however it need to be executed is uppon zabbix server/proxy 
 3. Script: 
