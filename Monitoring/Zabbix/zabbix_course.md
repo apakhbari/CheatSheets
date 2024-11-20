@@ -50,7 +50,7 @@
 - In any given zabbix stack, there is only one active zabbix server
 - Metric collection categorization:
 1. whether it is white box or black box: in black box you have a generally limited access to metrics but in white box you have detailed information inside system
-2- whether it is pushing (active/trapping) or pulling (passive): in pulling monitoring server requests to desired server to get its metrics, in pushing monitoring server does not requests to desired server and desired server send its metrics to monitoring server
+2- whether it is pushing (active/trapping/event based) or pulling (passive): in pulling monitoring server requests to desired server to get its metrics, in pushing monitoring server does not requests to desired server and desired server send its metrics to monitoring server
 - Zabbix features:
 1. Metric Collection:
 
