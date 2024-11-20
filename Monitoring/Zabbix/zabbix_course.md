@@ -45,6 +45,10 @@
 - OSS: Operation support system: 
 
 # Session 4
+- Zabbix agent developed using C
+- Zabbix agent 2 developed using Go
+
+
 
 ---
 
