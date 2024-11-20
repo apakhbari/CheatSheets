@@ -57,7 +57,7 @@
 - Custom zabbix Metric Collection:
 1. Zabbix Trapper: Script is on host, whenever/however it executed the response is be sent to zabbix server 
 2. External Check: Script is on zabbix server/proxy, whenever/however it need to be executed is uppon zabbix server/proxy 
-3. Script: 
+3. Script: Is using Java script, it is on zabbix server/proxy whenever/however it need to be executed is uppon zabbix server/proxy
 
 ---
 
