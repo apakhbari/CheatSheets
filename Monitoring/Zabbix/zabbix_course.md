@@ -55,7 +55,7 @@
 - Zabbix features:
 1. Metric Collection:
 - Custom zabbix monitoring:
-1. 
+1. Zabbix Trapper: Script is on host, whenever/however it executed the response is be sent to zabbix server 
 2. 
 3. 
 
