@@ -63,6 +63,7 @@
 1. Cummulative: like age, machine kilometer, number of all services from firs day --> this metric won't reduce it is whether constant or adds up. Each time you monitor this it is related to last time. It is not good for operation monitoring so we derivative/Slope (مشتق/شیب خط) it
 2. Gauge: current speed of car, Memory usage -- > Each time you monitor this it is not related to last time
 
+- Monitoring is usually based on time-series, meaning that it can be mapped into a x-y axis with x axis being time and y axis being value of metric
 ---
 
 # Theoretical
