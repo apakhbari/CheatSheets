@@ -72,7 +72,7 @@
 
 Monitoring requierments:
 1- HLD --> High Level Design
-2- LLD
+2- LLD --> Low Level Design
 3- Process Flow
 4- KPi
 
