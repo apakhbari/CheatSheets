@@ -66,6 +66,9 @@
 - Monitoring is usually based on time-series, meaning that it can be mapped into a x-y axis with x axis being time and y axis being value of metric
 
 # Session 5
+- Discovery has two methods:
+1. bottom up: Monitoring server does not need to know things about its components since components introduce themselves
+2. top down: You need to be sure about your network, in zabbix only works for active agent (for example snmp does not work on it)
 
 ---
 
