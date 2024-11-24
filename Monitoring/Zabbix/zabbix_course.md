@@ -70,6 +70,12 @@
 1. bottom up: Monitoring server does not need to know things about its components since components introduce themselves. In low level discovery (LLD) you can fine tune what needs to be monitored where as in top down approach there is a template that applies for all hosts
 2. top down: You need to be sure about your network, in zabbix only works for active agent (for example snmp does not work on it)
 
+Monitoring requierments:
+1- HLD --> High Level Design
+2- LLD
+3- Process Flow
+4- KPi
+
 ---
 
 # Theoretical
