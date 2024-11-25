@@ -76,6 +76,7 @@ Monitoring requierments:
 3- Process Flow (Sequence Diagram)
 4- KPi
 
+- Rules can be applied on Auto registration/discovery in zabbix
 ---
 
 # Theoretical
