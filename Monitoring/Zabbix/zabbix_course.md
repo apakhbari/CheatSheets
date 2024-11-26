@@ -74,7 +74,7 @@
 1- HLD --> High Level Design
 2- LLD --> Low Level Design
 3- Process Flow (Sequence Diagram)
-4- KPi
+4- KPI
 
 - Rules can be applied on Auto registration/discovery in zabbix
 - Host groups and User groups are being used for permissions
