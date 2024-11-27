@@ -79,6 +79,9 @@
 - Rules can be applied on Auto registration/discovery in zabbix
 - Host groups and User groups are being used for permissions
 - For categorizing you can use tags
+
+# Session 6
+
 ---
 
 # Theoretical
