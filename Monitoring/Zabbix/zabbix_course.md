@@ -115,6 +115,7 @@
 
 m3,7,11,15,19,23,27,31,35,...  something abbreviated like m/4
 h12-18s30 what is going to be minutes? say some times its executes
+- create two other icmp and then trigger it
 
 
 in zabbix mysql DB:
