@@ -96,6 +96,8 @@
 
 md<filter>wd<filter>h<filter>m<filter>s<filter> , filter: [<from>[-<to>]][/<step>][,<filter>]
 
+minute 15 second 30 of each hour: m15s30
+
 ---
 
 # Theoretical
