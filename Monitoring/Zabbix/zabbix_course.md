@@ -85,6 +85,7 @@
 - in Units of zabbix, B (for bite) divides by 1024 for human readability and b (for bitee) divides by 1000 for human readability
 
 - Update interval is maximum 24 h
+- Monitoring using custom intervals for saturday to wednesday would be: 1-3,08:00-18:00 + 6-7,08:00-18:00
 
 ---
 
