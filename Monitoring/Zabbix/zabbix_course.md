@@ -84,6 +84,7 @@
 - By regulatory definition, Network Throughput is divides by (/) 1000 for getting Kb, Mb, etc but Disk space is divides by (/) 1024 for getting Kb, Mb, etc
 - in Units of zabbix, B (for bite) divides by 1024 for human readability and b (for bitee) divides by 1000 for human readability
 
+- In Item definition section
 - Update interval is maximum 24 h
 - Update interval 0 means do not monitor
 - Monitoring using custom intervals (8 records in sum):
@@ -92,6 +93,8 @@
   - [Add 2 custom interval record with type Flexible] other times of weekday we monitor with 3m time interval: 1-3,18:00-23:59 + 6-7,18:00-23:59 + 1-3,00:00-08:00 + 6-7,00:00-08:00
   - [Add custom interval record with type Flexible] on thursday we monitor 5m time interval: 4-4,00:00-23:59
   - [Add custom interval record with type Flexible] on friday we monitor 10m time interval: 5-5,00:00-23:59
+
+md<filter>wd<filter>h<filter>m<filter>s<filter> , filter: [<from>[-<to>]][/<step>][,<filter>]
 
 ---
 
