@@ -81,7 +81,7 @@
 - For categorizing you can use tags
 
 # Session 6
-
+- Network Throughput is divides by (/) 1000 for getting Kb, Mb, etc but Disk space is divides by (/) 1000 for getting Kb, Mb, etc
 
 ---
 
