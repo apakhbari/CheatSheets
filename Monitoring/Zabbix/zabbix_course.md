@@ -81,8 +81,10 @@
 - For categorizing you can use tags
 
 # Session 6
-- Network Throughput is divides by (/) 1000 for getting Kb, Mb, etc but Disk space is divides by (/) 1024 for getting Kb, Mb, etc
+- By regulatory definition, Network Throughput is divides by (/) 1000 for getting Kb, Mb, etc but Disk space is divides by (/) 1024 for getting Kb, Mb, etc
 - in Units of zabbix, B (for bite) divides by 1024 for human readability and b (for bitee) divides by 1000 for human readability
+
+- Update interval is maximum 24 h
 
 ---
 
