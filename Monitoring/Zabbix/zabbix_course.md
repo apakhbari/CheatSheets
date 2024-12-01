@@ -84,7 +84,7 @@
 - By regulatory definition, Network Throughput is divides by (/) 1000 for getting Kb, Mb, etc but Disk space is divides by (/) 1024 for getting Kb, Mb, etc
 - in Units of zabbix, B (for bite) divides by 1024 for human readability and b (for bitee) divides by 1000 for human readability
 
-- In Item definition section
+#### In Item definition section
 - Update interval is maximum 24 h
 - Update interval 0 means do not monitor
 - Monitoring using custom intervals Type Flxible (8 records in sum):
@@ -122,12 +122,19 @@ in zabbix mysql DB:
 $ show tables like "history%";
 
 history --> table for float data
-history_bin --> 
-history_log --> 
-history_str --> 
-history_text --> 
+history_bin
+history_log
+history_str
+history_text
 history_uint --> table for unsigned integer
+
+$ show tables like "trends%";
+
+trends
+trends_uint
 ```
+
+- by default history is being kept 31 days and trends is 365 days
 
 ---
 
