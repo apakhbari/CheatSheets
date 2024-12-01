@@ -100,7 +100,9 @@ md<filter>wd<filter>h<filter>m<filter>s<filter> , filter: [<from>[-<to>]][/<step
 - minute 15 second 30 of each hour: m15s30
 - m5 --> m5s0 minute 5 of each hour, second 0
 - h2 --> h2m0s0 every day at 2:00:00 am
-- m/5 --> m/5s0 every five minutes at 00 second
+- m/5 --> m/5s0 every five minutes at 00 second, for example 5 10 15 20 ...
+- h/2m/3 --> 02:03 02:06 02:09 ... + 04:03 04:06 04:09 ... + 06:03 06:06 06:09 ... 
+- h0,6,12,18 = h/6 = h/6m0s0
 ---
 
 # Theoretical
