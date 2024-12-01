@@ -1269,7 +1269,7 @@ base64 encoded pub key
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>The Ctrl+C key combination generates a SIGINT signal and sends it to any processes currently running in the shell. SIGINT signal interrupts the running process, which for most processes causes them to stop.
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ init 6 —> restart
 - <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>$ timedatectl set-timezone Asia/Tehran
-
+- cronjob has minute as it smallest value
 ———————————————
 
 **When you go to a system for first time:**
