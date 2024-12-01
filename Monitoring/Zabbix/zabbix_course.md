@@ -116,6 +116,19 @@
 m3,7,11,15,19,23,27,31,35,...  something abbreviated like m/4
 h12-18s30 what is going to be minutes? say some times its executes
 
+
+in zabbix mysql DB:
+```
+$ show tables like "history%";
+
+history --> table for float data
+history_bin --> 
+history_log --> 
+history_str --> 
+history_text --> 
+history_uint --> table for unsigned integer
+```
+
 ---
 
 # Theoretical
