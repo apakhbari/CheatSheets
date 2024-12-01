@@ -87,16 +87,20 @@
 - In Item definition section
 - Update interval is maximum 24 h
 - Update interval 0 means do not monitor
-- Monitoring using custom intervals (8 records in sum):
+- Monitoring using custom intervals Type Flxible (8 records in sum):
   - set Update interval to 0
   - [Add 2 custom interval record with type Flexible] for saturday to wednesday would be monitoring with 1m time interval: 1-3,08:00-17:59 + 6-7,08:00-17:59
   - [Add 2 custom interval record with type Flexible] other times of weekday we monitor with 3m time interval: 1-3,18:00-23:59 + 6-7,18:00-23:59 + 1-3,00:00-08:00 + 6-7,00:00-08:00
   - [Add custom interval record with type Flexible] on thursday we monitor 5m time interval: 4-4,00:00-23:59
   - [Add custom interval record with type Flexible] on friday we monitor 10m time interval: 5-5,00:00-23:59
 
-md<filter>wd<filter>h<filter>m<filter>s<filter> , filter: [<from>[-<to>]][/<step>][,<filter>]
+- Custom intervals Scheduling:
+``` m<filter>wd<filter>h<filter>m<filter>s<filter> ```
 
-md = month day [1-31] , wd = weekday [1-7] , h = hour [0-59] , s = second [0-59]
+``` filter: [<from>[-<to>]][/<step>][,<filter>] ```
+
+``` md = month day [1-31] , wd = weekday [1-7] , h = hour [0-59] , s = second [0-59] ```
+
 
 - when before value is omitted it means full range, when after value is omitted it means 0 by default
 - minute 15 second 30 of each hour: m15s30
@@ -107,6 +111,10 @@ md = month day [1-31] , wd = weekday [1-7] , h = hour [0-59] , s = second [0-59]
 - h0,6,12,18 = h/6 = h/6m0s0
 - h8-18,22 --> from 08:00 to 18:00 plus 22:00
 - md15wd3h/1m/1 --> if 15-th day of month was equal to third day of week, then do this every 1 minute
+- h15-18m30
+
+m3,7,11,15,19,23,27,31,35,...  something abbreviated like m/4
+h12-18s30 what is going to be minutes? say some times its executes
 
 ---
 
