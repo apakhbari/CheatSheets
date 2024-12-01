@@ -96,8 +96,9 @@
 
 md<filter>wd<filter>h<filter>m<filter>s<filter> , filter: [<from>[-<to>]][/<step>][,<filter>]
 
-minute 15 second 30 of each hour: m15s30
-
+- when before value is omitted it means full range, when after value is omitted it means 0 by default
+- minute 15 second 30 of each hour: m15s30
+- m5 --> minute 5 of each hour, second 0
 ---
 
 # Theoretical
