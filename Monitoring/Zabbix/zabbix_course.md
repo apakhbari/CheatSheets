@@ -137,6 +137,8 @@ trends_uint
 
 - by default history is being kept 31 days and trends is 365 days
 
+# Session 7
+
 ---
 
 # Theoretical
