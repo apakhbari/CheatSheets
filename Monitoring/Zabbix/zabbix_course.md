@@ -312,6 +312,7 @@ $ zabbix_get -k system.sw.packages[MariaDB-server] -s 192.168.1.101
 $ zabbix_get -k system.sw.packages['MariaDB-server-\d',,short] -s 192.168.1.101 
 ```
 
+
 ---
 
 # Theoretical
@@ -321,6 +322,7 @@ $ zabbix_get -k system.sw.packages['MariaDB-server-\d',,short] -s 192.168.1.101
 ## Files & directories
 
 ## Tips & Tricks
+- If you don't save an item via history, you can't have trigger on it.
 
 ## Commands
 
