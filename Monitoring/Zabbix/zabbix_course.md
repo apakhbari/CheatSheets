@@ -266,50 +266,53 @@ line 11=> excludepkgs=zabbix*
 $ rpm -Uvh https://repo.zabbix.com/zabbix/7.0/rocky/9/x86_64/zabbix-release-latest.el9.noarch.rpm
 $ dnf install zabbix-agent2 zabbix-agent2-plugin-*
 ```
-- configs    
+- configs
+``` 
 $ vim /etc/zabbix/zabbix_agent2.conf
 
-            Line 80=> Server=[zabbix server or proxy address]
-            Line 133=> ServerActive=[zabbix server or proxy address]
-            Line 144 => Hostname=LTEH-R04U10-1234
-
+Line 80=> Server=[zabbix server or proxy address]
+Line 133=> ServerActive=[zabbix server or proxy address]
+Line 144 => Hostname=LTEH-R04U10-1234
        
-    # systemctl enable --now zabbix-agent2.service
-    # systemctl status zabbix-agent2.service
+$ systemctl enable --now zabbix-agent2.service
+$ systemctl status zabbix-agent2.service
     
-    # ss -lntp | grep zabbix
-    # lsof -Panp [zabbix agent pid] -iTCP -sTCP:LISTEN
+$ ss -lntp | grep zabbix
+$ lsof -Panp [zabbix agent pid] -iTCP -sTCP:LISTEN
     
-    # firewall-cmd --add-service=zabbix-agent --permanent
-    # firewall-cmd --reload
+$ firewall-cmd --add-service=zabbix-agent --permanent
+$ firewall-cmd --reload
+```
         
-Testing zabbix agent connection:
-    on zabbix server:
-            
-    # telnet 192.168.1.101 10050
-    # dnf install zabbix-get
-    
-    # zabbix_get -k agent.ping -s 192.168.1.101
-    # zabbix_get -k agent.hostname -s 192.168.1.101
-    # zabbix_get -k agent.version -s 192.168.1.101
-    # zabbix_get -k agent.variant -s 192.168.1.101
-    # zabbix_get -k system.uptime -s 192.168.1.101
-    # zabbix_get -k agent.variant -s 192.168.1.101
-    # zabbix_get -k vfs.dir.count[/home] -s 192.168.1.101
-    # zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101
-    # zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101 | jq
-    # zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101 | jq .[].user
-    # zabbix_get -k system.sw.os -s 192.168.1.101
-    # zabbix_get -k system.sw.os[full] -s 192.168.1.101 
-    # zabbix_get -k system.sw.os[short] -s 192.168.1.101 
-    # zabbix_get -k system.sw.os[name] -s 192.168.1.101
-    # zabbix_get -k vfs.file.contents[/etc/system-release] -s 192.168.1.101 
-    # zabbix_get -k system.sw.os[name] -s 192.168.1.101 
-    # zabbix_get -k vfs.file.owner[/etc/system-release] -s 192.168.1.101 
-    # zabbix_get -k vfs.file.size[/etc/system-release] -s 192.168.1.101 
-    # zabbix_get -k system.sw.packages[MariaDB-server] -s 192.168.1.101
-    # zabbix_get -k system.sw.packages['MariaDB-server-\d',,short] -s 192.168.1.101 
 
+- Testing zabbix agent connection:
+```
+on zabbix server:
+            
+$ telnet 192.168.1.101 10050
+$ dnf install zabbix-get
+    
+$ zabbix_get -k agent.ping -s 192.168.1.101
+$ zabbix_get -k agent.hostname -s 192.168.1.101
+$ zabbix_get -k agent.version -s 192.168.1.101
+$ zabbix_get -k agent.variant -s 192.168.1.101
+$ zabbix_get -k system.uptime -s 192.168.1.101
+$ zabbix_get -k agent.variant -s 192.168.1.101
+$ zabbix_get -k vfs.dir.count[/home] -s 192.168.1.101
+$ zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101
+$ zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101 | jq
+$ zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101 | jq .[].user
+$ zabbix_get -k system.sw.os -s 192.168.1.101
+$ zabbix_get -k system.sw.os[full] -s 192.168.1.101 
+$ zabbix_get -k system.sw.os[short] -s 192.168.1.101 
+$ zabbix_get -k system.sw.os[name] -s 192.168.1.101
+$ zabbix_get -k vfs.file.contents[/etc/system-release] -s 192.168.1.101 
+$ zabbix_get -k system.sw.os[name] -s 192.168.1.101 
+$ zabbix_get -k vfs.file.owner[/etc/system-release] -s 192.168.1.101 
+$ zabbix_get -k vfs.file.size[/etc/system-release] -s 192.168.1.101 
+$ zabbix_get -k system.sw.packages[MariaDB-server] -s 192.168.1.101
+$ zabbix_get -k system.sw.packages['MariaDB-server-\d',,short] -s 192.168.1.101 
+```
 
 ---
 
