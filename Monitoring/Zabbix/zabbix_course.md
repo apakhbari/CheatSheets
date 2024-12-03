@@ -154,6 +154,26 @@ trends_uint
   - telnet
   - ntp
 
+- Create TCP Simple Check:
+```
+    Data collection-> Hosts -> Items -> create item:
+        Name: TCP: SSH Status
+        Type: Simple Check
+        Key: net.tcp.service[ssh]
+```
+```     
+    Data collection-> Hosts -> Items -> create item:
+        Name: TCP: MariaDB Status
+        Type: Simple Check
+        Key: net.tcp.service[tcp,,3306]
+```     
+    
+- On Zabbix Server (SELinux):
+```
+$ grep zabbix_t /var/log/audit/audit.log | audit2allow -M zabbix-server
+$ semodule -i zabbix-server.pp
+```
+
 ---
 
 # Theoretical
