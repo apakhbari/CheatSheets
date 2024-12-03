@@ -138,7 +138,8 @@ trends_uint
 - by default history is being kept 31 days and trends is 365 days
 
 # Session 7
-### Create TCP Simple Check:
+## Items
+### Create TCP Simple Check (TYPE: Simple Check):
 - Since UDP is connection-less, you can't monitor it, only NTP has the ability to be monitored from UDP services
 - net.tcp.service.perf --> returns response time and good for performance monitoring
 - In items for monitoring TCP connection (net.tcp.service) you can use: ITEM > Type: Simple Check > net.tcp.service . You can monitor these services using this:
@@ -175,6 +176,13 @@ Data collection-> Hosts -> Items -> create item:
 ```
 $ grep zabbix_t /var/log/audit/audit.log | audit2allow -M zabbix-server
 $ semodule -i zabbix-server.pp
+```
+
+### SSH Agent (TYPE: SSH Agent)
+- needs permissions and is somehow a whitebox monitoring
+- A quick trick to return whether a service is up or no and return 0/1:
+```
+$ systemctl is-active mariadb | grep ^a -c
 ```
 
 ---
