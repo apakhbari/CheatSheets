@@ -185,6 +185,73 @@ $ semodule -i zabbix-server.pp
 $ systemctl is-active mariadb | grep ^a -c
 ```
 
+- On Zabbix Server:
+```
+$ getent passwd zabbix
+$ ls -ld /var/lib/zabbix
+$ mkdir /var/lib/zabbix
+$ chown zabbix: /var/lib/zabbix/
+$ chmod 700 /var/lib/zabbix/
+        
+$ sudo -u zabbix ssh-keygen
+$ sudo -u zabbix ssh-copy-id -n zabbix_ssh@192.168.0.101
+    
+* copy the public key
+```
+    
+- On Target server:
+```
+$ useradd zabbix_ssh
+$ passwd zabbix_ssh
+$ mkdir /home/zabbix_ssh/.ssh/
+
+$ vim .ssh/authorized_keys
+
+* paste the public Key
+
+$ chmod 700 .ssh/authorized_keys
+```
+   
+- On Zabbix Server:
+```
+$ sudo -u zabbix ssh "zabbix_ssh"@192.168.0.101 hostname
+```
+
+- On Zabbix Server:
+```
+$ vim /etc/zabbix/zabbix_server.conf:
+  Line 632: SSHKeyLocation=/var/lib/zabbix/.ssh/
+
+$ systemctl restart zabbix-server.service
+        
+$ grep zabbix_t /var/log/audit/audit.log | audit2allow -M zabbix_server_custom
+        
+$ semodule -i zabbix_server_custom.pp
+```
+
+- on ZABBIx UI:
+```     
+Data collection-> Hosts -> Items -> create item     
+  Name: MariaDB: Service Status (By SSH)
+  Type: SSH Agent
+  Key: ssh.run[MariaDB.status]
+  Authentication Method: Public key
+  user name: zabbix_ssh
+  Public key file: id_rsa.pub
+  Private key file: id_rsa
+  Script: systemctl is-active mariadb.service | grep -c ^a
+  app: MariaDB
+```
+- On Zabbix Server:
+```
+$ grep zabbix_t /var/log/audit/audit.log | audit2allow -M zabbix_server_custom
+$ semodule -i zabbix_server_custom.pp
+```
+
+- Ping Script:
+```
+$ ping -c 1 8.8.8.8 | tail -n1 | cut -d "=" -f2 | cut -d "/" -f2
+```
 ---
 
 # Theoretical
