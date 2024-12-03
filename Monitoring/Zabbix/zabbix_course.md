@@ -282,8 +282,7 @@ $ lsof -Panp [zabbix agent pid] -iTCP -sTCP:LISTEN
     
 $ firewall-cmd --add-service=zabbix-agent --permanent
 $ firewall-cmd --reload
-```
-        
+```   
 
 - Testing zabbix agent connection:
 ```
