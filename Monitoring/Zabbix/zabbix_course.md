@@ -141,7 +141,18 @@ trends_uint
 - Since UDP is connection-less, you can't monitor it, only NTP has the ability to be monitored from UDP services
 - net.tcp.service.perf --> returns response time and good for performance monitoring
 - In items for monitoring TCP connection you can use: ITEM > Type: Simple Check > net.tcp.service . You can monitor these services using this:
-  - 
+  - ftp
+  - http
+  - https
+  - imap
+  - ldap
+  - nntp
+  - pop
+  - smtp
+  - ssh
+  - tcp
+  - telnet
+  - ntp
 
 ---
 
