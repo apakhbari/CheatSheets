@@ -138,6 +138,7 @@ trends_uint
 - by default history is being kept 31 days and trends is 365 days
 
 # Session 7
+- Since UDP is connection-less, you can't monitor it, only NTP has the ability to be monitored from UDP services
 - net.tcp.service.perf --> returns response time and good for performance monitoring
 - In items for monitoring TCP connection you can use: ITEM > Type: Simple Check > net.tcp.service . You can monitor these services using this:
   - 
