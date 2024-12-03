@@ -138,6 +138,9 @@ trends_uint
 - by default history is being kept 31 days and trends is 365 days
 
 # Session 7
+- net.tcp.service.perf --> returns response time and good for performance monitoring
+- In items for monitoring TCP connection you can use: ITEM > Type: Simple Check > net.tcp.service . You can monitor these services using this:
+  - 
 
 ---
 
