@@ -138,6 +138,7 @@ trends_uint
 - by default history is being kept 31 days and trends is 365 days
 
 # Session 7
+### Create TCP Simple Check:
 - Since UDP is connection-less, you can't monitor it, only NTP has the ability to be monitored from UDP services
 - net.tcp.service.perf --> returns response time and good for performance monitoring
 - In items for monitoring TCP connection (net.tcp.service) you can use: ITEM > Type: Simple Check > net.tcp.service . You can monitor these services using this:
@@ -154,21 +155,23 @@ trends_uint
   - telnet
   - ntp
 
-- Create TCP Simple Check:
+- SSH Port Status
 ```
-    Data collection-> Hosts -> Items -> create item:
-        Name: TCP: SSH Status
-        Type: Simple Check
-        Key: net.tcp.service[ssh]
+Data collection-> Hosts -> Items -> create item:
+  Name: TCP: SSH Status
+  Type: Simple Check
+  Key: net.tcp.service[ssh]
 ```
+
+- MariaDB Port Status
 ```     
-    Data collection-> Hosts -> Items -> create item:
-        Name: TCP: MariaDB Status
-        Type: Simple Check
-        Key: net.tcp.service[tcp,,3306]
+Data collection-> Hosts -> Items -> create item:
+  Name: TCP: MariaDB Status
+  Type: Simple Check
+  Key: net.tcp.service[tcp,,3306]
 ```     
     
-- On Zabbix Server (SELinux):
+- On Zabbix Server for giving permissions (SELinux):
 ```
 $ grep zabbix_t /var/log/audit/audit.log | audit2allow -M zabbix-server
 $ semodule -i zabbix-server.pp
