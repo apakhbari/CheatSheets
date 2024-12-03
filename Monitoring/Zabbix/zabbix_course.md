@@ -294,10 +294,9 @@ $ dnf install zabbix-get
     
 $ zabbix_get -k agent.ping -s 192.168.1.101
 $ zabbix_get -k agent.hostname -s 192.168.1.101
-$ zabbix_get -k agent.version -s 192.168.1.101
-$ zabbix_get -k agent.variant -s 192.168.1.101
+$ zabbix_get -k agent.version -s 192.168.1.101 --> 7.0.6
+$ zabbix_get -k agent.variant -s 192.168.1.101 --> agent 1 or 2
 $ zabbix_get -k system.uptime -s 192.168.1.101
-$ zabbix_get -k agent.variant -s 192.168.1.101
 $ zabbix_get -k vfs.dir.count[/home] -s 192.168.1.101
 $ zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101
 $ zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101 | jq
