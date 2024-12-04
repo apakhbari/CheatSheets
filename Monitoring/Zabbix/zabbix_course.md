@@ -391,6 +391,182 @@ On zabbix UI:
   - Version 3 => Encrypted + Community Auth
 
 
+```
+SNMP Monitoring:
+    https://mibbrowser.online/mibdb_search.php
+    On Target Server:
+        # dnf install net-snmp net-snmp-utils
+        # vim /etc/snmp/snmpd.conf
+          line 41=> com2sec notConfigUser default zabbix-snmp
+          line 57 add => view systemview included .1.3.6.1
+
+        # systemctl enable --now snmpd
+
+        # firewall-cmd --add-port=161/udp --permanent
+        # firewall-cmd --reload
+
+        # snmpwalk -v 2c -c zabbix-snmp 127.0.0.1
+
+    On Zabbix server:
+        # dnf install net-snmp-utils
+        # snmpwalk -v 2c -c zabbix-snmp 192.168.1.1
+    On zabbix Server:
+        
+        # dnf install net-snmp-utils
+        
+        # snmpwalk -v 2c -c zabbix-snmp -O n 192.168.1.101
+```
+
+
+```
+
+====================================
+
+ZABBIX Agent:
+    On Zabbix UI:
+        Configuration->Hosts->items-> Create Item:
+         name: Check Zabbix agent connectivity
+         Key: agent.ping
+         Show Value Zabbix agent ping status
+         Application: ZABBIX Agent
+    
+    On Zabbix Server:
+        # zabbix_server -R config_cache_reload
+-------------------------------------------------------- 
+    On Target Server:
+        # vim /etc/zabbix/zabbix_agent2.conf
+                line 418: 
+                AllowKey=system.run[systemctl is-*]
+        # systemctl restart zabbix-agent2.service
+           
+    On Zabbix UI:
+        Configuration->Hosts->items-> Create Item:
+         name: MariaDB Service Running Status (via Agent - Using System Run)
+         Key: system.run["systemctl is-active mariadb | grep -c ^a"]
+         Application: MariaDB
+    
+---------------------------------------------------    
+    On Target Server:
+        
+        # vim /etc/zabbix/zabbix_agentd2.d/mariadb_agent.conf:
+                UserParameter=mariadb.status,systemctl is-active mariadb | grep -c ^a
+
+        # systemctl restart zabbix-agent2.service
+       
+    On Zabbix UI:
+        Configuration->Hosts->items-> Create Item:
+         name: MariaDB Service Running Status (via Agent - Using UserParameter)
+         Key: mariadb.status
+         Application: MariaDB      
+    
+===============================
+# egrep -v "^(#|$)" /etc/zabbix/zabbix_agent2.conf 
+
+PidFile=/var/run/zabbix/zabbix_agent2.pid
+LogFile=/var/log/zabbix/zabbix_agent2.log
+LogFileSize=50
+Server=192.168.1.150
+ServerActive=192.168.1.150
+Hostname=anisa-mariadb-01-thdc
+BufferSend=300
+BufferSize=1000
+Alias=system.run.mariadb:system.run["systemctl is-active mariadb | grep -c ^active"]
+Include=/etc/zabbix/zabbix_agent2.d/*.conf
+ControlSocket=/tmp/agent.sock
+AllowKey=system.run[systemctl is-*]
+
+ ----------------------------------------------------   
+On Target Server:
+        # vim /etc/zabbix/zabbix_agentd2.d/mariadb_agent.conf:
+         UserParameter=mariadb.version,rpm -qa | grep -i mariadb-server
+               
+        # systemctl restart zabbix-agent2.service
+            
+    On Zabbix UI:
+        Configuration->Hosts->Items->Create item:
+         Name: MariaDB Version
+         Type: zabbix agent
+         Key: mariadb.version
+         type of information: Character
+         History storage period: Do not Keep ...
+         Application: MariaDB
+         Populates host inventory field= Software Application A
+         
+         
+         # zabbix_server -R config_cache_reload
+
+----------------------------------------------------------                         
+                
+    On Zabbix UI:
+        Configuration->Hosts->Items->Create item:
+         Name: MariaDB Version (Using built-in keys)
+         Type: zabbix agent
+         Key: system.sw.packages[MariaDB-server,,short]
+         type of information: Character
+         History storage period: Do not Keep ...
+         Application: MariaDB
+         Populates host inventory field= Software Application A    
+-------------------------------------------------------
+On Zabbix UI:
+        Configuration->Hosts->Items->Create item:
+         Name: OS Version
+         Type: zabbix agent
+         Key: system.sw.os[name]
+         type of information: Character
+         History storage period: Do not Keep ...
+         Application: OS
+         Populates host inventory field= OS   
+-------------------------------------------------------
+On Zabbix UI:
+        Configuration->Hosts->Items->Create item:
+         Name: OS Full Veriosn
+         Type: zabbix agent
+         Key: vfs.file.contents[/etc/system-release]
+         type of information: Character
+         History storage period: Do not Keep ...
+         Application: OS
+         Populates host inventory field= OS Full 
+         
+----------------------------------------------------------       
+                
+    On Target Server:
+        # mkdir /var/lib/zabbix
+        # chown zabbix:zabbix /var/lib/zabbix
+        # chmod 700 /var/lib/zabbix
+        # sudo -u zabbix vim /var/lib/zabbix/server-info
+Vendor: Anisa
+Contact: Mr. Ahmadi => 09123333333
+Location: Tehran, IT Room, Rack 5
+latitude: 35.7317819905064
+longitude: 51.4131612661465
+Deployment status: Production
+
+            
+    On Zabbix UI:
+        Configuration->Hosts->Items->Create item:
+         Name: Vendor
+         Type: zabbix agent
+         Key: vfs.file.regexp[/var/lib/zabbix/server-info,"Vendor: (.+)",,,,\1]
+         type of information: Character
+         History storage period: Do not Keep ...
+         Application: OS
+         Populates host inventory field= Vendor  
+
+    On Zabbix UI:
+        Configuration->Hosts->Items->Create item:
+         Name: Contact Point
+         Type: zabbix agent
+         Key: vfs.file.regexp[/var/lib/zabbix/server-info,"Contact: (.+)",,,,\1]
+         type of information: Character
+         History storage period: Do not Keep ...
+         Application: OS
+         Populates host inventory field= Contact
+         
+         
+         
+
+```
+
 ---
 
 # Theoretical
