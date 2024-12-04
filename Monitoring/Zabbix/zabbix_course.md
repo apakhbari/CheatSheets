@@ -385,8 +385,10 @@ On zabbix UI:
 - If we want human-readable names for SNMP, we need to have its related names on zabbix
 - These SNMP codes are hard-coded on all machines
 
-
-
+- SNMP has Different Versions:
+  - Version 1 => Plain, Clear, without Authentication
+  - Version 2 => Plain, Community Auth
+  - Version 3 => Encrypted + Community Auth
 
 
 ---
