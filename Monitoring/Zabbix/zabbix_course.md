@@ -361,6 +361,13 @@ On zabbix UI:
 |        UserParameter      |               service.status[mariadb,enabled] |
 
 - When Item > key is really long, define an aliase for it
+
+### SNMP
+- Simple Network Management Protocol
+- SNMP is also uasble for setting data on hosts
+
+
+
 ---
 
 # Theoretical
