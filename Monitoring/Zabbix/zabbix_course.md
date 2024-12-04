@@ -387,12 +387,24 @@ On zabbix UI:
 
 - SNMP has Different Versions:
   - Version 1 => Plain, Clear, without Authentication
-  - Version 2 => Plain, Community Auth
+  - Version 2 (2c) => Plain, Community Auth
   - Version 3 => Encrypted + Community Auth
 
 - SNMP Port Number: 161/udp
 
 - SNMP DES encryption is not secure and does not work with new OSs
+
+- Some SNMP commands
+```
+$ snmptranslate -On SNMPV2-MIB::sysName.0
+.1.3.6.1.2.1.1.5.0
+
+$ snmpwalk -v2x -c public 127.0.0.1 SNMPv2-MIB::sysName.0
+SNMPv2-MIB::sysName.0 = STRING: target-server
+
+$ snmpwalk -v2x -c public 127.0.0.1 .1.3.6.1.2.1.1.5.0
+SNMPv2-MIB::sysName.0 = STRING: target-server
+```
 
 ```
 SNMP Monitoring:
