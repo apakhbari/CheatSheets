@@ -379,6 +379,7 @@ On zabbix UI:
   - .1.2.3.9.2 => microsoft
   - .1.2.3.9.3 => linux
   - .1.2.3.9.4 => IBM
+  - ...
 
 
 
