@@ -282,15 +282,15 @@ $ lsof -Panp [zabbix agent pid] -iTCP -sTCP:LISTEN
     
 $ firewall-cmd --add-service=zabbix-agent --permanent
 $ firewall-cmd --reload
-```   
+```
 
 - Testing zabbix agent connection:
 ```
 on zabbix server:
-            
+
 $ telnet 192.168.1.101 10050
 $ dnf install zabbix-get
-    
+
 $ zabbix_get -k agent.ping -s 192.168.1.101
 $ zabbix_get -k agent.hostname -s 192.168.1.101
 $ zabbix_get -k agent.version -s 192.168.1.101 --> 7.0.6
@@ -301,15 +301,15 @@ $ zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101
 $ zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101 | jq
 $ zabbix_get -k vfs.dir.get[/home] -s 192.168.1.101 | jq .[].user
 $ zabbix_get -k system.sw.os -s 192.168.1.101
-$ zabbix_get -k system.sw.os[full] -s 192.168.1.101 
-$ zabbix_get -k system.sw.os[short] -s 192.168.1.101 
+$ zabbix_get -k system.sw.os[full] -s 192.168.1.101
+$ zabbix_get -k system.sw.os[short] -s 192.168.1.101
 $ zabbix_get -k system.sw.os[name] -s 192.168.1.101
-$ zabbix_get -k vfs.file.contents[/etc/system-release] -s 192.168.1.101 
+$ zabbix_get -k vfs.file.contents[/etc/system-release] -s 192.168.1.101
 $ zabbix_get -k system.sw.os[name] -s 192.168.1.101 
-$ zabbix_get -k vfs.file.owner[/etc/system-release] -s 192.168.1.101 
+$ zabbix_get -k vfs.file.owner[/etc/system-release] -s 192.168.1.101
 $ zabbix_get -k vfs.file.size[/etc/system-release] -s 192.168.1.101 
 $ zabbix_get -k system.sw.packages[MariaDB-server] -s 192.168.1.101
-$ zabbix_get -k system.sw.packages['MariaDB-server-\d',,short] -s 192.168.1.101 
+$ zabbix_get -k system.sw.packages['MariaDB-server-\d',,short] -s 192.168.1.101
 ```
 
 # Session 8
