@@ -365,7 +365,11 @@ On zabbix UI:
 ### SNMP
 - Simple Network Management Protocol
 - SNMP is also uasble for setting data on hosts
-
+- OID: Object IDentifier, has a tree-based attribute. For example:
+- 1.2.3.4.5.6.7 => FileSystem-total
+  - 1.2.3.4.5.6.7.1 => 1 is index
+  - 1.2.3.4.5.6.7.2 => 2 is index
+  - 1.2.3.4.5.6.7.3 => 3 is index
 
 
 ---
