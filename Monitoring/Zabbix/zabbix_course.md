@@ -363,6 +363,8 @@ On zabbix UI:
 |          By SSH           |               ssh.run[MariaDB.status]         |
 |        System Run         |                system.run[mariadb]            |
 |        UserParameter      |               service.status[mariadb,enabled] |
+
+- When Item > key is really long, define an aliase for it
 ---
 
 # Theoretical
