@@ -312,6 +312,7 @@ $ zabbix_get -k system.sw.packages[MariaDB-server] -s 192.168.1.101
 $ zabbix_get -k system.sw.packages['MariaDB-server-\d',,short] -s 192.168.1.101 
 ```
 
+# Session 8
 
 ---
 
