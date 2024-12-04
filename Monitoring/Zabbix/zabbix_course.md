@@ -381,6 +381,8 @@ On zabbix UI:
   - .1.2.3.9.4 => IBM
   - ...
 
+- MIB file translate like this: 1.2.3.4.5.8.1 --> system::filesystem-total.1
+
 
 
 
