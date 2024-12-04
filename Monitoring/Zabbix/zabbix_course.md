@@ -383,6 +383,7 @@ On zabbix UI:
 
 - MIB file translate like this: 1.2.3.4.5.8.1 --> system::filesystem-total.1
 - If we want human-readable names for SNMP, we need to have its related names on zabbix
+- These SNMP codes are hard-coded on all machines
 
 
 
