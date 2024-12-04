@@ -254,7 +254,7 @@ $ ping -c 1 8.8.8.8 | tail -n1 | cut -d "=" -f2 | cut -d "/" -f2
 ```
 ### Zabbix Agent (TYPE: Agent)
 - whether in proxy gruop or servers for monitoring, ";" means and. for example:
-  - ServerActive=192.168.1.100;192.168.1.150,192.168.1.200 --> whether send data to 192.168.1.100 or 192.168.1.150 (if first one failed, try second one) but always send data to 192.168.1.200
+  - ServerActive=192.168.1.100;192.168.1.150,192.168.1.200 --> whether send data to 192.168.1.100 or 192.168.1.150 (if first one failed, try second one. / These two servers are clustered) but always send data to 192.168.1.200
 
 - For active checks and zabbix wrapper, name of hostname in UI must be exactly name of agen hostname in zabbix-agent.conf
 
