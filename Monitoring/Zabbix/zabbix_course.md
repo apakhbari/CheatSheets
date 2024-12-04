@@ -313,6 +313,30 @@ $ zabbix_get -k system.sw.packages['MariaDB-server-\d',,short] -s 192.168.1.101
 ```
 
 # Session 8
+- Scenario: Giving permission for custom zabbix-agent check and then running 
+```
+ZABBIX Agent:
+  On Zabbix UI:
+    Configuration->Hosts->items-> Create Item:
+    name: Check Zabbix agent connectivity
+    Key: agent.ping
+    Show Value Zabbix agent ping status
+    Application: ZABBIX Agent
+    
+On Zabbix Server:
+  # zabbix_server -R config_cache_reload
+
+On Target Server:
+  # vim /etc/zabbix/zabbix_agent2.conf
+    line 418: AllowKey=system.run[systemctl is-*]
+  # systemctl restart zabbix-agent2.service
+           
+On Zabbix UI:
+  Configuration->Hosts->items-> Create Item:
+  name: MariaDB Service Running Status (via Agent - Using System Run)
+  Key: system.run["systemctl is-active mariadb | grep -c ^a"]
+  Application: MariaDB
+```
 
 ---
 
