@@ -390,6 +390,9 @@ On zabbix UI:
   - Version 2 => Plain, Community Auth
   - Version 3 => Encrypted + Community Auth
 
+- SNMP Port Number: 161/udp
+
+- SNMP DES encryption is not secure and does not work with new OSs
 
 ```
 SNMP Monitoring:
