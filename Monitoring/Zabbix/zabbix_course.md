@@ -371,6 +371,8 @@ On zabbix UI:
   - 1.2.3.4.5.6.7.2 => 2 is index
   - 1.2.3.4.5.6.7.3 => 3 is index
 
+- There are MIB Files, a library, which is related to what these OIDs are. Not all of OIDs are part of this library thogh.
+
 
 ---
 
