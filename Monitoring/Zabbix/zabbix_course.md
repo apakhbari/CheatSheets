@@ -352,10 +352,6 @@ On zabbix UI:
 ```
 
 - For monitoring MariaDB service status you have multiple choices:
-1. MariaDB: Service Status (By Agent2) systemd.unit.info[mariadb.service,ActiveState]
-2. MariaDB: Service Status (By SSH) ssh.run[MariaDB.status]
-3. MariaDB: Service Status (By System Run) system.run[mariadb]
-4. MariaDB: Service Status (By UserParameter) service.status[mariadb,enabled]
 
 | **MariaDB Service Status** | **Key**                                        |
 |:--------------------------:|:----------------------------------------------:|
