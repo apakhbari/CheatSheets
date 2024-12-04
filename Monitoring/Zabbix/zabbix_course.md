@@ -371,7 +371,16 @@ On zabbix UI:
   - 1.2.3.4.5.6.7.2 => 2 is index
   - 1.2.3.4.5.6.7.3 => 3 is index
 
-- There are MIB Files, a library, which is related to what these OIDs are. Not all of OIDs are part of this library thogh.
+- There are MIB Files, a library, which is related to what these OIDs are. Not all of OIDs are part of this library thogh. These library acts as a human-readablity translator.
+
+- There is an enterprise OID which then assign each branch to different places so they can monitor their own parameters, For example:
+- .1.2.3.9 => enterprise
+  - .1.2.3.9.1 => cisco
+  - .1.2.3.9.2 => microsoft
+  - .1.2.3.9.3 => linux
+  - .1.2.3.9.4 => IBM
+
+
 
 
 ---
