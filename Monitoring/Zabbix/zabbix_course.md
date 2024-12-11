@@ -576,9 +576,6 @@ Deployment status: Production
          History storage period: Do not Keep ...
          Application: OS
          Populates host inventory field= Contact
-         
-         
-
 ```
 
 ---
