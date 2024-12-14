@@ -21,6 +21,7 @@
 - acknowledgment
   - Contributors
   - Links
+  
 
 # Session 1
 - Monitoring consists of: Data collection - Problem detection - alerting
