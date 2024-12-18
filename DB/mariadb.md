@@ -24,6 +24,10 @@ $ SHOW FULL TABLES;
 ```
 
 ## Change Password
+```
+ALTER USER 'username'@'host' IDENTIFIED BY 'newpassword';
+```
+
 
 ## Zabbix monitoring permissions + Galera
 
