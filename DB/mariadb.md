@@ -30,10 +30,9 @@ $ SHOW FULL TABLES;
 ```
 $ CREATE USER 'zabbix'@'%' IDENTIFIED BY '<password>';
 
-$ GRANT REPLICATION CLIENT, PROCESS, SHOW DATABASES, SHOW VIEW, 
-      SELECT ON performance_schema.*,
-      SELECT ON information_schema.* 
-TO 'zabbix'@'%';
+$ GRANT REPLICATION CLIENT, PROCESS, SHOW DATABASES, SHOW VIEW ON *.* TO 'zabbix'@'%';
+$ GRANT SELECT ON performance_schema.* TO 'zabbix'@'%';
+$ GRANT SELECT ON information_schema.* TO 'zabbix'@'%';
 ```
 
 # acknowledgment
