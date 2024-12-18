@@ -25,6 +25,17 @@ $ SHOW FULL TABLES;
 
 ## Change Password
 
+## Zabbix monitoring permissions + Galera
+
+```
+$ CREATE USER 'zabbix'@'%' IDENTIFIED BY '<password>';
+
+$ GRANT REPLICATION CLIENT, PROCESS, SHOW DATABASES, SHOW VIEW, 
+      SELECT ON performance_schema.*,
+      SELECT ON information_schema.* 
+TO 'zabbix'@'%';
+```
+
 # acknowledgment
 ## Contributors
 
