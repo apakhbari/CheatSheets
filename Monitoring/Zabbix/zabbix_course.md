@@ -613,6 +613,7 @@ Deployment status: Production
 #### 4- Expression Macros
 - Mostly in Visualization
 - {?EXPRESSION} => {?func(/HOST_NAME/Item.key<,param1><,param2>...)} {?avg(/HOST_NAME/Icmppingloss,5m)}
+
 #### 5- Macro Functions
 
 # Theoretical
