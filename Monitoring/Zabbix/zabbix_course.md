@@ -595,6 +595,7 @@ Deployment status: Production
 - {$MACRO.NAME} , {$DSN.NAME}
 #### 3- LLD (Low Level Discovery) Macros
 - {#MACRO.NAME}
+- For example in a filesystem related monitoring, monitoring service should be monitoring certain metrics of a filesystem and it needs to discover based on host and apply macros to it. 
 #### 4- Expression Macros
 #### 5- Macro Functions
 
