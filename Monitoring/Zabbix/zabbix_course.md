@@ -581,11 +581,11 @@ Deployment status: Production
 
 ---
 
-# Session 9
+# Session 9 (10 on classese)
 
 ### SNMP
 
-
+# Session 10 (11 on classese)
 
 # Theoretical
 
@@ -610,7 +610,7 @@ APA 🖖🏻
 ## Links
 
 
-```                                                                                
+```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
   a::::::::::::a p::::ppp:::::::::p    a::::::::::::a  
   aaaaaaaaa:::::ap:::::::::::::::::p   aaaaaaaaa:::::a 
@@ -628,5 +628,5 @@ a:::::aaaa::::::a p::::::::::::::::p a:::::aaaa::::::a
                  p:::::::p                             
                  p:::::::p                             
                  p:::::::p                             
-                 ppppppppp                                                        
+                 ppppppppp
 ```
