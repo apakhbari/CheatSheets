@@ -587,6 +587,17 @@ Deployment status: Production
 
 # Session 10 (11 on classese)
 
+### Macros
+- Macro types in zabbix 7:
+#### 1- Built in Macros
+- {MACRO.NAME} => {HOST.NAME} , {ITEM.NAME} , {EVENT.STARTTIME}
+#### 2- User defined Macros
+- {$MACRO.NAME} , {$DSN.NAME}
+#### 3- LLD (Low Level Discovery) Macros
+- {#MACRO.NAME}
+#### 4- Expression Macros
+#### 5- Macro Functions
+
 # Theoretical
 
 ## Components
