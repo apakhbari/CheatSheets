@@ -596,8 +596,23 @@ Deployment status: Production
 #### 3- LLD (Low Level Discovery) Macros
 - {#MACRO.NAME} => {#FS.NAME}
 - For example in a filesystem related monitoring, monitoring service should be monitoring certain metrics of a filesystem and it needs to discover based on host and apply macros to it. 
+```
+[
+{
+"{#FS.NAME}": "/"
+},
+{
+"{#FS.NAME}": "/home"
+},
+{
+"{#FS.NAME}": "/var"
+}
+]
+```
+
 #### 4- Expression Macros
 - Mostly in Visualization
+- {?EXPRESSION} => {?func(/HOST_NAME/Item.key<,param1><,param2>...)} {?avg(/HOST_NAME/Icmppingloss,5m)}
 #### 5- Macro Functions
 
 # Theoretical
