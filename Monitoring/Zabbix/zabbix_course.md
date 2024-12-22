@@ -594,9 +594,10 @@ Deployment status: Production
 #### 2- User defined Macros
 - {$MACRO.NAME} , {$DSN.NAME}
 #### 3- LLD (Low Level Discovery) Macros
-- {#MACRO.NAME}
+- {#MACRO.NAME} => {#FS.NAME}
 - For example in a filesystem related monitoring, monitoring service should be monitoring certain metrics of a filesystem and it needs to discover based on host and apply macros to it. 
 #### 4- Expression Macros
+- Mostly in Visualization
 #### 5- Macro Functions
 
 # Theoretical
