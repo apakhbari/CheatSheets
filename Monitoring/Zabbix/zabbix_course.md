@@ -588,6 +588,7 @@ Deployment status: Production
 # Session 10 (11 on classese)
 
 ### Macros
+- Macros have lots of function for processing/encoding
 - Macro types in zabbix 7:
 #### 1- Built in Macros
 - {MACRO.NAME} => {HOST.NAME} , {ITEM.NAME} , {EVENT.STARTTIME}
@@ -637,6 +638,7 @@ Deployment status: Production
 APA 🖖🏻
 
 ## Links
+- Macro functions: https://www.zabbix.com/documentation/current/en/manual/config/macros/macro_functions
 
 
 ```
