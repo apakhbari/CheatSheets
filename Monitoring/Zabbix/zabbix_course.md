@@ -586,6 +586,7 @@ Deployment status: Production
 ### SNMP
 
 # Session 10 (11 on classes)
+Items (Preprocessing) + Macro
 
 ### Macros
 - Macros have lots of function for processing/encoding
@@ -678,6 +679,8 @@ magazine,7,9
 
 
 # Session 11 (12 on classes)
+Items (Preprocessing on SNMP) - 
+
 
 
 # Theoretical
