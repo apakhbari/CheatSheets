@@ -621,6 +621,59 @@ Deployment status: Production
 - Some examples in Preprocessing Items
 ```
 
+$.bookstore.payment[?(@.product == 'book' )]["success"].first()
+
+$.bookstore.payment..["failed"].sum()
+
+$.bookstore.payment[?(@.product == 'book' || @.product == 'magazine')]
+
+
+===============================
+<?xml version="1.0" encoding="UTF-8"?>
+<bookstore>
+<payment>
+        <product>book</product>
+        <success>4</success>
+        <failed>5</failed>
+</payment>
+<payment>
+        <product>magazine</product>
+        <success>7</success>
+        <failed>9</failed>
+</payment>
+</bookstore>
+
+XPath = sum(/bookstore/payment/success)
+Xpath = number(/bookstore/payment[product='book']/success)
+
+=============================
+JSON:
+{
+  "bookstore": {
+    "payment": [
+      {
+        "product": "book",
+        "success": 4,
+        "failed": 5
+      },
+      {
+        "product": "magazine",
+        "success": 7,
+        "failed": 9
+      }
+    ]
+  }
+}
+
+$.bookstore.payment.*.success.sum()
+$.bookstore.payment[?(@.product == 'book')].success.first()
+
+===============================
+CSV:
+
+product,success,failed
+book,4,5
+magazine,7,9
 ```
 
 
