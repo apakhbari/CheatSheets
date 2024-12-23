@@ -581,11 +581,11 @@ Deployment status: Production
 
 ---
 
-# Session 9 (10 on classese)
+# Session 9 (10 on classes)
 
 ### SNMP
 
-# Session 10 (11 on classese)
+# Session 10 (11 on classes)
 
 ### Macros
 - Macros have lots of function for processing/encoding
@@ -675,6 +675,9 @@ product,success,failed
 book,4,5
 magazine,7,9
 ```
+
+
+# Session 11 (12 on classes)
 
 
 # Theoretical
