@@ -627,6 +627,7 @@ Deployment status: Production
 ## Tips & Tricks
 - If you don't save an item via history, you can't have trigger on it.
 - For restarting userParameters in zabbix-agent, you don't need to restart zabbix-agent.service. You can use ``` $ zabbix_agent2 -R userparameter_reload ```
+- Preprocessing in Items happens before saving in DB
 
 ## Commands
 
