@@ -618,6 +618,12 @@ Deployment status: Production
 #### 5- Macro Functions
 
 
+- Some examples in Preprocessing Items
+```
+
+```
+
+
 # Theoretical
 
 ## Components
