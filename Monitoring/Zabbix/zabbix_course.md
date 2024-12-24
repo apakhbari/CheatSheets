@@ -800,6 +800,9 @@ On Target Server:
 - plcae in ``` /etc/zabbix/zabbix_server.conf --> External Script```
 
 
+# Session 12 (13 on classes)
+
+
 # Theoretical
 
 ## Components
