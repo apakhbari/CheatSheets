@@ -713,8 +713,56 @@ How to export value to variable using regex:
 ```
 
 
+### Log File Monitoring:
+```
+on Target-server:
+    
+    # mkdir /tmp/zabbix_logmon
+    
+    # echo $(date +"%F %T") First Log Entry > /tmp/zabbix_logmon/logfile
+    # echo $(date +"%F %T") Second Log Entry >> /tmp/zabbix_logmon/logfile1
+    # echo $(date +"%F %T") Third Log Entry >> /tmp/zabbix_logmon/logfile1
 
 
+on browser:
+    Configuration-> hosts->items->create item:
+        name: Log file1
+        Type: zabbix agent (active)
+        Key: log[/tmp/zabbix_logmon/logfile1]
+        Type of inforation: Log
+        Update interval: 1s
+        New Application: logfile
+        
+On Target Server:
+    # echo $(date +"%F %T") forth log entry >> /tmp/zabbix_logmon/logfile1
+    # echo $(date +"%F %T") fifth log entry >> /tmp/zabbix_logmon/logfile1
+    
+on browser:
+    Configuration-> hosts->items->create item:
+        name: Log file2
+        Type: zabbix agent (active)
+        Key: log[/tmp/zabbix_logmon/logfile2,error]
+        Type of inforation: Log
+        Update interval: 1s
+        Application: logfile
+    
+On Target Server:
+    # echo $(date +"%F %T") first log entry >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") second log entry - with error >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") third log entry >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") forth log entry - with error >> /tmp/zabbix_logmon/logfile2
+    
+ 
+on browser:
+    key: log[/tmp/zabbix_logmon/logfile2,"error|warning 6[0-6]"]
+    
+On Target Server:
+    # echo $(date +"%F %T") fifth log entry - warning 605 >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") sixth log entry >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") seventh log entry - with error >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") eighth log entry - with warning 503 >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") ninth log entry - with warning 590 >> /tmp/zabbix_logmon/logfile2
+```
 
 
 
