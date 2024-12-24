@@ -789,7 +789,7 @@ On Target Server:
     # echo $(date +"%F %T") forth log entry - with error >> /tmp/zabbix_logmon/access_$(date +"%F").log
 ```
 
-### External Check:
+### External Check
 
 
 
