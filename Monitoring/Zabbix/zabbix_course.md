@@ -757,7 +757,7 @@ On Target Server:
     # echo $(date +"%F %T") forth log entry - with error >> /tmp/zabbix_logmon/logfile2
 ```
 
-
+- A monitoring with regex for error + warning for 6XX code
 ``` 
 on browser:
     key: log[/tmp/zabbix_logmon/logfile2,"error|warning 6[0-6]"]
