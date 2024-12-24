@@ -789,8 +789,13 @@ On Target Server:
     # echo $(date +"%F %T") forth log entry - with error >> /tmp/zabbix_logmon/access_$(date +"%F").log
 ```
 
-### External Check
+## More custom Functionality for zabbix monitoring
+- For embedding some custom forms of monitoring there are 3 ways:
+1. External Check
+2. Zabbix Trapper
+3. JavaScript
 
+### External Check
 
 
 # Theoretical
