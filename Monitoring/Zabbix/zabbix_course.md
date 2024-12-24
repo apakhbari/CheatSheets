@@ -796,6 +796,7 @@ On Target Server:
 3. JavaScript
 
 ### External Check
+- You have to put script inside machine that monitors desired host
 
 
 # Theoretical
