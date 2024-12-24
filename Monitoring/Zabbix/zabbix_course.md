@@ -683,6 +683,44 @@ Items (Preprocessing on SNMP) - web scenario -
 
 - For Selenium based monitoring you need to enable WebDreverURL on port 4444 of your zabbix server, then using ITEMS>WEB you can have a JavaScript-ish code for scenario based monitoring
 
+```
+Web Scenario Monitoring:
+    
+on zabbix ui:
+    Configuration->hosts->create hosts:
+        Host name-> Website Monitoring
+        Groups-> Website Monitoring
+        Interface Agent-> 127.0.0.1
+        
+    Configuration->hosts->Website Monitoring->web->create Web scenarios
+
+on tab Sceanrio:
+    name-> Anisa Website Scenario
+    New Application-> Anisa
+    update interval-> 5m
+
+on tab steps:
+click add link on stest box:
+    name: Opening Anisa First page
+    URL: https://anisa.co.ir
+    follow redirects->checked
+    Required string: آنلاین و حضوری
+    Required status code: 200
+    
+    
+How to export value to variable using regex:
+    regex:data-csrf_token="([0-9a-z]{64})"
+```
+
+
+
+
+
+
+
+
+
+
 # Theoretical
 
 ## Components
