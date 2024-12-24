@@ -681,7 +681,7 @@ magazine,7,9
 # Session 11 (12 on classes)
 Items (Preprocessing on SNMP) - web scenario - 
 
-
+- For Selenium based monitoring you need to enable WebDreverURL on port 4444 of your zabbix server, then using ITEMS>WEB you can have a JavaScript-ish code for scenario based monitoring
 
 # Theoretical
 
