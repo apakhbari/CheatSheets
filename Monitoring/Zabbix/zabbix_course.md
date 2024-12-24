@@ -797,6 +797,7 @@ On Target Server:
 
 ### External Check
 - You have to put script inside machine that monitors desired host
+- plcae in ``` /etc/zabbix/zabbix_server.conf --> External Script```
 
 
 # Theoretical
