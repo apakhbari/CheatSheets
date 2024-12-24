@@ -679,7 +679,7 @@ magazine,7,9
 
 
 # Session 11 (12 on classes)
-Items (Preprocessing on SNMP) - 
+Items (Preprocessing on SNMP) - web scenario - 
 
 
 
