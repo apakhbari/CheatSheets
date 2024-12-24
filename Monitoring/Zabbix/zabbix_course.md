@@ -779,6 +779,7 @@ on browser:
         Key: logrt["/tmp/zabbix_logmon/access_[0-9]{4}-[0-9]{4}-[0-9]{2}.log"]
         Type of inforation: Log
         Update interval: 1s
+        Log Time Format: yyyy-MM-dd hh:mm:ss
         Application: logfile
     
 On Target Server:
