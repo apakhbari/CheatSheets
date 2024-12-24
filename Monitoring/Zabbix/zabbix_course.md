@@ -770,7 +770,24 @@ On Target Server:
     # echo $(date +"%F %T") ninth log entry - with warning 590 >> /tmp/zabbix_logmon/logfile2
 ```
 
+- Monitoring a log file with dynamic/changeing name
+```
+on browser:
+    Configuration-> hosts->items->create item:
+        name: Log file2
+        Type: zabbix agent (active)
+        Key: log[/tmp/zabbix_logmon/logfile2,error]
+        Type of inforation: Log
+        Update interval: 1s
+        Application: logfile
+    
+On Target Server:
+    # echo $(date +"%F %T") first log entry >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") second log entry - with error >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") third log entry >> /tmp/zabbix_logmon/logfile2
+    # echo $(date +"%F %T") forth log entry - with error >> /tmp/zabbix_logmon/logfile2
 
+```
 
 
 
