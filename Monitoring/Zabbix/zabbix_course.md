@@ -714,6 +714,7 @@ How to export value to variable using regex:
 
 
 ### Log File Monitoring:
+- A simple one
 ```
 on Target-server:
     
@@ -736,7 +737,10 @@ on browser:
 On Target Server:
     # echo $(date +"%F %T") forth log entry >> /tmp/zabbix_logmon/logfile1
     # echo $(date +"%F %T") fifth log entry >> /tmp/zabbix_logmon/logfile1
-    
+```
+
+- A monitoring with regex for error
+```
 on browser:
     Configuration-> hosts->items->create item:
         name: Log file2
@@ -751,8 +755,10 @@ On Target Server:
     # echo $(date +"%F %T") second log entry - with error >> /tmp/zabbix_logmon/logfile2
     # echo $(date +"%F %T") third log entry >> /tmp/zabbix_logmon/logfile2
     # echo $(date +"%F %T") forth log entry - with error >> /tmp/zabbix_logmon/logfile2
-    
- 
+```
+
+
+``` 
 on browser:
     key: log[/tmp/zabbix_logmon/logfile2,"error|warning 6[0-6]"]
     
