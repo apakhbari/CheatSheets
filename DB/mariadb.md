@@ -39,6 +39,9 @@ $ GRANT SELECT ON performance_schema.* TO 'zabbix'@'%';
 $ GRANT SELECT ON information_schema.* TO 'zabbix'@'%';
 ```
 
+# Tips & Tricks
+- To select last 5 minutes data: ``` > Select date_add(now(), interval - 5 minute) ; ```
+
 # acknowledgment
 ## Contributors
 
