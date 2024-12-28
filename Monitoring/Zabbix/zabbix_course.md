@@ -835,7 +835,101 @@ on target server:
 
 
 ## Monitoring Databases using zabbix
+```
+Data Base Monitor:
+on target server:
+    # systemctl status mariadb
+    # mysql -uroot -p
+    
+  > CREATE DATABASE  eshop;
+  > use eshop;
+  > CREATE TABLE transaction_status  (
+id int(11) NOT NULL AUTO_INCREMENT,
+time datetime DEFAULT NULL,
+payment_gw varchar(45) DEFAULT NULL,
+status varchar(45) DEFAULT NULL,
+amount int(11) DEFAULT NULL,
+PRIMARY KEY (id),
+UNIQUE KEY id_UNIQUE (id)
+  );
+  
+  
+  # useradd scriptrunner -s /sbin/nologin
+  # sudo -u scriptrunner mkdir /home/scriptrunner/scripts
+  # sudo -u scriptrunner vim /home/scriptrunner/scripts/data-entry-script.sh
 
+ 
+###################################
+#!/bin/bash
+
+random_count=$(( $RANDOM % 300 + 1 ))
+
+DB_USER='root'
+DB_PASSWD='qazwsx'
+
+DB_HOST='localhost'
+DB_NAME='eshop'
+TABLE='transaction_status'
+
+payment_types=( MellatGW SamanGW SepahGW Wallet Cash )
+
+statuses=( Successful Failed)
+
+for (( i=0; i<=$random_count; i++ ))
+do
+sleep_amount=$(( ($RANDOM % ( 300 / $random_count )) + 1 ))
+sleep $sleep_amount
+random_payment_type=$(( $RANDOM % 5 ))
+random_status=$(( $RANDOM % 2 ))
+mysql --host=$DB_HOST --user=$DB_USER --password=$DB_PASSWD $DB_NAME 2> /dev/null << EOF
+INSERT INTO $TABLE (\`time\`, \`payment_gw\`, \`status\`, \`amount\`) VALUES (now(), "${payment_types[$random_payment_type]}", "${statuses[$random_status]}", $(( $RANDOM + 1000)));
+EOF
+#sleep $(( (300 / $random_count) - $sleep_amount ))
+done
+
+#####################################
+
+    # chmod u+x /home/scriptrunner/scripts/data-entry-script.sh
+
+    # /home/scriptrunner/scripts/data-entry-script.sh
+    
+    For testing the script:
+    # mysql -uroot -p
+    
+  > use eshop;
+  > select * from transaction_status;
+  > quit
+  
+  
+   # sudo -u scriptrunner crontab -e
+*/5 * * * * /home/scriptrunner/scripts/data-entry-script.sh
+    
+        # mysql -uroot -p
+  > create user 'zabbix'@'192.168.1.100' identified by 'zabbix_pass';
+  > GRANT select on eshop.* TO 'zabbix'@'192.168.1.100';
+    
+    # firewall-cmd --add-port=3306/tcp --permanent
+    # firewall-cmd --reload
+    
+on zabbix server: 
+    # dnf install mariadb-connector-odbc
+    
+    # vim /etc/odbc.ini
+[eshop]
+Description = eshop database
+Driver  = MariaDB
+Port = 3306
+Server = 192.168.1.101
+User = zabbix
+Password = zabbix_pass
+Database = eshop
+    
+    
+    
+
+    # isql Target_server
+        > select * from transaction_status;
+```
 
 
 
