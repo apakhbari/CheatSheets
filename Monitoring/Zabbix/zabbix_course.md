@@ -904,7 +904,7 @@ done
    # sudo -u scriptrunner crontab -e
 */5 * * * * /home/scriptrunner/scripts/data-entry-script.sh
     
-        # mysql -uroot -p
+  # mysql -uroot -p
   > create user 'zabbix'@'192.168.1.100' identified by 'zabbix_pass';
   > GRANT select on eshop.* TO 'zabbix'@'192.168.1.100';
     
@@ -926,9 +926,16 @@ Database = eshop
     
     
     
-
     # isql Target_server
         > select * from transaction_status;
+
+on zabbix ui:
+  Configuration->hosts-> E-shop Machine ->items->create item:
+
+  name=> Payment: MelaltGW - succefull
+  Type=> Database Monitor
+  key=>db.odbc.select[,eshop]
+  Application => MariaDB
 ```
 
 
@@ -948,6 +955,7 @@ Database = eshop
 - If you don't save an item via history, you can't have trigger on it.
 - For restarting userParameters in zabbix-agent, you don't need to restart zabbix-agent.service. You can use ``` $ zabbix_agent2 -R userparameter_reload ```
 - Preprocessing in Items happens before saving in DB
+- In a host, all Item's keys should be unique
 
 ## Commands
 
