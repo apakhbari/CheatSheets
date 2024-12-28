@@ -835,6 +835,7 @@ on target server:
 
 
 ## Monitoring Databases using zabbix
+- We monitor DBs using ODBC
 ```
 Data Base Monitor:
 on target server:
