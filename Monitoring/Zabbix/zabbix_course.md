@@ -889,45 +889,44 @@ done
 
 #####################################
 
-    # chmod u+x /home/scriptrunner/scripts/data-entry-script.sh
+# chmod u+x /home/scriptrunner/scripts/data-entry-script.sh
 
-    # /home/scriptrunner/scripts/data-entry-script.sh
+# /home/scriptrunner/scripts/data-entry-script.sh
     
-    For testing the script:
-    # mysql -uroot -p
+For testing the script:
+# mysql -uroot -p
     
-  > use eshop;
-  > select * from transaction_status;
-  > quit
+> use eshop;
+> select * from transaction_status;
+> quit
   
   
    # sudo -u scriptrunner crontab -e
-*/5 * * * * /home/scriptrunner/scripts/data-entry-script.sh
+  */5 * * * * /home/scriptrunner/scripts/data-entry-script.sh
     
   # mysql -uroot -p
   > create user 'zabbix'@'192.168.1.100' identified by 'zabbix_pass';
   > GRANT select on eshop.* TO 'zabbix'@'192.168.1.100';
     
-    # firewall-cmd --add-port=3306/tcp --permanent
-    # firewall-cmd --reload
+  # firewall-cmd --add-port=3306/tcp --permanent
+  # firewall-cmd --reload
     
 on zabbix server: 
-    # dnf install mariadb-connector-odbc
-    
-    # vim /etc/odbc.ini
-[eshop]
-Description = eshop database
-Driver  = MariaDB
-Port = 3306
-Server = 192.168.1.101
-User = zabbix
-Password = zabbix_pass
-Database = eshop
-    
+  # dnf install mariadb-connector-odbc
+  # vim /etc/odbc.ini
+  [eshop]
+  Description = eshop database
+  Driver  = MariaDB
+  Port = 3306
+  Server = 192.168.1.101
+  User = zabbix
+  Password = zabbix_pass
+  Database = eshop
     
     
-    # isql Target_server
-        > select * from transaction_status;
+    
+  # isql Target_server
+  > select * from transaction_status;
 
 on zabbix ui:
   Configuration->hosts-> E-shop Machine ->items->create item:
