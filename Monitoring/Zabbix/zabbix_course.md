@@ -935,7 +935,9 @@ on zabbix ui:
   name=> Payment: MelaltGW - succefull
   Type=> Database Monitor
   key=>db.odbc.select[,eshop]
+  SQL Query=> slect count(1) from transaction_status where payment_gw="MellatGW" and status="successful";
   Application => MariaDB
+  PreProcessing => simple change
 ```
 
 
