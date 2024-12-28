@@ -801,7 +801,36 @@ On Target Server:
 
 
 # Session 12 (13 on classes)
+## Zabbix Trapper
+- Zabbix Trapper is active (push-based)
+```
+Zabbix Trapper:
+    on target server:
+        # dnf install zabbix-sender
 
+on zabbix ui:
+    Configuration->hosts-> mariadb..->items->create item:
+
+  name=> MariaDB Service Running Status (via Trapper)
+  Type=> Zabbix Trapper
+  key=>mariadb.status.trapper
+  Application => MariaDB
+
+on target server:
+  # useradd scriptrunner
+  # sudo -u scriptrunner mkdir /home/scriptrunner/scripts
+
+  # sudo -u scriptrunner vim /home/scriptrunner/scripts/mariadb-check.sh
+
+  #!/bin/bash
+  zabbix_sender -z 192.168.1.100 -s "mariadb-dcte-M-5-anisa-1" -k mariadb.status.trapper -o `systemctl is-active mariadb | grep -c ^a`
+
+  # chmod u+x /home/scriptrunner/scripts/mariadb-check.sh
+
+  # sudo -u scriptrunner crontab -e
+
+  */5 * * * * /home/scriptrunner/scripts/mariadb-check.sh
+```
 
 
 
