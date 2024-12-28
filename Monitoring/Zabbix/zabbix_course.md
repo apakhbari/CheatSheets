@@ -801,6 +801,7 @@ On Target Server:
 
 
 # Session 12 (13 on classes)
+
 ## Zabbix Trapper
 - Zabbix Trapper is active (push-based)
 ```
