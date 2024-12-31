@@ -942,7 +942,12 @@ on zabbix ui:
 
 
 # Session 13 (14 on classes)
+Triggers
 
+- How to write a function in zabbix
+```
+Expression: func(/host.name/item.key<,param1,...>) operator Threshhold
+```
 
 
 
