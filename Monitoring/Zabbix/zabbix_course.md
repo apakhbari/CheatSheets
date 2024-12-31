@@ -926,7 +926,6 @@ on zabbix server:
   Database = eshop
     
     
-    
   # isql Target_server
   > select * from transaction_status;
 
