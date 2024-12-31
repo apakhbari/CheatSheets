@@ -43,7 +43,7 @@
 
 
 - BSS : Business support system: CRM - Recommendation system - Billing
-- OSS: Operation support system: 
+- OSS: Operation support system: Monitoring - Ticketing system
 
 # Session 4
 - Zabbix agent developed using C
@@ -941,6 +941,7 @@ on zabbix ui:
 ```
 
 
+# Session 13 (14 on classes)
 
 
 
