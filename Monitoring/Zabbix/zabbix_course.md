@@ -949,7 +949,9 @@ Triggers
 Expression: func(/host.name/item.key<,param1,...>) operator Threshhold
 ```
 
-
+- Aggregations are two types:
+1.
+2. 
 
 
 
