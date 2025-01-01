@@ -954,6 +954,8 @@ Expression: func(/host.name/item.key<,param1,...>) operator Threshhold
 2. Longitudital: 
 
 
+# Session 14 (15 on classes)
+
 
 # Theoretical
 
