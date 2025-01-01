@@ -951,7 +951,7 @@ Expression: func(/host.name/item.key<,param1,...>) operator Threshhold
 
 - Aggregations (in time-series) are two types:
 1. Cross sectional: 
-2. Longitudital: 
+2. Longitudital: on a specific item in time
 
 
 # Session 14 (15 on classes)
