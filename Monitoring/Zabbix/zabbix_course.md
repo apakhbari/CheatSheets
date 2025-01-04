@@ -992,6 +992,7 @@ APA 🖖🏻
 
 ## Links
 - Macro functions: https://www.zabbix.com/documentation/current/en/manual/config/macros/macro_functions
+- Functions: https://www.zabbix.com/documentation/current/en/manual/appendix/functions
 
 
 ```
