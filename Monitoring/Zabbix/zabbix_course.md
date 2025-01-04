@@ -968,6 +968,8 @@ Functions on zabbix are:
 - Predictive functions
 - string functions
 
+- ``` nodata ``` is a heavy trigger for zabbix, don't use it in general
+
 # Theoretical
 
 ## Components
