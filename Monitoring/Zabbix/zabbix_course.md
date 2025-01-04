@@ -956,6 +956,17 @@ Expression: func(/host.name/item.key<,param1,...>) operator Threshhold
 
 # Session 14 (15 on classes)
 
+Functions on zabbix are:
+- Aggregate functions
+- Foreach functions
+- Bitwise functions
+- Date & Time functions
+- History functions
+- Trend functions
+- Mathematical functions
+- Operator functions
+- Predictive functions
+- string functions
 
 # Theoretical
 
