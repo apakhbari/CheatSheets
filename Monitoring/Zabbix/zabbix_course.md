@@ -988,7 +988,6 @@ or
 baseline(/Eshop - service/eshop[MellatGW,Successful],5h:now/h,"w",1)<0.8
 ```
 
-2:31
 
 # Theoretical
 
