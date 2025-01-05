@@ -972,6 +972,14 @@ Functions on zabbix are:
 
 - ``` nodata ``` is a heavy trigger for zabbix, don't use it in general
 
+- Some examples for Triggers:
+```
+Anomally -->
+last(/Eshop - service/eshop[MellatGW,Successful])
+avg(/Eshop - service/eshop[MellatGW,Successful],10m:now-1w)
+
+```
+
 # Theoretical
 
 
