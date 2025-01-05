@@ -955,6 +955,7 @@ Expression: func(/host.name/item.key<,param1,...>) operator Threshhold
 
 
 # Session 14 (15 on classes)
+- Functions: https://www.zabbix.com/documentation/current/en/manual/appendix/functions
 
 Functions on zabbix are:
 - Aggregate functions
@@ -968,9 +969,14 @@ Functions on zabbix are:
 - Predictive functions
 - string functions
 
+
+
+
 - ``` nodata ``` is a heavy trigger for zabbix, don't use it in general
 
 # Theoretical
+
+
 
 ## Components
 
