@@ -979,9 +979,13 @@ last(/Eshop - service/eshop[MellatGW,Successful]) / (last(/Eshop - service/eshop
 
 Anomally: latest data is having more margin than what we have last week in this time, amount of margin for data is 20% which is equal to: [now > last week + 0.2(last week)] OR [now < last week - 0.2(last week)] -->
 last(/Eshop - service/eshop[MellatGW,Successful]) > (avg(/Eshop - service/eshop[MellatGW,Successful],10m:now-1w) * 1.2)
-
+or
 last(/Eshop - service/eshop[MellatGW,Successful]) < (avg(/Eshop - service/eshop[MellatGW,Successful],10m:now-1w) * 0.8)
 
+last Anomaly using baseline function:
+baseline(/Eshop - service/eshop[MellatGW,Successful],5h:now/h,"w",1)>1.2
+or
+baseline(/Eshop - service/eshop[MellatGW,Successful],5h:now/h,"w",1)<0.8
 ```
 
 2:31
