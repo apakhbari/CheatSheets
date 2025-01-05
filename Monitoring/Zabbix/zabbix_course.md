@@ -974,7 +974,7 @@ Functions on zabbix are:
 
 - Some examples for Triggers:
 ```
-Anomally: latest data is having more margin than what we have last week in this time, amount of margin for data is 20% which is equal to now > last week + 0.2(last week) -->
+Anomally: latest data is having more margin than what we have last week in this time, amount of margin for data is 20% which is equal to: now > last week + 0.2(last week) -->
 last(/Eshop - service/eshop[MellatGW,Successful])
 avg(/Eshop - service/eshop[MellatGW,Successful],10m:now-1w)
 
