@@ -970,8 +970,6 @@ Functions on zabbix are:
 - string functions
 
 
-
-
 - ``` nodata ``` is a heavy trigger for zabbix, don't use it in general
 
 # Theoretical
