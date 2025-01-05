@@ -976,6 +976,7 @@ Functions on zabbix are:
 ```
 Success rate on MellatGW is less than 60% -->
 last(/Eshop - service/eshop[MellatGW,Successful]) / (last(/Eshop - service/eshop[MellatGW,Successful]) + last(/Eshop - service/eshop[MellatGW,Failed])) * 100 < 60
+
 Anomally: latest data is having more margin than what we have last week in this time, amount of margin for data is 20% which is equal to: now > last week + 0.2(last week) -->
 last(/Eshop - service/eshop[MellatGW,Successful]) > (avg(/Eshop - service/eshop[MellatGW,Successful],10m:now-1w) * 1.2)
 
