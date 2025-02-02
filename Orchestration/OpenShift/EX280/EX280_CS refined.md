@@ -583,3 +583,147 @@ $ oc get oauth -o yaml > oauth.yaml
 ---
 
 # Module 4: Performing Operational Cluster Management Tasks
+# 7-Managing OpenShift Networking
+
+## 7.1 Understanding OpenShift Networking Resources
+
+- Services provide load balancing to replicated Pods in an app, and are essential in providing access to apps
+- Services connect to Endpoints, which are Pod individual IP addresses
+- Ingress is a k8s resource that exposes services to external users
+- Ingress adds URLs, load balancing, as well as access rules
+- Ingress is not used as such in OpenShift
+- OpenShift routes are an alternative to Ingress
+
+## 7.2 Understanding OpenShift SDN
+
+- OpenShift uses Software Defined Networking (SDN) to implement connectivity
+- OpenShift SDN separates the network in a control plane and a data plane
+- SDN solves 5 requirements:
+  - Manage network traffic and resources as software such that they can be programmed by the app owner
+  - Communicate between containers running within the same project
+  - Communicate between Pods within and beyond project boundaries
+  - Manage network communication from a Pod to a service
+  - Manage network communication from external network to service
+- The network is managed by the OpenShift Cluster network Operator
+- The DNS operator implements the CoreDNS DNS server
+- The internal CoreDNS server is used by Pods for DNS resolution
+- `$ oc describe dns.operator/default` —> see DNS config
+- The DNS operator has different roles:
+  - Create default cluster DNS name cluster.local
+  - Assign DNS names to namespaces
+  - Assign DNS names to services
+  - Assign DNS names to Pods
+- DNS names are composed as servicename.projectname.cluster-dns-name
+  - Example: db.myproject.cluster.local
+- Apart from the A resource records, core DNS also implements an SRV record, in which port name and protocol are prepended to the service A record name
+  - Example: `_443._tcp.webserver.myproject.cluster.local`
+- If a service has no IP address, DNS records are created for the IP addresses of the Pods, and round-robin is applied
+- The OpenShift Cluster Network Operator defines how the network is shaped and provides information about the following:
+  - Network address
+  - Network mode
+  - Network provider
+  - IP address pools
+- `$ oc get network/cluster -o yaml` —> see details
+- Notice that currently OpenShift only supports the OpenShift SDN network provider, this may change in future. Future versions will use OVN-Kubernetes to manage the cluster network
+- Network policy allows defining Ingress (incoming traffic) and Egress (outgoing traffic) filtering
+  - If no network policy exists, (which is by default) all traffic is allowed
+  - If a network policy exists, it will block all traffic with the exception of allowed Ingress and Egress traffic
+
+## 7.3 Managing Services
+
+- A service is used as a load balancer that provides access to a group of Pods that is addressed by using a label as the selector
+- Services are needed for Pod access, as Pods are dynamically added as well as removed
+- Services are using labels and selectors to dynamically address Pods
+- When using `$ oc new-app`, a service resource is automatically added to expose access to the app
+- Service Types:
+  - **ClusterIP**: the service is exposed as an IP address internal to the cluster. This is used as the default type, where services cannot be directly addressed
+  - **NodePort**: exposes a port on the node IP address
+  - **LoadBalancer**: exposes the service through a cloud provider load balancer. The cloud provider LB talks to the OpenShift network controller to automatically create a node port to route incoming requests
+  - **ExternalName**: creates a CNAME in DNS to match an external host name. Use this to create different access points for apps external to the cluster (used in migration scenarios)
+
+## 7.4 Managing Routes
+
+- Ingress traffic is generic terminology for incoming traffic (is more than just k8s Ingress)
+- Ingress resource is managed by the Ingress operator and accepts external requests that will be proxied
+- Route resource is an OpenShift resource that provides more features than Ingress:
+  - TLS re-encryption
+  - TLS passthrough
+  - Split traffic for blue-green deployment
+- OpenShift route resources are implemented by the shared router service that runs as a Pod in the cluster
+- Router Pods bind to public-facing IP addresses on the nodes
+- DNS wildcard is required for this to work
+- Routes can be implemented as secure and as insecure routes
+- Route resources need the following values:
+  - Name of the service that the route accesses
+  - A host name for the route that is related to the cluster DNS wildcard domain
+  - An optional path for path-based routes
+  - A target port, which is where the application listens
+  - An encryption strategy
+  - Optional labels that can be used as selectors
+- Notice that the route does not use the service directly, it just needs it to find out to which Pods it should connect
+- Secure routes can use different types of TLS termination:
+  - **Edge**: certificates are terminated at the route, so TLS certificate must be configured in the route
+  - **Pass-through**: termination is happening at the Pods, which means that the Pods are responsible for serving the certificates. Use this to support mutual authentication
+  - **Re-encryption**: TLS traffic is terminated at the route, and new encrypted traffic is established with the Pods
+- Unsecure routes require no key or certificate. It is easy, just use `$ oc expose service my.service --hostname my.name.example.com`
+  - The service `my.service` is exposed
+  - The hostname `my.name.example.com` is set for the route
+- If no name is specified, the name `routename.projectname.defaultdomain` is used
+- Notice that only the OpenShift route, and not the CoreDNS DNS server knows about route names
+- DNS has a wildcard domain name that sends traffic to the IP address that runs at the router software, which will further take care of the specific name resolving. Therefore, the route name must always be a subdomain of the cluster wildcard domain
+
+## 7.5 Understanding DNS Name Resolving
+
+- Services are the first level of exposing applications
+- To make services accessible, routes provide DNS names
+- OpenShift has an internal DNS server, which is reachable from the cluster only
+- To make OpenShift services accessible by name on the outside, Wildcard DNS is needed on the external DNS
+- Wildcard DNS resolves to all resources created within a domain
+- External DNS has wildcard DNS to the OpenShift loadbalancer
+- The OpenShift loadbalancer provides a front end to the control nodes
+- The control nodes run the Ingress controller and are a part of the cluster
+- So they have access to the internal resource records
+
+## 7.6 Creating Self-signed Certificates
+
+- PKI certificates are everywhere in OpenShift
+- To secure resources - like routes - it’s essential to understand how certificates are working
+- To use public keys, they need to be signed by a Certificate Authority
+- Self-signed certificates are an easy way to get started with your own certificates
+- Next, these certificates can be used in OpenShift resources like routes
+- **DEMO:**
+  - **Creating the CA (it’s not a running service, it’s a signing entity):**
+    - `$ mkdir ~/openssl`
+    - `$ openssl genrsa -des3 -out myCA.key 2048` —> creating private key, needs password
+    - `$ openssl req -x509 -new -nodes -key myCA.key -sha256 -days 3650 -out myCA.pem`
+
+- **Creating the certificate:**
+  - `$ openssl genrsa -out tls.key 2048`
+  - `$ openssl req -new -key tls.key -out tls.csr` —> make sure the CN matches the DNS name of route which is `project.apps-crc.testing`
+  
+- **Self-signing the certificate:**
+  - `$ openssl x509 -req -in tls.csr -CA myCA.pem -CAkey myCA.key -CAcreatserial -out tls.crt -days 1650 -sha256`
+
+## 7.7 Securing Edge and Re-encrypt Routes Using TLS Certificates
+
+- Edge routes hold TLS key material so that TLS termination can occur at the router
+- Connections between router and application are not encrypted, so no TLS configuration is needed at the application
+- Re-encryption routes offer a variation on edge termination
+  - The router terminates TLS with a certificate, and re-encrypts its connections to the endpoint (typically with a different certificate)
+- **DEMO: configuring an Edge route**
+  - **Part 1: creating deploy, svc, route**
+    - `$ oc new-project myproject`
+    - `$ oc create cm linginx1 --from-file linginx.conf`
+    - As admin: `$ oc create sa linginx-sa` —> creates dedicated service account
+    - As admin: `$ oc adm policy add-scc-to-user anyuid -z linginx-sa`
+    - `$ oc create -f linginx-v1.yaml`
+    - `$ oc get pods`
+    - `$ oc get svc`
+    - `$ oc create route edge linginx1 --service linginx1 --cert=/openssl/tls.crt --key=/openssl/tls.key --ca-cert=/openssl/myCA.pem --hostname=linginx-myproject.apps-crc.testing` —> name of route must be equal to name of certificate
+    - `$ oc get routes`
+  
+  - **Part 2: Testing from another pod in the cluster**
+    - `$ curl -svv https://linginx-myproject.apps-crc.testing` —> certificate check, show a self-signed certificate error
+    - `$ curl -s -k https://linginx-myproject.apps-crc.testing` —> give access
+
+## 7.8 Securing Passthrough Routes Using TLS Certificates
