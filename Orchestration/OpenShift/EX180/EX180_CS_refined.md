@@ -106,3 +106,47 @@ RedHat Certified specialist in containers and Kubernetes: Red Hat EX180
 - `$ podman run [mycontainer] —entrypoint=bash` —> if upper not works
 
 ---
+
+# OpenShift Commands
+
+## Deploy Apps
+
+- `$ oc new-project` —> create new project
+- `$ oc projects` , for developer or `$ oc get ns` , as administrator to get an overview of all projects
+- `$ oc new-app` —> primary tool for running apps, can build images from different sources
+- `$ oc new-app —as-deployment-config` —> run apps specifically as a deployment config
+- `$ oc create deployment` —> can be used as an alternative for `$ new-app`, command, it's for k8s and doesn't know OpenShift specifics
+- `$ oc run mymariadb —image=mariadb` —> start an unmanaged pod/naked pod
+
+## Displaying Application Information:
+
+- `$ oc get all` —> find all application resources, show pod, replica set, deployment, service information
+- `$ oc get all -A` —> an overview of resources in all projects
+- `$ oc get pods`
+- `$ oc get pods -A`
+- `$ oc get pods [mypod] -o yaml` —> see logs in yaml format
+- `$ oc describe pod [mypod]` —> logs are being stored in etcd, if anything bad happens should use this command
+- `$ oc logs [mypod]` —> check STDOUT of mypod
+- `$ oc status` —> see status
+- `$ oc get pods -o wide` —> show information of pods, with IP address
+
+### For Troubleshooting:
+
+- `$ oc get all`
+- `$ oc get pods [mypod] -o yaml`
+- `$ oc logs [mypod]`
+
+## Using Labels
+
+- `$ oc get pods,rs —show-labels` —> show all labels
+- `$ oc get pods,rs —selector app=nginx` —> show filtered result using label
+- `$ oc label pod [mypod] storage=ssd` —> add storage=ssd to end of labels of mypod
+- `$ oc edit svc bitginx` —> edit configuration file. must be sure about what you are doing
+
+---
+
+## Tips & Tricks:
+
+- `$ oc get all —selector app=<my-name>` —> with selector we only see what we want
+- `$ oc create deploy mynewapp —image=busybox — sleep 3600` —> what comes after `—` means what is executed inside the OpenShift container
+- For finding processes in a container that has no `$ ps` installed, `$ cat /proc/[PID]/cmdline`
