@@ -706,3 +706,92 @@ $ buildah commit —format docker ubi8-working-container hello:latest
 - ImageStreams store images using tags, which makes it easy to refer to different versions of images
 - OpenShift images are not managed directly from the registry, but by using the ImageStream resource —> DO NOT manage OpenShift images directly, only through ImageStream
 - When a new app is created with `$ oc create deploy` or `$ oc new-app`, image registries will be contacted to check for a newer image, to prevent this use —image-stream to refer to an existing ImageStream and use the image from the internal image registry. Use `$ oc new-app -L` to list all existing image streams and tags included. Tags can be combined with the —image-stream argument. For instance, `$ oc new-app —name=whatever —image-stream=nginx:1.18-ubi8`
+
+# Demo: Exploring Images in OpenShift
+
+- `$ oc new-app [quay.io/bitnami/nginx](http://quay.io/bitnami/nginx) -o yaml`
+- `$ oc new-app [quay.io/bitnami/nginx](http://quay.io/bitnami/nginx)`
+- `$ oc get is`
+- `$ oc get is nginx -o yaml`
+- `$ oc login -u kubeadmin`
+- `$ oc get images; oc get images | grep bitnami/nginx`
+
+## Automatic Triggering Update
+
+- The BuilderConfig resource contains parameters to trigger updates
+- `$ oc explain buildconfig.spec.triggers` —> find currently supported update parameters
+- Automatic updates can happen through webhooks. A webhook identifies a URL on GIT to OpenShift to trigger changes. This requires a publicly exposed URL.
+- If OpenShift is running in a private network, webhooks don’t work. To manually restart the build procedure, use `$ oc start-build`, to trigger the buildconfig again.
+
+---
+
+# 10- Troubleshooting OpenShift
+
+OpenShift troubleshooting happens in different areas:
+
+- Authentication & Authorization
+- Running Applications
+- Creating Applications with S2I
+- Accessing Application
+
+Consider using the OpenShift console, where the logs can be accessed easily from the web interface.
+
+## Authentication & Authorization Troubleshooting
+
+- OpenShift uses advanced Role-Based Access Control (RBAC). To set up granular access to application resources, an authentication provider needs to be set up, then RBAC-based authentication needs to be configured.
+- By default, most OpenShift environments use the Kubernetes user accounts, which consist of trusted TLS certificates. If you get access denied message, check current credentials using `$ oc whoami`.
+- `kubeadmin` is the cluster administrator with access to everything.
+- `developer` is the limited permissions user.
+
+## Applications Startup Troubleshooting
+
+You should follow the flow of the application:
+
+1. First, check that resources are committed to the etcd database.
+2. Then, check that the container entrypoint application is started.
+
+To follow this flow, use the following commands:
+
+- `$ oc describe` —> allows you to follow the procedure of how resources are added to the etcd.
+- `$ oc logs` —> shows STDOUT of the default app.
+
+If `$ oc describe` gives `CrashLoopback` (a generic error which needs further investigation), it is likely caused by an application error. This is the result of trying to start a non-daemon application. Since the restart policy is always by default in OpenShift, it thinks there is an error. OpenShift by default runs rootless images.
+
+- Don’t use Docker images, use [quay.io](http://quay.io) images.
+- Check out the Bitnami images.
+- Consider adding permissions to run root images using ServiceAccount: `$ oc adm policy add-scc-to-user anyuid -z default`.
+
+## Storage Access
+
+- Pods may not be able to access PVs that have been used previously. If a PVC still uses the PV, it will show a status of bound. Use `$ oc delete pv`, and create the PV again, using the same specifications. Before deleting existing resources, don’t forget to capture the current state using `-o yaml > somefile.yaml`.
+- When apps are started, images are created. Old, unused images may prevent you from pulling newer versions of the images. Use `$ oc adm prune` as an automated way to remove obsolete images and other resources.
+
+## Running Applications Troubleshooting
+
+### Analyzing OpenShift Events
+
+- `$ oc get events` gives an overview of cluster-level events. This allows you to trace what happens when an application is started in the cluster.
+- `$ oc describe` on the specific resource for individual resource events.
+
+Sometimes `$ oc logs` doesn’t show all the required information. Use `$ oc exec -it <podname> — /bin/bash` to open a bash shell in an interactive container terminal. If `/bin/bash` wasn’t available, use `sh`.
+
+- Container images are often designed in a minimal way. To access essential binaries, you may consider including them in your Dockerfile.
+- Ensure the Dockerfile uses `$ yum install -y iputils procps-ng` for access to `ip` and `ps`.
+- Alternatively, consider bind-mounting the host bin directory while starting the container. This way, the container starts with an interactive shell and access to all utilities in `/bin` on the host (podman only).
+
+Example command for bind-mounting:
+
+- `$ sudo podman run -it -v /bin:/bin nginx /bin/bash`
+
+### Accessing Host Binaries in OpenShift
+
+- Accessing host binaries in OpenShift requires the creation of a `hostPath` physical volume that exposes access to all required directories.
+
+You can also copy files to and from running containers using:
+
+- `$ podman cp` and `$ oc cp`.
+
+An alternative way is to mount volumes within the container:
+
+- `$ sudo podman cp my.conf mycontainer:/opt/myapp/`
+- `$ oc cp mypod:/opt/myapp/my.conf`
