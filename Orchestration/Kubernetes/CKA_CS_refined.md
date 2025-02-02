@@ -883,3 +883,196 @@ etcd.yaml, kube-apiserver.yaml, kube-controller-manager.yaml, kube-scheduler.yam
 **Lesson 7 Lab: Etcd Backup and Restore**
 
 ——————————————————
+
+**Lesson 8: Managing Scheduling**
+
+8.1 Exploring the Scheduling Process
+
+- Kube-scheduler takes care of finding a node to schedule new Pods
+- Nodes are filtered according to specific requirements that may be set:
+  - Resource requirements
+  - Affinity and anti-affinity
+  - Taints and tolerations and more
+- The scheduler first finds feasible nodes then scores them; it picks the node with the highest score
+- Once this node is found, the scheduler notifies the API server in a process called binding
+- Once the scheduler decision has been made, it is picked up by the kubelet
+- The kubelet will instruct the CRI to fetch the image of the required container
+- After fetching the image, the container is created and started
+
+8.2 Setting Node Preferences
+
+- The nodeSelector field in the pod.spec specifies a key-value pair that must match a label which is set on nodes that are eligible to run the Pod
+- Use `$ kubectl label nodes [worker1.example.com](http://worker1.example.com) disktype=ssd`, to set the label on a node
+- Use `nodeselector:disktype:ssd` in the pod.spec to match the Pod to the specific node
+- `nodeName` is part of the pod.spec and can be used to always run a Pod on a node with a specific name
+  - Not recommended: if the node is not currently available; the Pod will never run
+
+**Using Node Preferences**
+
+- `$ kubectl label nodes worker2 disktype=ssd`
+- `$ kubectl apply -f selector-pod.yaml`
+
+8.3 Managing Affinity and Anti-Affinity Rules
+
+- (Anti-)Affinity is used to define advanced scheduler rules
+- Node affinity is used to constrain a node that can receive a Pod by matching labels of these nodes
+- Inter-pod affinity constrains node to receive Pods by matching labels of existing Pods already running on that node
+- Anti-affinity can only be applied between Pods, in order to make sure that specific pods are not going to schedule together
+- A pod that has a node affinity label of key=value will only be scheduled to nodes with a matching label
+- A pod that has a Pod affinity label of key=value will only be scheduled to nodes running Pods with the matching label
+
+**Setting Node Affinity**
+
+- To define node affinity, two different statements can be used:
+  - `requiredDuringSchedulingIgnoredDuringExecution` requires the node to meet the constraint that is defined
+  - `preferredDuringSchedulingIgnoredDuringExecution` defines a soft affinity that is ignored if it cannot be fulfilled
+- At the moment, affinity is only applied while scheduling Pods, and cannot be used to change where Pods are already running
+- Affinity rules go beyond labels that use a key=value label
+- A `matchexpression` is used to define a key (the label), an operator as well as optionally one or more values.
+
+**Example Affinity Rules**
+
+- Below affinity rule, matches any node that has type set to either blue or green:
+
+```
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: type
+              operator: In
+              values:
+                - blue
+                - green
+```
+
+- Below affinity rule, matches any node where the key storage is defined:
+
+```
+nodeSelectorTerms:
+  - matchExpressions:
+      - key: storage
+        operator: Exist
+```
+
+- Some other examples are in the github repo of course:
+  - `pod-with-node-affinity.yaml`
+  - `pod-with-node-anti-affinity.yaml`
+  - `pod-with-pod-affinity.yaml`
+
+- When defining Pod affinity and anti-affinity, a `topologyKey` property is required
+- The `topologyKey` refers to a label that exists on nodes, and typically has a format containing a slash
+  - [kubernetes.io/host](http://kubernetes.io/host)
+- Using `topologyKeys` allows the Pods only to be assigned to hosts matching the topologyKey
+- This allows administrators to use zones where the workloads are implemented
+- If no matching `topologyKey` is found on the host, the specified `topologyKey` will be ignored in the affinity
+
+**Using Pod Anti-Affinity**
+
+- `$ kubectl create -f redis-with-pod-affinity.yaml`
+- On a two-node cluster, one Pod stays in a state of pending
+- `$ kubectl create -f web-with-pod-affinity.yaml`
+- This will run web instances only on nodes where redis is running as well
+
+8.4 Managing Taints and Tolerations
+
+- Taints are applied to a node to mark that the node should not accept any Pod that doesn’t tolerate the taint
+- Tolerations are applied to Pods and allow (but do not require) Pods to schedule on nodes with matching Taints - so they are an exception to taints that are applied
+- Where Affinities are used on Pods to attract them to specific nodes, Taints allow a node to repel a set of Pods
+- Taints and Tolerations are used to ensure Pods are not scheduled on inappropriate nodes, and thus make sure that dedicated nodes can be configured for dedicated tasks
+- A control node is a control node just because a couple of taints are set that don't allow user pods to be executed on them
+- Three types of Taint can be applied:
+  - `NoSchedule`: does not schedule new Pods
+  - `PreferNoSchedule`: does not schedule new Pods, unless there is no other option
+  - `NoExecute`: migrates all pods away from this node
+- If the pod has a toleration however, it will ignore the taint
+
+**Taints are set in different ways**
+
+- Control plane nodes automatically get taints that won’t schedule user Pods
+- When `$ kubectl drain`, and `$ kubectl cordon`, are used, a taint is applied on the target node
+- Taints can be set automatically by the cluster when critical conditions arise, such as a node running out of disk space
+- Administrators can use `$ kubectl taint`, to set taints:
+
+```
+$ kubectl taint node worker1 key1=value1:NoSchedule  # Add a taint
+$ kubectl taint node worker1 key1=value1:NoSchedule  # Remove a taint
+```
+
+- To allow a Pod to run on a node with a specific taint, a toleration can be used
+- This is essential for running core k8s Pods on the control plane nodes
+- While creating taints and tolerations, a key and value are defined to allow for more specific access
+
+```
+$ kubectl taint nodes worker1 storage=ssd:NoSchedule
+```
+
+- While defining a toleration, the Pod needs a key, operator, and value:
+
+```
+tolerations:
+  - key: "storage"
+    operator: "Equal"
+    value: "ssd"
+```
+
+- The default value for the operator is “Equal”; as an alternative, “Exist” is commonly used
+- If the operator “Exists” is used, the key should match the taint key and the value is ignored
+- If the operator “Equal” is used, the key and value must match
+
+**Node conditions that can automatically create taints:**
+
+- memory-pressure
+- disk-pressure
+- pid-pressure —> running out of pids
+- unschedulable
+- network-unavailable
+
+- If any of these conditions apply, a taint is automatically set
+- Node conditions can be ignored by adding corresponding Pod tolerations, but this is really a bad idea
+
+**Using Taints**
+
+- `$ kubectl taint nodes worker1 storage=ssd:NoShcedule`
+- `$ kubectl describe nodes worker1`
+- `$ kubectl create deployment nginx-taint --image=nginx`
+- `$ kubectl scale deployment nginx-taint --replicas=3`
+- `$ kubectl get pods -o wide` (will show that pods are all on worker2)
+- `$ kubectl create -f taint-toleration.yaml` (will run)
+- `$ kubectl create -f taint-toleration2.yaml` (will not run)
+
+8.5 Understanding LimitRange and Quota
+
+- LimitRange is an API object that limits resource usage per container or Pod in a Namespace
+- It uses three relevant options:
+  - `type`: specifies whether it applies to Pods or containers
+  - `defaultRequest`: the default resources the application will request
+  - `default`: the maximum resources the application can use
+- Quota is an API object that limits total resources available in a Namespace
+- If a Namespace is configured with Quota, applications in that Namespace must be configured with resource settings in `pod.spec.containers.resources`
+- Where the goal of the LimitRange is to set default restrictions for each application running in a Namespace, the goal of Quota is to define maximum resources that can be consumed within a Namespace by all applications
+
+8.6 Configuring Resource Limits and Requests
+
+- `$ kubectl create namespace limited`
+- `$ kubectl create quota qtest --hard pods=3,cpu=100m,memory=500Mi --namespace limited`
+- `$ kubectl describe quota --namespace limited`
+- `$ kubectl create deploy nginx --image=nginx:latest --replicas=3 -n limited`
+- `$ kubectl get all -n limited` (no pods)
+- `$ kubectl describe rs/nginx-xxx -n limited` (it fails because no quota has been set on the deployment)
+- `$ kubectl set resources deploy nginx --requests cpu=100m,memory=5Mi --limits cpu=200m,memory=20Mi -n limited`
+- `$ kubectl get pods -n limited`
+
+8.7 Configuring LimitRange
+
+- `$ kubectl explain limitrange.spec.limits`
+- `$ kubectl create ns limited`
+- `$ kubectl apply -f limitrange.yaml -n limited`
+- `$ kubectl describe ns limited`
+- `$ kubectl run limitpod --image=nginx -n limited`
+- `$ kubectl describe pod limitpod -n limited`
+
+**Lesson 8 Lab: Configuring Taints**
+
+——————————————————
