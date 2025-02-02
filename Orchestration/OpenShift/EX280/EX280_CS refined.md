@@ -161,3 +161,145 @@
   - `$ cat .crc/machines/crc/kubeadmin-password` → if forget password, you can find it here.
 
 ---
+# 2-Managing OpenShift Clusters with Web Console
+
+## 2.1 Managing Clusters with Web Console
+- On CRC use `$ crc console` → limited feature availability because some essential operators are missing
+- In full clusters use `$ oc get routes -n openshift-console`
+- `$ oc whoami —show-console`
+
+## 2.2 Managing Common Workloads with Web Console
+
+## 2.3 Managing Operators with Web Console
+
+## 2.4 Monitoring Cluster Events and Alerts
+
+---
+
+## **Module 2:** Managing OpenShift Resources
+
+---
+
+# 3-Managing OpenShift Resources
+
+## 3.1 Working with Projects
+- Linux kernel provides namespaces to offer strict isolation between processes
+- k8s implements namespaces in a cluster environment
+  - To limit inter-namespace access
+  - To apply resource limitations
+  - To delegate management tasks to users
+- OpenShift implements k8s namespaces as a vehicle to manage access to resources for users, in OpenShift namespaces are reserved for cluster-level admin access and users work with projects to store their resources
+
+## 3.2 Running Applications
+- After creating a project, `$ oc new-app` can be used to create an app
+- While creating an app, different k8s resources are created:
+  - **Deployment or deploymentconfig**: the app itself, including its cluster properties
+  - **Replicationcontroller or replicaset**: takes care of running pods in a scalable way, using multiple instances
+  - **Pod**: actual instance of the app that typically runs one container
+  - **Service**: a load balancer that exposes access to the app
+  - **Route**: resource that allows incoming traffic by exposing FQDN
+- If you go for k8s way `$ oc create deployment` but it does not include service or route
+- To run app in OpenShift, different k8s resources are used, each resource is defined in the API to offer specific function, the API defines how resources connect to each other
+- Many resources are used to define how a component in the cluster is running:
+  - Pods define how containers are started using images
+  - Services implement a load balancer to distribute incoming workload
+  - Routes define an FQDN for accessing the app
+- Resources are defined in the API
+
+## 3.3 Monitoring Applications
+- Pod is the representation of the running processes
+  - `$ oc logs podnam` → see STDOUT
+  - `$ oc describe` → see how the Pods are created in the cluster
+  - `$ oc get pod <podname> -o yaml` → see all status information
+  - `$ oc get pods —show-labels`
+  - `$ oc get all —selector=<label>`
+
+## 3.4 Exploring API Information
+- OpenShift is based on k8s APIs. OpenShift-specific APIs are added on top of the k8s APIs
+- OpenShift resources are not always guaranteed to be compatible with Kubernetes resources
+- Exploring APIs: (based on this information, OpenShift resources can be defined in a declarative way in YAML files)
+  - `$ oc api-resources` → shows resources as defined in the API
+  - `$ oc api-versions` → show versions of APIs
+  - `$ oc explain [—recursive]` → use to explore what is in the APIs. `$ oc explain pod.spec.containers`
+
+---
+
+## **4-Managing OpenShift Storage**
+
+### 4.1 Understanding OpenShift Storage
+- Container storage by default is ephemeral. Upon deletion of a container, all files and data inside it are also deleted
+- Containers can use volumes or bind mounts to provide persistent storage
+- Bind mounts are useful in stand-alone containers; volumes are needed to decouple the storage from the container
+- OpenShift uses persistent volumes to provision storage
+- Storage can be provisioned in a static or dynamic way
+  - Static provisioning means that the cluster admin creates the persistent volumes manually
+  - Dynamic provisioning uses storage classes to create persistent volumes on demand. OpenShift provides storage classes as the default solution
+- Developers use persistent volume claim (PVC) to dynamically add storage to the app
+
+### 4.2 Using Pod Volumes
+
+### 4.3 Decoupling Storage with Persistent Volumes
+- PVs provide storage in a decoupled way
+- Admins create PV of a type that matches the site-specific storage solution
+- Alternatively, StorageClass can be used to automatically provision persistent volumes
+- PVs are available for the entire cluster and not bound to a specific project
+- Once a PV is bound to a PVC, it cannot service any other claims
+- Developers define a PVC to add access to a PV to their app
+- PVC does not bind to a specific PV, but uses any PV that matches the claim requirements
+- If no matching PV is found, PVC will wait until it becomes available
+- When a matching PV is found, PV binds to PVC. Once a PV is bound, it cannot bind to another PVC
+
+### 4.4 Using StorageClass
+- PVs are used to statically allocate storage
+- StorageClass allows containers to use the default storage that is provided in a cluster
+- From the developer perspective it doesn’t make a difference, as developer only uses PVC to connect to the available StorageClass
+- Set a default StorageClass to allow developers to bind to the default storage class automatically, without specifying anything specific in the PVC
+- If no default StorageClass is set, the PVC needs to specify the name of the StorageClass it wants to bind to
+- `$ oc annotate storageclass standard —overwrite "[storageclass.kubernetes.io/is-default-class=true](http://storageclass.kubernetes.io/is-default-class=true)"` To set a StorageClass as default
+- In order to create PVs on demand, the storage class needs a provisioner, the following provisioners are provided:
+  - AWS EBC
+  - Azure File
+  - Azure Disk
+  - Cinder
+  - GCE Persistent Disk
+  - VMware vSphere
+- If you create a storage class for a volume plug-in that does not have a corresponding provisioner, use storage class provisioner value of [kubernetes.io/no-provisioner](http://kubernetes.io/no-provisioner)
+
+### 4.5 Using ConfigMap
+- ConfigMaps are used to decouple information. Different types of information can be stored in ConfigMaps:
+  - Command line parameters
+  - Variables
+  - ConfigFiles
+- Start by defining the ConfigMap and create it: (Consider different sources that can be used for ConfigMaps)
+  - `$ kubectl create cm myconf —from-file=my.conf` → put contents of a configuration file in the ConfigMap
+  - `$ kubectl create cm variables —from-env-file=variables` → define variables
+  - `$ kubectl create cm special —from-literal=VAR3=cow —from-literal=VAR4=goat` → define variables or command line arguments
+  - Verify creation using `$ kubectl describe cm <cmname>`
+
+### 4.6 Using the Local Storage Operator
+- Operators can be used to configure additional resources based on custom resource definition
+- Different storage types in OpenShift are provided as operators
+- The local storage operator creates a new LocalVolume resource, but also sets up RBAC to allow integration of this resource in the cluster
+- The operator itself can be implemented as ready-to-run code, which makes setting it up much easier
+
+#### Demo: Installing the operator
+- `$ crc console` → log in as kubeadmin user
+- Select Operators > OperatorHub; check the Storage category
+- Select LocalStorage, click Install to install it
+- Explore its properties in Operators > Installed Operators
+
+#### Demo: Using the LocalStorage Operator
+- Explore operator resources: `$ oc get all -n openshift-local-storage`
+- Create a block device on the CoreOS CRC machine:
+  - `$ ssh -i ~/.crc/machines/crc/id_rsa core@$(crc ip)`
+  - `$ sudo -i`
+  - `$ cd /mnt; dd if=/dev/zero of=loopbackfile bs=1M count=1000`
+  - `$ losetup -fP loopbackfile`
+  - `$ ls -l /dev/loop0; exit`
+- `$ oc create -f localstorage.yml`
+- `$ oc get all -n openshift-local-storage`
+- `$ oc get sc` → will show StorageClass in a waiting state
+
+---
+
+## **Module 3:** Managing OpenShift Authentication and Access
