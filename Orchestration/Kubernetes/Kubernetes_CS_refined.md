@@ -149,3 +149,73 @@ K8s can do both.
      - `[StorageClassName can be assigned too. We stick to default]`
 
 ---
+
+# Object Types:
+
+- **statefulset**
+- **ReplicaController**
+- **Pod**: one or more closely related containers
+- **deployment**: maintains a set of identical pods, ensuring that they have the correct config and that the right number exists
+- **Services**: sets up networking in a k8s cluster
+- **volume**: it is pod-level. If the container deletes/crashes, it exists, but if the pod gets deleted, it deletes too.
+- **persistent volume**
+- **persistent volume claim**
+- **secrets**: securely store a piece of information in the cluster, such as a db password.
+
+  Defined in `spec: type:`
+
+---
+
+# Network Services
+
+1. **Cluster IP**: Sets up an easy-to-remember URL to access a pod. Only exposes pods in the cluster (DEFAULT)
+2. **Node Port**: Makes a pod accessible from outside the cluster. Usually only used for dev purposes, because of funky random nodePort.
+3. **Load Balancer**: Legacy way to make a pod accessible from outside the cluster. Getting network traffic into a cluster. Only exposes one set of pods to the outside world.
+4. **External Name**: Redirects an in-cluster request to a CAME URL...
+
+   *... don't worry about this one...*
+5. **Ingress**: Exposes a set of services to the outside world.
+
+---
+
+# Docker Compose vs K8s:
+
+- **docker**: Each entry can optionally get docker-compose to build an image. 
+- **k8s**: Expects all images to already be built.
+
+- **docker**: Each entry represents a container we want to create. 
+- **k8s**: One config file per object we want to create.
+
+- **docker**: Each entry defines the networking requirements (ports). 
+- **k8s**: We have to manually set up all networking.
+
+---
+
+# Pod Object vs Deployment:
+
+- **pod**: Runs a single set of containers. 
+- **deployment**: Runs a set of identical pods (one or more).
+  
+- **deployment**: Monitors the state of each pod, updating as necessary. It has a template; when a change happens, update or kill + restart pod to make changes.
+  
+- **pod**: Good for one-off dev purposes. 
+- **deployment**: Good for dev.
+
+- **pod**: Rarely used directly in production. 
+- **deployment**: Good for production.
+
+---
+
+# PersistentVolumeClaim Access Modes:
+
+- **ReadWriteOnce** —> Can be used by a single node
+- **ReadOnlyMany** —> Multiple nodes can read from this
+- **ReadWriteMany** —> Can be read and written to by many nodes
+
+---
+
+# Ingress Nginx:
+
+In ingress-nginx, something that accepts incoming traffic and ingress controller are in one module.
+
+There is also a default-backend pod created by ingress-nginx which has health check purposes. It ideally could be implemented inside an express server.
