@@ -518,3 +518,108 @@ $ buildah commit —format docker ubi8-working-container hello:latest
   - `$ oc get pods -n openshift-ingress`
   - `$ oc describe pods -n openshift-ingress router-default-[TAB]`
   - `$ oc get pods -o wide` —> show information of pods, with IP address
+
+——————————————————
+
+# module 3: Using OpenShift to Automate Complex Application Builds
+
+## 8- Running MicroServices in OpenShift
+
+### Decoupling
+
+- The different components in a microservice need to be connected to each other by providing site-specific information
+- For decoupling site-specific information from generic application code, OpenShift provides several resources
+- Services provide a single point of access that is used as a Load Balancer (LB) to provide access to the app
+- Templates can be used to define a set of resources that belong together, as well as application parameters
+- ConfigMaps and Secrets can be used to provide a set of variables, parameters, and configuration files that can be used by application resources
+- Persistent Volume Claims (PVCs) are used to connect to storage that is available in a specific environment
+- If you get an image from DockerHub which needs root privilege, you can bypass it running it with kubeadmin account
+
+### ConfigMap
+
+- Purpose of ConfigMaps are decoupling
+- Decoupling means that static data is kept apart from site-specific dynamic data
+- ConfigMaps and secrets are very similar, but information in secrets are Base64 encoded
+- ConfigMaps are used to store the following types of values:
+  - variables
+  - Application startup parameters (not that commonly used)
+  - Configuration Files
+
+#### Demo, ConfigMap for ConfigFiles:
+
+- `$ oc create deploy mynginx —image=bitnami/nginx`
+- `$ oc get pods`
+- `$ oc cp <podname> :/app/index.html index.html`
+- Apply modifications to index.html
+- `$ oc create configmap mycm —from-file=index.html`
+- `$ oc set volume deploy mynginx —add —type configmap —configmap-name mycm —mount-path=/app/`
+- `$ oc expose deploy mynginx —type=NodePort —port=8080`
+- `$ oc get svc`
+- `$ curl [http://$](http://$)(crc ip):<nodePort>`
+- `$ oc get deploy mynginx -o yaml`
+
+#### Demo, ConfigMap for variables
+
+- `$ oc create deploy mymariadb —image=mariadb`
+- `$ oc logs mymariadb-<ID>`
+- `$ oc create configmap myvars —from-literal=MYSQL_ROOT_PASSWORD=password`
+- `$ oc describe configmap myvars`
+- `$ oc set env deploy mymariadb —from=configmap/myvars`
+- `$ oc describe deploy mymariadb`
+- `$ oc get deploy mymariadb -o yaml`
+
+### Secrets
+
+- A base64 encoded ConfigMap
+- Secrets are used a lot internally in OpenShift:
+  - To provide access to APIs
+  - To provide access to passwords
+  - To provide access to other resources
+  - For authentication to external systems
+- Using secrets to authenticate to external registries such as Docker may help in bypassing limitations (100 pulls in 6 hours for unauthenticated users)
+  - `$ oc create secret docker-registry docker —docker-server=[docker.io](http://docker.io) —docker-username=YOURUSERNAME —docker-password=YOURpASSWORD —docker-email=YOUREMAILADDRESS`
+  - `$ oc secrets link default docker —for=pull` —> make new secret your default pull secret
+
+#### Demo, creating a secret from a file
+
+- `$ podman login [docker.io](http://docker.io) # provide username and password`
+- `$ oc create secret generic docker —from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json —type [kubernetes.io/dockerconfigjson](http://kubernetes.io/dockerconfigjson)`
+- `$ oc describe secret docker`
+- `$ oc get secret docker -o yaml`
+- `$ oc secrets link default docker —for pull`
+
+### Persistent Storage
+
+- Container storage by nature is ephemeral
+- To provide persistent decoupled storage, OpenShift uses persistent volumes
+- A persistent volume is a cluster-wide storage resource that is created by the site admin to connect to site-specific storage
+- Persistent volumes can be dynamically generated using StorageClass
+- A Persistent Volume Claim (PVC) is used to request access to storage, applications are configured to use a specific PVC by referring to their name. A PVC has an access mode, and a resource request, but does not connect to a specific type of PV, that leaves the decision of what to connect to the cluster. To better determine what to connect to, StorageClass can be used as a matching label between the PV and the PVC. After requesting access to the PV, the PVC will show as bound
+- Many templates are offered with a -persistent suffix, and offer access to persistent storage
+
+- `$ oc get templates -n openshift | grep persistent`
+- These templates contain a PersistentVolumeClaim resource, that only needs to know which type and how much storage is required. You only need to specify the required capacity, using the VOLUME_CAPACITY parameter
+
+### Template
+
+- When an app is defined, typically a set of related resources using the same parameters is created
+- Templates can be used to make creating these resources easier
+- Resource attributes are defined as template parameters
+- Template parameters can be set statically, or generated dynamically
+- OpenShift comes with a set of default templates; custom templates can be added as well
+  - `$ oc get templates -n openshift` —> list default templates
+- Each template contains specific sections:
+  - **objects**: defines a list of resources that will be created
+  - **parameters**: defines parameters that are used in the template objects
+
+- `$ oc describe template templatename` —> list parameters that are used
+- `$ oc process —parameters templatename`
+- To generate an app from a template, first need to export the template
+  - `$ oc get template mariadb-ephemeral -o yaml -n openshift > mariadb-ephemeral.yaml`
+- Next, you need to identify parameters that need to be set, and process the template with all of its parameters
+  - `$ oc process —parameters mariadb-ephemeral -n openshift`
+  - `$ oc process -f mariadb-ephemeral.yaml -p MYSQL_USER=anna -p MYSQL_PASSWORD=password -p MYSQL_DATABASE=books | oc create -f -`
+
+- Using `$ oc new app` with templates (most apps created like this must use —as-deployment-config in most cases, because most of them are still using deployment-config and not deployment)
+  - `$ oc new-app —template=mariadb-ephemeral -p MYSQL_USER=anna -p MYSQL_PASSWORD=ann -p MYSQL_DATABASE=videos —as-deployment-config`
+
