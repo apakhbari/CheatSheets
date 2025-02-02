@@ -259,3 +259,123 @@ RedHat Certified specialist in containers and Kubernetes: Red Hat EX180
   - `$ sudo podman port` —> find which port mapping applies to containers
 
 # ——————————————————
+
+# 5- Creating Custom images
+
+### Options for customizing images
+
+1. commit changes to an image is not good for maintainability, build automation and repeatability
+2. Dockerfile or buildah: standard for building custom images that are easy to share
+3. OpenShift S2I: can be used as a standalone s2i utility, or as a part of OpenShift to build custom applications from source code. It can build app directly from GitHub
+
+### Where to get Images
+
+1. Red Hat Software Collective Library (RHSCL): tools that don’t fit the default RHEL release, and contain Dockerfiles for many products. community versions of these Dockerfiles are on [github.com/sclorg?q=-container](http://github.com/sclorg?q=-container)
+2. Red Hat Container Catalog (RHCC): RedHat quality assurance process
+3. [Quay.io](http://Quay.io): community-contributed container images
+4. Docker Hub: community-contributed, not tested or verified in any sense, not optimized to be used in Red Hat environment
+
+### podman commit
+
+- `$ podman commit [containername] [imagename]` , use `$ podman diff [containername]` , before committing to reveal changes that have been applied to running containers
+- add `—format` to specify format: either oci or docker
+- podman commit allows users to modify existing containers and commit the changes to a new image
+- it commits the read-writable layer to the read-only disk of the image
+- lacks traceability and keeps unnecessary files in the image
+
+- in RedHat environment it’s common to talk about Containerfile instead of Dockerfile
+- A child image is an image that is created from a parent image and incorporates everything in the parent image, starting from a parent image makes it easier to create a reliable image
+- alternatively, Dockerfile images can be created by modifying existing images
+
+### Writing a Dockerfile
+
+- each Dockerfile starts with `FROM`, identifying base image to use
+- next instructions are executed in that base image, order is important
+- each Dockerfile instruction runs in an independent container, using an intermediate image built from a previous command, which means that adding multiple instructions results in multiple layers. try to use as fewer instructions as possible
+- if not specify entry point, `/bin/sh -c` is executed as default command
+
+#### Instructions:
+
+- `FROM` identifies the base image to use
+- `LABEL` is a key-value pair that is used for identification
+- `MAINTAINER` is the name of person that maintains the image
+- `RUN` executes command on the FROM image
+- `EXPOSE` has metadata-only information on where the image should run
+- `ENV` defines environment variables to be used within the container
+- `ADD` copies files from the project directory to the image
+- `COPY` copies files from the local project directory to the image, ADD is preferred
+- `USER` specifies username for RUN, CMD, and ENTRYPOINT instructions
+- `ENTRYPOINT` defines the default command
+- `CMD` contains default arguments for the ENTRYPOINT instruction
+
+#### Shell vs Exec form:
+
+- options like ADD, COPY, ENTRYPOINT, CMD are used in shell form and in exec form
+- **Shell form** is a list of items:
+  - `ADD /my/file /mydir`
+  - `ENTRYPOINT /usr/bin/nmap -sn 172.17.0.0/24`
+
+- **Exec form** is a JSON array of items (preferred, shell form wraps commands in a `/bin/sh -c` shell, which sometimes creates unnecessary shell processes):
+  - `ADD [“/my/file”, “/mydir”]`
+  - `ENTRYPOINT [“/usr/bin/nmap”, “-sn”, “172.17.0.0/24”]`
+
+#### Optimization:
+
+- Each command used in a Dockerfile creates a new layer, don’t run multiple `RUN` commands, connect them using `&&`
+- **Dockerfile size optimization**:
+  - when installing software from a Containerfile, use `$ dnf clean all -y` to clean yum caches
+  - Exclude documentation and unnecessary dependencies using the `—nodocs —setopt install_weak_deps=False` option to `$ dnf install`
+
+#### Example:
+
+```Dockerfile
+FROM centos:7 (ub or ub8 : red hat universal base image)
+MAINTAINER Sander <mail@sandervanvugt.nl>
+
+# Add repo file
+COPY ./sander.repo /etc/yum.repos.d/
+
+# Install cool software
+RUN yum --assumeyes update && \
+    yum --assumeyes install bash nmap iproute && \
+    yum clean all
+
+ENTRYPOINT ["/usr/bin/nmap"]
+CMD ["-sn", "172.17.0.0/24"]  (these are arguments for entry point, it must be array style “arg1”, “arg2”, ”arg3”, so the entrypoint is nmap -sn 172.17.0.0/24)
+```
+
+- `$ podman build -t [imagename] [:tag (optional, if not specified tagged as latest)] directory` —> create from Dockerfile
+
+### Skopeo
+
+- Skopeo can be used to manage images from image repositories
+- `$ skopeo inspect` —> inspect images as they are stored in image repositories
+- `$ skopeo copy` —> copy images between registries and between local files and registries
+- in an OpenShift environment, Skopeo can be used to push images to the local OpenShift registry
+
+### buildah
+
+- Buildah can be used to create and manage custom images
+- Image management functionality is also integrated in podman, but buildah has the advantage that it includes a scripting language, which allows you to build an image from scratch, such that it is not based on any base image
+- Consider building an image from scratch, using buildah, it has nothing but the stuff that you’ll put in there
+
+```bash
+$ buildah from ubi8/ubi:latest —> creates a new image based on RHEL8
+$ buildah images —> shows that NO image was created, we still have to create it
+$ buildah containers —> shows that a new buildah-based container was started (ubi8-working-container)
+$ curl -sSl [http://ftpmirror.gnu.org/hello-2.10.tar.gz](http://ftpmirror.gnu.org/hello-2.10.tar.gz) -o hello-2.10.tar.gz —> downloads a file
+$ buildah copy ubi8-working-container hello-2.10.tar.gz /tmp/hello-2.10.tar.gz
+$ buildah run ubi8-working-container yum install -y tar gzip gcc make
+$ buildah run ubi8-working-container yum clean all
+$ buildah run ubi8-working-container tar xzvf /tmp/hello-2.10.tar.gz -C /opt
+$ buildah config —workingdir /opt/hello-2.10 ubi-working-container
+$ buildah run ubi8-working-container ./configure
+$ buildah run ubi8-working-container make
+$ buildah run ubi8-working-container make install
+$ buildah run ubi8-working-container hello -v
+$ buildah config —entrypoint /usr/local/bin/hello ubi8-working-container
+$ buildah commit —format docker ubi8-working-container hello:latest
+```
+
+**_———————————————_**
+```
