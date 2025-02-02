@@ -202,3 +202,60 @@ RedHat Certified specialist in containers and Kubernetes: Red Hat EX180
 - From host OS perspective, a container is just a process. A well restricted process though, as namespaces, groups and SELinux limit what the container can do.
 
 # ——————————————————
+# 3- Managing Container Images
+
+- Common public registries:
+
+  - [Quay.io](http://Quay.io) —> RedHat sponsored public registry
+  - [Catalog.redhat.com](http://Catalog.redhat.com) —> Red Hat ensures the reliability and security of images
+  - Docker hub
+  - [Cloud.google.com/container-registry](http://Cloud.google.com/container-registry) —> a common registry, used in Kubernetes
+
+- `/etc/containers/registries.conf` —> access to registries information, eg [registries.search] and [registries.insecure] which is for registries without TLS
+- After downloading user images, they are stored in user home directory
+- After downloading images with sudo privileges, they are stored in `/var/lib/containers/storage/overlay-images`
+- By default the `:latest` tag is used
+
+# ——————————————————
+
+# 4- Managing containers
+
+- For realizing what was image’s entry point, `$ cat /proc/1/cmdline`
+
+### Volume:
+
+- containers has two parts by default: read-only image + read-write layer
+- when a container is started, an ephemeral read/write storage is added, this storage guarantees that data is kept after restart. also after restart this data is still available. after using `$ podman rm` the read/write layer is removed. to ensure data will always be available, persistent storage must be provided
+- a host directory is mounted inside the container to ensure data is stored externally, this guarantees the availability of data after the container lifetime
+- to secure access to the host directory, the `container_file_t` SELinux context is applied. source context of SELinux for a container is `container_runtime_t`. if it is not set then we will get AVC denied error
+- the type of storages that could be added to a container in order to has persistent storage:
+  - bind-mount storage, which is a directory inside of host system
+  - external volume (or NFS)
+
+- to see files that are mounted in a container, `$ podman inspect`, look for Mounts
+- SCENARIO: add bind-mount to a container:
+  - to start, the host directory must be writable by the container main process. if containers are started with a specific UID, the numeric UID can be set. use `$ podman inspect [image]` and look for User to find which user it is
+  - `$ sudo chown -R <id>:<id> /hostdir` —> set the User ID found in the container
+  - now set SELinux
+    - `$ sudo semange fcontext -a -t container_file_t “/hostdir(/.*)?”`
+    - `$ sudo restorecon -Rv /hostdir`
+
+- mount storage using `podman run -v /hostdir:/dir-in-container [myimage]`
+- there is another way, for setting SELinux automatically, you can do: (recommended while using rootless containers)
+  - `$ podman run -v /hostdir:/dir-in-container:Z [myimage]`
+
+### Networking:
+
+- Rootless containers don’t have an IP address and are accessible through port forwarding on the container host only
+- Root containers connect to a bridge, using a container-specific IP address
+- Containers behind the bridge are not directly accessible
+- podman networking is according to the Container Network Interface (CNI), CNI standardizes network interfaces for containers in cloud native environments
+- podman uses CNI to implement a Software Defined Network (SDN)
+- according to `/etc/cni/net.d/87-podman-bridge.conflist`, a bridge is used for this purpose
+- in this model containers on different hosts cannot directly connect to each other, to connect containers a higher level overlay network is required
+- to make container applications accessible, port forwarding is used. note that traffic can go out of container but can’t come in, also it is host specific which means that you can’t move container to another host, there is another way in orchestration
+  - `$ sudo podman run -d -p 8088:80 nginx` —> runs an nginx container on port 80 where port 8088 can be addressed on host to access its workload
+  - `$ sudo podman run -d -p 127.0.0.1:8088:80 nginx` —> only traffic comes from this source ip it is allowed to access
+  - `$ sudo podman port` —> find which port mapping applies to containers
+
+# ——————————————————
