@@ -378,4 +378,143 @@ $ buildah commit —format docker ubi8-working-container hello:latest
 ```
 
 **_———————————————_**
-```
+# Module 2: OpenShift Fundamentals
+
+## Lessons: Part Two: Red Hat
+
+### 6- Running OpenShift
+
+- Red Hat OpenShift Container Platform (RHOCP) needs a license for enterprise level support
+- Free version of OpenShift is OpenShift Kubernetes Distribution (OKD), previously known as OpenShift Origins. OKD is OpenSource Downstream of OpenShift
+- options to work with OpenShift:
+  - Red Hat OpenShift Container Platform (RHOCP): which allow customers to build their own OpenShift cluster on top of their own infrastructure, either bare metal, virtual machines, private or public cloud
+  - Red Hat OpenShift Kubernetes Engine: provides just the K8s core functions and can be installed on top of any infrastructure
+  - OpenShift Kubernetes Distribution (OKD): Open Source alternative to RHOCP
+  - Red Hat OpenShift Dedicated: Dedicated OpenShift cluster, running on AWS or Google cloud and managed by Red Hat
+  - Red Hat OpenShift Online: shared OpenShift cluster, managed by Red Hat running on Red Hat infrastructure (shared by other customers)
+  - Managed versions for different cloud providers: Red Hat OpenShift services on AWS - Microsoft Azure Red Hat OpenShift - Red Hat OpenShift on IBM cloud
+
+- Learning OpenShift:
+  - Red Hat CodeReady containers provides an all-in-one virtual machine, offering OpenShift 4 services
+  - OKD CodeReady containers: based on OKD
+  - OpenShift CodeReady Containers (CRC): because OpenShift needs lots of resource, RedHat introduced CRC as an all-in-one test solution. Could be installed on top of all OSs, need 16 GB RAM (CRC needs at least 12 GB RAM), it’s better to install it on VM. Could be downloaded from [developers.redhat.com](http://developers.redhat.com), installation on RHEL is recommended
+  - there is no update in CRC, should do this for update:
+    - `$ crc delete`
+    - `$ crc setup`
+    - `$ crc start -m 12244 -p pull-secret.txt`
+
+- After installation of OpenShift, local users are created:
+  - `kubeadmin` is the “internal” OpenShift user that has full access to the cluster
+  - `developer` is the developer user that has permission to deploy applications in OpenShift
+  - for more advanced authentication, an authentication provider must be configured. (ex280) also for Role-Based Access Control (RBAC) you’ll need an external authentication provider
+
+- `$ crc console —credentials` —> shows info to login as kubeadmin or developer
+- OpenShift cluster has its own CA, which by signing clients pub key make client authentication easier.
+
+### OC Client
+
+- should install OpenShift CLI (OC Client) for working. It is primary command line interface to work with OpenShift. Must be preferred above using OpenShift Console. It is already installed in CRC.
+- for start using it: (make sure do this to use latest version of OC Client)
+  - `$ crc oc-env`
+  - `$ eval $(crc oc-env)`
+  - `$ source <(oc completion bash)` —> for auto completion
+  - `$ oc login -u developer -p developer` —> login
+  - `$ oc new-project [myfirstapp]` —> projects are isolated from each other
+  - `$ oc create deployment [myweb] —image=bitnami/nginx (rootless image) —replicas=3`
+  - (`$ oc new app` —> use extra resources)
+  - use `-h` for help
+  - `$ oc get all` —> see info about deployments and pods
+
+### 7- Running Applications in OpenShift
+
+**OpenShift Resources** (defined in OpenShift APIs & stored in etcd database):
+- **Pod**: a running instance of an app, has IP, could have Volume
+- **ReplicaSet** (formerly ReplicationController): the resource that takes care of running multiple instances of pods
+- **Deployment** (formerly DeploymentConfig): resource that adds cluster properties to running the deployment, such as update strategy and replication. The ReplicaSet is managed by Deployment
+- **Service**: used to load balance ingress traffic between the different Pod instances. (an API based Load Balancer)
+- **Route** (OpenShift specific): used to expose a URL that provides access to services
+
+- **Decoupling**: separating site-specific data from code. We do site-specific data (like environmental variables) using config map, essence of OpenShift is application code is being separated from application data which is running somewhere else. If something bad happens to one of running instances of app, it’s not a problem because OpenShift is going to run another instance which is going to connect to our data.
+
+**APIs**:
+- For scalability, we have replica set + deployment
+- For accessibility, we have service + route
+- For storing variables we have configMap + secret is for configuration and variables in a secure way
+- For storage we have PV and storage can be dynamically created by storage class
+  - `$ oc api-resources` —> show a list of all resources and the specific API collection they are coming from. If its version is 1 or v1 it is coming from k8s if not it is added by OpenShift
+  - `$ oc explain [name of resource]` —> get more information about API resource
+  - `$ oc explain [name of resource].spec` —> information about API resources that could be inside yaml file
+
+**Deploy Applications in OpenShift**:
+- applications should be deployed in isolated environments to enhance security and manageability, should use projects, could limit quota and RBAC on projects. OpenShift projects are on top of k8s namespaces, difference is RBAC is in OpenShift but not k8s
+- before creating applications, create new projects. It’s best practice to have a project for each application
+  - `$ oc new-project` —> create new project
+  - `$ oc projects` for developer or `$ oc get ns` , as administrator to get an overview of all projects
+  - `$ oc new-app` —> primary tool for running apps, can build images from different sources:
+    - Dockerfile
+    - Image from any image repository
+    - Directly from source code
+    - Indirectly from source code, using Source to image (s2i)
+  - `$ oc new-app —as-deployment-config` —> run apps specifically as a deployment config
+  - `$ oc create deployment` —> can be used as an alternative for `$ new-app`, common, its for k8s and doesn't know OpenShift specifics
+  - `$ oc get all` —> find all application resources
+  - `$ oc get all -A` —> an overview of resources in all projects
+  - `$ oc status` —> see status
+
+- when starting app with `$ oc new-app`, if you check `$ oc get all`, you’ll see a replicaset which is deactivated, it was being used when app was creating and now that everything is good there is no use for that, but OpenShift keeps it in order for you to want to roll back. After app updates old replicas hang around in order that a roll-back is desired
+- when running apps in OpenShift, logs of apps are being written in etcd database with json format
+
+### Labels
+- automatically or manually applied to workloads in OpenShift, used as a selector
+- Replicasets use labels to monitor availability of pods, if labels change or are deleted then replicaset is going to create new pods because availability of pods are being monitored using labels
+- Services use labels to connect to Pods with a matching label
+- Admins can use labels to make filtering or scheduling Pods easier
+
+### Declarative vs Imperative
+- In an **Imperative** way, an operator types commands to get things done
+- In a **Declarative** way, the configuration is managed as code (preferred)
+- while using declarative way, it’s easy to manage versions of configuration code using a version control system
+- OpenShift resources can be defined in a declarative way using YAML files
+  - generating them (not from scratch) —> `$ oc create deploy mynginx —image=bitnami/nginx —dry-run=client -o yaml > mynginx.yaml`, in dry-run it shows what it’s gonna do but will not do it
+  - written from scratch, directions can be found using `$ oc explain`
+  - generating from a running resource using `$ oc get deploy mynginx -o=yaml`, not recommended because you’ll need to clean up the resulting YAML file
+
+### Services
+- In OpenShift, a pod SDN (Software Defined Network) is provided for Pod access
+- Pod IP addresses are volatile, pods are not addressed directly, but services are used instead
+- Services are exposed on the cluster IP address
+- The service provides an IP address that can be used to access workloads running in Pods, either from within the cluster, or from outside the cluster if a route is added
+- Services also provide load balancing when multiple Pods are used in a replicated setup
+
+- when a user sends a request, it is going to internal OpenShift DNS (FQDN) then going to Route, Route would use the Load balancer, LB forward traffic to nodeport, or directly to clusterIP. If it’s gonna be forwarded to nodeport, it is going to be port-forwarded because all of our api-servers are working in a specific port, node port service is port forwarding traffic to pods
+- In MicroService architecture, it is convenient that FrontEnd is exposed via nodeport. We do traffic somehow that nodeport service is connected to clusterIP service and BackEnd is there so it is not exposed to outer world
+
+### Pod to Service Connection
+- Services are using selector labels to find Pods they should connect to
+- Pods themselves know which services they are connected to by two environment variables that are automatically assigned to running Pods:
+  - `SVC_NAME_SERVICE_HOST`: services IP address
+  - `SVC_NAME_SERVICE_PORT`: services port
+- Services also automatically register with k8s internal DNS server, which makes them accessible through DNS as:
+  - `SVC_NAME.PROJECT_NAME.svc.clustername`
+- Cluster name can be obtained using `$ oc config get-cluster`, or `$ oc config current-context`
+
+### Pod Access Options
+- Different services can be used:
+  - **ClusterIP** provides an IP address that is only accessible on the ClusterIP. This IP address cannot be addressed directly by external users
+  - **NodePort** provides a node port on the cluster nodes which allows users to connect to the service directly
+  - In OpenShift services are not addressed directly. Use routes instead
+  - `$ oc port-forward mynginx 8080:80` —> expose a Pod port on the local workstation where the oc client is used. This is good for admin/developer access but not to expose workloads to external users
+
+### Routes
+- Routes use services to access pods. Router Pods are deployed on infrastructure nodes
+- Router Pods bind to the node public IP addresses, from where traffic can be forwarded to services, thus providing access to the pods
+- DNS must be configured to enable traffic forwarding to the appropriate public node IP address
+- In route spec, two important fields are used:
+  - `spec.host`: DNS name that is used by the route to expose itself
+  - `spec.to`: name of the service resource
+- Routes can be configured to handle TLS traffic
+  - `$ oc expose service <servicename>` —> generates a DNS name that looks like `routname.projectname.defaultdomain`, default domain is a wildcard DNS domain that is configured while installing OpenShift, and matches the OpenShift DNS name, on CRC the default domain is set to `apps-crc.testing`. The external DNS server needs to be configured with a wildcard DNS name that resolves to the load balancer that implements the route
+- OpenShift runs a default router in the openshift-ingress namespace, the `ROUTER_CANONICAL_HOSTNAME` variable defines how this router is accessible from the outside:
+  - `$ oc get pods -n openshift-ingress`
+  - `$ oc describe pods -n openshift-ingress router-default-[TAB]`
+  - `$ oc get pods -o wide` —> show information of pods, with IP address
