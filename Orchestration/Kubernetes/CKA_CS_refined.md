@@ -510,3 +510,118 @@ name: cmvol
 **Lesson 4 Lab: Setting up Storage**
 
 ——————————————————
+**Lesson 5: Managing Application Access**
+
+5.1 Exploring Kubernetes Networking
+
+- In Kuberentes, networking happens at different levels:
+- Between containers: implemented is IPC (Inter Process Communication) , no IP address, one linux process communicating with another linux process
+- Between Pods: implemented by network plugins, use SDN that makes all Pods in the same broadcast domain no matter which physical node they actually access
+- Between Pods and Services: implemented by Service resources
+- Between users and Services: implemented by Services, with the help of Ingress
+
+5.2 Understanding Network Plugins
+
+- Network plugins are required to implement network traffic between Pods
+- Network plugins are provided by the Kubernetes Ecosystem
+- Vanilla Kubernetes does not come with a default network plugin, and you’ll have to install it while installing a cluster
+- Different plugins provide different features
+- Currently, the Calico plugin is commonly used because of its support for features like NetworkPolicy
+
+5.3 Using Services to Access Applications
+
+- Service resources are used to provide access to Pods
+- If multiple Pods are used as Service endpoint, the Service will load balance traffic to the Pods
+- Different types of Services can be configured:
+  - ClusterIP: the service is internally exposed and is reachable only from within the cluster
+  - NodePort: the Service is exposed at each node’s IP address as a port. The Service can be reached from outside the cluster at nodeip:nodeport
+  - LoadBalancer: the cloud provider offers a load balancer that routes traffic to either NodePort -or ClusterIP- based Services
+  - ExternalName: the Service is mapped to an external name that is implemented as a DNS CNAME record
+
+- use `$ kubectl expose`, to expose applications through their Pods, ReplicaSet or Deployment (recommended)
+- use `$ kubectl create service`, as an alternative
+
+**Creating Services**
+
+- `$ kubectl create deploy webshop —image=nginx —replicas=3`
+- `$ kubectl get pods —selector app=webshop -o wide`
+- `$ kubectl expose deploy webshop —type=NodePort —port=80`
+- `$ kubectl describe svc webshop`
+- `$ kubectl get svc`
+- `$ curl nodeip:nodeport`
+
+5.4 Running an Ingress Controller
+
+- Ingress is an API object that manages external access to services in a cluster
+- Ingress works with external DNS to provide URL-based access to Kubernetes applications
+- Ingress consists of two parts:
+  - A load Balancer available on the external network
+  - An API resource that contacts the Service resources to find out about available back-end Pods
+- Ingress load balancers are provided by the Kubernetes ecosystem, different load balancers are available
+- Ingress exposes HTTP and HTTPS routes from outside the cluster to Services within the cluster
+- Ingress uses the selector label in Services to connect to the Pod endpoints
+- Traffic routing is controlled by rules defined on the Ingress resource
+- Ingress can be configured to do the following, according to functionality provided by the load balancer:
+  - Give Services externally-reachable URLs
+  - Load balance traffic
+  - Terminate SSL/TLS
+  - Offer name based virtual hosting
+
+**Installing Nginx Ingress Controller**
+
+- `$ helm upgrade —install ingress-nginx ingress-nginx —repo [https://kubernetes.github.io/ingress-nginx](https://kubernetes.github.io/ingress-nginx) —namespace ingress-nginx —create-namespace`
+- `$ kubectl get pods -n ingress-nginx`
+- `$ kubectl create deploy nginxsvc —image=nginx —port=80`
+- `kubectl expose deploy nginxsvc`
+- `$ kubectl create ingress nginxsvc —class=nginx —rule=[nginxsvc.info/*=nginxsvc:80](http://nginxsvc.info/*=nginxsvc:80)`
+- `$ kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80`
+- `$ echo “127.0.0.1 nginxsvc/.info” >> /etc/hosts`
+- `$ curl [nginxsvc.info:8080](http://nginxsvc.info:8080)`
+
+5.5 Configuring Ingress
+
+- Ingress rules catch incoming traffic that matches a specific path and optional hostname and connect that to a Service and port
+- use `$ kubectl create ingress`, to create rules
+- Different paths can be defined on the same host
+  - `$ kubectl create ingress mygress —rule=“/mygress=mygress:80” —rule=“/yourgress=yourgress:80”`
+- Different virtual hosts can be defined in the same Ingress
+  - `$ kubectl create ingress nginxsvc —class=nginx —rule=[nginxsvc.info/*=nginxsvc:80](http://nginxsvc.info/*=nginxsvc:80) —rule=[otherserver.org/*=otherserver:80](http://otherserver.org/*=otherserver:80)`
+
+**IngressClass**
+
+- In one cluster, different Ingress controllers can be hosted, each with its own configuration
+- Controllers can be included in an IngressClass
+- While defining Ingress rules, the `—class` option should be used to implement the role on a specific Ingress controller
+- If this option is not used, a default IngressClass must be defined
+- Set [Ingressclass.kubernetes.io/is-default-class:](http://Ingressclass.kubernetes.io/is-default-class:) “true” , as an annotation on the IngressClass to make it the default
+- After creating the Ingress controller as described before, an IngressClass API resource has been created
+- Use `$ kubectl get ingressclass -o yaml`, to investigate its content
+
+**Configuring Ingress Rules**
+
+- `$ kubectl get deployment`
+- `$ kubectl get svc webshop`
+- `$ kubectl create ingress webshop-ingress —rule=“/=webshop:80” —rule=“/hello=newdep:8080”`
+- `$ sudo vim /etc/hosts`
+  - `127.0.0.1   [webshop.info](http://webshop.info)`
+- `$ kubectl get ingress`
+- `$ kubectl describe ingress webshop-ingress`
+- `$ kubectl create deployment newdep —image=[gcr.io/google-samples/hello-app:2.0](http://gcr.io/google-samples/hello-app:2.0)`
+- `$ kubectl expose deployment newdep —port=8080`
+- `$ kubectl describe ingress webshop-ingress`
+
+5.6 Using Port Forwarding for Direct Application Access
+
+- `$ kubectl port-forward`, can be used to connect to applications for analyzing and troubleshooting
+- It forwards traffic coming in to a local port on the kubectl client machine to a port that is available in a Pod
+- Using port forwarding allows you to test application access without the need to configure Services and Ingress
+- use `$ kubectl port-forward mypod 1234:80`, to forward local port 1234 to pod port 80
+- To run in the background, use Ctrl-z or start with a & at the end of the `$ kubectl port-forward` command
+
+**Lesson 5 Lab: Managing Networking**
+
+——————————————————
+
+**Module 3: Managing Kubernetes Clusters**
+
+——————————————————
