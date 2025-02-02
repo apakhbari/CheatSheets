@@ -26,225 +26,101 @@
 
 ---
 
-## Introduction
+——————————————————
 
-### Certified Kubernetes Administrator (CKA): Introduction
+**Introduction**
 
-- CNCF (Cloud Native Computing Foundation): Part of the Linux Foundation, offers 4 certificates:
-  - KCNA (Kubernetes and Cloud Native Associate)
-  - CKAD (Certified Kubernetes Application Developer)
-  - CKA (Certified Kubernetes Administrator)
-  - CKS (Certified Kubernetes Security Specialist)
+——————————————————
 
----
+**Certified Kubernetes Administrator (CKA): Introduction**
 
-## Module 1: Building a Kubernetes Cluster
+- CNCF (Cloud Native COmputong Foundation) : Is part of linux foundation, offers 4 certificates
 
-### Lesson 1: Understanding Kubernetes Architecture
+- KCNA (Kubernetes and Cloud Native Associate)
+- CKAD (Certified Kubernetes Application Developer)
+- CKA (Certified Kubernetes Administrator)
+- CKS (Certified Kubernetes Security Specialist)
 
-#### 1.1 Vanilla Kubernetes and the Ecosystem
+——————————————————
 
-- Vanilla K8s is open-source Kubernetes, installed with `kubeadm` directly from the Kubernetes project Git repository.
-- A new release of Vanilla K8s is published every 4 months.
-- It provides core functionality but does not contain some essential components:
-  - Networking
-  - Support
-  - Graphical Dashboard
-- To create a fully functional environment, additional solutions from the Kubernetes ecosystem are added.
-- Visit [CNCF.io](https://cncf.io) > Projects Tab > Graduated for a list of CNCF-approved projects.
-- CNCF hosts many cloud-native projects beyond Kubernetes, including:
-  - Networking
-  - Dashboard
-  - Storage
-  - Observability
-  - Ingress
+**Module 1: Building a Kubernetes Cluster**
 
-#### 1.2 Running Kubernetes in Cloud or On-Premise
+——————————————————
 
-- Kubernetes is widely used in the cloud and on-premise environments.
-- Major cloud providers have integrated Kubernetes distributions:
-  - **Cloud**:
-    - Amazon Elastic Kubernetes Services (EKS)
-    - Azure Kubernetes Services (AKS)
-    - Google Kubernetes Engine (GKE)
-  - **On-Premise**:
-    - OpenShift
-    - Google Anthos
-    - Rancher
-    - Canonical Charmed Kubernetes
-  - **Minimal Solutions (for Learning)**:
-    - Minikube
-    - K3s
+**Lesson 1: Understanding Kubernetes Architecture**
 
-#### 1.3 Kubernetes Distributions
+1.1 Vanilla Kubernetes and the Ecosystem
 
-- Kubernetes distributions integrate additional products with Vanilla Kubernetes and provide support.
-- They usually run one or two versions behind upstream Kubernetes.
-- **Cloud Distributions**:
-  - EKS, AKS, GKE
-- **On-Premise Distributions**:
-  - OpenShift, Anthos, Rancher, Canonical Charmed Kubernetes
-- **Minimal (Learning) Distributions**:
-  - Minikube, K3s
+- Vanilla K8s is open-source k8s, installed with kubeadm directly from the kubernetes project Git repository
+- A new release of Vanilla k8s is published every 4 months
+- It provides core functionality, but does not contain some essential components
 
-#### 1.4 Kubernetes Node Roles
+- Networking
+- Support
+- Graphical Dashboard
 
-- **Control Plane**: Runs core Kubernetes services, agents, and does not run user workloads.
-- **Worker Nodes**: Run user workloads and Kubernetes agents.
-- **Container Runtime**: Required to run containerized workloads.
-- **Kubelet**: Manages Pods on a node.
+- To make a completely working environment, additional solutions from the k8s ecosystem are added
 
----
+- Have a look at [cncf.io](http://cncf.io) > Projects Tab > Graduated —> there are projects that are approved for using in k8s environment
 
-### Lesson 2: Creating a Kubernetes Cluster with kubeadm
+- CNCF (Cloud Native Computing Foundation) hosts many projects related to cloud native computing
+- Kubernetes is among the most important projects, but many other projects are offered as well, implementing a wide range of functionality
 
-#### 2.1 Understanding Cluster Node Requirements
+- Networking
+- Dashboard
+- Storage
+- Observability
+- Ingress
 
-- To install a Kubernetes cluster using `kubeadm`, you need:
-  - A recent version of Ubuntu or CentOS.
-  - At least 2GB RAM.
-  - At least 2 CPUs for control-plane nodes.
-  - A container runtime (e.g., `containerd`, `CRI-O`, `Docker`).
+- To get a completely working Kubernetes solution, products from the ecosystem need to be installed also
+- This can be done manually, or by using a distribution
 
-#### 2.2 Understanding Node Networking Requirements
+1.2 Running Kubernetes in Cloud or on Premise
 
-- Kubernetes uses different types of network communication:
-  - Node Communication
-  - Pod-to-Pod Communication
-  - Pod-to-Service Communication
-  - External-to-Service Communication
-- Common network add-ons:
-  - **Calico**: Supports all relevant features.
-  - **Flannel**: No NetworkPolicy support.
-  - **Multus**: Default in OpenShift.
-  - **Weave**: Common with NetworkPolicy support.
+- K8s is a platform for cloud native computing, and as such is commonly used in cloud
+- All major cloud providers have their own integrated k8s distribution
+- K8s can also be installed on premise, within the secure boundaries of your own datacenter
+- And also, there are all-in-one solutions which are perfect for learning kubernetes, like minikube
 
-#### 2.3 Understanding Cluster Initialization
+1.3 Kubernetes Distributions
 
-- Running `$ kubeadm init` executes multiple phases:
-  - **Preflight**: Validates system requirements.
-  - **Certificates**: Generates Kubernetes CA and certificates.
-  - **Kubeconfig**: Creates configuration files.
-  - **Control Plane**: Deploys API server, scheduler, etcd, and controller manager.
-  - **Add-ons**: Installs CoreDNS and `kube-proxy`.
+- K8s distributions add products from the ecosystem to vanilla k8s and provide support
+- Normally, distributions run one or two k8s versions behind
+- Some distributions are opinionated and integrate multiple products to offer specific solutions
+- Other distributions are less opinionated and integrate multiple products to offer specific solutions
 
-#### 2.4 Installing the Cluster
+Common K8s distributions
 
-```sh
-sudo kubeadm init
-mkdir ~/.kube
-sudo cp -i /etc/kubernetes/admin.conf ~/.kube/config
-sudo chown $(id -u):$(id -g) ~/.kube/config
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-```
+- in Cloud
 
-#### 2.5 Using `kubeadm init`
+- Amazon Elastic Kubernetes Services (EKS)
+- Azure Kubernetes Services (AKS)
+- Google Kubernetes Engine (GKE)
 
-- Key flags:
-  - `--apiserver-advertise-address`
-  - `--config`
-  - `--dry-run`
-  - `--pod-network-cidr`
+- On Premise
 
-#### 2.6 Adding Nodes to the Kubernetes Cluster
+- OpenShift
+- Google Antos
+- Rancher
+- Canonical Charmed Kubernetes
 
-- Join nodes using:
-  ```sh
-  sudo kubeadm join <join-token>
-  ```
-- If the token is lost, regenerate it:
-  ```sh
-  sudo kubeadm token create --print-join-command
-  ```
+- Minimal (learning) Solutions
 
----
+- Minikube
+- K3s
 
-## Module 2: Running Applications
+1.4 Kubernetes Node Roles
 
-### Lesson 3: Deploying Kubernetes Applications
+- The Control plane runs Kubernetes core services, Kubernetes agents, and no user workloads
+- The worker plane runs user workloads and Kubernetes agents
+- All nodes are configured with a container runtime, which is required for running containerized workloads
+- The kubelet systemd service is responsible for running orchestrated containers as Pods on any node
 
-#### 3.1 Using Deployments
+- CRI (Container Runtime Interface) + kubelet: are systemd managed, they start when OS boots
+- Scheduler: distributing workloads
+- etcd: Heart of k8s cluster which stores all your resources
+- Calico: network plugin, runs on control node, scheduler makes sure it's also running on worker node
+- What happens when you start my-app using kubectl? It is going to be on control node, it is going to address it to API server, then API server is going to store it on etcd, etcd will bring it to scheduler, and scheduler gets in touch with kubelet of worker nodes, so my-app is now being started
+- Control Node is a protected node, user apps are not running there
 
-- Deployments manage scalable Pods and offer rolling updates.
-- Example:
-  ```sh
-  kubectl create deploy myapp --image=nginx
-  ```
-
-#### 3.2 Running Agents with DaemonSets
-
-- DaemonSets ensure one instance runs on each node.
-- Common for networking components like `calico-node` and `kube-proxy`.
-
-#### 3.3 Using StatefulSets
-
-- Used for applications requiring:
-  - Stable and unique network identifiers.
-  - Stable persistent storage.
-  - Ordered scaling and updates.
-
-#### 3.4 Managing Pod Initialization
-
-- Use **Init Containers** for pre-execution setup.
-- Example:
-  ```yaml
-  initContainers:
-    - name: init-script
-      image: busybox
-      command: ['sh', '-c', 'echo Preparing...']
-  ```
-
----
-
-### Lesson 4: Managing Storage
-
-#### 4.1 Understanding Kubernetes Storage Options
-
-- Storage in Kubernetes:
-  - **Pod Volumes**: Attached to Pods but ephemeral.
-  - **PersistentVolumes (PV)**: Long-term storage provisioned for the cluster.
-  - **PersistentVolumeClaims (PVC)**: Requests storage for Pods.
-
-#### 4.2 Accessing Storage Through Pod Volumes
-
-- Use `emptyDir`, `hostPath`, or ConfigMaps.
-- Example:
-  ```yaml
-  volumes:
-    - name: shared-data
-      emptyDir: {}
-  ```
-
-#### 4.3 Configuring Persistent Volume (PV) Storage
-
-- PVs are storage resources independent of any Pod.
-- Example:
-  ```yaml
-  apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    name: my-pv
-  spec:
-    capacity:
-      storage: 1Gi
-    accessModes:
-      - ReadWriteOnce
-    persistentVolumeReclaimPolicy: Retain
-  ```
-
-#### 4.4 Configuring PVCs
-
-- PVCs request PVs dynamically or manually.
-- Example:
-  ```yaml
-  apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    name: my-pvc
-  spec:
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 1Gi
-  ```
+——————————————————
