@@ -727,3 +727,105 @@ $ oc get oauth -o yaml > oauth.yaml
     - `$ curl -s -k https://linginx-myproject.apps-crc.testing` —> give access
 
 ## 7.8 Securing Passthrough Routes Using TLS Certificates
+- A passthrough route configures the route to pass forward the certificate to guarantee client-route-application end-to-end encryption
+- To make this happen, a secret providing the certificate as well as the certificate key is created and mounted in the application
+- The passthrough route type doesn’t hold any key materials, but transparently presents the key materials that are available in the app - the router doesn’t provide TLS termination
+- Passthrough is the only method that supports mutual authentication between application and client
+- **DEMO**: Configuring a Passthrough Route
+
+### Part 1: creating certificate: ensure that subject name matches name used in the route
+
+- `$ mkdir openssl; cd openssl`
+- `$ openssl genrsa -des3 -out myCA.key 2048`
+- `$ openssl req -x509 -new -nodes -key myCA.key -sha256 -days 3650 -out myCA.pem`
+- `$ openssl genrsa -out tls.key 2048`
+- `$ openssl req -new -key tls.key -out tls.csr` → CN = linginx-myproject.apps-crc.testing
+- `$ openssl x509 -req -in tls.scr -CA myCA.pem -CAkey myCA.key -CAcreateserial -out tls.crt -days 1650 -sha256`
+
+### Part 2: creating secret
+
+- `$ oc create secret tls linginx-certs --cert tls.crt --key tls.key`
+- `$ oc get secret linginx-certs -o yaml`
+
+### Part 3: create a configmap
+
+- `$ oc create cm nginxconfigmap --from-file default.conf`
+- `$ oc create sa linginx-sa` → creates the dedicated service account
+- `$ oc adm policy add-sc-to-user anyuid -z linginx-sa`
+
+### Part 4: starting deployment and service
+
+- `$ vim linginx-v2.yaml`
+- `$ oc create -f linginx-v2.yaml`
+
+### Part 5: creating the passthrough route
+
+- `$ oc create route passthrough linginx --service linginx2 --port 8443 --hostname=linginx-myproject.apps-crc.testing`
+- `$ oc get routes`
+- `$ oc get svc`
+
+### Part 6: testing in a debug Pod
+
+- `$ oc debug -t deployment/linginx2 --image [registry.access.redhat.com/ubi8/ubi:8.0](http://registry.access.redhat.com/ubi8/ubi:8.0)`
+- `$ curl -s -k [https://172.25.201.41:8443](https://172.25.201.41:8443) (service IP address)` → only works from the same network
+- `$ curl https://linginx-myproject.apps-crc.testing`
+- `$ curl --insecure https://linginx-myproject.apps-crc.testing`
+
+### 7.9 Configuring Network Policies
+
+- By default, there are no restrictions to network traffic in k8s
+- Pods can always communicate, even if they’re on different namespaces
+- To limit this, Network policies can be used
+- If in a policy there is no match, traffic will be denied
+- If no Network Policy is used, all traffic is allowed
+- In network policies, three different identifiers can be used:
+  - **Pods**: (podSelector) note that a Pod cannot block access to itself
+  - **Namespaces**: (namespaceSelector) to grant access to specific namespaces
+  - **IP blocks**: (ipBlock) notice that traffic to and from the node where a Pod is running is always allowed
+- When defining a Pod - or namespace - based network policy, a selector label is used to specify what traffic is allowed to and from the Pods that match the selector
+- Network policies do not conflict, they are additive
+- If cluster monitoring or exposed routes are used, Ingress from them needs to be included in the network policy
+- Use `spec.ingress.from.namespaceSelector.matchlabels` to define
+  - `[network.openshift.io/policy-group:](http://network.openshift.io/policy-group:) monitoring`
+  - `[network.openshift.io/policy-group:](http://network.openshift.io/policy-group:) ingress`
+
+### DEMO: configuring network policy
+
+- `$ oc login -u admin -p password`
+- `$ oc apply -f nwpolicy-complete-example.yaml`
+- `$ oc expose pod nginx --port=80`
+- `$ oc exec -it busybox -- wget --spider --timeout=1 nginx` → will fail
+- `$ oc label pod busybox access=true`
+- `$ oc exec -it busybox -- wget --spider --timeout=1 nginx` → will work
+
+### DEMO: Advanced Network policy
+
+- `$ oc login -u kubeadmin -p xxx`
+- `$ oc new-project source-project`
+- `$ oc label ns source-project type=incoming`
+- `$ oc create -f nginx-source1.yml`
+- `$ oc create -f nginx-source2.yml`
+- `$ oc login -u linda -p password`
+- `$ oc new-project target-project`
+- `$ oc new-app --name nginx-target --docker-image [quay.io/openshiftteset/hello-openshift:openshift](http://quay.io/openshiftteset/hello-openshift:openshift)`
+- `$ oc get pods -o wide`
+- `$ oc login -u kubeadmin -p xxx`
+- `$ oc exec -it nginx-access -n source-project -- curl <ip of nginx target pod>:8080` → works
+- `$ oc exec -it nginx-noaccess -n source-project -- curl <ip of nginx target pod>:8080` → works
+- `$ oc get pods -n source-project --show-labels`
+- `$ oc create -f nwpol-allow-specific.yaml`
+- `$ oc exec -it nginx-noaccess -n source-project -- curl <ip of nginx target pod>:8080` → works
+- `$ oc label pod nginx-target-1-<xxxxxx> type=incoming`
+- `$ oc exec -it nginx-noaccess -n source-project -- curl <ip of nginx target pod>:8080` → not works
+
+### 7.10 Troubleshooting OpenShift Networking
+
+- Use `$ oc debug deployment/<container name>`
+- When troubleshooting it’s useful to get an exact copy of a running Pod and troubleshoot from there
+- Since a Pod that is failing may not be started, and for that reason is not accessible to rsh and exec, the debug command provides an alternative. The debug Pod will start a shell inside of the first container of the referenced Pod. The started Pod is a copy of the source Pod, with labels stripped, no probes, and the command changed to `/bin/sh`
+- Useful command arguments can be `--as-root` or `--as-user=10000` to run as root or as a specific user
+- Use `exit` to close and destroy the debug Pod
+
+---
+
+**8-Managing Pod Scaling and Scheduling**
