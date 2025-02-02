@@ -724,3 +724,162 @@ etcd.yaml, kube-apiserver.yaml, kube-controller-manager.yaml, kube-scheduler.yam
 **Lesson 6 Lab: Running Static Pods**
 
 ——————————————————
+**Lesson 7: Performing Node Maintenance Tasks**
+
+7.1 Using Metrics Server to Monitor Node and Pod State
+
+- Kubernetes monitoring is offered by the integrated Metrics Server
+- The server, after installation, exposes a standard API and can be used to expose custom metrics
+- Use `$ kubectl top`, to see a top-like interface to provide resource usage information
+
+**Setting up metrics Server**
+
+- see [https://github.com/kubernetes-sigs/metrics-server.git](https://github.com/kubernetes-sigs/metrics-server.git)
+- Read github documentation!
+- `$ kubectl apply -f [https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml](https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml)`
+- `$ kubectl -n kube-system get pods` (look for metrics-server)
+- `$ kubectl -n kube-system edit deployment metrics-server`
+
+    In `spec.template.spec.containers.args`, use the following:
+
+    - `—kubelet-insecure-tls`
+    - `—kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname`
+
+- `$ kubectl -n kube-system logs metrics-server<TAB>` should show “Generating self-signed cert” and “Serving securely on [::]443”
+- `$ kubelet top pods —all-namespaces`, will show most active pods
+
+7.2 Backing up the Etcd
+
+- The etcd is a core Kubernetes service that contain all resources that have been created
+- It is started by the kubelet as a static Pod on the control node
+- Losing etcd means losing all your configuration
+- To back up the etcd, root access is required to run the etcdctl tool
+- Use `$ sudo apt install etcd-client`, to install this tool
+- etcdctl uses the wrong API version by default, fix this by using `$ sudo ETCDCTL_API=3 etcdctl … snapshot save`
+- To use etcdctl, you need to specify the etcd service API endpoint, as well as cacert, cert and key to be used
+- Values for all of these can be obtained by using `$ ps aux | grep etcd`
+
+**Backing up etcd**
+
+- `$ sudo apt install etcd-client`
+- `$ sudo etcdctl —help; sudo ETCDCTL_API=3 etcdctl —help`
+- `$ ps aux | grep etcd`
+- `$ sudo ETCDLCTL_API=3 etcdctl —endpoints=localhost:2379 —cacert /etc/kubernetes/pki/etcd/ca.crt —cert /etc/kubernetes/pki/etcd/server.crt —key /etc/kubernetes/pki/etcd/server.key get / —prefix --keys-only —> to make sure we can access keys from API`
+- `$ sudo ETCDLCTL_API=3 etcdctl —endpoints=localhost:2379 —cacert /etc/kubernetes/pki/etcd/ca.crt —cert /etc/kubernetes/pki/etcd/server.crt —key /etc/kubernetes/pki/etcd/server.key snapshot save /tmp/etcdbackup.db`
+
+**Verifying the Etcd Backup**
+
+- `$ sudo ETCDCTL_API=3 etcdctl —write-out=table snapshot status /tmp/etcdbackup.db`
+- Just to be sure: `$ cp /tmp/etcdbackup.db /tmp/etcdbackup.db.2`
+
+7.3 Restoring the Etcd
+
+- `$ sudo ETCDCTL_API=3 etcdctl snapshot restore /tmp/etcdbackup.db —data-dir /var/lib/etcd-backup`, restores the etcd backup in a non-default folder
+- To start using it, the Kubernetes core service must be stopped, after which the etcd can be reconfigured to use the new directory
+- To stop the core services, temporarily move `/etc/kubernetes/manifests/*.yaml` to somewhere else
+- As the kubelet process temporarily polls for static Pod files, the etcd process will disappear within a minute
+- Use `$ sudo crictl ps`, to verify that it has been stopped
+- Once the etcd Pod has stopped, reconfigure the etcd to use the non-default etcd path
+- In etcd.yaml you’ll find a HostPath volume with the name etcd-data, pointing to the location where the Etcd files are found. Change this to the location where the restored files are
+- Move back the static Pod to `/etc/kubernetes/manifests`
+- Use `$ sudo crictl ps`, to verify the Pods have restarted successfully
+- Next, `$ kubectl get all`, should show the original Etcd resources
+
+**Restoring the Etcd**
+
+- `$ kubectl delete —all deploy`
+- `$ cd /etc/kubernetes/manifests/`
+- `$ sudo mv * ..` (this will stop all running Pods)
+- `$ sudo crictl ps`
+- `$ sudo ETCDLCTL_API=3 etcdctl snapshot restore /tmp/etcdbackup.db —data-dir /var/lib/etcd-backup`
+- `$ sudo ls -l /var/lib/etcd-backup`
+- `$ sudo vi /etc/kubernetes/etcd.yaml` (change etcd-data HostPath volume to /var/lib/etcd-backup)
+- `$ sudo mv ../*.yaml`
+- `$ sudo crictl ps` (should show all resources)
+- `$ kubectl get deploy -A`
+
+7.4 Performing Cluster Node Upgrades
+
+- Kubernetes clusters can be upgraded from one to another minor version
+- Skipping minor versions (1.23 to 1.25) is not supported
+- First, you’ll have to upgrade kubeadm
+- Next, you’ll need to upgrade the control plane node
+- After that, the worker nodes are upgraded, which is pretty similar to Control Plane Node update, even simpler than that
+- Exam tip: Use “Upgrading kubeadm clusters” from the documentation
+
+**Control Plane Node Upgrade**
+
+- Upgrade kubeadm
+- Use `$ kubeadm upgrade plan`, to check available versions
+- Use `$ kubeadm upgrade apply v1.xx.y`, to run the upgrade
+- Use `$ kubectl drain controlnode —ignore-daemonsets`
+- Upgrade and restart kubelet and kubectl
+- Use `$ kubectl uncordon controlnode`, to bring back the control node
+- Proceed with other nodes
+
+7.5 Understanding Cluster High Availability (HA)
+
+**Options**
+
+- There are two ways for HA:
+
+    1.  Stacked control plane nodes requires less infrastructure as the etcd members, and control plane nodes are co-located
+        - Control planes and etcd members are running together on the same node
+        - For optimal protection, requires a minimum of 3 stacked control plane nodes
+
+    3.  External etcd cluster requires more infrastructure as the control plane nodes and etcd members are separated
+        - Etcd service is running on external nodes, so this requires twice the number of nodes
+
+**HA requirements**
+
+- In a k8s HA cluster, a load balancer is needed to distribute the workload between the cluster nodes
+- The load balancer can be externally provided using open source software, or a load balancer appliance
+- Knowledge of setting up the load balancer is not required on the CKA exam: in this course a load balancer setup script is provided
+- In the load balancer setup, HAProxy is running on each server to provide access to port 8443 on all IP addresses on that server
+- Incoming traffic on port 8443 is forwarded to the kube-apiserver port 6443
+- The keepalived service is running on all HA nodes to provide a virtual IP address on one of the nodes
+- kubectl clients connect to this VIP:8443
+- Use the setup-lb-ubuntu.sh script provided in the github repository for easy setup
+- Additional instructions are in the script
+- After running load balancer setup, use `$ nc 192.168.29.100 8443`, to verify the availability of the load balancer IP and port
+
+7.6 Setting up a Highly Available Kubernetes Cluster
+
+**Cluster Node requirements**
+
+- 3 VMs to be used as controllers in the cluster; install k8s software but don’t set up the cluster yet
+- 2 VMs to be used as worker nodes; install k8s software
+- Ensure `/etc/hosts` is set up for name resolution of all nodes and copy to all nodes
+- Disable selinux on all nodes if applicable
+- Disable firewall if applicable
+
+**Initializing HA setup**
+
+- `$ sudo kubeadm init —control-plane-endpoint “192.168.29.100:8443” —upload-certs`
+- Save the output of the command which shows next steps
+- Configure networking
+- `$ kubectl apply -f [https://docs.projectcalico.org/manifests/calico.yaml](https://docs.projectcalico.org/manifests/calico.yaml)`
+- Copy the kubectl join command that was printed after successfully initializing the first control node
+- Make sure to use the command that has `—control-plane` in it!
+- Complete setup on other control nodes as instructed
+- Use `$ kubectl get nodes`, to verify setup
+- Continue and join worker nodes as instructed
+
+**Configuring HA client**
+
+- On the machine you want to use as operator workstation, create a `.kube` directory and copy `/etc/kubernets/admin.conf` from any control node to the client machine
+- Install the kubectl utility
+- Ensure that host name resolution goes to the new control plane VIP
+- Verify using `$ kubectl get nodes`
+
+**Testing it!**
+
+- On all nodes: find the VIP using `$ ip a`
+- On all nodes with a kubectl, use `$ kubectl get all`, to verify client working
+- Shut down the nodes that have the VIP
+- Verify that `$ kubectl get all`, still works
+- Troubleshooting: consider using `$ sudo systemctl restart haproxy`
+
+**Lesson 7 Lab: Etcd Backup and Restore**
+
+——————————————————
