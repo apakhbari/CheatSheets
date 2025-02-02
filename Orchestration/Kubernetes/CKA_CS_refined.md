@@ -124,3 +124,172 @@ Common K8s distributions
 - Control Node is a protected node, user apps are not running there
 
 ——————————————————
+
+**Lesson 2: Creating a Kubernetes Cluster with kubeadm**
+
+2.1 Understanding Cluster Node Requirements
+
+- To install Kubernetes cluster using kubeadm, you’ll need at least two nodes that meet the following requirements:
+
+- Running a recent version of Ubuntu or CentOS
+- 2GiB RAM or more
+- @ CPUs or more on the control-plane nodes
+
+- Before setting up the cluster with kubeadm, install the following:
+
+- A container runtime
+- The kubernetes tools
+
+**Container runtime Interface**
+
+- The container runtime is the component that allows you to run containers
+- Kubernetes supports different container runtimes
+
+- containerd
+- CRI-O
+- Docker Engine
+- Mirantis Container Runtime
+
+- Installing a container runtime is not a CKA exam requirement
+- In the course git repository at [https://github.com/sandervanvugt/cka](https://github.com/sandervanvugt/cka) the setup-container.sh script is provided to set up a container runtime
+- Differetn forms
+
+- Stand-alone
+
+- Docker
+- Podman
+
+- Cloud
+
+- Kubernetes
+
+- Note that k8s does no longer need docker for running containers, it need light weight CRI in order to run containers and k8s takes care of the rest
+
+**Installing k8s tools**
+
+- Before starting the installation, you’ll have to install the Kubernetes tools
+
+- kubeadm: used to install and manage a kubernetes cluster
+- kubelet: the core Kubernetes service that starts all Pods
+- kubectl: the interface that allows you to run and manage applications in kubernetes
+
+- Installing the kubernetes tools is not a CKA requirement
+- In the course git repository at [https://github.com/sandervanvugt/cka](https://github.com/sandervanvugt/cka) the setup-kubetools.sh script is provided to set up k8s tools
+
+2.2 Understanding Node Networking Requirements
+
+- Different types of network communication are used in k8s:
+
+- Node Communication: handled by the physical network
+- External-to-service communication: handled by kubernetes Service resources
+- Pod-to-Service Communication: handled by Kubernetes Services
+- Pod-to-Pod Communication: handled by the network plugin
+- Container-to-container communication: handled within the Pod
+
+- To create the software defined Pod network, a network add-on is needed
+- Different network add-ons are provided by the Kubernetes ecosystem
+- Vanilla Kubernetes doesn’t come with a default add-on, as it doesn’t want to favor a specific solution
+- Kubernetes provides the Container Network Interface (CNI) , a generic interface that allows different plugins to be used
+- Availability of specific features depends on the network plugins that are used
+
+- Networkpolicy
+- IPv6
+- Role Base Access Control (RBAC)
+
+**Common network Add-ons**
+
+- Calico: probably the most common network plugin with support for all relevant features
+- Flannel: a generic network add-on that was used a lot in the past, but doesn’t support NetworkPolicy
+- Multus: a plugin that can work with multiple network plugins. Current default in OpenShift.
+- Weave: a common network add-on that does support common features
+
+2.3 Understanding Cluster Initialization
+
+- While running `$ kubeadm init`, different phases are executed
+
+- preflight: ensures all conditions are met and core container images are downloaded
+- certs: a self-signed Kubernetes CA is generated, and related certificates are created for apiserver, etc, and proxy
+- Kubeconfig: configuration files are generated for core Kubernets services
+- kubelet-start: the kubelet is started
+- control-plane: static Pod manifests are created and started for apiserver, controller manager, and scheduler
+- etcd: static Pod manifests are created and started for etcd
+- upload-config: ConfigMaps are created for ClusterConfiguration and kubelet component config
+- upload-certs: uploads all certificates to /etc/kubernetes/pki
+- mark-control-plane: marks the node as control plane
+- bootstrap-token: generates the token that can be used to join other nodes
+- kubelet-finalize: finalizes kubelet settings
+- add-on: installs coredns and kube-proxy add-ons
+
+2.4 Installing the Cluster
+
+- Install CRI
+- Install kubetools
+- Install the cluster: `$ sudo kubeadm init`
+- set up the client:
+
+  - mkdir ~/.kube
+  - sudo cp -i /etc/kubernetes/admin.conf ~/.kube/config
+  - sudo chown $(id -u):$(id -g) .kube/config
+
+- Install network add-on: `kubectl apply -f [https://docs.projectcalico.org/manifests/calico.yaml](https://docs.projectcalico.org/manifests/calico.yaml)`
+- Join other nodes: (on other nodes) `sudo kubeadm join <join-token>`
+
+2.5 Using kubeadm init
+
+- While using `$ kubeadm init`, different arguments can be used to further define the cluster
+
+- `--apiserver-advertise-address`: the IP address on which the API server is listening
+- `--config`: the name of a configuration file used for additional configuration
+- `--dry-run`: performs a dry-run before actually installing for real
+- `--pod-network-cidr`: sets the service CIDR to something other than 10.96.0.0/12
+
+- In most cases, just using `$ kubeadm init` will be enough
+
+2.6 Adding Nodes to the Kubernetes Cluster
+
+- When Kubernetes cluster is initialized, a join token is generated
+- Use this join token to join to other hosts, using `$ sudo kubeadm join` from the hosts you want to join
+- In case the join token is lost or expired, use `$ sudo kubeadm token create —print-join-command`
+
+2.7 Configuring the Kubernetes Client
+
+- After cluster initialization, the `/etc/kubernetes/admin.conf` file is copied to `~/.kube/config` to provide admin access to the Kubernetes cluster
+- Alternatively, as Linux root user, use `$ export KUBECONFIG=/etc/kubernetes/admmin.conf` to get admin access
+- For more advanced user configuration, users must be created and provided with authorizations using Role Based Access Control (RBAC)
+
+**Client Configuration**
+
+- The context groups client access parameters using a convenient name
+- By selecting a context, a specific group of parameters can be accessed
+- Each context has three parameters
+
+- Cluster: the cluster you want to connect to
+- Namespace: the default Namespace
+- User: the user account used (lesson 10)
+
+- use `$ kubectl cofig view`, to view the context
+- use `$ kubectl set-context`, to set a different context (lesson 10)
+
+**Understanding Connectivity Parameters**
+
+- The cluster is a k8s cluster, defined by its endpoint and the certificate of the CA that has signed its keys
+
+- Use `$ kubectl config —kubernetes=~/.kube/config set-cluster devcluster —server=[https://192.168.29.120](https://192.168.29.120) —certificate-authority=clusterca.crt`
+
+- The namespace is the default namespace defined in this context
+
+- Use `$ kubectl create ns`, if it does not exist yet
+
+- The user is a user account, defined by its X.509 certificates or other (lesson 10)
+
+- `$ kubectl config —kubeconfig=~/.kube/config set-credentials anna —client-certificate=anna.crt —client-key=anna.key`
+
+- After defining all, use `$ kubectl set-context devcluster —cluster=devcluster —namespace=devspace —user=anna`, to define the new context
+
+**Lesson 2 Lab: Building a Kubernetes Cluster**
+
+——————————————————
+
+**Module 2: Running Applications**
+
+——————————————————
