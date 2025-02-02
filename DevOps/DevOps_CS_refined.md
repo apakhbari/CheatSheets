@@ -292,3 +292,109 @@ $ git add -- . ':!node_modules'
 **——————————————————**
 
 ## 3. JFrog Artifact
+# **Description**
+
+- artifact is outcome of source code, for example main.jar or main.war or main.ear is outcome of main.java
+- JFrog artifactory is on port 8081
+- we don’t use git as an artifact repo
+- artifact repo
+  - a source for artifacts needed for build
+  - stores artifacts generated in the build process
+- we use artifact repo for maintaining different versions of things so rollback is easy
+- There are 3 kind of artifactory we can use:
+  - local
+  - remote
+  - virtual
+- Local repo with maven are these two:
+  - libs-release-local
+  - libs-snapshot-local
+- for integration with Maven, first create a new maven user with admin privileges then for providing credentials in maven server create /.m2/settings.xml and add credentials from Set Me Up of JFrog Artifactory then should add `<distrbutionManagement>` tag to pom.xml, from Set Me Up of JFrog Artifactory could find related info. after that we should `$ mvn deploy`
+- take note that snapshot version is for test purpose and release version is for prod. you should config both of them in JFrog and Maven
+- for making JFrog central repo for dependencies, remove /.m2/repositories dir entirely, so now dependencies would be downloaded to JFrog and systems get dependencies directly from there
+
+**——————————————————**
+
+# **4.Jenkins**
+
+- Jenkins: Leading open-source automation server, which provides hundreds of plugins to support building, deploying and automating any project. Jenkins is an application that manages and monitors executions of repeated jobs.
+- Jenkins developed with Java
+
+### Why Jenkins?
+
+- Open-source
+- Easy to install
+- Easy GUI
+- Distributed Builds
+- Track & Revert Changes
+- Jenkins server have to has Git & Maven installed on it, since it is where build happens
+- It is possible to pass parameters to Jenkins
+- All of build outcomes are stored in workspace tab in console or /var/lib/jenkins/workspace
+
+### Manage Jenkins Tab
+
+- Configure System: if you want to connect to maven, artifactory and …
+- Global Tool Configuration: set up tools, such as Git
+
+### Integrating Git
+
+- install git on server
+- tell Jenkins where git is installed: `$ which git`, then configure Manage Jenkins Tab > Global Tool Configuration
+
+### Integrating Maven
+
+- install maven integration plugin + Maven invoker plugin on Jenkins console
+- install maven on server
+- Manage Jenkins Tab > Global Tool Configuration & tell Jenkins where maven is installed: `$ which mvn`
+
+### Master & Slave Configuration
+
+- Manage Jenkins Tab > Manage Nodes and Clouds
+
+### Build Triggers
+
+- difference between Schedule and Poll SCM is schedule is dumb, but Poll SCM only build on automation when there are changes
+- GitHub hook trigger for GITScm polling
+
+### Integrating GitHub Webhooks
+
+- go to github repo settings, in Webhooks tab, Add webhook, Add jenkins server as follow [http://<Jenkins_URL](http://jenkins_url)>:8080/github-webhook/
+
+### DSL Jobs
+
+- create another job(s)/pipeline(s)/etc. must install its plugin. Its goal is to convert the pipeline into script. When cloning from Git, you should approve the script from Manage Jenkins Tab > In-process Script Approval
+- Jenkins Pipeline
+  - instead of using GUI, you’d write a file or script to create a job
+  - It is possible to change the default flow of Jenkins
+  - Must install pipeline plugin
+  - Create a Jenkinsfile in git repo
+
+### Integrating JFrog Artifactory
+
+- install artifactory plugin
+- Add new user for jenkins in JFrog
+- Manage Jenkins Tab > Configure System —> enter artifactory credentials
+- Check Maven3-Artifactory Integration in build environment
+- Check Resolve Artifacts from artifactory to get packages from artifactory
+
+### UpStream & DownStream
+
+- whenever you build a job, another job gets built
+  - DownStream: via Post-build Actions, choose Build other projects
+  - UpStream: via Build Triggers, Check Build after other projects are built
+
+**——————————————————**
+
+# **5.SonarQube**
+
+- SonarQube is a Static Code Analysis tool. It’s a Quality Management Tool
+- SonarQube components:
+  - Rules
+  - Database: stores reports in it
+  - Web Interface
+  - SonarScanner
+
+- Integration with Jenkins
+
+**——————————————————**
+
+# **6.Ansible**
