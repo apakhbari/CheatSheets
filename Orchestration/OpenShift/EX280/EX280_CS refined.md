@@ -392,36 +392,123 @@ $ oc get oauth -o yaml > oauth.yaml
 
 ## 6-Managing Access Control
 
-### 6.1 Managing Permissions with RBAC
+# 6.1 Managing Permissions with RBAC
 
-- The purpose of RBAC is to connect users to specific roles.
-- Roles have either a project or a cluster scope.
-- Different types of users are available:
-  - Users are created as a specific user type and are granted access to cluster resources using role bindings.
-  - A role is an API resource that gives specific users access to OpenShift resources, based on verbs.
+- the purpose of RBAC is to connect users to specific roles
+- Roles have either a project or a cluster scope
+- Different types of users are available
+- Users are created as a specific user type, and are granted access to cluster resources using role bindings
+- A role is an API resource that gives specific users access to OpenShift resources, based on verbs
+- verbs are used as permissions, and include : get - list - watch - create - update - patch - delete
+- cluster roles are created when OpenShift is installed
+- Local Roles provide access to project-based resources
+- use `$ oc describe clusterrole.rbac`, for an overview of currently existing cluster roles
+- a Role Binding is used to connect a cluster role to a user or group
+- use `$ oc describe clusterrolebinding.rbac`, for an overview of bindings between users/groups and roles
+- `$ oc describe rolebinding.rbac` —> see all roles with a non-cluster scope
+- `$ oc describe rolebinding.rbac -n myproject` —> see all local roles assigned to a specific project
+- some default roles are provided to be applied locally or the entire cluster
 
-### Verbs are used as permissions:
-- get
-- list
-- watch
-- create
-- update
-- patch
-- delete
+    - admin: gives full control to all project resources
+    - basic-user: gives read access to projects
+    - cluster-admin: allows a user to perform any action in the cluster
+    - cluster-status: allows a user to request status information
+    - edit: allows creating and modifying common application resources, but gives no access to permissions, quotas, or limit ranges
+    - self-provisioner: allows users to create new projects (by default all users have this)
+    - vies: allows users to view but not modify project resources
 
-### Cluster roles are created when OpenShift is installed.
-- Local Roles provide access to project-based resources.
-- Use `$ oc describe clusterrole.rbac`, for an overview of currently existing cluster roles.
-- A Role Binding is used to connect a cluster role to a user or group.
-- Use `$ oc describe clusterrolebinding.rbac`, for an overview of bindings between users/groups and roles.
-- Use `$ oc describe rolebinding.rbac` to see all roles with a non-cluster scope.
-- Use `$ oc describe rolebinding.rbac -n myproject` to see all local roles assigned to a specific project.
+- the admin role gives users full project permissions
+- the edit role corresponds to the typical developer user
+- regular users represents a user object that is granted access to the cluster platform
+- system users are created automatically to allow system components to access specific resources
 
-### Some default roles are provided to be applied locally or the entire cluster:
-- admin: gives full control to all project resources
-- basic-user: gives read access to projects
-- cluster-admin: allows a user to perform any action in the cluster
-- cluster-status: allows a user to request status information
-- edit: allows creating and modifying common application resources, but gives no access to permissions, quotas, or limit ranges
-- self-provisioner: allows users to create new projects (by default all users have this)
-- view: allows users to view but not modify project resources
+    - system:admin has full admin access
+    - system:openshift-registry is used for registry access
+    - system:node:[server1.example.com](http://server1.example.com) is used for node access
+
+- Service accounts are special system accounts used to give extra privileges to pods or deployments
+
+    - deployer: is used to create deployments
+    - builder: is used to create build configs in S2I
+
+- Cluster admin can use `$ oc adm policy`, to manage cluster and namespace roles
+
+    - `$ oc adm policy add-cluster-role-to-user rolename username`
+    - `$ oc adm policy remove-cluster-role-to-user rolename username`
+
+- to figure out who can do what, use `$ oc adm policy who-can delete user`
+- DEMO
+
+    - `$ oc get clusterrolebinding -o wide | grep ‘self-provisioner’`
+    - `$ oc describe clusterrolebindings self-provisioners`
+    - `$ oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth —> remove cluster role binding`
+    - `$ oc login -u linda -p password —> we see that linda cannot create projects anymore`
+    - `$ oc adm policy add-cluster-role-to-user admin linda`
+    - `$ oc adm groups new dev-group`
+    - `$ oc adm groups add-users dev-group anouk`
+    - `$ oc adm groups new qa-group`
+    - `$ oc adm groups add-users qa-group lisa`
+    - `$ oc get groups`
+    - `$ oc policy add-role-to-group edit dev-group`
+    - `$ oc policy add-role-to-group view qa-group`
+    - `$ oc get rolebindings -o wide`
+    - `$ oc adm policy add-cluster-role-to-group —rolebinding-name self-provisioners self-provisioner system:authenticated:oauth —> reverting removing cluster role binding`
+
+# 6.2 Creating Roles
+
+- New roles can be created by assigning verbs and resources to the newly created role
+
+    - `$ oc create role podview —verb=get —resource=pod -n userstuff` —> namespace userstuff
+    - `$ oc adm policy add-role-to-user podview ahmed —role-namespace=userstuff -n userstuff` —> user ahmed can view pods in userstuff namespace
+
+    - `$ oc create clusterrole podviewonly —verb=get —resource=pod` —> scope is whole cluster
+    - `$ oc adm policy add-cluster-role-to-user podviewonly lori`
+
+# 6.3 Using Secrets to Manage Sensitive Information
+
+- a secret is a base64 encoded ConfigMap
+- To really protect data in a secret, the Etcd can be encrypted
+- secrets are commonly used to decouple configuration and data from the apps running in OpenShift
+- Using secrets allows OpenShift to load site-specific data from external sources
+- secrets can be used to store different kinds of data
+
+    - passwords
+    - sensitive configuration files
+    - Credentials such as SSH keys or OAuth tokens
+
+- Different types of secrets exist:
+
+    - docker-registry
+    - generic
+    - tls
+
+- when information is stored in a secret, OpenShift validates that the data conforms to the type of secret
+- In OpenShift, secrets are mainly used for two reasons
+
+    - store credentials which is used by Pods in a MicroService architecture
+    - store TLS certificates and keys. A TLS secret stores the certificate as tls.crt and the certificate key as tls.key
+
+- Developers can mount the secret as a volume and create a pass-through route to the app
+- Creating secrets:
+
+    - generic secrets: `$ oc create secret generic secretvars —from-literal user=root —from-literal password=verysecret`
+    - generic secrets, containing SSH keys: `$ oc create secert generic ssh-keys —from-file id_rsa=~/.ssh/id_rsa —from-file id_rsa.pub=~/.ssh/id_rsa.pub`
+    - secrets containing TLS certificate and key: `$ oc create secret tls secret-tls —cert certs/tls.crt keys/tls.keys`
+
+- secrets can be referred to as variables, or as files from the pod
+- use `$ oc set env`, to write the environment variables obtained from a secret to a pod or deployment
+
+    - `$ oc set env deployment/mysql —from secret/mysql —prefix MYSQL_` —> prefix let defining and using variable in configuration. for example make ROOT_PASSWORD to MYSQL_ROOT_PASSWORD. so you can have a file and dynamically create different variations for different pods
+
+- use `$ oc set volume`, to mount secrets as volumes
+- Notice that when using `$ oc set volume`, all files currently in the target directory are no longer accessible
+
+    - `$ oc set volume deployment/mysql —add —type secret —mount-path /run/secrets/mysql —secret-name mysql`
+
+- DEMO
+
+    - `$ oc create secret generic mysql —from-literal user=sqluser —from-literal password=password —from-literal database=secretdb —from-literal hostname=mysql —from-literal root_password=password`
+    - `$ oc new-app —name mysql —docker-image bitnami/mysql`
+    - `$ oc set env deployment/mysql —from secret/mysql —prefix MYSQL_`
+    - `$ oc get pods -w`
+    - `$ oc exec -it <podname> — enc —> print all environmental values`
