@@ -1076,3 +1076,190 @@ tolerations:
 **Lesson 8 Lab: Configuring Taints**
 
 ——————————————————
+
+**Lesson 9: Networking**
+
+9.1 Managing the CNI and Network Plugins
+
+- The Container Network Interface (CNI) is the common interface used for networking when starting kubelet on a worker node
+- The CNI doesn’t take care of networking, that is done by the network plugin
+- CNI ensures the pluggable nature of networking, and makes it easy to select between different network plugins provided by the ecosystem
+- The CNI plugin configuration is in `/etc/cni/net.d`
+- Some plugins have generic settings, and are using additional configuration
+- Often, the additional configuration is implemented by Pods
+- Generic CNI documentation is on [https://github.com/containernetworking/cni](https://github.com/containernetworking/cni)
+
+9.2 Understanding Service Auto Registration
+
+- k8s runs the coredns Pods in the kube-system Namespace as internal DNS servers
+- These Pods are exposed by the kubedns Service
+- Service register with this kubedns Service
+- Pods are automatically configured with IP address of the kubedns Services as their DNS resolver
+- As a result, all Pods can access all Services by name
+- If a Service is running in the same Namespace, it can be reached by the short hostname
+- If a Service is running in another Namespace, an FQDN consisting of servicename.namespace.svc.clustername must be used
+- The clustername is defined in the coredns Corefile and set to `cluster.local` if it hasn’t been changed, use `$ kubectl get cm -n kube-system coredns -o yaml` to verify
+
+**Accessing Services by Name**
+
+- `$ kubectl run webserver --image=nginx`
+- `$ kubectl expose pod webserver --port=80`
+- `$ kubectl run testpod --image=busybox --sleep 3600`
+- `$ kubectl get svc`
+- `$ kubectl exec -it testpod -- wget webserver`
+
+**Accessing Pods in other Namespaces**
+
+- `$ kubectl create ns remote`
+- `$ kubectl run interginx --image=nginx`
+- `$ kubectl run remotebox --image=busybox -n remote -- sleep 3600`
+- `$ kubectl expose pod interginx --port=80`
+- `$ kubectl exec -it remotebox -n remote -- cat /etc/resolv.conf`
+- `$ kubectl exec -it remotebox -n remote -- nslookup interginx` (fails)
+- `$ kubectl exec -it remotebox -n remote -- nslookup interginx.default.svc.cluster.local`
+
+9.3 Using Network Policies to Manage Traffic Between Pods
+
+- By default, there are no restrictions to network traffic in k8s
+- Pods can always communicate, even if they’re in other Namespaces
+- To limit this, NetworkPolicies can be used
+- NetworkPolicies need to be supported by the network plugin though
+- The weave plugin does not support NetworkPolicies
+- If in a policy there is no match, traffic will be denied
+- If no NetworkPolicy is used, all traffic is allowed
+- In NetworkPolicy, three different identifiers can be used:
+  - Pods: `(podSelector)` note that a Pod cannot block access to itself
+  - Namespaces: `(namespaceSelector)` to grant access to specific Namespaces
+  - IP blocks: `(ipBlock)` notice that traffic to and from the node where a Pod is running is always allowed
+- When defining a Pod- or Namespace-based NetworkPolicy, a selector label is used to specify what traffic is allowed to and from the Pods that match the selector
+- NetworkPolicies do not conflict, they are additive
+
+**Exploring NetworkPolicy**
+
+- `$ kubectl apply -f nwpolicy-complete-example.yaml`
+- `$ kubectl expose pod nginx --port=80`
+- `$ kubectl exec -it busybox -- wget --spider --timeout=1 nginx` (will fail)
+- `$ kubectl label pod busybox access=true`
+- `$ kubectl exec -it busybox -- wget --spider --timeout=1 nginx` (will work)
+
+9.4 Configuring Network Policies to Manage Traffic Between Namespaces
+
+- To apply a NetworkPolicy to a Namespace, use `-n namespace` in the definition of the NetworkPolicy
+- To allow ingress and egress traffic, use the `namespaceSelector` to match the traffic
+
+**Using Network Policies Between Namespaces**
+
+- `$ kubectl create ns nwp-namespace`
+- `$ kubectl create -f nwp-lab9-1.yaml`
+- `$ kubectl expose pod nwp-nginx --port=80`
+- `$ kubectl exec -it nwp-busybox -n nwp-namepace -- wget --spider --timeout=1 nwp-nginx` (gives bad address error)
+- `$ kubectl exec -it nwp-busybox -n nwp-namespace -- nslookup nwp-nginx` (explains that it’s looking in the wrong ns)
+- `$ kubectl exec -it nwp-busybox -n nwp-namespace -- wget --spider --timeout=1 nwp-nginx.default.svc.cluster.local` (is allowed)
+- `$ kubectl create -f nwp-lab9-2.yaml`
+- `$ kubectl exec -it nwp-busybox -n nwp-namespace -- wget --spider --timeout=1 nwp-nginx.default.svc.cluster.local` (is not allowed)
+- `$ kubectl create deployment busybox --image=busybox -- sleep 3600`
+- `$ kubectl exec -it busybox[TAB] -- wget --spider --timeout=1 nwp-nginx`
+
+**Lesson 9 Lab: Using NetworkPolicies**
+
+——————————————————
+
+**Lesson 10: Managing Security Settings**
+
+10.1 Understanding API Access
+
+10.2 Managing SecurityContext
+
+10.3 Using ServiceAccounts to Configure API Access
+
+10.4 Setting Up Role Based Access Control (RBAC)
+
+10.5 Configuring Cluster Roles and RoleBindings
+
+10.6 Creating Kubernetes User Accounts
+
+**Lesson 10 Lab: Managing Security**
+
+——————————————————
+
+**Lesson 11: Logging, Monitoring, and Troubleshooting**
+
+11.1 Monitoring Kubernetes Resources
+
+11.2 Understanding the Troubleshooting Flow
+
+11.3 Troubleshooting Kubernetes Applications
+
+11.4 Troubleshooting Cluster Nodes
+
+11.5 Fixing Application Access Problems
+
+**Lesson 11 Lab: Troubleshooting Nodes**
+
+——————————————————
+
+**Module 4: Practice CKA Exam**
+
+——————————————————
+
+**Lesson 12: Practice CKA Exam 1**
+
+12.1 Question Overview
+
+12.2 Creating a Kubernetes Cluster
+
+12.3 Scheduling a Pod
+
+12.4 Managing Application Initialization
+
+12.5 Setting up Persistent Storage
+
+12.6 Configuring Application Access
+
+12.7 Securing Network Traffic
+
+12.8 Setting up Quota
+
+12.9 Creating a Static Pod
+
+12.10 Troubleshooting Node Services
+
+12.11 Configuring Cluster Access
+
+12.12 Configuring Taints and Tolerations
+
+——————————————————
+
+**Lesson 13: Practice CKA Exam 2**
+
+13.1 Question Overview
+
+13.2 Configuring a High Availability Cluster
+
+13.3 Etcd Backup and Restore
+
+13.4 Performing a Control Node Upgrade
+
+13.5 Configuring Application Logging
+
+13.6 Managing Persistent Volume Claims
+
+13.7 Investigating Pod Logs
+
+13.8 Analyzing Performance
+
+13.9 Managing Scheduling
+
+13.10 Configuring Ingress
+
+13.11 Preparing for Node Maintenance
+
+13.12 Scaling Applications
+
+——————————————————
+
+**Summary**
+
+Certified Kubernetes Administrator (CKA): Summary
+
+——————————————————
