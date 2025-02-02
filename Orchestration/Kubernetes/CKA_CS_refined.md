@@ -625,3 +625,102 @@ name: cmvol
 **Module 3: Managing Kubernetes Clusters**
 
 ——————————————————
+
+**Lesson 6: Managing Clusters**
+
+6.1 Analyzing Cluster Nodes
+
+- Kubernetes cluster nodes run Linux processes. To monitor these processes, generic Linux rules apply
+- Use `$ systemctl status kubelet`, to get runtime information about the kubelet
+- Use log files in `/var/log` as well as `$ journalctl`, output to get access to logs
+- Generic node information is obtained through `$ kubectl describe`
+- If the Metrics Server is installed, use `$ kubectl top nodes`, to get a summary of CPU/memory usage on a node. See lesson 7.1 for more about this
+- `$ ls -lrt /var/log`
+- `$ systemctl status kubelet`
+
+6.2 Using crictl to Manage Node Containers
+
+- All Pods are started as containers on the nodes
+- crictl is a generic tool that communicates to the container runtime to get information about running containers
+- As such, it replaces generic tools like docker and podman
+- To use it, a runtime-endpoint and image-endpoint need to be set
+- The most convenient way to do so, is by defining the `/etc/crictl.yaml` file on the nodes where you want to run crictl
+- Must be run with sudo
+
+**crictl.yaml:**
+
+```
+runtime-endpoint: unix:///var/run/containerd/containerd.sock
+image-endpoint: unix:///var/run/containerd/containerd.sock
+timeout: 10
+debug: true
+```
+
+**Using crictl**
+
+- list containers: `$ sudo crictl ps`
+- List Pods that have been scheduled on this node: `$ sudo crictl pods`
+- Inspect container configuration: `$ sudo crictl inspect <name-or-id>`
+- Pull an image: `$ sudo crictl pull <imagename>`
+- List images: `$ sudo crictl images`
+
+6.3 Running Static Pods
+
+- The kubelet systemd process is configured to run static Pods from the `/etc/kubernetes/manifests` directory
+- On the control node, static Pods are an essential part of how k8s works: systemd starts kubelet, and kubelet starts core k8s services as static Pods
+- Administrators can manually add static Pods if so desired, just copy a manifest file into the `/etc/kubernetes/manifests` directory and the kubelet process will pick it up
+- To modify the path where kubelet picks up the static Pods, edit `staticPodPath` in `/var/lib/kubelet/config.yaml` and use `$ sudo systemctl restart kubelet`, to restart
+- **NEVER DO THIS ON THE CONTROL NODE!**
+- On controller node: `$ ls /etc/kubernetes/manifests/ —>`
+
+```
+etcd.yaml, kube-apiserver.yaml, kube-controller-manager.yaml, kube-scheduler.yaml
+```
+
+- On worker node: `$ ls /etc/kubernetes/manifests/ —>`
+
+```
+(empty)
+```
+
+**Running static Pods**
+
+- `$ kubelet run staticpod —image=nginx —dry-run=client -o yaml > staticpod.yaml`
+- `$ sudo cp staticpod.yaml /etc/kubernetes/manifests/`
+- `$ kubectl get pods -o wide`
+
+6.4 Managing Node State
+
+- `$ kubectl cordon —>` used to mark a node as unschedulable, so pods won’t start/execute on that worker node anymore
+- `$ kubectl drain —>` is used to mark a node as unschedulable and remove all running Pods from it
+- Pods that have been started from a DaemonSet will not be removed while using `$ kubectl drain`, add `—ignored-daemonsets`, to ignore that
+- Add `—delete-emptydir-data`, to delete data from emptyDir pod volumes
+- While using cordon or drain, a taint is set on the nodes (lesson 8.4)
+- Use `$ kubectl uncordon`, to get the node back in a schedulable state
+
+**Managing Node State**
+
+- `$ kubectl cordon worker2`
+- `$ kubectl describe node worker2` (look for taints)
+- `$ kubectl get nodes`
+- `$ kubectl uncordon worker2`
+
+6.5 Managing Node Services
+
+- The container runtime (often containerd) and kubelet are managed by the Linux systemd service manager
+- Use `$ systemctl status kubelet`, to check the current status of the kubelet
+- To manually start it, use `$ sudo systemctl start kubelet`
+- Notice that Pods that are scheduled on a node show as container processes in `$ ps aux`, output. Don’t use Linux tools to manage Pods
+- When `$ ps aux | grep containerd`, for each container on node there is a containerd process
+
+**Managing Node Services**
+
+- `$ ps aux | grep kubelet`
+- `$ ps aux | grep containerd`
+- `$ systemctl status kubelet`
+- `$ sudo systemctl stop kubelet`
+- `$ sudo systemctl start kubelet`
+
+**Lesson 6 Lab: Running Static Pods**
+
+——————————————————
