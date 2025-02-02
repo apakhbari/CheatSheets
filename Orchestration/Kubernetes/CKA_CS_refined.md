@@ -385,3 +385,128 @@ Common K8s distributions
 **Lesson 3 Lab: Running a DaemonSet**
 
 ——————————————————
+
+**Lesson 4: Managing Storage**
+
+4.1 Understanding Kubernetes Storage Options
+
+- A Pod is collection of two things, containers + Volumes
+
+4.2 Accessing Storage Through Pod Volumes
+
+- Pod Volumes are a part of the Pod specification and have the storage reference hard coded in the Pod manifest
+- This is not bad, but it doesn’t allow for flexible storage allocation
+- Pod volumes can be used for any storage type
+- Also, the ConfigMap can be used to mount Pod Volumes
+- the most ephemeral volume you can create in k8s —> Volumes: - name: test, emptyDir: {}
+
+4.3 Configuring Persistent Volume (PV) Storage
+
+- Persistnet Volumes (PV) are an API resource that represents specific storage
+- PVs can be created manually, or automatically using StorageClass and storage provisioners
+- Pods do not connect to PVs directly, but indirectly using PersistentVolumeClaim (PVC)
+
+4.4 Configuring PVCs
+
+- PVCs allows Pods to connect to any type of storage that is provided at a specific site
+- Site-specific storage needs to be created as a PersistnetVolume, either manually or automatically using StorageClass
+- Behind StorageClass a storage provisioner is required
+
+**Notes**
+
+- If you want to manually assign PVC to PV, you should take note that their StorageClassName should be exactly the same, if not, they are not going to bound and status will be pending.
+- in manually bounding, if PVC is 1Gi and PV is 2Gi, then PVC is going to be 2Gi
+
+4.5 Configuring Pod Storage with PV and PVCs
+
+4.6 Using StorageClass
+
+- StorageClass is an API resource that allows storage to be automatically provisioned
+- StorageClass can also be used as a property that connects PVC and PV without using an actual StorageClass resource
+- Multiple StorageClass resource can co-exist in the same cluster to provide access to different types of storage
+- For automatic working, one StorageClass must be set as default.
+
+- $ kubectl patch storageclass mysc -p ‘{“metadata”: {“annotations”:”{“[storageclass.kubernetes.io/is-default-class”:true](http://storageclass.kubernetes.io/is-default-class%E2%80%9D:true)”}}}’
+
+- To enable automatic provisioning, StorageClass needs a backing storage provisioner
+- In the PV and PVC definition, a storageClass property can be set to connect to a specific StorageClass which is useful if multiple StorageClass resources are available
+- If the storageClass property is not set, the PVC will get storage from the default StorageClass
+- If also no default StorageClass is set, the PVC will get stuck in a status of Pending
+
+4.7 Understanding Storage Provisioners
+
+- The storage Provisioner works with a StorageClass to automatically provide storage
+- It runs as a Pod in the Kubernetes cluster, provided with access control configured through Roles, RoleBindings, and ServiceAccounts
+- Once operational, you don’t have to manually create PersistentVolumes anymore
+- In a nfs share, you can bound as many PVCs as you want
+
+**Requirements**
+
+- To create a storage provisioner, access permissions to the API are required
+- Roles and RoleBindings are created to provide these permissions
+- A ServiceAccount is created to connect the Pod to the appropriate RoleBinding
+- More info in lesson 10
+
+**Configuring a StorageProvisioner**
+
+- on control: $ sudo apt install nfs-server -y
+- on other nodes: $ sudo apt install nfs-client
+- on control: $ sudo mkdir /nfsexport
+- on control: $ sudo sh -c ‘echo “/nfsexport \* (rw,no_root_squash)” > /etc/exports’
+- on control: $ sudo systemctl restart nfs-server
+- on other nodes: $ showmount -e control_IP
+- Fetch the helm binary from [github.com/helm/helm/releases](http://github.com/helm/helm/releases) and install it to /usr/local/bin
+- Add the helm repo using $ helm repo add nfs-subdir-external-provisioner [https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner](https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner) nfs-subdir-external-provisioner/nfs-subdir-external-provisioner —set nfs.server=xx.xx.xx.yy —set nfs.path=/nfsexport
+- use $ kubectl get pods , to verify that the nfs-subdir-provisioner Pod is running
+
+**Creating the PVC**
+
+- $ kubectl get pv , to verify that currently no PVs are available
+- $ kubectl apply -f nfs-provisioner-pvc-test.yaml , to create a PVC
+- $ kubectl get pvc,pv , to verify the PVC is created and bound to an automatically created PV
+- Create any Pod that mounts the PVC storage, and verify data end up in the NFS share
+
+**Default StorageClass**
+
+- $ kubectl apply -f another-pvc-test.yaml
+- $ kubectl get pvc , will show pending: there is no default StorageClass
+- $ $ kubectl patch storageclass mysc -p ‘{“metadata”: {“annotations”:”{“[storageclass.kubernetes.io/is-default-class”:true](http://storageclass.kubernetes.io/is-default-class%E2%80%9D:true)”}}}’
+- $ kubectl get pvc , will now work
+
+4.8 Using ConfigMaps and Secrets as Volumes
+
+- A ConfigMap is an API resource used to store site-specific data
+- A secret is a base64 encoded ConfigMap
+- ConfigMaps are used to store either environment variables, startup parameters or configuration files
+- When a Configuration File is used in a ConfigMap or Secret, it is mounted as a volume to provide access to its contents
+- ConfigMaps have 1 MB size limit, if more than this size is what you want to use, use PVs
+
+**Creating a CM and mount it as volume**
+
+- $ echo “hello world” > index.html
+- $ kubectl create cm webindex —from-file=index.html
+- $ kubectl describe cm webindex
+- $ kubectl create deploy webserver —image=nginx
+- $ kubectl edit deploy webserver
+
+spec.template.spec
+
+volumes:
+
+- name: cmvol
+
+configMap:
+
+name: webindex
+
+spec.template.spec.containers
+
+volumeMounts:
+
+- mountPath: /usr/share/nginx/html
+
+name: cmvol
+
+**Lesson 4 Lab: Setting up Storage**
+
+——————————————————
