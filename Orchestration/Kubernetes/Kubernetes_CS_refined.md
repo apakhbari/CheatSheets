@@ -55,3 +55,97 @@
 - **ingress-nginx** —> [github.com/kubernetes/ingress-nginx](http://github.com/kubernetes/ingress-nginx) and not kubernetes-ingress by nginx [github.com/nginxc/kubernetes-ingress](http://github.com/nginxc/kubernetes-ingress)
 
 ---
+# Terminology:
+
+- **masters**: are machines (or vm’s) with a set of programs to manage nodes. A series of 4 programs that control the entire cluster’s deployment, mostly using `kube-apiserver`, which is monitoring the status of all nodes inside the cluster and making sure they’re doing the correct thing. It reads the config file and interprets it. We are communicating with the master for changes, not nodes. The master decides inside which node to run a certain container. To deploy something, we update the desired state of the master with a config file, and the master works constantly to meet your desired state.
+- **nodes**: individual machines (or vm’s) that run containers. They are inside a cluster. There is a docker running in each node. Pods are inside nodes. We developers never communicate directly to nodes. It’s being done by the master.
+- **PODS**: the smallest thing that can be deployed on k8s. Exist inside a node. Inside a pod, one or more containers exist. Containers inside a pod are closely put together and need each other to work correctly, e.g., postgres container + logger container + backup manager container inside a single pod. Each container inside a pod is defined in `spec: containers:` section.
+- **Load Balancer Service**: Tells K8s to reach out to its provider and provision a load balancer. Gets traffic into a single pod.
+- **Ingress or Ingress Controller**: A pod with a set of routing rules to distribute traffic to other services.
+- **Persistent Volume Claim (PVC)**
+
+---
+
+# Takeaways:
+
+- K8s don’t build our images. It gets them from somewhere else.
+- Deployment is a type of controller. Also, ingress makes a controller for routing.
+
+  * Usually inside spec add `imagePullPolicy: IfNotPresent`
+  * `apk` —> Alpine images package manager
+
+- K8s has a limit of 150000 Pods.
+
+---
+
+# Imperative vs Declarative Deployments:
+
+K8s can do both.
+
+- **Imperative**: Do exactly these steps to arrive at this container setup.
+- **Declarative**: Our container setup should look like this, make it happen.
+
+---
+
+# YAML File Line by Line:
+
+1. `apiVersion: v1` or `apps/v1`
+   - Defines objects we can use.
+2. `kind: Pod`
+   - Specifies the purpose of this object.
+
+### Examples of Object Types:
+
+3. `metadata`
+   - `name` —> name of pod. Mostly used for logging purposes.
+   - `labels: component: web` [label selector system]
+
+4. `spec: containers:` [an array. Could be multiple containers]
+   - Each container inside a pod is defined here.
+   - `name: client`
+   - `image: apakhbari/multi-client`
+   - `ports: containerPorts: 3000`
+
+5. **Service**
+   - `spec: type: NodePort`
+   - `ports:` [an array. Could be multiple ports]
+   - `port: 3050`
+   - `targetPort: 3000`
+   - `nodePort: 31515` —> random 30000 - 32767
+   - `selector: component: web` [label selector system]
+
+6. **Deployment**
+   - `apiVersion: apps/v1`
+   - `kind: Deployment`
+   - `metadata:`
+     - `name: client-deployment`
+   - `spec:`
+     - `replicas: 1`
+     - `selector:` [used for assigning some label, for monitoring pods by deployment]
+       - `matchLabels:`
+         - `component: web`
+     - `template:` [configs that are used for every single pod made by this deployment]
+       - `metadata:`
+         - `labels:`
+           - `component: web`
+       - `spec:`
+         - `containers:`
+           - `name: client`
+           - `image: apakhbari/multi-client`
+           - `ports:`
+             - `containerPort: 3000`
+
+7. **PersistentVolumeClaim**
+   - `apiVersion: v1`
+   - `kind: PersistentVolumeClaim`
+   - `metadata:`
+     - `name: database-persistent-volume-claim`
+   - `spec:`
+     - `accessMode:`
+       - `- ReadWriteOnce`
+     - `resources:`
+       - `requests:`
+         - `storage: 2Gi`
+     - `[StorageClassName can be assigned too. We stick to default]`
+
+---
