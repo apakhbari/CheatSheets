@@ -623,3 +623,86 @@ $ buildah commit —format docker ubi8-working-container hello:latest
 - Using `$ oc new app` with templates (most apps created like this must use —as-deployment-config in most cases, because most of them are still using deployment-config and not deployment)
   - `$ oc new-app —template=mariadb-ephemeral -p MYSQL_USER=anna -p MYSQL_PASSWORD=ann -p MYSQL_DATABASE=videos —as-deployment-config`
 
+# Demo : setting up mysql and then connect wordpress to it
+
+- `$ oc login -u developer -p password`
+- `$ oc new-project microservice`
+- `$ oc create secret generic mysql —from-literal=password=mypassword`
+- `$ oc new-app —name mysql [registry.access.redhat.com/rhscl/mysql-57-rhel7](http://registry.access.redhat.com/rhscl/mysql-57-rhel7)`
+- `$ oc set env deployment mysql —prefix MYSQL*ROOT* —from secret/mysql`
+- `$ oc set volumes deployment/mysql -name mysql-pvc -add —type pvc —claim-size 1Gi —claim-mode rwo —mount-path /var/lib/mysql`
+- `$ oc new-app —name wordpress —docker-image bitnami/wordpress`
+- `$ oc expose svc wordpress`
+- `$ oc create cm wordpress-cm —from-literal=host=mysql —from-literal=name=wordpress —from-literal=user=root —from-literal=password=password`
+- `$ oc set env deployment wordpress —prefix WORDPRESS*DATABASE* —from configmap/wordpress-cm`
+- `$ oc exec -it wordpress-[Tab] —env`
+
+---
+
+# Lab : run a mariaDB with 3 replicated pods. ensure that /var/lib/mysql directory is stored externally, using a claim for 1 GB of storage. Also make sure that the MYSQL_ROOT_PASSWORD variable is set to “password” using a ConfigMap
+
+- `$ oc process —parameters mariadb-persistent -n openshift`
+- `$ oc new-app —template=mariadb-persistenr -p MYSQL_ROOT_PASSWORD=password -p VOLUME_CAPACITY=1Gi -p MEMORY_LIMIT=2Gi —as-deployment-config`
+
+---
+
+# 9- Using Source-to-Image
+
+- S2I is the tool that takes application source code from a Git repository, injects this source code in a base container that is based on the source code language and framework, and produces a new container image that runs the application
+- Using S2I makes OpenShift easier
+- Developer doesn’t have to know anything about Dockerfile or platform specifics
+- Patching is made easy: run the process again
+
+## Builder Image
+
+- S2I builder image provides language specifics that are needed to build a working application based on the source code
+- A set of standard builder images are provided with OpenShift, custom builder images can also be created
+- Source Code + Builder Image = application image
+- If either the source code or the builder image changes, the application image needs to be re-generated
+
+## ImageStream
+
+- Builder images are provided by the OpenShift ImageStream
+- In an ImageStream builder images are identified, with specific tags that allow users to use different versions of the builder image
+- When ImageStreams change, OpenShift will automatically rebuild applications built with that ImageStream
+- `$ oc get is -n openshift` —> an overview of available ImageStreams
+- `$ oc describe is php -n openshift` —> describe php ImageStreams
+
+## Building apps with S2I
+
+- When creating an app with S2I, you can set the ImageStream that should be used
+- If just a git repo and no ImageStream is specified, OpenShift will try to detect the appropriate ImageStream
+- `$ oc -o yaml new-app php~[https://github.com/](https://github.com/)… —name=siple_app > s2i.yaml` —> php~ identifying ImageStream
+- View `s2i.yaml`
+- `$ oc apply -f s2i.yaml`
+- `$ oc status`
+- `$ oc get builds`
+- `$ oc get pods`
+
+- What is the difference between `$ oc create`, and `$ oc apply` —> both can create app, if app already exists and run `$ oc apply`, it will make an updated version of the app but `$ oc create`, gives error
+
+## Build Process
+
+- ImageStream is used to provide access to the right language runtimes to build the source code
+- BuildConfig defines input parameters and triggers that are executed to transform source code into a runnable image
+- Deployment is responsible for actually running the application Pods
+- Service provides access to the application Pods
+- Notice that when using `$ oc new-app`, a route is not created automatically. While using the web console, routes are also created because web console is using templates
+
+## Analyzing Build Process
+
+- `$ oc get builds`
+- `$ oc get bc/simple -o yaml`
+- `$ oc get buildconfig simple`
+- `$ oc start-build simple` —> will trigger a new build based on the previously created BuildConfig
+
+---
+
+# ImageStream
+
+- When running container-based apps, images need to be pulled
+- These images are stored in the internal OpenShift image registry
+- To access images in the image registry, an ImageStream resource is used, which identifies specific images using SHA ID
+- ImageStreams store images using tags, which makes it easy to refer to different versions of images
+- OpenShift images are not managed directly from the registry, but by using the ImageStream resource —> DO NOT manage OpenShift images directly, only through ImageStream
+- When a new app is created with `$ oc create deploy` or `$ oc new-app`, image registries will be contacted to check for a newer image, to prevent this use —image-stream to refer to an existing ImageStream and use the image from the internal image registry. Use `$ oc new-app -L` to list all existing image streams and tags included. Tags can be combined with the —image-stream argument. For instance, `$ oc new-app —name=whatever —image-stream=nginx:1.18-ubi8`
