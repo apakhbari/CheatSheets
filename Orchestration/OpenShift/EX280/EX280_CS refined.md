@@ -829,3 +829,202 @@ $ oc get oauth -o yaml > oauth.yaml
 ---
 
 **8-Managing Pod Scaling and Scheduling**
+# 8.1 Controlling Pod Placement
+
+- 3 types of rules are applied for Pod scheduling
+  - Node labels
+  - Affinity rules
+  - Anti-affinity rules
+
+- The Pod scheduler works through 3 steps:
+  - **Node filter**: this is where node availability, but also selectors, taints, resources availability, and more is evaluated
+  - **Node prioritizing**: based on affinity rules, nodes are prioritized
+  - **Select the best node**: the best scoring node is used, and if multiple nodes apply, round robin is used to select one of them
+
+- When used on cloud, scheduling by default happens within the boundaries of a region
+- Nodes can be configured with a label
+- A label is an arbitrary key-value pair that can be used as a selector for Pod placement
+- Pods can next be configured with a nodeSelector property on the Pod so that they’ll only run on the node that has the right label
+  - `$ oc label node [worker1.example.com](http://worker1.example.com) env=test` → set label
+  - `$ oc label node [worker1.example.com](http://worker1.example.com) env=prod --overwrite` → overwrite label
+  - `$ oc label node [worker1.example.com](http://worker1.example.com) env-` → remove label
+  - `$ oc get … --show-labels` → show labels set on any type of resources
+
+- A machine set is a group of machines that is created when installing OpenShift using full-stack automation
+- Machine sets can be labeled so that nodes generated from the machine set will automatically get a label
+  - `$ oc get machines -n openshift-machin-api -o wide` → To see which nodes are in which machine set
+  - `$ oc edit machineset …` → set a label in the machine set spec.metadata
+  - Notice that nodes that were already generated from the machine set will not be updated with the new label
+
+- Configuring NodeSelector on Pods:
+  - Infrastructure-related Pods in an OpenShift cluster are configured to run on a controller node
+  - Use nodeSelector on the Deployment/DeploymentConfig to configure its Pods to run on a node that has a specific label
+  - Use `$ oc edit`, to apply nodeSelector to existing Deployment/DeploymentConfig
+  - If a Deployment is configured with a nodeSelector that doesn’t match any node label, the Pods will show as pending. Fix this by setting Deployment spec.template.spec.nodeSelector to the desired key-value pair
+
+- nodeSelector can also be set on a project such that resources created in the deployment are automatically placed on the right nodes:
+  - `$ oc adm new-project test --node-selector "env=test"`
+
+- To configure a default nodeSelector on an existing project, add an annotation to its underlying namespace resource:
+  - `$ oc annotate namespace test [openshift.io/node-selector="test"](http://openshift.io/node-selector=%22test%22) --overwrite`
+
+### DEMO:
+- `$ oc login -u developer -p password`
+- `$ oc create deployment simple --image=bitnami/nginx:latest` → if using deployment then we have a default label app=<something here>
+- `$ oc get all`
+- `$ oc scale --replicas 4 deployment/simple`
+- `$ oc get pods -o wide`
+- `$ oc login -u admin -p password`
+- `$ oc get nodes -L env`
+- `$ oc label node xxxxx env=dev`
+
+# 8.2 Manually Scaling Pods
+
+- The desired number of Pods is set in the Deployment/DeploymentConfig, from there the replicaset/replication controller is used to guarantee that this number of replicas is running
+- The deployment is using a selector for identifying the replicated pods
+  - `$ oc scale 3 deployment myapp / $ oc scale --replicas=3 deployment myapp / $ oc edit deployment myapp`
+  - While doing this, new desired number of replicas is added to deployment, and from there written to the ReplicaSet
+
+# 8.3 Automatically Scaling Pods
+
+- OpenShift provides the HorizontalPodAutoscaler resource for automatically scaling Pods
+- This resource depends on the OpenShift Metrics subsystem, which is pre-installed in OpenShift 4
+- To use autoscaling, resource requests need to be specified so that the autoscaler knows when to do what
+- Use resource Requests or project resource limitations to take care of this
+- Currently, Autoscaling is based on CPU usage, autoscaling for memory utilization is in tech preview
+  - `$ oc autoscale deploy autoscale --min 5 --max 10 --cpu-percent 20`
+  - `$ oc get hpa` → see autoscaler metrics and info
+  - autoscaler is a resource
+
+# 8.4 Applying Pod Resource Limitations
+
+- Resource requests and limits are used on a per-app basis
+- Quotas are enforced on a project or cluster basis
+- In Pods spec.containers.resources.requests, a Pod can request minimal amounts of CPU and memory resources
+  - The scheduler will look for a node that meets these requirements
+- In Pods spec.containers.resources.limits, the Pod can be limited to a maximum use of resources
+  - (behind the scenes) CGroups are used on the node to enforce the limits
+  - Use `$ oc set resources`, to set resource requests as well as limits, or edit the YAML code directly
+  - Resource restrictions can be set on individual containers, as well as on a complete deployment
+  - `$ oc set resources deployment hello-world-nginx --requests cpu=10m,memory=10Mi --limits cpu=50m,memory=50Mi` → m: millicore, Mi: megabyte
+
+### DEMO:
+- `$ oc create deployment nee --image=bitnami/nginx:latest --replicas=3`
+- `$ oc get pods`
+- `$ oc set resources deployment nee --requests cpu=10m,memory=1Mi --limits cpu=20m,memory=5Mi`
+- `$ oc get pods` → one new pod will be stuck in state “Creating”
+- `$ oc set resources deployment nee --requests cpu=0m,memory=0Mi --limits cpu=0m,memory=0Mi`
+- `$ oc get pods`
+- `$ oc describe node nodename` → get information about current CPU and memory usage for each Pod running on the node
+- Notice the summary line at the end of the output, where you’ll see requests as well as limits that have been set
+- `$ oc adm top` → get actual resource usage
+- Notice this requires metrics server to be installed and configured
+
+# 8.5 Applying Quota
+
+- Quotas are used to apply limits
+  - On the number of objects, such as Pods, services, and routes
+  - On compute resources, such as CPU, memory, and storage
+  - Quotas are useful for preventing the exhaustion of vital resources:
+    - Etcd
+    - Ip addresses
+    - Compute capacity of worker nodes
+- Quotas are applied to new resources but do not limit current resources
+- To apply quota, the ResourceQuota resource is used
+  - Use a YAML file:
+    - `$ oc create quota my-quota --hard service=10,cpu=1400,memory=1.8Gi`
+  - resourcequotas are applied to projects to limit the use of resources
+  - clusterresourcequotas apply within a cluster scope
+  - Multiple resourcequotas can be applied to the same project
+  - Effect is cumulative
+  - Limit one specific resource type for each quota resource used
+  - ADVISE: don’t use YAML files for quota
+  - `$ oc get resourcequota` → gives an overview of all resourcequota API resources
+  - `$ oc describe quota` → will show cumulative quotas from all resourcequota in the current project
+
+### Quota-related failure:
+- If modification exceeds the resource count (like number of pods) OpenShift will deny the modification immediately
+- If a modification exceeds quota for a compute resource (such as available RAM) OpenShift will not fail immediately to give the admin some time to fix the issue
+- If a quota that restricts usage of compute resources is used, OpenShift will not create Pods that do not have resource requests or limits set also
+- It’s also recommended to use LimitRange to specify default value for resource requests
+- For using quota, you must set request and limits on deployment also, otherwise, it crashes
+
+# 8.6 Applying Limit Range
+
+- A limit range resource defines default, minimum, and maximum values for compute resource requests
+- Limit range can be set on a project, as well as on individual resources
+- Limit range can specify CPU and memory for containers and Pods
+- Limit range can specify storage for image and PVC
+- Use a template to apply the limit range to any new project created from that moment on
+- The main difference between limit range and resource quota, is that the limit range specifies allowed values for individual resources, whereas project quota sets the maximum values that can be used by all resources in a project
+
+### DEMO:
+- `$ oc new-project limits`
+- `$ oc login -u admin -p password`
+- `$ oc explain limitrange.spec.limits`
+- `$ oc create --save-config -f limits.yaml`
+- `$ oc get limitrange`
+- `$ oc describe limitranges limit-limits`
+
+# 8.7 Specifying Quota Range
+
+- The ClusterResourceQuota resource is created at cluster level and applies to multiple projects
+- Admin can specify which projects are subject to cluster resource quotas
+  - By using the [openshift.io/requester](http://openshift.io/requester) annotation to specify project owner, in which all projects with that specific owner are subject to the quota
+  - Using a selector and labels; all projects that have labels matching the selector are subject to the quota
+- Annotations and labels will set a cluster resource quota that applies to all projects owned by user lisa
+  - `$ oc create clusterquota user-lisa --project-annotation-selector [openshift.io/requester=lisa](http://openshift.io/requester=lisa) --hard pods=10,secrets=10`
+  - add a quota for all projects that have the label env=testing
+  - `$ oc create clusterquota testing --project-label-selector env=testing --hard pods=5,services=2`
+
+### DEMO:
+- `$ oc describe quota` → view quota that currently applied
+- `$ oc get clusterquota -a` → show all quotas in all namespaces
+- **TIP**: set quota on individual projects and try to avoid cluster-wide quota, looking them up in large clusters may take a lot of time
+
+# 8.8 Modifying the Default Template
+
+- A template is an API resource that can set different properties when creating a new project
+  - quota
+  - limit range
+  - network policy
+
+- `$ oc adm create-bootstrap-project-template -o yaml > mytemplate.yaml` → generate a YAML file that can be further modified. Add new resources under objects, specifying the kind of resources you want to add. Next, edit [projects.config.openshift.io/cluster](http://projects.config.openshift.io/cluster) to use the new template
+
+### DEMO: setting project restrictions
+- `$ oc login -u admin -p password`
+- `$ oc adm create-bootstrap-project-template -o yaml > mytemplate.yaml` → ignoring this since it is a lot of work to create
+- `$ oc create -f limitrange.yaml -n openshift-config`
+- `$ oc create -f limitrange test-limits`
+- `$ oc describe limitrange test-limits`
+- `$ oc edit [projects.config.openshift.io/cluster](http://projects.config.openshift.io/cluster)`
+
+# 8.9 Using Pod Affinity and Anti-affinity Rules
+
+- [anti-]affinity defines relations between Pods
+- podAffinity tells the scheduler not to locate a new Pod on the same node as other Pods
+- nodeAffinity tells a Pod (not) to schedule on nodes with specific labels
+- [anti-]affinity is applied based on Pod labels
+- Required affinity rules must be met before a Pod can be scheduled on a node
+- Preferred rules are not guaranteed
+- In affinity rules, a matchExpression is used on the key-value specification that matches the label
+- In this matchExpression the operator can have the following values:
+  - Notin
+  - Exists
+  - DoesNotExist
+  - Lt
+  - Gt
+
+- Node affinity can be used to only run a Pod on a node that meets specific requirements
+- Node affinity, like Pod affinity, works with labels that are set on the node
+- Required rules must be met
+- Preferred rules should be met
+
+### DEMO:
+- `$ oc login -u admin -p password`
+- `$ oc create -f nodeaffinity.yaml`
+- `$ oc describe pod runonssd`
+- `$ oc label node crc-[tab] dikstype=nvme`
+- `$ oc describe pod runonssd`
+
+# 8.10 Managing Taints and Tolerations
