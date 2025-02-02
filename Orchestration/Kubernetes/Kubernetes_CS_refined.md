@@ -219,3 +219,67 @@ K8s can do both.
 In ingress-nginx, something that accepts incoming traffic and ingress controller are in one module.
 
 There is also a default-backend pod created by ingress-nginx which has health check purposes. It ideally could be implemented inside an express server.
+
+---
+
+- **k8s supports two kinds of containers**
+  - docker
+  - rocketd
+
+- **components**
+  - **Master node**
+    - **API server**: Gatekeeper receives calls, creates, deletes, or modifies components.
+    - **kube controller**
+      - replication controller
+      - node controller
+      - endpoint controller
+      - service account controller
+    - **scheduler**: Decides which pod deploys on which node.
+    - **etcd**: All cluster data is stored here.
+
+  - **worker node**
+    - **kubelet**: Makes sure that pods are working fine in nodes. If things are not going well, it informs the kube controller and then the scheduler will start a new pod.
+    - **kubeproxy**: Pods use this to communicate within the cluster.
+    - **pod**: A scheduling unit.
+    - **containers**
+
+  - **It is possible to have two containers in a pod**, for example for log purposes. This happens with sidecar containers / init containers, which are the same.
+
+- **Kubernetes objects**
+  - Creating a `yml` file for k8s objects we want to create:
+    - `apiVersion`: Version number of k8s API
+    - `kind`: What kind of object we want to create
+    - `metadata`: Data to help uniquely identify object
+    - `spec`: Desired state for the object
+
+- **Commands**
+  - `$ kubectl scale rc (replication controller) nginx --replica=5` —> For scaling up/down
+  - `kubectl edit rc (replication controller) nginx` —> Another way to scale up/down
+  - **RabbitMQ** and **ElasticSearch** use StatefulSet instead of deployment.
+  - **DaemonSet deployment** is for when fluentd is being deployed as a part of **EFK** (Elastic, Fluentd, Kibana).
+  - In deployment, these deploying methods are available:
+    - **ReCreate**: Delete old ones & create new ones.
+    - **RollingUpdate**: Delete old one, create a new one, delete old one, create a new one, … (one at a time).
+    - **Blue/Green**: Route traffic to new ones, then delete old ones.
+    - **Canary**
+
+  - `$ kubectl rollout status deployment nginx-deployment`
+  - **ClusterIP** service is used for inside-cluster cases, and you can access them via their names.
+  - **NodePort** service is used for external access. The range is 30000 to 32767, not used in production environments.
+  - **LoadBalancer** service is the default when you want access from outside and are using the cloud. The downside is each service gets an IP, so it's expensive. LB is accessible by outside via its port.
+
+- **NameSpaces**
+  - **Default**: All namespaces that don’t belong to public/system.
+  - **kube-public**: Publicly available/readable by all.
+  - **kube-system**: Objects/resources created by k8s systems.
+
+- **ConfigMap**: An API object used to store non-confidential data in key-value pairs.
+- **helm (v2.0)**:
+  - Has a client-side component called **helm** and a cluster-side component called **tiller**.
+  - `$ helm create` —> Dir
+  - `/charts`: Dependencies.
+  - `chart.yaml`: Metadata of charts.
+  - **templates**:
+    - **deployment.yaml**:
+    - **values.yaml**: Values of template and our project in general.
+---
