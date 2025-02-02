@@ -795,3 +795,40 @@ An alternative way is to mount volumes within the container:
 
 - `$ sudo podman cp my.conf mycontainer:/opt/myapp/`
 - `$ oc cp mypod:/opt/myapp/my.conf`
+
+# S2I Troubleshooting
+
+- S2I consists of two main steps
+
+  - **Build**: This is where software is compiled and the resulting image is pushed to the OpenShift registry using the BuildConfig resource. 
+    - If the issue is here, analyze the build Pod logs.
+    - `$ oc start-build <application-name>` —> spawn a new Pod with the build process
+    - While running source code on top of UBI8 images, permissions and SELinux issues may arise. Check the USER statement in Dockerfile to find out which user account is used. Ensure this user has sufficient permissions on directories that are accessed.
+    - SELinux may be an issue: if host-based storage is mounted in a container, use the following on the host folder to ensure SELinux is set correctly:
+      - `$ semanage fcontext -a -t container_file_t /hostfolder(/.*)?`
+      - `$ restorecon -R /hostfolder`
+
+  - **Deployment**: This is where the deployment is started from the image that has been pushed to the OpenShift registry. 
+    - If the issue is here, it’s similar to **Applications Startup Troubleshooting**.
+
+# Application Access Troubleshooting
+
+- When apps are not normally reachable, stop it in OpenShift and use podman port forwarding to expose a port on the node where the container is running.
+  - `$ sudo podman run --name mydb -p 33060:3306 mysql`
+  - Can't always be done on running containers.
+  
+- OpenShift can also do port forwarding to expose a port on the computer where the `oc` client is used. It is OpenShift-native and doesn’t need to stop the Pod.
+  - `$ oc port-forward mydb 33060 3306`
+  - Notice that this port forwarding requires you to leave the terminal where you started the port forwarding open.
+
+- Because of the way OpenShift SDN is organized, access problems may occur at different levels.
+
+  - `$ oc describe pod` —> find the port on which the app is offering service.
+  - `$ oc get pods -o wide` —> find the Pod IP address, and from the node that runs the Pod, connect to it directly (requires SSH access to the node).
+  - Use the NodePort service account type and connect to the port that is exposed on the node that runs the Pod.
+  - Create a route and access the route URL.
+    - Make sure this URL can be resolved using DNS; it may require manually adding a line in `/etc/hosts`.
+
+---
+
+# 11- Ex180 Sample Exam
