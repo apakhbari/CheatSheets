@@ -150,3 +150,55 @@ RedHat Certified specialist in containers and Kubernetes: Red Hat EX180
 - `$ oc get all —selector app=<my-name>` —> with selector we only see what we want
 - `$ oc create deploy mynewapp —image=busybox — sleep 3600` —> what comes after `—` means what is executed inside the OpenShift container
 - For finding processes in a container that has no `$ ps` installed, `$ cat /proc/[PID]/cmdline`
+
+# ——————————————————
+
+## Module 1: Container Fundamentals
+
+### Lessons: Part One: Red Hat EX180
+
+#### 1- Introduction to containers and Kubernetes
+
+- Podman: the default container engine in RHEL to run container images instead of docker.
+- Container engine: takes a container image and turns it to a container. Consists of a runtime, CLI tool and sometimes a daemon. eg Podman, systems, docker, lxc
+- Container Runtime: (heart of a container) a specific part of the container engine, which takes care of specific tasks: providing mount points, communicate with the kernel, setup groups and … . Eg CRI-O (RedHat), containerd (docker-based)
+- runC : a lightweight universal container runtime. It’s included in CRI-O and containerd.
+
+#### Stand-alone container limitations:
+
+- Storage in containers are ephemeral
+- Scaling up containers are not easy
+- Providing access to containers are complex
+- Providing site-specific information for a running container is complex
+
+#### DataCenter Orchestration Features:
+
+- Scalability
+- Availability: making sure that a sufficient number of containers are always available
+- Decoupling: separating site-specific data from static code
+- Accessibility: providing a uniform way to access workloads, regardless if they’re provided by one or multiple containers
+- Persistent storage: ensuring data outlives the container lifetime
+
+- OpenShift: started as an independent solution to automate building software from source code to running applications. Its original intention was to be a DevOps tool, offering services to automate CI/CD. Current OpenShift is built on top of Kubernetes and adds many features on Kubernetes core.
+- Open Shift Unique Features:
+  - Source-to-image: automatically build container images from source code and run these as orchestrated containers.
+  - Routes: easily exposes access to running application workloads.
+  - Operators: additional features provided as open source or partner solutions through OperatorHub, such as: Storage providers, Monitoring and metering software, Applications that integrate in the Kubernetes APIs
+  - More developed Kubernetes feature, like RBAC and other API extensions
+
+# ——————————————————
+
+#### 2- Running Containers
+
+- Container images are configured with an entry point, which is the default command to be executed. If the container starts a service, the entry point is executed and the container will continue to run in the foreground.
+- Running Containers with PodMan: decide if you want to run container as a rootless container, or with root privileges.
+- Rootless containers: [default in OpenShift]
+  - Runs with limited user privileges
+  - Do not get an IP address
+  - Cannot bind to a privileged port
+  - Have limited access to filesystem
+
+- To run rootless containers, rootless images must be provided. On docker hub, look for bitnami images which run as rootless images. In a RedHat environment, get images from Red Hat Container registries as these are rootless by default.
+- From host OS perspective, a container is just a process. A well restricted process though, as namespaces, groups and SELinux limit what the container can do.
+
+# ——————————————————
