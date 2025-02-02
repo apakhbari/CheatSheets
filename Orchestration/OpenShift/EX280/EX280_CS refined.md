@@ -512,3 +512,74 @@ $ oc get oauth -o yaml > oauth.yaml
     - `$ oc set env deployment/mysql —from secret/mysql —prefix MYSQL_`
     - `$ oc get pods -w`
     - `$ oc exec -it <podname> — enc —> print all environmental values`
+
+# 6.4 Creating ServiceAccounts
+
+- A ServiceAccount (SA) is a user account that is used by a pod to determine Pod access privileges to system resources
+- The default SA used by Pods allows for very limited access to cluster resources
+- Sometimes a Pod cannot run with this very restricted SA
+- After creating SA, specific access privileges need to be set
+- `$ oc create serviceaccount <name of SA>` —> create a SA, optionally add `-n <namespace>`
+- After creating SA, use a role binding to connect the SA to a specific role
+- Or associate the SA with a specific Security Context Constraint
+
+# 6.5 Managing Security Context Constraints
+
+- A security Context Constraint (SCC) is an OpenShift resource, similar to the Kubernetes Security Context resource, that restrict access to resources
+- The purpose is to limit access from a Pod to the host environment
+- Different SCCs are available to control:
+    - Running privileged Containers
+    - Requesting additional capabilities to a container
+    - Using host directories as volumes
+    - Changing SELinux context of a container
+    - Changing the user ID
+
+- Using SCCs may be necessary to run community containers that by default don’t work under the tight OpenShift security restrictions
+- `$ oc get scc` —> an overview of SCCs
+- `$ oc describe scc <name>`, for example `$ oc describe scc nonroot` —> more details
+- `$ oc describe pod <podname> | grep scc` —> see which SCC is currently used by a Pod
+- `$ oc get pod <name> -o yaml | oc adm policy scc-subject-review -f -` —> if a pod can’t run due to an SCC
+- To change a container to run with a different SCC, you must create a service account and use that in the Pod
+- `$ oc describe pod`, shows a line `[openshift.io/scc:](http://openshift.io/scc:) restricted; most Pods run as restricted`
+- Some Pods require access beyond the scope of their own containers, such as S2I pods, To provide this access, SAs are needed
+- To change the container to run using a different SCC, you need to create a service account and use that with the Pod or Deployment
+- The service account is used to connect to an SCC
+- Once the service account is connected to the SCC it can be bound to a deployment or pod to make sure that it is working
+- This allows you for instance to run a Pod that requires root access to use the anyuid SCC so that it can run anyway
+- DEMO
+
+    - As linda : `$ oc new-project sccs`
+    - `$ oc new-app —name sccnginx —docker-image nginx`
+    - `$ oc get pods` —> show an error
+    - `oc logs pod/nginx[tab]` —> fails because of a permission problem
+    - as admin: `$ oc get pod nginx[tab] -o yaml | oc adm policy scc-subject-review -f -` —> show which scc to use
+    - as admin: `$ oc create sa nginx-sa` —> creates the dedicated service account
+    - as admin: `$ oc adm policy add-scc-to-user anyuid -z ngix-sa`
+    - as linda: `$ oc set serviceaccount deployment sccnginx nginx-sa`
+    - `$ oc get pods sccs[tab] -o yaml` —> look for serviceAccount and serviceAccountName then change the default to nginx-sa
+    - `$ oc get pods` —> pod is running now
+
+# 6.6 Running Containers as Non-root
+
+- by default, OpenShift denies containers to run as root
+- many community containers run as root by default
+- A container that runs as root has root privileges on the container host as well, and should be avoided
+- If you build your own container images, specify which user it should run
+- Frequently, non-root alternatives are available for the images you’re using
+    - [quay.io](http://quay.io) images are made with OpenShift in mind
+    - bitnami has reworked common images to be started as non-root
+
+- Non-root containers cannot bind to a privileged port
+- In OpenShift, this is not an issue, as containers are accessed through services and routes
+- Configure the port on the service/route, not on the pod
+- Also non-root containers have limitations accessing files
+- DEMO
+
+    - `$ oc new-app —docker-image=bitnami/nginx:latest —name=bginx`
+    - `$ oc get pods -o wide`
+    - `$ oc describe pods bginx-<xxx>`
+    - `$ oc get services`
+
+---
+
+# Module 4: Performing Operational Cluster Management Tasks
