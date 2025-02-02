@@ -248,13 +248,3 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
       requests:
         storage: 1Gi
   ```
-
----
-
-## Summary
-
-This guide provides a structured approach to understanding Kubernetes administration. It covers setting up clusters, deploying applications, and managing storage, networking, and security.
-
-```
-
-This `.md` file properly formats your content with Markdown syntax, making it readable in any markdown viewer. Let me know if you need further refinements! 🚀
