@@ -199,3 +199,303 @@ $ crontab -l
   ```bash
   min hour dayofmonth month dayofweek command
   ```
+
+# Define Variables
+
+```bash
+var1=10
+var2=23.45
+var3=testing
+var4="Still more testing"
+```
+
+---
+
+# Command-line Arguments
+
+```bash
+$ cat test4.sh
+
+#!/bin/bash
+# Testing command line arguments
+
+echo $1 checked in $2 days ago
+
+$ chmod u+x test4.sh
+$ ./test4.sh Anisa 4
+
+Barbara checked in 4 days ago
+
+$ ./test4.sh Mohsen 5
+
+Jessica checked in 5 days ago
+
+$ ./test4.sh Mohammad
+
+rich checked in days ago
+```
+
+---
+
+# Basic Reading
+
+```bash
+$ cat test5.sh
+
+#!/bin/bash
+# testing the read command
+
+echo -n "Enter your name: "
+read name
+echo "Hello $name, welcome to my program."
+
+$ ./test5.sh
+
+Enter your name: Moshen Mohammad Amini
+
+Hello Moshen Mohammad Amini, welcome to my program.
+```
+
+---
+
+# Basic Reading with Prompt
+
+```bash
+$ cat test6.sh
+
+#!/bin/bash
+# testing the read -p option
+
+read -p "Please enter your age:" age
+days=$[ $age * 365 ]
+
+echo "That makes you over $days days old!"
+
+$ ./test6.sh
+
+Please enter your age:23
+
+That makes you over 8395 days old!
+```
+
+---
+
+# Basic Reading with Multiple Variables
+
+Each data value entered is assigned to the next variable in the list.
+
+```bash
+$ cat test7.sh
+
+#!/bin/bash
+# entering multiple variables
+
+read -p "Enter your name: " first last
+echo "Checking data for $last, $first…"
+
+$ ./test7.sh
+
+Enter your name: Rich Blum
+
+Checking data for Blum, Rich…
+```
+
+---
+
+# Basic Reading Without Specifying Variables
+
+You can also specify no variables on the read command line. The read command places any data it receives in the special environment variable `REPLY`.
+
+```bash
+$ cat test8.sh
+
+#!/bin/bash
+# testing the REPLY environment variable
+
+read -p "Enter a number: "
+
+factorial=1
+for (( count=1; count <= $REPLY; count++ ))
+do
+    factorial=$[ $factorial * $count ]
+done
+
+echo "The factorial of $REPLY is $factorial"
+
+$ ./test8.sh
+
+Enter a number: 5
+
+The factorial of 5 is 120
+```
+
+---
+
+# Reading With Timing Out and Counting Input Characters
+
+The `-t` option specifies the number of seconds for the read command to wait for input.
+
+You can also set the read command to count the input characters with `-n` option. When a preset number of characters has been entered, it automatically exits, assigning the entered data to the variable. As soon as you press the single character to answer, the read command accepts the input and passes it to the variable. There’s no need to press the Enter key.
+
+```bash
+$ cat test9.sh
+
+#!/bin/bash
+# timing the data entry
+
+if read -t 5 -p "Please enter your name: " name
+then
+    echo "Hello $name, welcome to my script"
+else
+    echo
+    echo "Sorry, too slow!"
+fi
+
+$ ./test9.sh
+
+Please enter your name: Mohsen
+
+Hello Mohsen, welcome to my script
+
+$ ./test9.sh
+
+Please enter your name:
+
+Sorry, too slow!
+```
+
+---
+
+```bash
+$ cat test10.sh
+
+#!/bin/bash
+# getting just one character of input
+
+read -n1 -p "Do you want to continue [Y/N]? " answer
+
+case $answer in
+    Y | y) echo
+           echo "fine, continue on…";;
+    N | n) echo
+           echo OK, goodbye
+           exit;;
+esac
+
+echo "This is the end of the script"
+
+$ ./test10.sh
+
+Do you want to continue [Y/N]? Y
+
+fine, continue on…
+
+This is the end of the script
+
+$ ./test10.sh
+
+Do you want to
+```
+
+---
+
+# Silent Reading with `-s`
+
+```bash
+$ cat test11.sh
+
+#!/bin/bash
+# hiding input data from the monitor
+
+read -s -p "Enter your password: " pass
+echo
+echo "Is your password really $pass?"
+
+$ ./test11.sh
+
+Enter your password:
+
+Is your password really T3st1ng?
+```
+
+---
+
+# Exit Status
+
+```bash
+$ /bin/bash
+
+$ exit 120
+
+exit
+
+$ echo $?
+
+120
+```
+
+---
+
+# Command Substitution
+
+```bash
+$ var1=`date`
+$ echo $var1
+
+Fri Feb 21 18:05:38 EST 2019
+
+$ var2=$(whoami)
+$ echo $var2
+
+anisa
+```
+
+---
+
+# Performing Math
+
+The `$[]` format allows you to use integers only:
+
+```bash
+result=$[ 25 * 5 ]
+```
+
+Floating point using `bc`. The basic format you need to use is:
+
+```bash
+variable=$(echo "options; expression" | bc)
+```
+
+Example:
+
+```bash
+$ var1=$(echo "scale=4; 3.44 / 5" | bc)
+$ echo $var1
+
+.6880
+```
+
+---
+
+# The `IF` Statement
+
+```bash
+if [ condition ]
+then
+    commands
+else
+    other commands
+fi
+```
+
+You can combine tests by using the Boolean `AND` (`&&`) and `OR` (`||`) symbols.
+
+Example:
+
+```bash
+if [ -s /tmp/tempstuff ]
+then
+    echo "/tmp/tempstuff found; aborting!"
+    exit
+fi
+```
