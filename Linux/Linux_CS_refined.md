@@ -1656,3 +1656,128 @@ $ systemctl show <service>  # Display properties of a systemd service
 | **4**      | Custom                                            | -                                                |
 | **5**      | Multi-user mode with GUI available.               | -                                                |
 | **6**      | Reboot the system.                                | Reboot the system.                              |
+
+# SysV Runlevel Commands
+
+- `$ runlevel` → Print previous and current SysV runlevel
+- `$ init, telinit` → Change SysV runlevel (e.g. `$ init 6`)
+- `/etc/inittab` → SysVinit systems employ a configuration file that sets the default runlevel
+- `/etc/init.d/` → Each service must have an initialization script which is responsible for starting, stopping, restarting, reloading, and displaying the status of various system services.
+- `/etc/init.d/` or `/etc/rc.d/` → The program that calls these initialization scripts is the `rc` script, and it can be found here.
+- `$ service` → Run a System V init script
+
+## Commonly Used Service Utility Commands
+
+- `start`
+- `stop`
+- `status`
+- `restart`
+- `reload`
+- `--status-all` → Runs all init scripts, in alphabetical order.
+
+---
+
+## Stopping the System
+
+- `halt` → Stops all processes and shuts down the CPU.
+- `poweroff` → Stops all processes, shuts down the CPU, and sends signals to the hardware to power down.
+- `reboot` → Stops all processes, shuts down the CPU, and then restarts the system.
+- `shutdown` → Stops all processes, shuts down the CPU, and sends signals to the hardware to power down.
+
+### `$ shutdown` Options:
+
+- `-H, --halt` → Halt the machine.
+- `-P, --poweroff` → Power-off the machine (the default).
+- `-r, --reboot` → Reboot the machine.
+- `--no-wall` → Do not send wall message before halt, power-off, reboot.
+- `-c` → Cancel a pending shutdown.
+- `TIME` → `now`, `hh:mm`, `+m`
+
+> For any utility used to shut down the system, the processes are sent a `SIGTERM` signal. This allows the various running programs to close their files properly and gracefully terminate.
+
+- `$ lsof -p PID` → See if a running program has any files open.
+- `$ kill -9 PID` → Forcefully terminate a process.
+
+### **ACPI Daemon (`acpid`)**
+
+After processes are stopped and the CPU is shut down, signals are sent to the hardware to power down. For operating systems using **Advanced Configuration and Power Interface (ACPI)**–compliant chipsets, these are ACPI signals. The **`acpid`** daemon manages signals sent to various hardware devices based on predefined settings.
+
+---
+
+## **Wall Messages with `systemctl`**
+
+The `systemctl` utility will send a **wall message** when any of these commands are issued:
+
+- `emergency`
+- `halt`
+- `power-off`
+- `reboot`
+- `rescue`
+
+---
+
+# **Configuring Hardware**
+
+Each device uses some type of standard protocol to communicate with the system:
+
+### **Common Protocols**
+- **Peripheral Component Interconnect (PCI)** standard
+  - `$ setpci` → View & manually change settings for a board.
+- **Universal Serial Bus (USB) interface**
+  - Kernel must have the proper module installed to recognize the USB bus controller.
+  - Linux system must also have a kernel module installed for the individual device type plugged into the USB bus.
+- **General Purpose Input/Output (GPIO) interface**
+
+---
+
+## **Device Files and Directories**
+
+- `/dev/` → Kernel dynamically assigns device files.
+- **Types of device files:**
+  - **Character device files** → Transfer data one character at a time (used for terminals, USB devices).
+  - **Block device files** → Transfer data in large blocks (used for hard drives, network cards).
+
+- `/dev/mapper` (Device Mapper) → Maps physical block devices to virtual block devices.
+  - Used by:
+    - **Logical Volume Manager (LVM)** for creating logical drives.
+    - **Linux Unified Key Setup (LUKS)** for encrypting data on hard drives.
+
+- `/proc/` → A virtual directory dynamically populated by the kernel for system information.
+  - `$ cat /proc/interrupts` → Display interrupt requests (IRQs).
+  - `$ sudo cat /proc/ioports` → Display input/output (I/O) ports.
+  - `$ cat /proc/dma` → Display direct memory access (DMA) channels.
+
+- `/sys/` → Created by the kernel in the **sysfs** filesystem format, providing additional information about hardware devices.
+
+---
+
+## **Device Information Commands**
+
+- `$ lsdev` → Display installed hardware information.
+- `$ lsblk` → List block devices.
+- `$ lspci` → List all PCI devices.
+- `$ lsusb` → List USB devices.
+
+---
+
+# **Linux Kernel Modules**
+
+The **Linux kernel** requires **device drivers** to communicate with hardware. Instead of including all drivers in the kernel, **kernel modules** are dynamically loaded at runtime.
+
+- Kernel module files are stored in `/lib/modules/` and use the `.ko` extension.
+- Each kernel version has its own directory (e.g., `/lib/modules/4.3.3`).
+
+## **Kernel Module Files and Commands**
+
+- `/etc/modules` → Modules the kernel loads at boot time.
+- `/etc/modules.conf` → Kernel module configurations.
+- `/lib/modules/version/modules.dep` → Determines module dependencies.
+
+### **Kernel Module Management Commands**
+- `$ lsmod` → Show loaded kernel modules.
+- `$ modinfo` → Show information about a kernel module.
+  - Example: `$ modinfo bluetooth`
+- `$ insmod` → Insert a module into the Linux kernel.
+- `$ rmmod` → Remove a module from the Linux kernel.
+- `$ modprobe` → Add or remove modules from the Linux kernel.
+
