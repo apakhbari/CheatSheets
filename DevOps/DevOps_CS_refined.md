@@ -555,3 +555,85 @@ create_user.yml
 **——————————————————**
 
 **7.Docker**
+- network Drivers
+- bridge: The default network driver. If you don’t specify a driver, this is the type of network you are creating. Bridge networks are commonly used when your application runs in a container that needs to communicate with other containers on the same host. —> IPs will be private
+- host: Remove network isolation between the container and the Docker host, and use the host’s networking directly. —> Ips will be in range of host, within available subnet
+- overlay: Overlay networks connect multiple Docker daemons together and enable Swarm services and containers to communicate across nodes. This strategy removes the need to do OS-level routing.
+- ipvlan: IPvlan networks give users total control over both IPv4 and IPv6 addressing. The VLAN driver builds on top of that in giving operators complete control of layer 2 VLAN tagging and even IPvlan L3 routing for users interested in underlay network integration.
+- macvlan: Macvlan networks allow you to assign a MAC address to a container, making it appear as a physical device on your network. The Docker daemon routes traffic to containers by their MAC addresses. Using the macvlan driver is sometimes the best choice when dealing with legacy applications that expect to be directly connected to the physical network, rather than routed through the Docker host’s network stack
+- none: Completely isolate a container from the host and other containers. none is not available for Swarm services.
+- [Network plugins](https://docs.docker.com/engine/extend/plugins_services/): You can install and use third-party network plugins with Docker.
+- for creating network:
+  - `$ docker network create —driver=bridge —subnet=192.168.0.0/16 —ip-range=172.28.5.0/24 —gateway=172.28.5.254 172network<name of network>`
+- containers will be in this dir, their files are here too: /var/lib/docker/overlay2/containerid
+- `$ docker volume ls —> see all volumes`
+- `$ docker run -it —name nginx1 -v fisrt_container_vol:/data4 nginx bash —> create volume`
+- `$ docker volume create sec_container_vol —> create volume`
+- for bind mounting : `$ docker run -it —name nginx1 -v /root/data4/:/data4 nginx bash`
+- in Dockerfile
+  - difference between add & copy is that add is like wget, it adds stuff from web to our image
+  - difference between CMD & ENTRYPOINT is that entrypoint cannot be overwritten
+
+**——————————————————**
+
+**8.Kubernetes**
+- k8s supports two kind of containers
+  - docker
+  - rocketd
+- components
+  - Master node
+    - API server: gate keeper recieve calls, create or delete or modify components
+    - kube controller
+      - replication controller
+      - node controller
+      - end point controller
+      - service account controller
+    - scheduler: decide which pod deploys on which node
+    - etcd: all cluster data is stored here
+  - worker node
+    - kubelet: make sure that pods are working fine in nodes. If things are not going good it informs kube controller and then scheduler will start a new pod
+    - kubeproxy: pods use this to communicate within cluster
+    - pod: a scheduling unit
+    - containers
+      - It is possible to have two containers in a pod. for example for log purposes it happens. we have sidecar container / init container which is same
+- Kubernetes objects
+  - creating yml file for k8s object we want to create
+    - apiVersion: version number of k8s API
+    - kind: what kind of object want to create
+    - metadata: data to help uniquely identify object
+    - spec: desired state for the object
+- `$ kubectl scale rc (replication controller) nginx —replica=5 —> for scale up / down`
+- `kubectl edit rc (replication controller) nginx —> another way to scale up / down`
+- RabbitMQ and ElasticSearch use StatefulSet instead of deployment
+- DaemonSet deployment is for when fluentd is being deployed as a part of EFK (elastic fluentd kibana)
+- in deployment, these deploying methods are available
+  - ReCreate: delete old ones & create new ones
+  - RollingUpdate: delete old one, create a new one, delete old one, create a new one, … (one at a time)
+  - Blue/Green: route traffic to new ones, then delete old ones
+  - Canary
+- `$ kubectl rollout status deployment nginx-deployment`
+- ClusterIP service is used for inside cluster cases, you can access them via there names
+- NodePort service is used for external access. range is 30000 to 32767. not being used in prod env
+- LoadBalancer service is the default when you want access from outside and you are using cloud. downside is each service gets an ip so its gonna be expensive. LB is accessible by outside via its port
+- NameSpaces
+  - Default: all NameSpaces that don’t belong public/system
+  - kube-public: publicly available/readable by all
+  - kube-system: objects/resources created by k8s systems
+- ConfigMap: an API object used to store non-confidential data in key-value pairs
+- helm (v2.0)
+  - has a client side component called helm + a cluster side component called tiller
+  - `$ helm create`
+- Dir
+  - `/charts: dependencies`
+  - `chart.yaml: metadata of charts`
+  - `templates`
+  - `deployment.yaml:`
+  - `values.yaml: values of template and out project in general`
+
+**——————————————————**
+
+**8.Prometheus**
+- Components
+  - server
+  - alert manager
+  - exporter
