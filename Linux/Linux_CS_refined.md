@@ -356,3 +356,91 @@ Most Linux distributions use only one of these three:
 ---
 
 # Kernel Parameters
+
+- **`/proc/sys/kernel/randomize_va_space` —>**  
+  Address Space Layout Randomization (**ASLR**) can help defeat certain types of buffer overflow attacks. ASLR can locate the base, libraries, heap, and stack at random positions in a process's address space, making it difficult for an attacking program to predict the memory address of the next instruction.  
+
+  **Values:**  
+  - **0**: Disable ASLR. This setting is applied if the kernel is booted with the `norandmaps` boot parameter.  
+  - **1**: Randomize the positions of the stack, virtual dynamic shared object (**VDSO**) page, and shared memory regions. The base address of the data segment is located immediately after the end of the executable code segment.  
+  - **2**: Randomize the positions of the stack, VDSO page, shared memory regions, and the data segment. This is the default setting.  
+
+- **`/etc/sysctl.conf` —>**  
+  Tune networking parameters for a network interface. The Linux system uses this when interacting with the network interface.  
+  - To disable responding to ICMP messages, set `icmp_echo_ignore_broadcasts` value to `1`  
+  - If your system has multiple network interface cards, disable packet forwarding by setting `ip_forward` value to `0`  
+
+- **NX/XD**:  
+  A CPU feature in Linux, **No Execute/Execute Disable**. Prevents users from entering CPU opcodes instead of data inside RAM.  
+  - To check it:  
+    ```bash
+    dmesg | grep -i nx
+    cat /proc/cpuinfo | grep nx
+    ```
+
+- **ASLR (KASLR is better)**:  
+  Memory address is randomized, making it harder for hackers. Should be set to `2`. It's a kernel parameter.
+
+---
+
+# Daemons
+
+- **`acpid`**:  
+  After processes are stopped and the CPU is shut down, signals are sent to the hardware telling various components to power down.  
+  For **ACPI-compliant** chipsets, these are **ACPI signals**.  
+  - This daemon manages signals sent to hardware for specific events, such as pressing the system’s power button or closing a laptop lid.
+
+- **`systemd`**:  
+  Initialization daemon (`init`) determines which services are started and in what order.
+
+- **`udev`**:  
+  Automatically detects new hardware connected to the Linux system and assigns each a unique device filename in the `/dev` directory.
+
+- **`multipathd`**:  
+  Device Mapper (**DM**) multipathing aggregates the paths for increased throughput while all paths are active, or provides fault tolerance if one path fails.
+
+- **NTP Client Choices**:
+  - Use the **NTP daemon (`ntpd`)**  
+  - Use the **newer chrony daemon (`chronyd`)**  
+
+- **`rsyslogd`**:  
+  For logs.
+
+- **`systemd-networkd`**:  
+  Used by Linux systems with `systemd` to detect network interfaces and automatically create entries in network configuration files.
+
+- **`systemd-resolved`**:  
+  The DNS server is defined and resolved by this program.
+
+- **`dhcpd`**:  
+  DHCP server daemon.
+
+---
+
+# Syscalls
+
+- **`EXECVE`**:  
+  When a binary is executed, this syscall must be called.  
+  - All commands executed in the terminal call this syscall.
+
+- **`ptrace`**:  
+  Used for debugging, but can be exploited by attackers to bind malicious code to processes.
+
+- **`memfd`**:  
+  Allows attackers to bind malicious code to RAM, enabling file-less attacks.
+
+---
+
+# Ports
+
+- **`5900+n TCP`**:  
+  The **VNC server** offers a GUI service at TCP port `5900+n`, where `n` equals the display number, usually `1` (port `5901`).
+
+- **`5800+n TCP`**:  
+  The **VNC server** can also be accessed via a **Java-enabled web browser** at this TCP port.
+
+- **`3389 TCP`**:  
+  **Xrdp server** for tunneling GUI connections.
+
+- **`631 TCP`**:  
+  **CUPS (Common UNIX Printing System)** for printing services.
