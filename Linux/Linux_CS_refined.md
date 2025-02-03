@@ -1781,3 +1781,136 @@ The **Linux kernel** requires **device drivers** to communicate with hardware. I
 - `$ rmmod` → Remove a module from the Linux kernel.
 - `$ modprobe` → Add or remove modules from the Linux kernel.
 
+# Storage & FileSystem
+
+## Drive Interfaces
+
+- **Parallel Advanced Technology Attachment (PATA)**
+  - Connects drives using a parallel interface, which requires a wide cable. 
+  - PATA supports two devices per adapter.
+
+- **Serial Advanced Technology Attachment (SATA)**
+  - Connects drives using a serial interface, but at a much faster speed than PATA.
+  - SATA supports up to four devices per adapter.
+
+- **Small Computer System Interface (SCSI)**
+  - Connects drives using a parallel interface, but with the speed of SATA.
+  - SCSI supports up to eight devices per adapter.
+
+- **Device File Naming**
+  - For **PATA devices**, raw device file is named `/dev/hda`, `/dev/hdb`, ...
+  - For **SATA and SCSI devices**, raw device file is named `/dev/sda`, `/dev/sdb`, …
+
+---
+
+## Partitions
+
+A partition is a self-contained section within the drive that the operating system treats as a separate storage space. 
+
+- Partitions must be tracked by some type of indexing system on the drive.
+
+### **Partition Table Types**
+
+- **Master Boot Record (MBR)**
+  - Used for the old BIOS boot loader.
+  - Supports up to **four primary partitions** on a drive.
+  - Each primary partition can be split into **multiple extended partitions**.
+
+- **GUID Partition Table (GPT)**
+  - Used for the **UEFI boot loader**.
+  - Supports up to **128 partitions** on a drive.
+
+- **Linux Partition Naming**
+  - Linux assigns partition numbers **in the order** they appear on the drive, starting with **1**.
+  - Linux creates `/dev` files for each separate disk partition.
+  - **MBR extended partitions** are numbered **starting at 5**.
+
+---
+
+## **Device Management with `udev`**
+
+The **udev** program runs in the background and automatically detects new hardware connected to a Linux system. 
+
+- It assigns each device a unique filename in the `/dev` directory.
+- It also creates **persistent device files** for storage devices.
+
+**udev creates four separate directories for storing links:**
+- `/dev/disk/by-id` → Links storage devices by manufacturer make, model, and serial number.
+- `/dev/disk/by-label` → Links storage devices by label.
+- `/dev/disk/by-path` → Links storage devices by the physical hardware port they are connected to.
+- `/dev/disk/by-uuid` → Links storage devices by their **128-bit universally unique identifier (UUID)**.
+
+---
+
+## **Device Mapper (DM) Multipathing**
+
+- The **Linux kernel supports DM multipathing**, which aggregates multiple paths to provide **fault tolerance** and **increased throughput**.
+
+### **Multipathing Tools**
+- **dm-multipath** → Kernel module providing multipath support.
+- **multipath** → CLI tool to view multipath devices.
+- **multipathd** → Background process monitoring paths and activating/deactivating paths.
+- **kpartx** → CLI tool for creating device entries for multipath storage devices.
+
+Multipath devices appear under:
+```
+/dev/mapper/mpathN
+```
+Where `N` is the number of the multipath drive.
+
+---
+
+## **Logical Volume Manager (LVM)**
+
+The **Linux Logical Volume Manager (LVM)** allows you to create **virtual drive devices** using `/dev/mapper`.
+
+- You can **aggregate multiple physical drive partitions into virtual volumes**, treating them as a **single partition**.
+- **LVM allows dynamic resizing** by adding or removing physical partitions.
+
+### **LVM Tools**
+- `$ pvcreate` → Creates a physical volume.
+- `$ vgcreate` → Groups physical volumes into a volume group.
+- `$ lvcreate` → Creates a logical volume from partitions in each physical volume.
+
+---
+
+## **RAID (Redundant Array of Inexpensive Disks)**
+
+RAID technology allows:
+- **Improved data access performance**.
+- **Data redundancy for fault tolerance**.
+
+Linux uses **software RAID**, implemented with:
+- `$ mdadm` → CLI tool to configure and manage RAID devices.
+
+### **RAID Levels**
+- **RAID 0** → Disk striping for performance.
+- **RAID 1** → Disk mirroring for redundancy.
+- **RAID 10** → Combination of striping and mirroring.
+- **RAID 4** → Disk striping with a dedicated parity disk.
+- **RAID 5** → Disk striping with **distributed parity** for fault tolerance.
+- **RAID 6** → Disk striping with **double parity**, allowing for two failed drives.
+
+---
+
+## **Disk Partitioning Tools**
+
+### **MBR-Based Partitioning: `fdisk`**
+- `$ fdisk` → Manipulates disk partition tables.
+
+#### **`fdisk` Commands**
+- `a` → Toggle bootable flag.
+- `d` → Delete a partition.
+- `g` → Create a new GPT partition table.
+- `l` → List known partition types.
+- `n` → Add a new partition.
+- `p` → Print partition table.
+- `w` → Write table to disk and exit.
+
+---
+
+## **Advanced Partitioning: `parted`**
+- `$ parted` → Modify partition sizes dynamically.
+- **Graphical Interface:** `GParted`.
+
+---
