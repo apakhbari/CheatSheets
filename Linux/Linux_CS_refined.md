@@ -610,9 +610,137 @@ Most Linux distributions use only one of these three:
 
 ---
 ## When you go to a system for the first time:
-Here is your content properly formatted in **Markdown (`.md`)**, keeping everything as it is without any cleanup, inference, or removals:
 
-```markdown
+## System Information Commands:
+
+```sh
+$ systemctl is-system-running
+```
+
+```sh
+$ sudo -l  # See all sudoers accessibilities that the user has
+```
+
+### Show which shell `/bin/sh` points to:
+```sh
+$ readlink /bin/sh
+$ echo $SHELL
+$ echo $BASH_VERSION
+```
+
+### Current Working Directory:
+```sh
+$ pwd --logical
+$ pwd --physical
+```
+
+### System Uptime & Hardware Information:
+```sh
+$ uptime
+$ lsblk
+$ locale
+```
+
+### Check if NTP (Network Time Protocol) package is installed and running:
+Chrony is recommended since it is newer and better.
+```sh
+$ systemctl status chronyd
+```
+
+### List Aliases:
+```sh
+$ alias -p
+```
+
+### View pending jobs for execution using `at` command:
+```sh
+$ atq
+```
+
+### List existing cron jobs:
+```sh
+$ crontab -l
+```
+
+### Show all current system users, terminal they are using, and login details:
+```sh
+$ who
+```
+
+### Display system uptime, user sessions, and CPU load:
+```sh
+$ w
+```
+
+### Show login history from `/var/log/wtmp`:
+```sh
+$ last
+```
+
+---
+
+## **Periodic Check & Cron Jobs**
+
+### Periodic Check for Systems with NTPD (Chrony recommended)
+Check the accuracy of your system clock:
+```sh
+$ ntpstat
+```
+
+View time servers your `ntpd` is polling and last sync status:
+```sh
+$ ntpq -p
+```
+
+Check if an attacker has created a user with root-level access (UID & GID set to `0:0`):
+```sh
+$ awk -F ‘($3 == "0") {print}’ /etc/passwd
+```
+
+### **Cron Jobs**
+Automatically split `rsyslogd` log files into archive files based on time or size:
+```sh
+$ logrotate
+```
+
+Check for files with **SUID & SGID** permissions:
+```sh
+$ find / -perm /6000 -type f > SUID-SGID_Audit.txt
+```
+
+---
+
+## **Manual Sections**
+
+```sh
+$ man   # An interface to the online reference manuals
+```
+
+Search descriptions and manual pages using:
+```sh
+$ man -k keyword   # Equivalent to 'apropos' command
+```
+
+Lookup the manual pages referenced by keyword and print short descriptions:
+```sh
+$ man -f keyword   # Equivalent to 'whatis' command
+```
+
+### **Standard Sections of the Manual**:
+(Distributions may customize sections, often including additional sections.)
+
+1. **User Commands**
+2. **System Calls**
+3. **Library Calls** (C Library Functions)
+4. **Devices & Special Files** (usually stored in `/dev`)
+5. **File Formats & Conventions**
+6. **Games & Miscellaneous**
+7. **Miscellaneous** (macro packages, conventions, etc.)
+8. **Administrative Commands** (System Administration tools & Daemons)
+9. **Kernel Routines**
+
+---
+
 # **CLI & Shell**
 
 ## Adding Binaries to Terminal
@@ -780,6 +908,3 @@ $ df      # Report file system disk space usage
 ```
 
 ---
-
-This Markdown file preserves the original content **without modifications**, **cleanups**, or **inferences**. 🚀 Let me know if you need further refinements!
-```
