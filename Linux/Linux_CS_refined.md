@@ -254,9 +254,105 @@ Most Linux distributions use only one of these three:
 
 # Logs
 
-- `/var/log/boot` (Debian distros), `/var/log/boot.log` (RH distros) —> Information about the boot process.
-- `/var/log/syslog` —> Where rsyslog logs are stored.
-- `/etc/rsyslogd.conf` or `*.conf` files in `/etc/rsyslog.d/` —> Define rules on what events to listen for and how to handle them using **rsyslogd**.
-- `/etc/logrotate.conf` —> Configuration file that determines how each log file is managed by logrotate.
-- `/var/log/` directory —> Most Linux distributions create log files here.
+- `/var/log/boot` (Debian distros) , `/var/log/boot.log` (RH distros) —> information about boot process
+- `/var/log/syslog` —> where rsyslog logs are stored
+- `/etc/rsyslogd.conf` file or `*.conf` files in the `/etc/rsyslog.d/` directory —> define rules on what events to listen for and how to handle them using the rsyslogd program
+- `/etc/logrotate.conf` —> configuration file to determine how each log file is managed by logrotate
+- `/var/log` directory —> most Linux distributions create log files in here
+- `/etc/systemd/journald.conf` —> The systemd-journald service reads its configuration from this configuration file.
+- `/run/systemd/journal/syslog` —> when journald logs are forwarded to rsyslog program, this file acts as a socket for rsyslog to read them
 
+---
+
+# Network
+
+- No single standard configuration file exists that all distributions use for configuring `systemd-networkd`
+
+- **Debian-based:** `/etc/network/interfaces` file  
+- **Red Hat–based:** `/etc/sysconfig/network-scripts` directory  
+- **OpenSUSE:** `/etc/sysconfig/network` file  
+
+- `/etc/resolv.conf` —> DNS server is defined here, legacy SysVinit systems  
+- `/etc/sysctl.conf` —> tune networking parameters for a network interface.  
+  The Linux system uses this when interacting with the network interface.  
+  - To disable responding to ICMP messages, set `icmp_echo_ignore_broadcasts` value to `1`  
+  - If your system has multiple network interface cards, disable packet forwarding by setting `ip_forward` value to `0`
+
+---
+
+# SSH
+
+- `~/.ssh/known_hosts` —> The OpenSSH application keeps track of any previously connected hosts here. Data contains the remote servers’ public keys.
+- `~/.ssh/config` —> Contains OpenSSH client configurations. May be overridden by `ssh` command options. For an individual user’s connections to a remote system.
+- `/etc/ssh/ssh_config` —> Contains OpenSSH client configurations. May be overridden by `ssh` command options or settings in the `~/.ssh/config` file. For every user’s connection to a remote system.
+- `/etc/ssh/sshd_config` —> Contains the OpenSSH daemon (`sshd`) configurations. For incoming SSH connection requests.
+- `/etc/ssh/` —> where OpenSSH will save its system’s public/private key pairs
+
+---
+
+# Services
+
+- `/etc/xinetd.conf` —> primary configuration file of `xinetd`. Contains only global default options.
+
+---
+
+# Concepts
+
+- When you log into the Linux system, your process’s current working directory is your account’s home directory.  
+  A **current working directory** is the directory your process is currently using within the virtual directory (root directory) structure.
+
+- Within a shell, some commands that you type at the command line are part of the shell program, other commands are external programs.  
+  - `$ type echo` —> `echo` is a shell builtin  
+  - `$ type uname` —> `uname is /usr/bin/uname`  
+
+---
+
+# Interview Questions
+
+- **What to do in heavy DDOS attacks?** → Tell Internet Service Provider  
+- **What does `mask` do in systemd?** → Links a service to `/dev/null`, so another service can’t start it. Should be done after `$ systemd stop service`  
+- **What kernel process is called when memory is full?** → OOM (Out of Memory clear process)  
+- **What is the dot (.) at the end of files (only Red Hat distros) after `$ ls -l`?**  
+  - Example: `-rw-------.`  
+  - It is linking to `acl.c` file, allowing access control to be defined on it.  
+  - It is an SELinux feature:  
+    - **Dot (.)** means access control is not set on this file.  
+    - **Plus (+)** means access control has been set.  
+- **Can two files have the same inode on a system?** → Yes, if they are **hard-linked**  
+- **Can two separate files have the same inode on a system?** → Yes, if they are on **different partitions**  
+- **Why does a hacker want a reverse shell after an attack?**  
+  - To have **permanent access**  
+  - To **bypass firewalls** – Most corporate firewalls are not strict for outbound traffic.  
+- **What is the difference between `service reload` and `service restart` in systemd?**  
+  - In **reload**, a **HangUp (HUP) signal** is sent, so the config file is read again but the process ID (`pid`) remains unchanged.  
+  - In **restart**, the process ID changes.  
+- **What is `#!/bin/bash`?** → It defines the interpreter of the file.  
+- **Can there be two `UID=0` (root) users in a system?** → Yes.  
+  - Attackers can create a user and change its UID & GID in `/etc/passwd` to `0:0`.  
+  - Since many applications check for UID `0`, the attacker gains **root-level access**.  
+  - **How to check?**  
+    ```bash
+    awk -F ‘($3 == “0”) {print}’ /etc/passwd
+    ```
+- **What is a forkbomb?**  
+  ```bash
+  :(){ :|: & };:
+  ```
+  - A function `:` is defined, it recursively calls itself and sends itself to the background, creating an **infinite loop**.  
+- **What is DRDOS (Distributed Reflection Denial of Service attack)?**  
+  - **UDP reflection attacks** allow attackers to **amplify** traffic using a victim's system to attack another target.  
+  - The infected system is used to **attack another system.**  
+- **What is the difference between SSL & TLS?**  
+  - **SSL versions:**  
+    - SSL v1: **Never released**  
+    - SSL v2: Released **1995**, worked till **2011** (had **DROWN attack**)  
+    - SSL v3: Released **2015** (had **POODLE attack**)  
+  - **TLS replaced SSL:**  
+    - **TLS 1.0** (1999-2020) had technical & implementation issues  
+    - **TLS 1.1** (deprecated 2020)  
+    - **TLS 1.2** (2008-2020)  
+    - **TLS 1.3** (2018-Present)  
+
+---
+
+# Kernel Parameters
