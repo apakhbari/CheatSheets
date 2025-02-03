@@ -2235,3 +2235,72 @@ Here is your content properly **reformatted** into **Markdown (.md)** while **ke
 - **Enables live migration**, meaning **no connection interruptions when a virtual machine is migrated to a new host**.
 
 
+# Administering the System:
+
+## Locale
+
+- Not only does each country have its own language (or sometimes, sets of languages), but each country also has its own way in which people write numerical values, monetary values, and the time and date. For a Linux system to be useful in any specific location, it must adapt to the local way of doing all those things.
+- A character set defines a standard code used to interpret and display characters in a language.
+
+### ASCII
+- The American Standard Code for Information Interchange (ASCII) uses 7 bits to store characters found in the English language.
+
+### ISO-8859
+- The International Organization for Standardization (ISO) worked with the International Electrotechnical Commission (IEC) to produce a series of standard codes for handling international characters. There are 15 separate standards (ISO-8859-1 through ISO-8859-15) for defining different character sets.
+
+### Unicode
+- The Unicode Consortium, composed of many computing industry companies, created an international standard that uses a 3-byte code and can represent every character known to be in use in all countries of the world.
+
+### UTF
+- Unicode Transformation Format (UTF) transforms the long Unicode values into either 1-byte (UTF-8) or 2-byte (UTF-16) simplified codes. For work in English-speaking countries, the UTF-8 character set is replacing ASCII as the standard.
+
+### Locale Command
+- `$ locale` —> get locale-specific environmental variables. The output of the locale command is in the format: language_country.character set
+- For changing locales
+- Changing manually: (changes the localization for your current login session)
+  - Using `$ export`
+  - Instead of having to change all of the LC_ environment variables individually, the LANG environment variable controls all of them at one place.
+- `$ localectl` —> Control the system locale and keyboard layout settings.
+
+## Time
+
+- Many elements depend on accurate time, such as programs designed to run at particular moments, remote services that expect accurate client times (and will reject the client if their times are inaccurate), and maintaining accurate log message time stamps in order to properly investigate client/server issues.
+- Local time is also called wall clock time.
+- It’s often easier to use a different standard called Coordinated Universal Time (UTC). UTC is a time that does not change according to an individual’s time zone.
+- Linux maintains two time clocks:
+
+### Hardware Based
+- Also called the real-time clock. Attempts to maintain the correct time, even when the system is powered down by using power from the system battery (traditionally called the CMOS battery). When the system boots, the Linux OS gets the time from the hardware clock and updates its software clock.
+
+### Software Based
+- This clock runs only while the system is up and is used by many utilities on Linux, which is why it is sometimes called system time. Unfortunately, the Linux software clock has a tendency to become inaccurate, especially if it is a busy system.
+
+- Each country selects one or more time zones, or offsets from the standard Coordinated Universal Time (UTC) time, to determine time within the country.
+- `/etc/timezone` (Debian-based) & `/etc/localtime` (Red Hat–based) —> These files are not in a text format, so you can’t simply edit. To change the time zone for a Linux system, copy or link the appropriate time zone template file from the `/usr/share/zoneinfo` folder to the `/etc/timezone` or `/etc/localtime` location. e.g: `/usr/share/zoneinfo/US/Eastern`.
+- `$ hwclock` —> Time clocks utility.
+- `$ date` —> Display or set the time and date in a multitude of formats.
+- `$ timedatectl` —> Control the system time and date.
+
+### Network Time Protocol (NTP)
+- A network protocol used to synchronize clocks over a network in order to provide accurate time. NTP uses what is called a clock stratum scheme. The stratums are numbered from 0 to 15. The devices at stratum 0 are highly accurate time-keeping hardware devices, such as atomic clocks. The next level down is stratum 1, which consists of computers that are directly connected to the stratum 0 devices.
+- One of the most popular NTP servers is actually a cluster of servers that work together in what is called a pool. To use the NTP server pool, when you configure your NTP client application, enter `pool.ntp.org` as your NTP server.
+- An interesting time problem revolves around leap seconds. Because the earth’s rotation has been slowing down, our actual day is about 0.001 seconds less than 24 hours. About every 19 months or so, NTP passes a leap second announcement. This is typically handled without any problems and the clocks are set backward by one second. Some applications have problems, Google introduced free public time servers that use NTP and smear the leap second over the course of time so that there is no need to issue a leap second announcement. This is called leap-smearing. The Google leap-smearing NTP servers are `timen.google.com`, where `n` is set to 1 through 4.
+- If you need to implement an NTP client program, you have choices:
+  - You can either employ the NTP daemon (ntpd)
+  - Or use the newer chrony daemon (chronyd).
+
+- For years the NTP program was synonymous with the network time protocol, and on Linux they were often spoken of interchangeably. But it does have some limitations, such as keeping time accurate when the network has high traffic volumes, which is why alternatives such as chrony were developed. The NTP program is installed by default on some distributions and not on others. The package name is ntp, so you can check to see if it is installed.
+- `/etc/ntp.conf` —> It contains, among other directives, the NTP time servers you wish to use. The directive name for setting these, On CentOS is `server` & On Ubuntu is `pool`.
+- `$ ntpq -p` —> View a table showing what time servers your ntpd is polling and when the last synchronization took place.
+
+### Chronyd
+- The chrony daemon (`chronyd`) has many improvements over ntpd.
+  - It can keep accurate time even on systems that have busy networks or that are down for periods of time, and even on virtualized systems.
+  - It synchronizes the system clock faster than does ntpd, and it can easily be configured to act as a local time server itself.
+  - The package name is chrony.
+  - On CentOS and other Red Hat–based distros, chrony is installed by default, but not enabled on boot (by default). Use superuser privileges and type `$ systemctl start chronyd` at the command line.
+  - On Ubuntu, when chrony is installed, it is automatically started and enabled on boot.
+  - `/etc/chrony.conf` or `/etc/chrony/chrony.conf` —> Primary configuration file for chrony. The directive name for setting these is either `server` or `pool`. The `server` directive is typically used for a single time server designation. `pool` indicates a server pool. `rtcsync` directive directs chrony to periodically update the hardware time (real-time clock).
+  - `chronyc` — Command-line interface for chrony daemon.
+
+## Users & Groups
