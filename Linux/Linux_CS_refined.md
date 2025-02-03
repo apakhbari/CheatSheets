@@ -1351,3 +1351,21 @@ Because of recent filtering situation and better performance of package managers
 ---
 
 ## Environmental Variables
+| **NAME**     | **Description** |
+|-------------|----------------|
+| **BASH_VERSION** | Current Bash shell instance’s version number |
+| **EDITOR** | Default editor, e.g. vim, nano |
+| **GROUPS** | User account’s group memberships |
+| **HISTSIZE** | Maximum number of commands stored in history file |
+| **HISTFILE** | History file path |
+| **HOME** | Current user’s home directory name |
+| **HOSTNAME** | Current system’s host name |
+| **LANG** | Locale category for the shell |
+| **PATH** | Colon-separated list of directories to search for commands |
+| **PS1** | Primary shell command-line interface prompt string |
+| **PS2** | Secondary shell command-line interface prompt string |
+| **PWD** | User account’s current working directory |
+| **SHLVL** | Current shell level |
+| **TZ** | User’s time zone, if different from system’s time zone |
+| **UID** | User account’s user identification number |
+| **VISUAL** | Default screen-based editor used by some shell commands |
