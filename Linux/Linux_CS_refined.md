@@ -2303,4 +2303,28 @@ Here is your content properly **reformatted** into **Markdown (.md)** while **ke
   - `/etc/chrony.conf` or `/etc/chrony/chrony.conf` —> Primary configuration file for chrony. The directive name for setting these is either `server` or `pool`. The `server` directive is typically used for a single time server designation. `pool` indicates a server pool. `rtcsync` directive directs chrony to periodically update the hardware time (real-time clock).
   - `chronyc` — Command-line interface for chrony daemon.
 
-## Users & Groups
+# Users & Groups
+
+- User accounts and their underlying framework are at the center of credential management and access controls. These accounts are a part of Linux’s discretionary access control (DAC).
+- DAC is the traditional Linux security control, where access to a file, or any object, is based on the user’s identity and current group membership.
+- Though a user account can have lots of group memberships, its process can have only one designated current group at a time.
+
+- A user account, sometimes called a normal account, is any account, an authorized human with the appropriate credentials has been given to access the system and perform daily tasks.
+- A user ID (UID) is the number used by Linux to identify user accounts.
+- System accounts are accounts that provide services (daemons) or perform special tasks, such as the root user account.
+- root UID is 0.
+- `/etc/login.defs` —> typically installed by default on most Linux distributions. contains directives for use in various shadow password suite commands. such as the useradd, userdel, and passwd commands. The directives in this configuration file control: password length, how long until the user is required to change the account’s password, whether or not a home directory is created by default, and so on. The file is typically filled with comments and commented-out directives.
+
+| Name            | Desc                                                                                                                                      |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| PASS_MAX_DAYS   | Number of days until a password change is required. This is the password’s expiration date.                                               |
+| PASS_MIN_DAYS   | Number of days after a password is changed until the password may be changed again.                                                      |
+| PASS_MIN_LENGT  | Minimum number of characters required in password.                                                                                        |
+| PASS_WARN_AGE   | Number of days a warning is issued to the user prior to a password’s expiration.                                                         |
+| CREATE_HOME     | Default is no. If set to yes, a user account home directory is created.                                                                  |
+| ENCRYPT_METHOD  | The method used to hash account passwords.                                                                                                 |
+| UID_MIN         | Indicates the lowest UID allowed for user accounts.                                                                                       |
+| SYS_UID_MIN     | A system account’s minimum UID                                                                                                            |
+
+- `/etc/default/useradd` —> directs the process of creating accounts.
+- `$ cat /etc/default/useradd`, or `$ sudo useradd -D`
