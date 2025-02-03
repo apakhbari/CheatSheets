@@ -2408,3 +2408,76 @@ Here is your content properly **reformatted** into **Markdown (.md)** while **ke
 ———————————————
 
 **Email:**
+- Linux follows the Unix method of handling email, which is a modular software.
+  
+- The Linux email server is normally divided into three separate functions: (Some Linux email packages combine functionality for the MTA and MDA functions, whereas others combine the MDA and MUA functions.)
+
+  1. The mail transfer agent (MTA): sends incoming emails (and outgoing emails being delivered locally) to a mail delivery agent (MDA) or local user’s inbox. For outbound messages being transferred to a remote system, the agent establishes a communication link with another MTA program on the remote host to transfer the email.
+  
+  2. The mail delivery agent (MDA): is a program that delivers messages to a local user’s inbox.
+  
+  3. The mail user agent (MUA): is an interface for users to read messages stored in their mailboxes. MUAs do not receive messages; they only display messages that are already in the user’s mailbox.
+
+- Popular MTA packages:
+  
+  1. sendmail
+  2. postfix
+  3. exim
+
+- Because Sendmail was a popular MTA for so long, the Postfix MTA program is backward compatible with it.
+- binmail program has been the most popular MDA program used on Linux systems. It’s typical location on the system is `/bin/mail` (or `/usr/bin/mail`). It is no longer installed by default on all Linux distributions.
+- `/var/spool/mail` directory (can be configured to read `$HOME/mail` file instead) —> Where binmail reads email messages.
+- `$ mail`, `mailx`, `Mail` —> Send and receive mail.
+- An email alias allows you to redirect email messages to a different recipient. For example, on a corporate web server, instead of listing your email address (and at the same time letting every hacker in the world know your username) you can employ an alias, such as `hostmaster`. While you do need to use super user privileges, there are only two steps to setting up an email alias:
+
+  1. Add the alias to the `/etc/aliases` file. The format of the alias records is:
+
+     ```bash
+     ALIAS-NAME: RECIPIENT1[,RECIPIENT2[,…]]
+     ```
+
+  2. Run the `$ newaliases` command to update the aliases database, `/etc/aliases.db`.
+
+- Forwarding email is another way other than aliases, and it’s done at the user level:
+
+  1. The user creates the `.forward` file in their `$HOME` directory and puts in the username who should be receiving the forwarded emails.
+  
+  2. The `$ chmod` command is used on the `.forward` file to set the permissions to 644 (octal).
+
+---
+
+## Configure Printing:
+
+- CUPS (Common Unix Printing System) provides a common interface for working with any type of printer on Linux systems. It accepts print jobs using the PostScript document format and sends them to printers using a print queue system.
+- The print queue is normally configured to support not only a specific printer but also a specific printing format, such as landscape or portrait mode, single-sided or double-sided printing, or even color or black and-white printing. There can be multiple print queues assigned to a single printer, or multiple printers that can accept jobs assigned to a single print queue.
+- The CUPS software uses the Ghostscript program to convert the PostScript document into a format understood by the different printers. The Ghostscript program requires different drivers for the different printer types to know how to convert the document to make it printable on that type of printer. This is done using configuration files and drivers.
+- `/etc/cups` —> The configuration files of CUPS software are stored in here.
+- To define a new printer on your Linux system, you can use the CUPS web interface. Open your browser and navigate to `http://localhost:631/`.
+- You can also configure network printers using several standard network printing protocols, such as the Internet Printing Protocol (IPP) or the Microsoft Server Message Block (SMB) protocol.
+  
+### CUPS CLI:
+
+- `cancel`: Cancels a print request.
+- `cupsaccept`: Enables queuing of print requests.
+- `cupsdisable`: Disables the specified printer.
+- `cupsenable`: Enables the specified printer.
+- `cupsreject`: Rejects queuing of print requests.
+
+- CUPS also accepts commands from the legacy BSD command-line printing utility:
+
+  - `lpc`: Start, stop, or pause the print queue.
+  - `lpq`: Display the print queue status, along with any print jobs waiting in the queue.
+  - `lpr`: Submit a new print job to a print queue.
+  - `lprm`: Remove a specific print job from the print queue.
+
+---
+
+## Log & Journaling:
+
+- In the early days of Unix, a range of different logging methods tracked system and application events. Applications used different logging methods, making it difficult for system administrators to troubleshoot issues.
+- In the mid-1980s Eric Allman defined a protocol for logging events from his Sendmail mail application called syslog. The syslog protocol quickly became a de facto standard for logging both system and application events in Unix, and it made its way to the Linux world.
+- What made the syslog protocol so popular is that it defines a standard message format that specifies the time stamp, type, severity, and details of an event. That standard can be used by the operating system, applications, and even devices that generate errors.
+- The type of event is defined as a facility value. The facility defines what is generating the event message, such as a system resource or an application.
+- Each event is also marked with a severity. The severity value defines how important the message is to the health of the system.
+
+- The syslog protocol facility values:
