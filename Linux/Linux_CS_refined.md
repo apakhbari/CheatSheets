@@ -1004,3 +1004,116 @@ $ readlink -f /usr/bin/java
 | s | The file is a socket file, which operates similar to a pipe but allows more styles of communication, such as bidirectional or over a network. |
 | b | The file is a block device, such as a disk drive. |
 | c | The file is a character device, such as a point-of-sale device. |
+
+- `$ chmod —> change file mode bits`
+
+- `u => owner, g => group, o => others, a => all tiers`
+- `+ => grant, - => deny, = => set`
+- `r => read, w => write, x => execute`
+- `Its possible to use chmod with octal numbers`
+- `user mask value is an octal value that represents the bits to be removed from the default octal mode 666 permissions for files, or 777 permissions for directories.`
+
+- **Set User ID (SUID)**:  
+  Setuid and setgid are a way for users to run an executable with the permissions of the user (setuid) or group (setgid) who owns the file.  
+  For example, if you want a user to be able to perform a specific task that requires root/superuser privileges, but don't want to give them sudo or root access.
+
+- `rwsr-xr-x`  
+  If the SUID bit is set on a file that doesn’t have execute permission for the owner, it’s indicated by a capital S.
+
+- **Set Group ID (SGID)**  
+  The SGID bit works differently in files and directories.  
+  - For files, it tells Linux to run the program file with the file’s group permissions.  
+  - For directories, the SGID bit helps us create an environment where multiple users can share files.
+
+- **The Sticky Bit**  
+  The sticky bit is used on directories to protect one of its files from being deleted by those who don’t own the file, even if they belong to the group that has write permissions to the file.  
+  Example: `rwxrw-r-t`.  
+  The sticky bit is often used on directories shared by groups. The group members have read and write access to the data files contained in the directory, but only the file owners can remove files from the shared directory.
+
+## Tools to Locate Files
+
+- `$ which —> shows the full path of shell commands`
+- `$ whereis —> locate the binary, source, and manual page files for a command`
+- `$ locate —> find files by name, searches a database, mlocate.db, which is located in the /var/lib/mlocate/ directory, to determine if a particular file exists on the local system. The mlocate.db database is updated via the $ updatedb utility.`
+- `$ find —> search for files in a directory hierarchy, Searches directory trees in real-time`
+- `$ type —> display how a file is interpreted by the Bash shell if it is entered at the command line. Three categories it returns are:`
+  - `alias`
+  - `shell built-in`
+  - `external command (displaying its absolute directory reference)`
+
+---
+
+## **Managing Software**
+
+Two package management systems have risen to the top and become standards:
+
+- **Red Hat Package Management (RPM)**  
+  Used in RH distros such as RHL, Fedora, CentOS, and non-RH distros such as openSUSE, OpenMandriva LX.
+- **Debian Package Management (Apt)**
+
+**Package managers track similar things:**
+- `Application files`
+- `Library dependencies`
+- `Application version`
+
+### **RPM, yum**
+- RPM files have a `.rpm` file extension
+- `PACKAGE-NAME-VERSION-RELEASE.ARCHITECTURE.rpm`
+- `$ rpm`
+
+**Common rpm commands:**
+- `-e, --erase —> Removes the specified package`
+- `-F, --freshen —> Upgrades a package only if an earlier version already exists`
+- `-i, --install —> Installs the specified package`
+- `-U, --upgrade —> Installs or upgrades the specified package`
+- `-V, --verify —> Verifies whether the package files are present and the package’s integrity`
+- `-vh —> Shows the progress of an update and what it’s doing.`
+- `-q, --query —> Queries whether the specified package is installed. Can add options for querying better`
+  - `-c, --configfiles —> Lists the names and absolute directory references of package configuration files`
+  - `-i, --info —> Provides detailed information, including version, installation date, and signatures`
+  - `--provides —> Shows what facilities the package provides`
+  - `-R, --requires —> Displays various package requirements (dependencies)`
+  - `-s, --state —> Provides states of the different files in a package, such as normal (installed), not installed, or replaced`
+  - `--whatprovides —> Shows to what package a file belongs`
+  - `-a, --all —> Query all installed packages.`
+  - `-p, --package PACKAGE_FILE —> Query an (uninstalled) package PACKAGE_FILE.`
+
+- `$ rpm2cpio —> Extract cpio archive from RPM Package Manager (RPM) package`
+  - `Extract files from an RPM package file —> $ rpm2cpio zsh-5.0.2-34.el7_7.2.x86_64.rpm > zsh.cpio`
+  - `Move the files from the cpio archive into directories —> $ cpio–idv < zsh.cpio`
+
+**RPM has limitations:**  
+If you’re looking for new software packages to install, it’s up to you to find them.  
+If a package depends on other packages to be installed, it’s up to you to install those packages first, and in the correct order.  
+
+To solve RPM problems, each Linux distro has its own central clearinghouse of packages, called a **repository**.  
+
+**YUM (Yellowdog Updater Modified)**
+- `$ yum —> Yellowdog Updater Modified`
+- Uses the `/etc/yum.repos.d/` directory to hold files that list the different repositories it checks for packages.
+
+**Common yum commands:**
+- `check-update —> Checks the repository for updates to installed packages`
+- `clean —> Removes temporary files downloaded during installs`
+- `deplist —> Displays dependencies for the specified package`
+- `groupinstall —> Installs the specified package group`
+- `info —> Displays information about the specified package`
+- `install —> Installs the specified package`
+- `list —> Displays information about installed packages`
+- `localinstall —> Installs a package from a specified RPM file`
+- `localupdate —> Updates the system from specified RPM files`
+- `provides —> Shows to what package a file belongs`
+- `reinstall —> Reinstalls the specified package`
+- `remove —> Removes a package from the system`
+- `resolvedep —> Displays packages matching the specified dependency`
+- `search —> Searches repository package names and descriptions for specified keyword`
+- `shell —> Enters yum command-line mode`
+- `update —> Updates the specified package(s) to the latest version in the repository`
+- `upgrade —> Updates specified package(s) but removes obsolete packages`
+
+- `$ zypper —> Command-line interface to ZYpp system management library (libzypp)`
+
+---
+
+### **Debian Package Manager**
+(You may want to expand on this part as it is not included in the original text.)
