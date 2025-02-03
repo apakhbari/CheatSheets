@@ -1920,125 +1920,63 @@ Linux uses **software RAID**, implemented with:
 - Linux utilizes filesystems to manage data stored on storage devices. A filesystem maintains a map to locate each file placed in the storage device.
 - Windows assigns drive letters to each storage device you connect to the system. Linux uses a virtual directory structure. The virtual directory contains file paths from all the storage devices installed on the system, consolidated into a single directory structure.
 - The Linux virtual directory structure doesn’t give you any clues as to which physical device contains the file.
-- Linux places physical devices in the virtual directory using mount points. A mount point is a directory placeholder within the virtual directory that points to a specific physical device.
+- Linux places physical devices in the virtual directory using **mount points**. A mount point is a directory placeholder within the virtual directory that points to a specific physical device.
 - Before you can assign a drive partition to a mount point in the virtual directory, you must format it using a filesystem.
 
 ## Filesystems:
 
-### **btrfs:**
+### btrfs:
 - Supports files up to **16 exbibytes (EiB)** in size, and a total filesystem size of **16 EiB**.
-- Perform its own form of RAID as well as LVM and subvolumes.
-- Built-in snapshots for backup.
-- Improved fault tolerance.
-- Data compression on the fly.
+- Perform its own form of RAID as well as **LVM and subvolumes**.
+- **Built-in snapshots** for backup.
+- **Improved fault tolerance**.
+- **Data compression** on the fly.
 
-### **Ecryptfs (Enterprise Cryptographic Filesystem):**
+### Ecryptfs (Enterprise Cryptographic Filesystem):
 - Applies a **Portable Operating System Interface (POSIX)**–compliant encryption protocol to data before storing it on the device.
-- This provides a layer of protection for data stored on the device.
-- Only the operating system that created the filesystem can read data from it.
+- This provides a **layer of protection** for data stored on the device.
+- Only the **operating system that created** the filesystem can read data from it.
 
-### **ext3 (ext3fs):**
+### ext3 (ext3fs):
 - Descendant of the original Linux ext filesystem.
 - Supports files up to **2 tebibytes (TiB)**, with a total filesystem size of **16 TiB**.
-- Supports journaling, as well as faster startup and recovery.
+- Supports **journaling**, as well as faster **startup and recovery**.
 
-### **ext4 (ext4fs):**
-- The current version of the original Linux filesystem.
+### ext4 (ext4fs):
+- The **current version** of the original Linux filesystem.
 - Supports files up to **16 TiB**, with a total filesystem size of **1 EiB**.
-- Supports journaling and utilizes improved performance features.
-- Default filesystem used by most Linux distributions.
+- Supports **journaling** and utilizes improved performance features.
+- **Default filesystem** used by most Linux distributions.
 
-### **reiserFS:**
-- Created before the Linux ext3fs filesystem and commonly used on older Linux systems.
-- Provides features now found in ext3fs and ext4fs.
+### reiserFS:
+- Created before the **Linux ext3fs filesystem** and commonly used on older Linux systems.
+- Provides features now found in **ext3fs** and **ext4fs**.
 - Linux has dropped support for the most recent version, **reiser4fs**.
 
-### **swap:**
-- The swap filesystem allows you to create virtual memory for your system using space on a physical drive.
-- The system can then swap data out of normal memory into the swap space, providing a method of adding additional memory to your system.
-- This is **not** intended for storing persistent data.
+### swap:
+- The **swap filesystem** allows you to create **virtual memory** for your system using space on a physical drive.
+- The system can then **swap data** out of normal memory into the swap space, providing a method of adding **additional memory** to your system.
+- This is **not** intended for storing **persistent data**.
 
-### **Non-Linux Filesystems:**
-- **CIFS** → Common Internet Filesystem (CIFS).
-- **exFAT** → The Extended File Allocation Table.
-- **HFS** → The Hierarchical Filesystem (HFS).
-- **ISO-9660**.
-- **NFS** → The Network Filesystem (NFS).
-- **NTFS** → The New Technology Filesystem (NTFS).
-- **SMB** → The Server Message Block (SMB).
-- **UDF** → The Universal Disk Format (UDF).
-- **VFAT** → The Virtual File Allocation Table (VFAT).
-- **XFS** → The X Filesystem (XFS).
-- **ZFS** → The Zettabyte Filesystem (ZFS).
+## Non-Linux FS:
+- **CIFS** → Common Internet Filesystem (CIFS)
+- **exFAT** → The Extended File Allocation Table
+- **HFS** → The Hierarchical Filesystem (HFS)
+- **ISO-9660**
+- **NFS** → The Network Filesystem (NFS)
+- **NTFS** → The New Technology Filesystem (NTFS)
+- **SMB** → The Server Message Block (SMB)
+- **UDF** → The Universal Disk Format (UDF)
+- **VFAT** → The Virtual File Allocation Table (VFAT)
+- **XFS** → The X Filesystem (XFS)
+- **ZFS** → The Zettabyte Filesystem (ZFS)
 
-## **Journaling:**
-- A method of tracking data not yet written to the drive in a log file, called the **journal**.
-- If the system fails before the data can be written to the drive, the journal data can be recovered and stored upon the next system boot.
+## Journaling:
+- A method of **tracking data** not yet written to the drive in a log file, called the **journal**.
+- If the system **fails before the data** can be written to the drive, the **journal data can be recovered** and stored upon the next system boot.
 
 ```bash
 $ mkfs  # Build a Linux FS
 $ sudo mkfs -t ext4 /dev/sdb1
 ```
 
----
-
-# **Mounting Filesystems**
-
-- After you’ve formatted a drive partition with a filesystem, you can add it to the virtual directory on your Linux system. This process is called **mounting** the filesystem.
-
-```bash
-$ mount  # Mount a filesystem (temporary)
-$ sudo mount -t ext4 /dev/sdb1 /media/usb1
-```
-
-- **Unmounting a filesystem:**
-```bash
-$ umount  # Unmount a filesystem
-```
-
-- `/etc/fstab` → Indicates which drive devices should be **mounted at boot time**.
-
----
-
-# **Filesystem Disk Usage & Monitoring**
-
-```bash
-$ df        # Report file system disk space usage
-$ du        # Estimate file space usage
-$ iostat    # Displays real-time chart of disk statistics by partition
-$ lsblk     # Displays current partition sizes and mount points
-```
-
----
-
-# **Filesystem Tools**
-
-## **e2fsprogs (ext Filesystem Tools)**
-- `blkid` → Display information about block devices, such as storage drives.
-- `chattr` → Change file attributes on the filesystem.
-- `debugfs` → Manually view and modify the filesystem structure (e.g., undelete a file).
-- `dumpe2fs` → Display block and superblock group information.
-- `e2label` → Change the label on the filesystem.
-- `resize2fs` → Expand or shrink a filesystem.
-- `tune2fs` → Modify filesystem parameters.
-
-## **XFS Filesystem Tools**
-- `xfs_admin` → Display or change filesystem parameters such as the label or UUID.
-- `xfs_db` → Examine and debug an XFS filesystem.
-- `xfs_fsr` → Improve the organization of mounted filesystems.
-- `xfs_info` → Display information about a mounted filesystem.
-- `xfs_repair` → Repair corrupted or damaged XFS filesystems.
-
----
-
-# **Filesystem Check & Repair**
-
-```bash
-$ fsck  # Check and repair a Linux filesystem
-$ sudo fsck -f /dev/sdb1
-```
-
-- If any discrepancies occur, run `fsck` in **repair mode** to fix filesystem errors.
-- If `fsck` fails on the first run, retry a few times to fix broken files and directory links.
-
----
