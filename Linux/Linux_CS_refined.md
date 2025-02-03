@@ -1192,3 +1192,84 @@ Linux supports two different flavors of libraries:
 ---
 
 ## **Managing Processes**
+
+- Linux calls each running program a process. The Linux system assigns each process a process ID (PID) and manages how the process uses memory and CPU time based on that PID.
+- When a Linux system first boots, it starts a special process called the init process.
+- **Process States:**
+
+  - **Sleeping:** Processes that are swapped into virtual memory. Often the Linux kernel places a process into sleep mode while the process is waiting for an event. When the event triggers, the kernel sends the process a signal. If the process is in interruptible sleep mode, it will receive the signal immediately and wake up. If the process is in uninterruptible sleep mode, it only wakes up based on an external event, such as hardware becoming available. It will save any other signals sent while it was sleeping and act on them once it wakes up.
+  - **Zombie:** If a process has ended but its parent process hasn’t acknowledged the termination signal because it’s sleeping.
+
+- `$ ps` → report a snapshot of the current processes.
+
+- **To print a process tree:**  
+  ```sh
+  $ ps -ejH 
+  $ ps axjf
+  ```
+
+- **To see every process running as root (real & effective ID) in user format:**  
+  ```sh
+  $ ps -U root -u root u
+  ```
+
+- `a` → Display every process on the system associated with a tty terminal  
+- `-A, -e` → Display every process on the system  
+- `-C CommandList` → Only display processes running a command in the CommandList  
+- `-g GIDList, -group GIDList` → Only display processes whose current effective group is in GIDList  
+- `-G GIDList, -Group GIDList` → Only display processes whose current real group is in GIDList  
+- `-N` → Display every process except selected processes  
+- `p PIDList, -p PIDList, --pid PIDList` → Only display PIDList processes  
+- `-r` → Only display selected processes that are in a state of running  
+- `-t ttyList, --tty ttyList` → List every process associated with the ttyList terminals  
+- `-T` → List every process associated with the current tty terminal  
+- `-u UserList, --user UserList` → Only display processes whose effective user (username or UID) is in UserList  
+- `-U UserList, --User UserList` → Only display processes whose real user (username or UID) is in UserList  
+- `x` → Remove restriction of “associated with a tty terminal”; typically used with the `a` option  
+
+- `$ top` → viewing Linux processes  
+
+- `1` → Toggles the single CPU and Symmetric Multiprocessor (SMP) state  
+- `t` → Toggles display of the CPU information line  
+- `m` → Toggles display of the MEM and SWAP information lines  
+- `f` → Adds or removes different information columns  
+- `F or O` → Selects a field on which to sort the processes (%CPU by default)  
+- `h` → Toggles showing of threads  
+- `z` → Toggles color and mono mode  
+- `k` → Kills a specific process (only if process owner or if root user)  
+- `d or s` → Changes the update interval (default three seconds)  
+- `q` → Exits the `top` command  
+
+- `$ uptime`  
+- `$ sleep` → number of seconds you wish the script to freeze  
+- `$ jobs` → display status of jobs in the background  
+- `$ bg` → Move jobs to the background. First use `Ctrl+Z` to pause the process  
+
+```sh
+$ bash CriticalBackups.sh
+^Z
+[2]+ Stopped bash CriticalBackups.sh
+$ bg %2
+[2]+ bash CriticalBackups.sh &
+```
+
+- `$ fg` → Move job to the foreground  
+- `$ lsof -p PID` → See if the running program has any files open  
+- `$ kill` → Send a signal to a process. By default, it is TERM  
+
+The generally accepted procedure is to first try `TERM`, if the process ignores that, try `INT` or `HUP`. `KILL` is the most forceful signal and should be used as a last resort.
+
+- `$ killall` → Kill processes by name  
+- `$ pgrep , $ pkill` → Look up or signal processes based on name and other attributes  
+- `$ nohup` → Run a command immune to hangups, with output to a non-tty  
+
+Will force the application to ignore any input from `STDIN`. By default, `STDOUT` and `STDERR` are redirected to the `$HOME/nohup.out` file.
+
+- `$ nice` → Run a program with modified scheduling priority  
+- `$ renice` → Alter priority of running processes  
+
+**Why send processes signals?**  
+1. A process gets hung up and just needs a gentle nudge to either get going again or stop.  
+2. A process runs away with the CPU and refuses to give it up.  
+
+**Interprocess communication signals:**
