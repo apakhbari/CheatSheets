@@ -2328,3 +2328,83 @@ Here is your content properly **reformatted** into **Markdown (.md)** while **ke
 
 - `/etc/default/useradd` —> directs the process of creating accounts.
 - `$ cat /etc/default/useradd`, or `$ sudo useradd -D`
+
+
+| Name          | Desc                                                                                         |
+|---------------|----------------------------------------------------------------------------------------------|
+| HOME          | Base directory for user account directories.                                                |
+| INACTIVE      | Number of days after a password has expired and has not been changed until the account will be deactivated. See PASS_MAX_DAYS in slide #10. |
+| SKEL          | The skeleton directory.                                                                      |
+| SHELL         | User account default shell program.                                                          |
+
+- `/etc/skel` —> The skeleton directory as it is commonly called, holds files. If a home directory is created for a user, these files are to be copied to the user account’s home directory, when the account is created. These files are account environment files as well as a configuration file directory.
+- `/etc/passwd` —> Account information is stored here. Each account’s data occupies a single line in the file. When an account is created, a new record for that account is added to this file.
+  
+  ```bash
+  $ cat /etc/passwd
+  ```
+
+1. `root:x:0:0:root:/root:/bin/bash`
+2. `user1:x:1000:1000:User One:/home/user1:/bin/bash`
+
+- The file records contain seven fields in total and each field in a record is delimited by a colon (:)
+
+1. User account’s username.
+2. Password field. Typically this file is no longer used to store passwords. An x in this field indicates passwords are stored in the `/etc/shadow` file.
+3. User account’s user identification number (UID).
+4. User account’s group identification number (GID).
+5. Comment field. This field is optional. Traditionally it contains the user’s full name.
+6. User account’s home directory.
+7. User account’s default shell. If set to `/sbin/nologin` or `/bin/false`, then the user cannot interactively log into the system.
+
+- Prevent an Account from Interactively Logging, enter `/sbin/nologin` or `/bin/false` in record 7 of `/etc/passwd`, which is for default shell.
+
+- `/sbin/nologin` is typically set for system service account records. System services (daemons) do need to have system accounts, but they do not interactively log in. Instead, they run in the background under their own account name. If a malicious person attempted to interactively log in using the account they are politely kicked off the system. `/sbin/nologin` displays a brief message and logs you off before you reach a command prompt. You can modify the message shown by creating the file `/etc/nologin.txt` and adding the desired text.
+- `/bin/false` shell is a little more brutal than later. If this is set as a user account’s default shell, no messages are shown, and the user is just logged out of the system.
+
+- `/etc/shadow` —> Each account’s data occupies a single file line.
+
+  ```bash
+  $ sudo cat /etc/shadow
+  ```
+
+1. `root:!::0:99999:7:::`
+2. `bin:*:17589:0:99999:7:::`
+3. `user1:$6$bvqdqU[…]:17738:0:99999:7:::`
+
+- The `/etc/shadow` records contain several fields. Each field in a record is delimited by a colon (:).
+
+1. User account’s username.
+2. Password field. The password is a salted and hashed password.
+   - A `!!` or `!` indicates a password has not been set for the account.
+   - A `!` or an `*` indicates the account cannot use a password to log in.
+   - A `!` in front of a password indicates the account has been locked.
+3. Date of last password change in Unix Epoch time (days) format.
+4. Number of days after a password is changed until the password may be changed again.
+5. Number of days until a password change is required. This is the password’s expiration date.
+6. Number of days a warning is issued to the user prior to a password’s expiration (see field #5).
+7. Number of days after a password has expired (see field #5) and has not been changed until the account will be deactivated.
+8. Date of account’s expiration in Unix Epoch time (days) format.
+9. Called the special flag. It is a field for a special future use, is currently not used, and is blank.
+
+- `$ useradd` —> Create a new user or update default new user information.
+- `$ getent` —> Get entries from Name Service Switch libraries to view a user account’s information.
+- `$ passwd` —> Change user password.
+- `$ chage` —> Change user password expiry information in a more human-readable format.
+- `$ usermod` —> Modify a user account.
+- `$ userdel` —> Delete a user account and related files.
+
+  - `-r, --remove`: Files in the user's home directory will be removed along with the home directory itself and the user's mail spool. Files located in other file systems will have to be searched for and deleted manually.
+
+- Groups are identified by their name as well as their group ID (GID).
+- If a default group is not designated when a user account is created, then a new group is created. This new group has the same name as the user account’s name and it is assigned a new GID.
+- `/etc/group` —> Where information about groups are being saved.
+- `$ getent group [USER]` —> See default group of a user.
+- `$ groupadd` —> Create a new group.
+- `$ sudo usermod -aG [GROUP] [USER]` —> Add an account to a group.
+- `$ groupmod` —> Modify a group.
+- `$ groupdel` —> Delete a group.
+
+———————————————
+
+**Email:**
