@@ -70,3 +70,124 @@ $ apk --no-cache add curl
 —————————
 
 ## Creating a Dockerfile:
+1- Specify a base image —> `FROM alpine`
+
+2- Run some commands to install additional programs —> `RUN apk add --update redis`
+
+3- Specify a command to run on container startup —> `CMD ["redis-server"]`
+
+### Example:
+
+```dockerfile
+# Specify a base image
+FROM node:alpine
+
+WORKDIR /usr/app
+
+# Install some dependencies
+COPY ./package.json ./
+
+RUN npm install
+
+# copy all other things
+COPY ./ ./
+
+# Default command
+CMD ["npm", "start"]
+```
+
+- Add `.dockerignore`
+
+—————————
+
+## Creating a Docker Compose:
+
+For running: in directory `$ docker-compose up`
+
+`docker-compose.yml`:
+
+```yaml
+version: '3'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+
+  redis:
+    image: 'redis:latest'
+
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'
+
+  api:
+    build:
+      dockerfile: Dockerfile.dev # don’t include directory address, just the name of dockerfile
+      context: ./server
+    volumes:
+      - /app/node_modules # don’t override this one
+      - ./server:/app # copy everything on ./server (except node_modules) into /app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+
+  client:
+    stdin_open: true
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+```
+
+—————————
+
+## Alpine Image —> Minimal version of image
+
+—————————
+
+## How to push to Docker Hub:
+
+1- Login —> `docker login -u apakhbari`  
+For password enter **ACCESS TOKEN**
+
+2- Build —> `docker build -t <image_name> .`
+
+3- Tag image —> `docker image tag <image_name> apakhbari/<image_name>:latest`
+
+4- Push image —> `docker image push apakhbari/<image_name>:latest`
+
+—————————
+
+Don’t forget to add `.dockerignore` with:
+
+```
+node_modules
+.next
+```
