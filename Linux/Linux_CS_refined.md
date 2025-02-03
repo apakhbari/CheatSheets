@@ -1980,3 +1980,52 @@ $ mkfs  # Build a Linux FS
 $ sudo mkfs -t ext4 /dev/sdb1
 ```
 
+# Mount
+
+- After you’ve formatted a drive partition with a filesystem, you can add it to the virtual directory on your Linux system. This process is called mounting the filesystem.
+- `$ mount` → mount a filesystem. It only temporarily mounts the device in the virtual directory. When you reboot the system, you have to manually mount the devices again.
+
+```bash
+$ sudo mount -t ext4 /dev/sdb1 /media/usb1
+```
+
+- `$ umount` → unmount a filesystem.
+- `/etc/fstab` → Indicate which drive devices should be mounted to the virtual directory at boot time. A table that indicates:
+  - The drive device file (either the raw file or one of its permanent udev filenames).
+  - The mount point location.
+  - The filesystem type, ...
+
+```bash
+$ df     # Report file system disk space usage
+$ du     # Estimate file space usage. Produces text usage report (in kilobytes) by directory
+$ iostat # Displays a real-time chart of disk statistics by partition
+$ lsblk  # Displays current partition sizes and mount points : /proc/partitions - /proc/mounts
+```
+
+## e2fsprogs (ext Filesystem Tools)
+
+- `blkid`: Display information about block devices, such as storage drives.
+- `chattr`: Change file attributes on the filesystem.
+- `debugfs`: Manually view and modify the filesystem structure, such as undeleting a file or extracting a corrupted file.
+- `dumpe2fs`: Display block and superblock group information.
+- `e2label`: Change the label on the filesystem.
+- `resize2fs`: Expand or shrink a filesystem.
+- `tune2fs`: Modify filesystem parameters.
+
+## XFS Filesystem Tools
+
+- `xfs_admin`: Display or change filesystem parameters such as the label or UUID assigned.
+- `xfs_db`: Examine and debug an XFS filesystem.
+- `xfs_fsr`: Improve the organization of mounted filesystems.
+- `xfs_info`: Display information about a mounted filesystem, including the block sizes and sector sizes, as well as label and UUID information.
+- `xfs_repair`: Repair corrupted or damaged XFS filesystems.
+
+```bash
+$ fsck  # Check and repair a Linux filesystem. A front-end to several different programs that check the various filesystems.
+```
+
+- If any discrepancies occur, run the fsck program in repair mode, and it will attempt to reconcile the discrepancies and fix the filesystem. If the fsck program is unable to repair the drive on the first run, try running it again a few times to fix any broken files and directory links.
+
+```bash
+$ sudo fsck -f /dev/sdb1
+```
