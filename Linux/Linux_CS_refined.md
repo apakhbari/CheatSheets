@@ -2029,3 +2029,209 @@ $ fsck  # Check and repair a Linux filesystem. A front-end to several different 
 ```bash
 $ sudo fsck -f /dev/sdb1
 ```
+
+# GUI
+
+- A windows manager is a program that communicates with the display server (sometimes called a windows server) on behalf of the UI.
+- Each particular desktop environment has its own default window manager, such as Mutter, Kwin, Muffin, Marco, and Metacity.
+- The display server is a program that uses a communication protocol to transmit the desires of the UI to the operating system, and vice versa. The communication protocol, called the display server protocol, can operate over a network. A compositor program arranges various display elements within a window to create a screen image to be passed back to the client.
+- The X Window System (X for short) is the display server used for Linux systems. It was developed in the 1980s. In Linux there was only one software package that supported X, called XFree86.  
+  In 2004, the XFree86 project changed their licensing requirements, which caused many Linux distributions to switch to the X.Org foundation’s implementation of X, simply called X.Org. Many distributions created their own customizations of the X.Org server; thus, you will see a wide variety of names concerning the Linux X display server, such as X.org-X11, X, X11, and X.Org Server.
+- Within the past few years, a new X display server package called **Wayland** has made headway in the Linux world.
+
+---
+
+## X.org
+
+- The X.Org package keeps track of display card, monitor, and input device information in a configuration file, using the original XFree86 format. The primary configuration file is `/etc/X11/xorg.conf`, though the file is sometimes stored in the `/etc/` directory. Typically, however, this file is no longer used.
+- Individual applications or devices store their own X11 settings in separate files stored in the `/etc/X11/xorg.conf.d` directory.
+- The X.Org software can detect most common hardware devices, so no manual configuration is required. In some cases, auto-detection might not work properly, and you need to make X11 configuration changes. In this case, you can manually create the configuration file.  
+
+  **Steps to manually configure X11:**
+  1. Shut down the X Server by going to a command prompt and using:  
+     ```bash
+     $ sudo telinit 3
+     ```
+  2. Use superuser privileges to generate the file via:
+     ```bash
+     $ Xorg -configure
+     ```
+  3. The file, named `xorg.conf.new`, will be in your local directory.
+  4. Make any necessary tweaks, rename the file, move the file to its proper location, and restart the X server.
+
+### xorg.conf Sections Information:
+
+- **Input Device:** Configures the session’s keyboard and mouse.
+- **Monitor:** Sets the session’s monitor configuration.
+- **Modes:** Defines video modes.
+- **Device:** Configures the session’s video card(s).
+- **Screen:** Sets the session’s screen resolution and color depth.
+- **Module:** Denotes any modules that need to be loaded.
+- **Files:** Sets file path names, if needed, for fonts, modules, and keyboard layout files.
+- **Server Flags:** Configures global X server options.
+- **Server Layout:** Links together all the session’s input and output devices.
+
+- If something goes wrong with the display process, the X.Org server generates the `.xsession-errors` file in your Home directory (often referred to as `~/.xsession-errors`).
+
+#### Two utilities are available to help:
+- `xdpyinfo`: Provides information about the X.Org server, including the different screen types available, the default communication parameter values, protocol extension information, and more.
+- `xwininfo`: Provides window information. If no options are given, an interactive utility asks you to click on the window for which you desire statistics.
+
+---
+
+## Wayland
+
+- **Wayland** is designed to be simpler, more secure, and easier to develop and maintain than the X.Org software.
+- Wayland defines the communication protocol between a display server and its various clients. However, **Wayland** is also an umbrella term that covers the compositor, the window server, and the display server.
+- The **Wayland compositor** is **Weston**. However, Weston provides a rather basic desktop experience. It was created as a Wayland compositor reference implementation.  
+  Weston’s core focus is **correctness and reliability**. Wayland’s compositor is **swappable**. You can use a different compositor if you need a more full-featured desktop experience.  
+  Several compositors are available for use with Wayland, including:
+  - Arcan
+  - Sway
+  - Lipstick
+  - Clayland
+
+### Troubleshooting Wayland:
+
+#### Try the GUI without Wayland:
+- If your Linux distribution has multiple flavors of the desktop environment (with Wayland or with X11), log out of your GUI session and pick the **desktop environment without Wayland**.  
+  If your UI problems are resolved, then you know it has most likely something to do with Wayland.
+
+#### Disable Wayland in GNOME:
+- If you do not have multiple flavors of the desktop environment and you are using the **GNOME shell** user interface, turn off Wayland by following these steps:
+
+  1. Using superuser privileges, edit the `/etc/gdm3/custom.conf` file:
+  2. Remove the `#` from the `#WaylandEnable=false` line and save the file.
+  3. Reboot the system and log in to a GUI session and see if the problems are gone.
+
+#### Additional Fixes:
+- **Check your system’s graphics card:** If your system seems to be running fine under X11 but gets problematic when running under Wayland, check your graphics card.
+- **Use a different compositor:** If you are using a desktop environment’s built-in compositor or one of the other compositors, try installing and using the **Weston** compositor package instead.
+
+---
+
+## Desktop Environment Components
+
+- **Desktop Settings**
+- **Display Manager**
+- **File Manager**
+- **Icons**
+- **Favorites Bar**
+- **Launch**
+- **Menus**
+- **Panels**
+- **System Tray**
+- **Widgets**
+- **Windows Manager**
+
+- The **display manager** component is responsible for controlling the graphical login feature.  
+  Every Linux display manager package uses the **X Display Manager Control Protocol (XDMCP)** to handle the graphical login process.
+
+- The **X Display Manager (XDM)** package is the basic display manager software available for Linux.  
+  It presents a generic **user ID and password** login screen, passing the login attempt off to the Linux system for verification.  
+  If the system authenticates the login attempt, XDM starts up the appropriate **X server** environment and Windows desktop environment.
+
+```bash
+/etc/X11/xdm/xdm-config
+```
+> XDM display manager is somewhat generic, but there are some configuration features you can modify. In most situations, you’ll never need to modify these settings.
+
+### Common Display Managers:
+- **KDM:** The default display manager used by the KDE desktop environment.
+- **GDM:** The default display manager used by the GNOME desktop environment.
+- **LightDM:** A bare-bones display manager used in lightweight desktop environments such as Xfce.
+
+---
+
+## X11 Forwarding
+
+- The **X11 system** utilizes a **classic client/server model** for serving up graphical desktops.  
+  In most situations, the client and server both run on the same physical device, but that doesn’t need to be the case.
+
+### Enabling X11 Forwarding:
+1. Check if **X11 forwarding** is permitted in your OpenSSH configuration file (`/etc/ssh/sshd_config`).
+2. Ensure the directive `X11Forwarding` is set to `yes` on the remote system.
+3. Connect using SSH with X11 forwarding:
+   ```bash
+   $ ssh -X user@remote-host
+   ```
+
+Here is your content properly **reformatted** into **Markdown (.md)** while **keeping everything intact**:
+
+# Remote Desktop Software
+
+## Virtual Network Computing (VNC)
+- VNC is multiplatform and employs the **Remote Frame Buffer (RFB) protocol**.
+- This protocol allows a user on the client side to send **GUI commands** (e.g., mouse clicks) to the server.
+- The server sends **desktop frames** back to the client’s monitor.
+- The **VNC server** offers a GUI service at **TCP port 5900+n**, where **n** equals the display number (usually `1`, meaning **port 5901**).
+- The **VNC server** is flexible:
+  - Java-enabled web browsers can access it at **TCP port 5800+n**.
+  - HTML5 client web browsers are supported as well.
+
+### **Benefits of Using VNC**
+- **Flexibility** in providing remote desktops.
+- Desktops are available for **multiple users**.
+- Supports both **persistent and static desktops**.
+- **On-demand desktop provisioning**.
+- **SSH tunneling** can be employed via `ssh` or a client viewer command-line option to encrypt traffic.
+
+### **Potential Concerns with VNC**
+- The **VNC server** handles only **mouse movements and keystrokes**.  
+  It does **not** deal with file transfer, audio transfer, or printing services for the client.
+- By **default, VNC does not encrypt traffic**; you must tunnel it through **OpenSSH** for security.
+- **The VNC server password** is stored as **plaintext** in a server file.
+
+---
+
+## TigerVNC
+- A modern, high-performance VNC implementation.
+
+---
+
+## XRDP (Remote Desktop Protocol)
+- **Supports RDP (Remote Desktop Protocol)** and uses `X11rdp` or `Xvnc` to manage the GUI session.
+- **Provides only the server side** of an RDP connection.
+- **Allows access from multiple RDP clients**, such as:
+  - `rdesktop`
+  - `FreeRDP`
+  - **Microsoft Remote Desktop Connection**
+
+### **Benefits of XRDP**
+- **Uses RDP**, which **encrypts traffic** using **Transport Layer Security (TLS)**.
+- A **wide variety of open-source RDP client software** is available.
+- **Persistent desktop support** (can reconnect to an already existing session).
+- **Handles mouse movements, keystrokes, audio transfers**, and **mounting of local client drives** on the remote system.
+
+#### XRDP Configuration
+```bash
+/etc/xrdp/xrdp.ini
+```
+> This file contains **various XRDP configuration settings**.  
+> An important setting in this file is the **security_layer directive**.
+
+---
+
+## NX Protocol (NX Technology)
+**Benefits of Using NX:**
+- **Excellent response times**, even over **low-bandwidth** and **high-latency** connections.
+- **Faster than VNC-based products**.
+- **Uses OpenSSH tunneling by default**, ensuring **encrypted traffic**.
+- **Supports multiple simultaneous users** through a **single network port**.
+- **Compresses X11 data**, reducing network data transfer and improving response times.
+- **Employs caching techniques** to enhance remote desktop performance.
+
+---
+
+## Simple Protocol for Independent Computing Environments (SPICE)
+- **SPICE is typically used for remote access to KVM virtual machines**, competing with VNC.
+- **Provides high-performance remote desktop connections**.
+
+### **SPICE Features**
+- **Supports multiple client connections** via **multiple data socket connections**.
+- **Delivers desktop experience speeds comparable to local usage**.
+- **Consumes minimal CPU resources**, making it efficient for multi-VM server environments.
+- **Supports high-quality video streaming**.
+- **Enables live migration**, meaning **no connection interruptions when a virtual machine is migrated to a new host**.
+
+
