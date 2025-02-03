@@ -444,3 +444,26 @@ Most Linux distributions use only one of these three:
 
 - **`631 TCP`**:  
   **CUPS (Common UNIX Printing System)** for printing services.
+
+| Port | Protocol  | Application |
+|------|----------|--------------------------------------|
+| 20   | TCP      | FTP (File Transfer Protocol)       |
+| 21   | TCP      | FTP control messages               |
+| 22   | TCP      | SSH (Secure Shell)                 |
+| 23   | TCP      | Telnet interactive protocol        |
+| 25   | TCP      | SMTP (Simple Mail Transfer Protocol) |
+| 53   | TCP & UDP | Domain Name System (DNS)          |
+| 80   | TCP      | HTTP (Hyper Text Transfer Protocol) |
+| 110  | TCP      | POP3 (Post Office Protocol Version 3) |
+| 123  | UDP      | NTP (Network Time Protocol)        |
+| 139  | TCP      | NetBIOS Session Service           |
+| 143  | TCP      | IMAP (Internet Message Access Protocol) |
+| 161  | UDP      | SNMP (Simple Network Management Protocol) |
+| 162  | UDP      | Simple Network Management Protocol trap |
+| 389  | TCP      | LDAP (Lightweight Directory Access Protocol) |
+| 443  | TCP      | HTTP (Hypertext Transfer Protocol) over TLS/SSL |
+| 465  | TCP      | SMTPS (Authenticated SMTP)        |
+| 514  | TCP & UDP | Remote Shell [TCP] or Syslog [UDP] |
+| 636  | TCP      | LDAPS (Lightweight Directory Access Protocol over TLS/SSL) |
+| 993  | TCP      | IMAPS (Internet Message Access Protocol over TLS/SSL) |
+| 995  | TCP      | POP3S (Post Office Protocol 3 over TLS/SSL) |
