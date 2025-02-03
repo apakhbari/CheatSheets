@@ -527,3 +527,197 @@ fi
 | file1 -nt file2 | File | Checks if file1 is newer than file2 |
 | file1 -ot file2 | File | Checks if file1 is older than file2 |
 
+
+# Bash Script Examples
+
+## If Condition
+
+```bash
+#!/bin/bash
+
+# testing the if condition
+
+if [ $1 -eq $2 ]
+then
+    echo "Both values are equal!"
+    exit
+fi
+
+if [ $1 -gt $2 ]
+then
+    echo "The first value is greater than the second"
+    exit
+fi
+
+if [ $1 -lt $2 ]
+then
+    echo "The first value is less than the second"
+    exit
+fi
+```
+
+```bash
+$ chmod u+x test12.sh
+$ ./test12.sh 10 5
+
+The first value is greater than the second
+```
+
+---
+
+## The Case Statement
+
+```bash
+case variable in
+    pattern1) commands1;;
+    pattern2 | pattern3) commands2;;
+    *) default commands;;
+esac
+```
+
+```bash
+$ cat test13.sh
+
+#!/bin/bash
+
+# using the case statement
+
+case $USER in
+    anisa | root)
+        echo "Welcome, $USER"
+        echo "Please enjoy your visit";;
+    testing)
+        echo "Special testing account";;
+    mohsen)
+        echo "Don't forget to log off when you're done";;
+    *)
+        echo "Sorry, you're not allowed here";;
+esac
+
+$ chmod u+x test6.sh
+$ ./test13.sh
+
+Welcome, anisa
+Please enjoy your visit
+```
+
+---
+
+## The `for` Loop
+
+```bash
+for variable in series ; do
+    commands
+done
+```
+
+Instead of having to list all of the numbers individually, you can use the `seq` command.
+
+```bash
+for x in `seq 1 10` ; do
+    commands
+done
+```
+
+```bash
+$ cat test14.sh
+
+#!/bin/bash
+
+# iterate through the files in the Home folder
+
+for file in $(ls | sort) ; do
+    if [ -d $file ]
+    then
+        echo "$file is a directory"
+    fi
+    if [ -f $file ]
+    then
+        echo "$file is a file"
+    fi
+done
+
+$ ./test14.sh
+
+Desktop is a directory
+Documents is a directory
+...
+test1.sh is a file
+test2.sh
+```
+
+---
+
+## The `while` Loop
+
+The opposite of the `while` command is the `until` command.
+
+```bash
+while [ condition ] ; do
+    commands
+done
+```
+
+```bash
+$ cat test15.sh
+
+#!/bin/bash
+
+number=$1
+factorial=1
+
+while [ $number -gt 0 ] ; do
+    factorial=$[ $factorial * $number ]
+    number=$[ $number - 1 ]
+done
+
+echo The factorial of $1 is $factorial
+```
+
+```bash
+$ ./test15.sh 5
+
+The factorial of 5 is 120
+
+$ ./test15.sh 6
+
+The factorial of 6 is 720
+```
+
+---
+
+## Functions
+
+There are two formats:
+
+```bash
+function name {
+    commands
+}
+```
+
+or
+
+```bash
+name() {
+    commands
+}
+```
+
+```bash
+$ cat test17.sh
+
+#!/bin/bash
+
+# using the return command in a function
+
+function dbl {
+    read -p "Enter a value: " value
+    echo "doubling the value"
+    return $[ $value * 2 ]
+}
+
+dbl
+
+echo "The new value is $?"
+```
