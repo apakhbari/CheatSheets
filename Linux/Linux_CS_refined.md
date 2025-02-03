@@ -1285,3 +1285,69 @@ Will force the application to ignore any input from `STDIN`. By default, `STDOUT
 | 17     | STOP | Stops unconditionally, but doesn’t terminate   |
 | 18     | TSTP | Stops or pauses, but continues to run in background |
 | 19     | CONT | Resumes execution after STOP or TSTP          |
+
+# Commands
+
+- `[TAB] [TAB]` → see recommendations  
+- `$ strace` → sys call trace, `$ ltrace` → library call trace, `$ ptrace` → process trace for debugging and injection  
+- `$ strace -p 1` → what syscalls pid 1 is using  
+- `$ ldd /usr/bin/ls` → see what libs a software is using  
+- `$ users` → online users logged in system, right now  
+- `$ file a.txt` → show info about `a.txt`  
+- `$ ln` → hard linking  
+- `$ lsmod` → list all modules that are running on kernel  
+- `$ & (flag)` → in background  
+- `$ nc -nlvp [port number]` → open port  
+- `$ netstat -antp` → show all open ports  
+- `$ systemctl list-units --type slice` → show users unit in systemd  
+- `$ dd if=/dev/zero of=/dev/null bs=1M &` → fake CPU usage for benchmarking  
+- `$ cron -e` → do something on schedule that I am telling you  
+- `$ namectl set-hostname ASGHAR`, `$ bash` → change name and re-open terminal  
+- `$ jobs -l` → list all jobs on the system; active, stopped, or otherwise  
+- `$ kill -9 [PID]`  
+- `$ cp -p /home/john/fosh.txt` → don’t change any attributes and timestamp of file when copied  
+- `$ grep -i pwquality \*` → search for `pwquality` in all files of this directory  
+
+## Packages
+
+- `$ dnf update` → update repos  
+- `$ dnf update -security` → just update security-related packages  
+- `$ dnf updateinfo` → showing info about packages with their updates  
+- `$ dnf updateinfo list updates security` → showing info about security-related package updates  
+
+Because of recent filtering situation and better performance of package managers:  
+
+1. Edit configuration:
+   ```sh
+   $ vim /etc/dnf/dnf.conf
+   ```
+   Add:
+   ```
+   skip_if_unavailable=True
+   fastestmirror=1
+   ```
+
+2. If encountering YAML file missing warnings:
+   ```sh
+   $ dnf update libmodule
+   ```
+
+- `$ uname [option]` → print system information  
+- `$ cd -` → go back to most recent directory  
+- `$ which -a filename (e.g., hello.sh, echo)` → locate command  
+- `$ which vim` → `/usr/bin/vim`  
+- `$ lsof -p PID` → see if the running program has any files open  
+
+---
+
+## Monitoring & Log
+
+- When you can’t use `ps`, try:  
+  ```sh
+  $ cat /proc/8/cmdline
+  ```
+  This shows what process is running.
+
+---
+
+## Environmental Variables
