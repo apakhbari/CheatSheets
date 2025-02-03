@@ -499,3 +499,31 @@ then
     exit
 fi
 ```
+
+# Comparison Operators in Bash
+
+| Test | Type | Description |
+|------|------|-------------|
+| n1 -eq n2 | Numeric | Checks if n1 is equal to n2 |
+| n1 -ge n2 | Numeric | Checks if n1 is greater than or equal to n2 |
+| n1 -gt n2 | Numeric | Checks if n1 is greater than n2 |
+| n1 -le n2 | Numeric | Checks if n1 is less than or equal to n2 |
+| n1 -lt n2 | Numeric | Checks if n1 is less than n2 |
+| n1 -ne n2 | Numeric | Checks if n1 is not equal to n2 |
+| str1 = str2 | String | Checks if str1 is the same as str2 |
+| str1 != str2 | String | Checks if str1 is not the same as str2 |
+| str1 < str2 | String | Checks if str1 is less than str2 |
+| -n str1 | String | Checks if str1 has a length greater than zero |
+| -z str1 | String | Checks if str1 has a length of zero |
+| -d file | File | Checks if file exists and is a directory |
+| -e file | File | Checks if file exists |
+| -f file | File | Checks if file exists and is a file |
+| -r file | File | Checks if file exists and is readable |
+| -s file | File | Checks if file exists and is not empty |
+| -w file | File | Checks if file exists and is writable |
+| -x file | File | Checks if file exists and is executable |
+| -O file | File | Checks if file exists and is owned by the current user |
+| -G file | File | Checks if file exists and the default group is the same as the current user |
+| file1 -nt file2 | File | Checks if file1 is newer than file2 |
+| file1 -ot file2 | File | Checks if file1 is older than file2 |
+
