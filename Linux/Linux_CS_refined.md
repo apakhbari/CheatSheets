@@ -919,4 +919,88 @@ $ df      # Report file system disk space usage
 | `$zip`         | `$unzip`           | 32-bit CRC             | `.zip`                  | No                     | N/A                     |
 
 # Archiving Files
+- Some popular programs for managing backups: Amanda, Bacula, Bareos, Duplicity, BackupPC
+- We are focusing on CLI utilities: cpio, dd, tar
 
+## CLI Backup Utilities
+
+- `$ cpio` → copy files to and from archives (copy in and out)
+- `$ tar` → an archiving utility for creating tarball
+
+### The tar command’s commonly used tarball creation options:
+
+- `-c, --create` → create a new archive. The backup can be a full or incremental backup, depending on the other selected options.
+- `-u, --update` → only append files newer than copy in archive
+- `-g, --listed-incremental=FILE` → handle new GNU-format incremental backup
+- `-v, --verbose` → verbosely list files processed
+- `-f, --file=ARCHIVE` → use archive file or device ARCHIVE
+
+- It is possible to create full backups using tarball snapshot file or `.snar` with `-g` option
+- It is possible to create incremental backups using tar
+- Compressing tar archives is achieved via adding an option to tar as follows:
+
+## Compression Options for Tar Archives
+
+| Compression Algorithm | Tar Option | Tar Filename Extension | Decompression Option |
+|----------------------|-----------|-----------------------|----------------------|
+| gzip | `-z, --gzip` | `.tgz` or `.tar.gz` | `-z, --gunzip` |
+| bzip2 | `-j, --bzip2` | `.tbz` or `.tbz2` or `.tb2` or `.tar.bz2` | `-j, --bunzip2` |
+| xz | `-J, --xz` | `.txz` or `.tar.xz` | `-J, --unxz` |
+
+## Tar Verification Options
+
+- `-d, --compare, --diff` → Compares a tar archive file’s members with external files and lists the differences.
+- `-t, --list` → Displays a tar archive file’s contents.
+- `-W, --verify` → Verifies each file as the file is processed. This option cannot be used with the compression options.
+- `-x, --extract, --get` → Extracts files from a tarball or archive file and places them in the current working directory
+
+## Other CLI File Management Commands
+
+- `$ dd` → convert & copy a file
+- `$ ln` → make links between files
+- `$ ln -s` → soft link
+
+### Symbolic Links vs Hard Links
+
+- **Symbolic link / soft link:** A soft link file provides a pointer to a file that may reside on another filesystem. Used for aliasing commands.
+- **Hard link:** A file or directory that has one index (inode) number but at least two different filenames. Used for preventing accidental deletions, especially in scripting.
+
+**Notice:** Use `$ unlink` when deleting a link, as it could be a security issue.
+
+## Version Link Example:
+
+```bash
+$ which java
+/usr/bin/java
+
+$ readlink -f /usr/bin/java
+/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.201.b09-2.el7_6.x86_64/jre/bin/java
+```
+
+- `$ readlink` → print resolved symbolic links or canonical file names
+
+# File Ownership
+- three-tiered approach:
+
+- Owner
+- Group
+- Others
+
+- `$ chown —> change file owner and group`
+
+- `$ chown NEWOWNER:NEWGROUP FILENAMES / or / $ chown :NEWGROUP FILENAMES`
+
+- `$ chgrp —> change group ownership`
+- `only root can change a file’s owner, only root or the owner can change a file’s group`
+- `$ id -gn —> check your current group’s name`
+- `$ newgrp groupname —> change your current group`
+
+| File Type Code | Description |
+|---------------|------------|
+| - | The file is a binary file, a readable file (such as a text file), an image file, or a compressed file. |
+| d | The file is a directory. |
+| l | The file is a symbolic (soft) link to another file or directory. |
+| p | The file is a named pipe or regular pipe used for communication between two or more processes. |
+| s | The file is a socket file, which operates similar to a pipe but allows more styles of communication, such as bidirectional or over a network. |
+| b | The file is a block device, such as a disk drive. |
+| c | The file is a character device, such as a point-of-sale device. |
