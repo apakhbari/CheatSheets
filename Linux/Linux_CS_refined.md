@@ -2515,3 +2515,91 @@ Here is your content properly **reformatted** into **Markdown (.md)** while **ke
 | 5    | notice      | A normal but significant condition message                                  |
 | 6    | info        | An informational message from the system                                    |
 | 7    | debug       | Debugging messages for developers                                           |
+
+# History of Linux Logging
+
+- **sysklogd** → The original syslog application, it includes two programs: the syslogd program to monitor the system and applications for events, and the klogd program to monitor the Linux kernel for events.
+- **syslogd-ng** → Added advanced features, such as message filtering and the ability to send messages to remote hosts.
+- **rsyslog** → The project claims the "r" stands for "rocket fast." Speed is the focus of the rsyslog project, and the rsyslogd application has quickly become the standard logging package for many Linux distributions.
+- **systemd-journald** → Part of the systemd application for system startup and initialization, many Linux distributions are now using this for logging. It does not follow the syslog protocol but instead uses a completely different way of reporting and storing system and application events.
+
+## rsyslogd
+
+- `/etc/rsyslogd.conf` file or `*.conf` files in the `/etc/rsyslog.d/` directory → define rules on what events to listen for and how to handle them using the rsyslogd program.
+- Format of an rsyslogd rule is: `facility.priority action`
+
+    - The **facility** entry uses one of the standard syslog protocol facility keywords.
+    - The **priority** entry uses the severity keyword as defined in the syslog protocol, but with a twist.
+    - The **action** entry defines what rsyslogd should do with the received syslog message.
+
+### Setting Priority
+
+- **kern.crit**
+
+    - Logs all kernel event messages with a severity of critical, alert, or emergency.
+    - When you define a severity, syslogd will log all events with that severity or higher (lower severity code).
+
+- **kern.=crit**
+
+    - Logs only messages with a specific severity.
+
+- **\*.emerg**
+
+    - Logs all events with an emergency severity level. Use wildcard characters for either the facility or priority.
+
+### Actions
+
+- Forward to a regular file
+- Pipe the message to an application
+- Display the message on a terminal or the system console
+- Send the message to a remote host
+- Send the message to a list of users
+- Send the message to all logged-in users
+
+### rsyslogd.conf configuration entries, for Ubuntu 18.04:
+
+- `auth,authpriv.* /var/log/auth.log`
+- `_._;auth,authpriv.none -/var/log/syslog`
+- `kern.* -/var/log/kern.log`
+- `mail.* -/var/log/mail.log`
+- `mail.err /var/log/mail.err`
+- `_.emerg :omusrmsg:_`
+
+### rsyslogd.conf configuration entries, for CentOS 7:
+
+- `*.info;mail.none;authpriv.none;cron.none /var/log/messages`
+- `authpriv.* /var/log/secure`
+- `mail.* -/var/log/maillog`
+- `cron.* /var/log/cron`
+- `_.emerg :omusrmsg:_`
+- `uucp,news.crit /var/log/spooler`
+- `local7.* /var/log/boot.log`
+
+A common server these days in many data centers is a central logging host that receives and stores logs for all its various log client systems. Configuring your system to act as a logging client is fairly easy using the rsyslog application’s configuration file(s). For doing so, edit the `/etc/rsyslogd.conf` configuration file and go to the file’s bottom:
+
+- `TCP|UDP[(z#)]HOST:[PORT#Linux] → _._ @@(z9)[loghost.anisa.co.ir:6514](http://loghost.anisa.co.ir:6514)`
+
+- **TCP|UDP**: You can select either the TCP or UDP protocols to transport your log messages to the central log server. UDP can lose data, so you should select TCP if your log messages are important. Use a single at sign (@) to select UDP and double at signs (@@) to choose TCP.
+- **[(z#)]**: This syntax is optional. The `z` selects `zlib` to compress the data prior to traversing the network, and the `#` picks the compression level, which can be any number between 1 (lowest compression) and 9 (highest compression).
+- **HOST**: Designates the central logging server either by a fully qualified domain name (FQDN), such as `example.com`, or an IP address. If you use an IPv6 address, it must be encased in brackets.
+- **[PORT#]**: This syntax is optional. Designates the port on the remote central logging host where the log service is listening for incoming traffic.
+
+## logrotate
+
+- For busy Linux systems, it doesn’t take long to generate large log files. So many Linux distributions install the logrotate utility. It automatically splits rsyslogd log files into archive files based on a time or the size of the file. You can usually identify archived log files by a numerical extension added to the log filename.
+- logrotate can also compress, delete, and if desired, mail a log file to a designated account.
+- To ensure the files are handled in a timely manner, the logrotate utility is typically run every day as a cron job.
+- `/etc/logrotate.conf` → configuration file to determine how each log file is managed.
+
+- `$ logger` → Enter messages into the system log. If you create and run scripts on your Linux system, you may want to log your own application events.
+
+- Most Linux distributions create log files in the `/var/log` directory.
+- Depending on the security of the Linux system, many log files are readable by everyone, but some may not be.
+- It’s also common for individual applications to have a separate directory under the `/var/log` directory for their own application event messages, such as `/var/log/apache2` for the Apache web server.
+- Since rsyslogd log files are text files, you can use any of the standard text tools available in Linux, such as `cat`, `head`, `tail`, as well as filtering tools, such as `grep`, to view the files and search them. One common trick for administrators is to watch a log file by using the `-f` option with the `tail` command. That displays the last few lines in the log file but then monitors the file for any new entries and displays those too.
+
+## systemd-journald
+
+- We call it a journal utility instead of a logging utility.
+- The system-journald program uses a completely different method of storing event messages from the syslog protocol. However, it does store syslog messages as well as notes from the kernel, boot events, service messages, and so on.
+- `/etc/systemd/journald.conf` → The systemd-journald service reads its configuration from this configuration file.
