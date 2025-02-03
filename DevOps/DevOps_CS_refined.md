@@ -398,3 +398,160 @@ $ git add -- . ':!node_modules'
 **——————————————————**
 
 # **6.Ansible**
+- Configuration management is a process for maintaining computer systems, servers and software in a desired, consistent state. It’s a way to make sure that a system performs as it’s expected to as changes are made over time
+- How ansible works
+- Control Node: main machine that Controls Other nodes. Any machine with Ansible installed
+- Managed Nodes: network devices you manage with Ansible
+- Inventory: A list of managed nodes. An inventory file is also sometimes called a ”hostfile”
+- Modules: units of code Ansible executes. Each module has a particular functionality
+- Tasks: units of action in Ansible
+- Playbooks: ordered list of tasks written in YAML
+- Ad-hoc commands: command that we are doing repeatedly
+- flag -b ( -s in older versions for sudo) stands for become, which means do this as root user
+- ping: $ ansible all -m ping —> for all hosts, use ping module
+- command : $ ansible -m command -a “uptime” —> a stands for attribute
+- $ ansible -m command -a “ls -l” —> on ansible user home dir
+- stat: $ ansible all -m stat -a “/home/ansadmin/testfile” —> to check a file exist or not
+- yum: $ ansible all -m yum -a “name=git”
+- user: $ ansible all -m user -a “name=sysadmin” -b —> create a user
+- setup: $ ansible all -m setup —> gather all info of nodes
+- file module : create/delete file and dir and change ownership
+- Ansible Inventory can be defined as following
+- Default location: /etc/ansible/hosts
+- use -i option for overriding location: ansible -i my_hosts
+- defined in ansible.cfg file
+- ansible.cfg hierarchy of use
+- ANSIBLE_CONFIG (as environment variable)
+- ansible.cfg (in current dir)
+- .ansible.cfg (in home dir)
+- /etc/ansible/ansible.cfg
+- ansible by default uses setup module, so even if we are doing any playbook, setup is also being executed
+- $ ansible-playbook test.yml
+- $ ansible-playbook test.yml —check —> for just checking, not executing
+- playbook conditions are:
+  - When
+  - With_items: for looping purposes
+  - Notify & handlers: only when task is done, notify other task to do something
+
+httpd_package.yml
+---
+
+- name: installing and starting packages
+  hosts: all
+  become: true
+  gather_facts: yes
+  tasks:
+    - name: installing packages on RedHat
+      yum:
+        name: ”{{ item }}”
+        state: installed
+      with_items:
+        - httpd
+        - git
+        - tree
+      when: ansible_os_family == “Redhat”
+      notify: start httpd services
+
+    - name: installing other packages
+      yum:
+        name: [‘telnet’ , ‘make’]
+        state: installed
+      when: ansible_os_family == “Redhat”
+
+    - name: installing httpd on ubuntu
+      apt:
+        name: apache2
+        state: started
+      when: ansible_os_family == “Debian”
+
+    - name: copying index.html to nodes
+      copy:
+        src: home/ansadmin/playbooks/index.html
+        dest: /var/www/html
+
+    - name: starting httpd service on ubuntu
+      service:
+        name: httpd
+        state: present
+      when: ansible_os_family == “Debian”
+
+  handlers:
+    - name: start httpd services
+      service:
+        name: httpd
+        state: started
+      when: ansible_os_family == “Redhat”
+
+packages_loop.yml
+---
+
+- name: installing and starting packages
+  hosts: all
+  become: true
+  gather_facts: no
+  tasks:
+    - name: installing/uninstalling packages
+      yum:
+        name: ”{{ item.pkg }}”
+        state: ”{{ item.setup }}”
+      loop:
+        - { pkg: ‘git’, setup: ‘installed’ }
+        - { pkg: ‘wget’, setup: ‘latest’ }
+        - { pkg: ‘tree’, setup: ‘removed’ }
+        - { pkg: ‘mak’, setup: ‘absent’ }
+
+- ansible variables
+  - Define in playbook
+  - vars: user_name: asghar
+- passing from external files
+  - user.yml —> user_name: asghar —> vars_files: - /home/ansible/user.yml
+- passing from host inventory
+- passing while running playbook
+  - —extra-vars “user_name=asghar” —> it is highest priority
+- using group_vars or hosts_vars and so on
+
+create_user.yml
+---
+
+- name: installing and starting packages
+  hosts: all
+  become: true
+  gather_facts: no
+  vars:
+    user_name: asghar
+  tasks:
+    - name: creating user {{ user_name }}
+      user:
+        name: “{{ user_name }}”
+
+    - name: creating dir
+      file:
+        path: /opt/{{user_name}}_temp_dir
+        owner: “{{user_name}}”
+        group: “{{user_name}}”
+        mode: 0755
+
+- specify nohup in your command if you want that command to execute when things finish. because by default ansible kills processes when exiting and by specifying nohup you tell it not to
+- Ansible vault is a feature of ansible that allows you to keep sensitive data such as passwords or keys in encrypted files, rather than as plaintext in playbooks or roles
+- $ ansible-vault create
+- $ ansible-vault view
+- $ ansible-vault edit
+- $ ansible-vault encrypt
+- $ ansible-vault decrypt
+- — ask-vault-pass: to provide password while running playbook
+- — vault-password-file: to pass a vault password through a file
+
+- Ansible roles is being used for re-using a playbook, it is going to divide a playbook to different files for re-usability and more readability purposes
+- $ ansible-galaxy init tomcat_setup —> create a tomcat role
+- $ ansible-galaxy install <role_name> —> will download role from ansible galaxy to ~/.ansible/roles
+- /hosts
+
+[webservers]
+
+172.31.38.215
+
+172.31.38.13
+
+**——————————————————**
+
+**7.Docker**
