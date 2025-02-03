@@ -1644,3 +1644,15 @@ $ systemctl is-system-running
 $ systemctl list-units --type=service  # View active services
 $ systemctl show <service>  # Display properties of a systemd service
 ```
+
+# Runlevel Comparison: RedHat-based vs Debian-based
+
+| Runlevel   | RedHat-based                                        | Debian-based                                      |
+|------------|----------------------------------------------------|--------------------------------------------------|
+| **0**      | Shut down the system                               | Shut down the system                            |
+| **1, s or S** | Single-user mode used for system maintenance (Similar to system rescue target) | Single-user mode used for system maintenance (Similar to system rescue target) |
+| **2**      | Multi-user mode without networking services enabled. | Multi-user mode with GUI available.             |
+| **3**      | Multi-user mode with networking services enabled.  | -                                                |
+| **4**      | Custom                                            | -                                                |
+| **5**      | Multi-user mode with GUI available.               | -                                                |
+| **6**      | Reboot the system.                                | Reboot the system.                              |
