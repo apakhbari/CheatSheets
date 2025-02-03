@@ -1116,4 +1116,79 @@ To solve RPM problems, each Linux distro has its own central clearinghouse of pa
 ---
 
 ### **Debian Package Manager**
-(You may want to expand on this part as it is not included in the original text.)
+- have an `.deb` file extension
+- `PACKAGE-NAME-VERSION-RELEASE_ARCHITECTURE.deb`
+- `$ dpkg`
+
+1. `-c, --contents —> Displays the contents of a package file`
+2. `--configure —> Reconfigures an installed package`
+3. `--get-selections —> Displays currently installed packages`
+4. `-i, --install —> Installs the package; if package is already installed, upgrades it`
+5. `-I, --info —> Displays information about an uninstalled package file`
+6. `-l, --list —> Lists all installed packages matching a specified pattern`
+7. `-L, --listfiles —> Lists the installed files associated with a package`
+8. `-p, --print-avail —> Displays information about an installed package`
+9. `-r, --remove —> Removes an installed package but leaves the configuration files`
+10. `-P, --purge —> Removes an installed package, including configuration files`
+11. `-s, --status —> Displays the status of the specified package`
+12. `-S, --search —> Locates the package that owns the specified files`
+
+- `$ apt —> Advanced Package Tool`
+
+### `apt-cache` —> Query the APT cache
+
+- `depends —> Displays the dependencies required for the package`
+- `pkgnames —> Prints the name of each package APT knows`
+- `search —> Displays the name of packages matching the specified item`
+- `showpkg —> Lists information about the specified package`
+- `stats —> Displays package statistics for the system`
+- `unmet —> Shows any unmet dependencies for all installed packages or the specified installed package`
+
+### `apt-get` —> APT package handling utility (command-line interface)
+
+- `autoclean —> Removes information about packages that are no longer in the repository`
+- `check —> Checks the package management database for inconsistencies`
+- `clean —> Cleans up the database and any temporary download files`
+- `dist-upgrade —> Upgrades all packages, but monitors for package dependencies`
+- `dselect-upgrade —> Completes any package changes left undone`
+- `install —> Installs or updates a package and updates the package management database`
+- `remove —> Removes a package from the package management database`
+- `source —> Retrieves the source code package for the specified package`
+- `update —> Retrieves updated information about packages in the repository`
+- `upgrade —> Upgrades all installed packages to newest versions`
+
+- `$ dpkg-reconfigure —> Reconfigure an already installed package`
+- `$ debconf-show —> Query the debconf database`
+
+---
+
+## **Linux Libraries**
+
+Linux supports two different flavors of libraries:
+
+- **Static libraries** (also called statically linked libraries) that are copied into an application when it is compiled.
+- **Shared libraries** (also called dynamic libraries) where the library functions are copied into memory and bound to the application when the program is launched. (loading a library)  
+  **Filename format:** `libLIBRARYNAME.so.VERSION`
+
+### When Linux searches for a function’s library, it looks in the following directories:
+
+- `LD_LIBRARY_PATH` environment variable
+- Program’s `PATH` environment variable
+- `/etc/ld.so.conf.d/` folder
+- `/etc/ld.so.conf` file
+- `/lib*/` and `/usr/lib*/` folders
+
+- When a program is started, the **dynamic linker** (also called the dynamic linker/loader) is responsible for finding the program’s needed library functions.  
+  After they are located, the dynamic linker will copy them into memory and bind them to the program.  
+  Historically, the dynamic linker executable has a name like `ld.so` and `ld-linux.so*`.
+
+- The **library cache** is a catalog of library directories and all the various libraries contained within them.  
+  The system reads this cache file to quickly find needed libraries when it is loading programs.  
+  When new libraries or library directories are added to the system, this library cache file must be updated.
+
+- `$ ldconfig —> Configure dynamic linker run-time bindings`
+- `$ ldd —> Print shared object dependencies. Displays a list of the library files required for the specified application`
+
+---
+
+## **Managing Processes**
