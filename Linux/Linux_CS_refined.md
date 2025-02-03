@@ -131,3 +131,132 @@ A standard format has been defined for the Linux virtual directory called the Li
 - `/etc/motd` : Called the Message of the Day file, contains text that is displayed after a user has logged into a tty terminal.
 - `/bin/notify-send` (or `/usr/bin/notify-send`) : Sends messages to a user employing the GUI but who is not logged into a tty terminal or does not have a GUI terminal emulator open.
 - `/bin/wall` (or `/usr/bin/wall`) : Sends messages (called wall messages) to users logged into a tty terminal or who have a GUI terminal emulator open and have their message status set to “yes”. `$ mesg` : Viewing your message status.
+
+# Hardware Devices
+
+- `/dev` —> After kernel communicates with a device on an interface, it must be able to transfer data to and from the device.  
+  To retrieve data from a specific device, a program just needs to read the Linux device file associated with that device.  
+  To send data to the device, the program just needs to write to the Linux device file. This is a lot easier than requiring each application to know how to directly interact with a device.  
+  There are 2 kinds of device files: Character device files, Block device files.
+- `/dev/mapper/` —> show LVM, RAID, and LUKS mappings.
+- **sda vs hda**
+  - For **PATA devices**, raw device file is named `/dev/hda`, `/dev/hdb`, ...
+  - For **SATA and SCSI devices**, raw device file is named `/dev/sda`, `/dev/sdb`, …
+
+## `/dev/disk` —> udev creates links to the `/dev` storage device files based on unique attributes of the drive.  
+udev creates four separate directories for storing links:
+
+- `/dev/disk/by-id` —> Links storage devices by their manufacturer make, model, and serial number.
+- `/dev/disk/by-label` —> Links storage devices by the label assigned to them.
+- `/dev/disk/by-path` —> Links storage devices by the physical hardware port they are connected to.
+- `/dev/disk/by-uuid` —> Links storage devices by the 128-bit universally unique identifier (UUID) assigned to the device.
+
+## `/dev/mapper/mpathN`  
+Where **N** is the number of the multipath drive. Acts as a normal device file to the Linux system, allowing you to create partitions and filesystems on the multipath device.
+
+## `/etc/fstab`  
+Indicate which drive devices should be mounted to the virtual directory at boot time. A table that indicates:
+
+- The drive device file (either the raw file or one of its permanent udev filenames).
+- The mount point location.
+- The filesystem type, ...
+
+## `/proc/partitions` - `/proc/mounts`  
+Where commands such as `$ lsblk` read to generate a report.
+
+
+# Modules
+
+- `/lib/modules` —> Individual hardware driver files that can be linked into the kernel at runtime.
+- `/etc/modules` —> The modules the kernel will load at boot time.
+- `/etc/modules.conf` —> The kernel module configurations.
+- `/lib/modules/version/modules.dep` —> Determines the module dependencies.
+
+
+# GUI
+
+- `/etc/X11/xorg.conf` (Typically this file is no longer used.)  
+  The X.Org package keeps track of display card, monitor, and input device information in a configuration file, using the original XFree86 format.
+- `/etc/X11/xorg.conf.d` —> Individual applications or devices store their own X11 settings in separate files stored in this directory.
+- `~/.xsession-errors` —> If something goes wrong with the display process, the X.Org server generates the `.xsession-errors` file in your Home directory.
+- `/etc/X11/xdm/xdm-config` —> XDM display manager is somewhat generic, there are some configuration features you can modify to change things a bit. In most situations, you’ll never need to modify any of these settings.
+- `/etc/xrdp/xrdp.ini` —> Determines the various Xrdp configuration settings. An important setting in this file is the **security_layer** directive.
+
+
+# Shell
+
+- `/$HOME/.bashrc` —> If you need to permanently change the environmental variables or add aliases, you’ll need to add the export command to this file so that it runs each time you log in.
+- `/etc/profile` —> Is the main default startup file for the Bash shell. Whenever you log into the Linux system, Bash executes the commands in the `/etc/profile` startup file.
+
+### User-specific startup files for defining environment variables:
+Most Linux distributions use only one of these three:
+
+- `$HOME/.bash_profile`
+- `$HOME/.bash_login`
+- `$HOME/.profile`
+
+### `.bashrc` file in the user’s HOME directory (`~/.bashrc`) does two things:
+1. Checks for a common `/etc/bash.bashrc` file. The common `bash.bashrc` file provides a way for you to set scripts and variables used by all users who start an interactive shell.
+2. Provides a place for the user to enter personal aliases and private script functions.
+
+
+# Time
+
+- `/etc/timezone` (Debian-based) & `/etc/localtime` (Red Hat–based)  
+  These files are not in a text format, so you can’t simply edit them.  
+  To change the time zone for a Linux system, copy or link the appropriate time zone template file from the `/usr/share/zoneinfo` folder to the `/etc/timezone` or `/etc/localtime` location.  
+  **Example:** `/usr/share/zoneinfo/US/Eastern`
+- `/etc/ntp.conf` —> It contains, among other directives, the **NTP time servers** you wish to use.  
+  - On **CentOS**, the directive name for setting these is `server`.  
+  - On **Ubuntu**, it is `pool`.
+- `/etc/chrony.conf` or `/etc/chrony/chrony.conf`  
+  The primary configuration file for **Chrony**.  
+  - The directive name for setting these is either `server` or `pool`.  
+  - The **server** directive is typically used for a single time server designation.  
+  - **pool** indicates a server pool.  
+  - `rtcsync` directive directs chrony to periodically update the hardware time (real-time clock).
+- `/var/spool/at` —> Where jobs submitted using the `at` command are being saved.
+
+
+# User & Group
+
+- `/etc/login.defs` —> Typically installed by default on most Linux distributions.  
+  It contains directives for use in various **shadow password suite commands** such as `useradd`, `userdel`, and `passwd` commands.  
+  This file controls:
+  - Password length.
+  - How long until the user is required to change the account’s password.
+  - Whether or not a home directory is created by default.
+  - Other account-related settings.
+- `/etc/default/useradd` —> Directs the process of creating accounts.  
+  **Commands:**
+  - `$ cat /etc/default/useradd`
+  - `$ sudo useradd -D`
+- `/etc/skel` —> The skeleton directory, holds files.  
+  If a home directory is created for a user, these files are copied to the user account’s home directory when the account is created.
+- `/sbin/nologin` or `/bin/false` —> Prevent an account from interactively logging in.  
+  - This is done by entering one of these two records in **record 7 of `/etc/passwd`**, which is for the default shell.
+  - `/sbin/nologin` displays a brief message and logs you off before you reach a command prompt.
+  - You can modify the message shown by creating the file `/etc/nologin.txt`.
+- `/etc/group` —> Where information about groups is stored.
+
+
+# Mail
+
+- `/bin/mail` (or `/usr/bin/mail`) —> Default location of binmail, which is an **MDA program**.
+- `/var/spool/mail` directory (can be configured to read `$HOME/mail` file instead) —> Where binmail reads email messages.
+- `/etc/aliases` —> Where email aliases are stored.
+
+
+# Print
+
+- `/etc/cups` —> The configuration files of CUPS software are stored here.
+
+
+# Logs
+
+- `/var/log/boot` (Debian distros), `/var/log/boot.log` (RH distros) —> Information about the boot process.
+- `/var/log/syslog` —> Where rsyslog logs are stored.
+- `/etc/rsyslogd.conf` or `*.conf` files in `/etc/rsyslog.d/` —> Define rules on what events to listen for and how to handle them using **rsyslogd**.
+- `/etc/logrotate.conf` —> Configuration file that determines how each log file is managed by logrotate.
+- `/var/log/` directory —> Most Linux distributions create log files here.
+
