@@ -1515,3 +1515,132 @@ A unit defines a service, a group of services, or an action. Each unit consists 
 - `target`
 - `timer`
 
+# systemd Service Unit Files
+
+systemd service unit files can be found in these directories:  
+(If a file is found in two different directory locations, one will have precedence over the other)
+
+- `/etc/systemd/system/`
+- `/run/systemd/system/`
+- `/usr/lib/systemd/system/`
+
+```sh
+$ systemctl list-units  # Looking at systemd unit names
+$ systemctl list-unit-files  # See unit file’s enablement state
+```
+
+There are at least **12 different enablement states**, but you’ll commonly see these 3:
+
+- **enabled**: Service starts at system boot.
+- **disabled**: Service does not start at system boot.
+- **static**: Service starts if another unit depends on it. Can also be manually started.
+
+```sh
+$ systemctl cat name.unit-type  # Show base name & directory location of the unit file
+```
+
+## systemd Unit File Configuration Sections
+
+### `[Unit]` — Basic directives
+
+- **After** → Sets this unit to start *after* the designated units.
+- **Before** → Sets this unit to start *before* the designated units.
+- **Description** → Describes the unit.
+- **Documentation** → URIs for documentation sources (web locations, system files, info pages, man pages).
+- **Conflicts** → If any of the designated units start, this unit is *not* started. *(Opposite of Requires.)*
+- **Requires** → This unit *must* start together with the designated units. *(Opposite of Conflicts.)*
+- **Wants** → This unit *should* start together with the designated units but will still start even if the designated units fail.
+- **AllowIsolate** → Similar to changing the runlevel in a traditional init system.
+
+### `[Service]` — Configuration items specific to that service
+
+- **ExecReload** → Scripts or commands to run when unit is reloaded.
+- **ExecStart** → Scripts or commands to run when unit is started.
+- **ExecStop** → Scripts or commands to run when unit is stopped.
+- **Environment** → Sets environment variables.
+- **EnvironmentFile** → Indicates a file that contains environment variable substitutes.
+- **RemainAfterExit** → *(yes/no)* If set to *yes*, the service is left active even when ExecStart process terminates.
+- **Restart** → *(no, on-success, on-failure, on-abnormal, on-watchdog, on-abort, always)*
+- **Type** → Sets the startup type.
+
+### `[Install]` — Determines what happens when a service is enabled/disabled
+
+- **Alias** → Additional names for the service in systemctl commands.
+- **Also** → Additional units that must be enabled or disabled for this service.
+- **RequiredBy** → Designates other units that require this service.
+- **WantedBy** → Specifies which target unit manages this service.
+
+---
+
+# Target Unit Files  
+
+Groups together various services to start at system boot time.  
+The default target unit file, `default.target`, is symbolically linked to the target unit file used at system boot.
+
+```sh
+$ systemctl get-default  # Show the default.target link
+$ systemctl isolate multi-user.target  # Change target
+$ systemctl status graphical.target  # Check status of a target & whether it's active
+$ systemctl list-units --type=target  # List all systemd targets
+```
+
+### Commonly Used System Boot Target Unit Files:
+
+- **graphical.target** → Multiple users, GUI access available.
+- **multi-user.target** → Multiple users, no GUI access.
+- **runleveln.target** → SysVinit compatibility (n = 1-5).
+- **rescue.target** → Mounts all local filesystems, root-only access, no networking, minimal services.
+- **emergency.target** → Only mounts root filesystem as read-only, root-only access, minimal services.
+
+---
+
+# Commonly Used systemctl Service Management Commands  
+
+```sh
+$ systemctl start <service>
+$ systemctl stop <service>
+$ systemctl status <service>
+$ systemctl restart <service>
+$ systemctl reload <service>
+$ systemctl disable <service>
+$ systemctl enable <service>
+$ systemctl daemon-reload
+$ systemctl mask <service>
+$ systemctl unmask <service>
+```
+
+### Convenient systemctl Service Status Checks  
+
+```sh
+$ systemctl is-active <service>  # Is service running?
+$ systemctl is-enabled <service>  # Is service enabled?
+$ systemctl is-failed <service>  # Has service failed?
+$ systemctl is-system-running  # Overall system state
+```
+
+---
+
+# systemctl Operational Statuses  
+
+```sh
+$ systemctl is-system-running
+```
+
+- **running** → System is fully in working order.
+- **degraded** → System has one or more failed units.
+- **maintenance** → System is in emergency or recovery mode.
+- **initializing** → System is starting to boot.
+- **starting** → System is still booting.
+- **stopping** → System is starting to shut down.
+
+---
+
+# SysVinit  
+
+- **systemd** is backward compatible with **SysVinit**.  
+- **SysVinit** uses *runlevels* instead of *targets* to determine what groups of services to start.
+
+```sh
+$ systemctl list-units --type=service  # View active services
+$ systemctl show <service>  # Display properties of a systemd service
+```
