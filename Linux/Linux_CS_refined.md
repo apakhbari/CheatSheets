@@ -1369,3 +1369,148 @@ Because of recent filtering situation and better performance of package managers
 | **TZ** | User’s time zone, if different from system’s time zone |
 | **UID** | User account’s user identification number |
 | **VISUAL** | Default screen-based editor used by some shell commands |
+
+# Locale Related  
+
+- `LANG="en_US.UTF-8"`
+- `LC_COLLATE="en_US.UTF-8"`
+- `LC_CTYPE="en_US.UTF-8"`
+- `LC_MESSAGES="en_US.UTF-8"`
+- `LC_MONETARY="en_US.UTF-8"`
+- `LC_NUMERIC="en_US.UTF-8"`
+- `LC_TIME="en_US.UTF-8"`
+- `LC_ALL=`
+
+## Modify Environmental Variables
+
+- **Using `=`** → Not survive entering into a subshell  
+
+```sh
+$ MYVAR=101
+$ echo $SHLVL  # 1
+$ echo $MYVAR  # 101
+$ bash
+$ echo $MYVAR  # (empty)
+$ echo $SHLVL  # 2
+```
+
+- **Using `export`** → Survives entering into a subshell  
+- `$ unset ENV_VAR` → To unset a variable  
+
+If you need to **permanently change** the environmental variables, you’ll need to add the `export` command to the `.bashrc` file in your `$HOME` folder so that it runs each time you log in.
+
+---
+
+# Security  
+
+- `$ md5sum` → Compute and check MD5 message digest, used for integrity, produces a 128-bit hash value  
+- `$ sha2256sum file.txt`
+
+---
+
+# Booting & Initializing  
+
+### Main Steps of Booting  
+
+1. The server firmware starts, performing a quick check of the hardware, called a **Power-On Self-Test (POST)**, and then it looks for a boot loader program to run from a bootable device.  
+2. The boot loader runs and determines what Linux kernel program to load.  
+3. The kernel program loads into memory; prepares the system, such as mounting the root partition; and then runs the initialization program.  
+4. The initialization process starts the necessary background programs required for the system to operate (such as a graphical desktop manager for desktops or web and database applications for servers).  
+
+### System Firmware  
+
+- When a machine is powered on, the CPU is hardwired to execute boot code stored in ROM.  
+- The system firmware typically knows about all the devices that live on the motherboard, such as SATA controllers, network interfaces, USB controllers, and sensors for power and temperature.  
+- During normal bootstrapping, the system firmware probes for hardware and disks, runs a simple set of health checks, and then looks for the next stage of bootstrapping code.  
+
+All **IBM-compatible workstations and servers** utilize some type of built-in firmware to control how the installed operating system starts:  
+
+- **BIOS (Basic Input/Output System)**  
+- **UEFI (Unified Extensible Firmware Interface)**  
+
+### BIOS  
+
+- One limitation of the original BIOS firmware was that it could read only one sector’s worth of data from a hard drive into memory to run. That’s not enough space to load an entire operating system.  
+- To get around that limitation, most operating systems split the boot process into two parts:  
+  - The **BIOS runs a boot loader program**, a small program that initializes the necessary hardware to find and run the full operating system program.  
+  - The **Master Boot Record (MBR)** is the first sector on the first hard drive partition on the system. The BIOS looks for the MBR and reads the program stored there into memory.  
+  - The boot loader program mainly points to the location of the actual operating system kernel file.  
+
+### UEFI  
+
+- Intel created the **Extensible Firmware Interface (EFI)** in 1998, and by 2005, the **Unified EFI (UEFI)** specification was adopted as a standard.  
+- UEFI specifies a special disk partition, called the **EFI System Partition (ESP)**, to store boot loader programs.  
+- On Linux systems, the ESP is typically mounted in the `/boot/efi` directory, and the boot loader files are typically stored using the `.efi` filename extension, such as `linux.efi`.  
+
+### Extracting Information about the Boot Process  
+
+```sh
+$ dmesg            # Print or control the kernel ring buffer
+$ journalctl       # Query the systemd journal
+# Log files:
+# - /var/log/boot (Debian distros)
+# - /var/log/boot.log (RH distros)
+```
+
+---
+
+# Boot Loaders  
+
+A boot loader helps bridge the gap between the system firmware and the full **Linux operating system kernel**.  
+
+## GRUB  
+
+- **GRUB Legacy** (1999) was created to provide a robust and configurable boot loader.  
+- **GRUB2** (2005) introduced:  
+  - The ability to load hardware driver modules.  
+  - Using logic statements to alter the boot menu options dynamically, depending on conditions detected on the system.  
+
+## GRUB Configuration Files  
+
+- **GRUB Legacy** stores the menu commands in:  
+  - `/boot/grub/menu.list` (Debian)  
+  - `/boot/grub/grub.conf` (RH)  
+- **GRUB2** config file:  
+  - BIOS: `/boot/grub/grub.cfg` or `/boot/grub2/grub.cfg`  
+  - UEFI: `/boot/efi/EFI/[distro-name]/grub.cfg`  
+
+```sh
+$ grub-install   # Install GRUB Legacy on your drive
+$ grub2-mkconfig -o /boot/grub2/grub.cfg  # Generates a new GRUB2 config
+```
+
+### Alternative Boot Loaders  
+
+- `systemd-boot`  
+- `U-Boot boot loader`  
+
+---
+
+# Initialization  
+
+The **initialization daemon (init)** determines which services are started and in what order.
+
+Two types of initialization daemons:  
+
+- **SysVinit** → Not used by most major Linux distributions anymore.  
+- **systemd** (2010) → The most popular system service initialization and management mechanism.  
+
+## Systemd  
+
+The easiest way to start exploring **systemd** is through the **systemd units**.  
+A unit defines a service, a group of services, or an action. Each unit consists of a name, a type, and a configuration file.
+
+### systemd Unit Types  
+
+- `automount`
+- `device`
+- `mount`
+- `slice`
+- `snapshot`
+- `socket`
+- `path`
+- `scope`
+- `service`
+- `swap`
+- `target`
+- `timer`
