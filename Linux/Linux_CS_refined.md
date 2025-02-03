@@ -1273,3 +1273,15 @@ Will force the application to ignore any input from `STDIN`. By default, `STDOUT
 2. A process runs away with the CPU and refuses to give it up.  
 
 **Interprocess communication signals:**
+
+| Number | Name  | Description                                      |
+|--------|------|--------------------------------------------------|
+| 1      | HUP  | Hangs up                                        |
+| 2      | INT  | Interrupts                                      |
+| 3      | QUIT | Stops running                                  |
+| 9      | KILL | Unconditionally terminates                     |
+| 11     | SEGV | Segments violation                             |
+| 15     | TERM | Terminates if possible                         |
+| 17     | STOP | Stops unconditionally, but doesn’t terminate   |
+| 18     | TSTP | Stops or pauses, but continues to run in background |
+| 19     | CONT | Resumes execution after STOP or TSTP          |
