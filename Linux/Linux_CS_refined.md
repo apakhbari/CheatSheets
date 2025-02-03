@@ -467,3 +467,146 @@ Most Linux distributions use only one of these three:
 | 636  | TCP      | LDAPS (Lightweight Directory Access Protocol over TLS/SSL) |
 | 993  | TCP      | IMAPS (Internet Message Access Protocol over TLS/SSL) |
 | 995  | TCP      | POP3S (Post Office Protocol 3 over TLS/SSL) |
+
+---
+## Tips & Tricks:
+
+- keyring is a kernel component, it caches encrypted keys which are kernel level on user space
+- for deleting important data:  
+  ```sh
+  shred -u -z -n 9 -v secret.txt
+  ```
+- why a encoded file is openable with `less`, but not with `cat`?  
+  Because `less` saves the file in memory then reads it, and therefore can access keyring.
+- **PEM Format**:
+  ```
+  —— begin pub key ———
+  base64 encoded pub key
+  —— end pub key ———
+  ```
+- Key pairs should be generated on a desktop system with GUI and personal data because it has more entropy.
+- Run `echo $?` after **EVERYTHING**!
+- Some free firewalls: `pfsense`, `open sense`, `firepower`
+- Check out these NSM (Network Security Monitor): `zeek`, `bro`
+- `Dirbuster` for crawling all directories in a web server
+- `cockpit` is a service that automates and makes monitoring of all systemD services easier.
+- **Executable file format**:  
+  - On Windows: **PE**  
+  - On Linux: **ELF** (Executable and Linkable Format)
+- **IMPORTANT:**  
+  - Bash scripts (and all interpreter scripts and files / not compiler-based) **must have read permission** in order to execute.  
+  - **ELF formats** are fine **without read permission** in order to execute.
+- **Preventing user modification**:  
+  ```sh
+  chattr +i /etc/passwd
+  ```
+  This prevents hackers from adding users, which is often an early step in an attack.
+- **BLP (Bell-LaPadula Model)** is a security model.
+- **SELinux on Debian-based systems**: After first reboot, it takes 30-40 mins to label resources.
+- **Hardening should be done BEFORE production deployment.**  
+  Otherwise, rootkits might already be present.
+- **Kernel is read-only (RO) during startup** to prevent malware from loading into RAM.
+- **Setting line numbers in Vim**:
+  ```vim
+  :set nu
+  ```
+- **Grepping binary files**:
+  ```sh
+  grep -a (ascii) 
+  ```
+- **Converting epoch time in terminal**:
+  ```sh
+  date -d @1671122464
+  ```
+- **Hardening should be implemented via threat modeling, NOT best practices.**  
+  Create models, analyze the environment, and conduct a risk assessment before hardening.
+- **DNS Leakage**:  
+  If tunneling, check for DNS leaks (some online tools are available).
+- **Antivirus bypassing**:  
+  AVs hash files for detection; binary padding (adding a single nop byte) can change the hash and bypass AV detection.
+- **Searching in Vim**:
+  ```sh
+  /
+  ```
+- **Encryption algorithms**:  
+  - `aes256-ctr`: (Counter mode) **Stream-based, bit-by-bit encryption**  
+  - `aes256-cbc`: **Cipher Block Chaining**
+- **Bash execution**:  
+  When a user is given a bash shell, all `.sh` files inside `/etc/profile.d` are read.
+- **Forcing a bash script to re-execute without restart**:
+  ```sh
+  source a.sh
+  ```
+- **Search engines that hackers use**:  
+  `shodan`, `censys`, `binaryage`
+- **POSIX**: A UNIX-based standard introduced by **Richard Stallman** to standardize distributions.
+- **Threads**: Threads **do not have access to their parent’s heap and stack**.
+- **Apache attack vector**:  
+  Apache is **thread-based**, so tools like **slowhttptest** (developed by Google) create threads and send data very slowly to exhaust system resources.
+- **Finding syscalls by number**:
+  ```sh
+  vim /usr/include/asm/unistd_64.h
+  ausyscall --dump
+  ```
+- **Installing MITRE ATT&CK Navigator on Docker**.
+- **On low-resource systems** (low RAM & CPU), use **haveged** package for generating public-private keys.
+- **Salt in passwords (`/etc/shadow`)**:  
+  A phrase used to ensure two identical passwords don’t generate the same hash.
+- **File inheritance**:  
+  If a file exists in **John’s home directory** (`/home/john`) with `700` permissions but is owned by `root:root`, John can **still** modify it because **directory permissions override file permissions**.
+- **For scripts that must remain unchanged**, store them here:
+  ```sh
+  /usr/local/sbin/
+  ```
+- **AVML tool** is used for **RAM data dumping**.
+- **Keyring in kernel**:  
+  - Caches session credentials, so entering a password once means you **don't** need to re-enter it for a while.  
+  - Can be flushed using:
+    ```sh
+    sudo -k
+    ```
+- **Shared Object files (`.so`)** are dynamically linked libraries.
+- **After restarting a service, always check its status**.
+- **Finding processes without `ps`**:
+  ```sh
+  cat /proc/[PID]/cmdline
+  ```
+- **List dynamic dependencies**:
+  ```sh
+  ldd /sbin/sshd | grep libwrap
+  ```
+- **Standard I/O Streams**:
+  ```sh
+  /dev/stdout
+  /dev/stdin
+  /dev/stderr
+  ```
+- **Multiplexing Terminal Screens**:
+  ```sh
+  screen
+  tmux
+  ```
+- **Prevent an account from interactive login**:
+  ```sh
+  /sbin/nologin or /bin/false
+  ```
+- `/sbin/nologin` is used for **system service accounts** that don’t need an interactive shell.
+- `/bin/false` is a **more restrictive** alternative to `/sbin/nologin`.
+- **Exit status conventions**:
+  - `0`: Success  
+  - Any **positive integer**: Error  
+- **Killing a process in the terminal**:
+  - `Ctrl + C`: Sends **SIGINT** to terminate the process.
+- **Restart the system**:
+  ```sh
+  init 6
+  ```
+- **Setting the timezone**:
+  ```sh
+  timedatectl set-timezone Asia/Tehran
+  ```
+- **Cronjob**:  
+  - **Minute** is the smallest unit.
+
+---
+## When you go to a system for the first time:
