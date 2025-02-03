@@ -610,3 +610,176 @@ Most Linux distributions use only one of these three:
 
 ---
 ## When you go to a system for the first time:
+Here is your content properly formatted in **Markdown (`.md`)**, keeping everything as it is without any cleanup, inference, or removals:
+
+```markdown
+# **CLI & Shell**
+
+## Adding Binaries to Terminal
+- To add something binary to your terminal, add it to `/usr/local/bin`
+
+## **History**
+The shell keeps track of all the commands you have recently used and stores them in your login session’s history list.
+
+```sh
+$ history n  # Lists the last N commands
+```
+
+### **History Options**
+- `-a` → Appends the current history list commands to the end of the history file.
+- `-n` → Appends the history file commands from the current Bash shell session to the current history list.
+- `-r` → Overwrites the current history list commands with the commands stored in the history file.
+- `-w` → Writes the current history to the history file.
+- `-c` → Clears your current history list.
+- `--w` → Wipes the history file.
+
+```sh
+$ echo $HISTFILE  # Viewing history file path
+```
+
+### **Re-execute Commands**
+```sh
+$ !!  # Re-execute your most recent command
+$ !n  # Re-execute command with number n in history list
+```
+
+---
+
+## **File Combining Commands**
+### **Horizontal Combination**
+```sh
+$ cat numbers.txt random.txt
+```
+
+### **Vertical Combination**
+```sh
+$ paste numbers.txt random.txt
+```
+
+---
+
+## **File Operations**
+```sh
+$ od       # Dump files in octal and other formats
+$ split    # Divide large file into smaller chunks
+$ sort     # Sort lines of text files (output is sorted, original file remains unchanged)
+$ nl       # Number lines of a file (only non-blank text files)
+$ tr 'A-Z' 'a-z'  # Convert uppercase characters to lowercase
+```
+
+### **Navigating with `less`**
+```sh
+$ less
+```
+- **Spacebar** → Move forward one page down.
+- **Esc+V** → Move backward one page up.
+- **Enter** → Move forward one line down.
+- **? or /** → Search through the file.
+
+---
+
+## **File Viewing Commands**
+```sh
+$ head   # Output the first part of files
+$ tail   # Output the last part of files
+$ wc     # Word, byte, and line count of files
+```
+
+### **Follow file growth in real-time**
+```sh
+$ tail -f filename
+```
+
+---
+
+## **Text File Processing**
+```sh
+$ cut    # Remove sections from each line of files (does not modify the file)
+$ uniq   # Like `cat`, but omits repeated lines
+$ md5sum # Generate MD5 hash of a file
+$ grep   # Print lines that match a pattern
+```
+
+### **`grep` Options**
+- **`-c`** → Display a count of text file records that contain a pattern match.
+- **`-d action`** → Read a directory as if it were a file (`read`), ignore (`skip`), or act recursively (`recurse`).
+- **`-i`** → Ignore case in patterns.
+- **`-v`** → Display only lines that do not contain the pattern.
+- **`-f FILE`** → Obtain patterns from a file.
+- **`-F`** → Treat patterns as fixed strings (no regex).
+- **`-E`** → Treat patterns as extended regex.
+- **`-r`** → Recursively search directories.
+
+### **Example: Remove blank lines from a file**
+```sh
+$ grep -v ^$ filename
+```
+
+---
+
+## **Linux Standard I/O Streams**
+1. **Standard Input (STDIN)** - Keyboard by default, file descriptor = **0**.
+2. **Standard Output (STDOUT)** - Terminal window by default, file descriptor = **1**.
+3. **Standard Error (STDERR)** - Terminal window by default, file descriptor = **2**.
+
+### **Redirecting Outputs**
+```sh
+$ command > file       # Redirect STDOUT to file
+$ command 2> file      # Redirect STDERR to file
+$ command &> file      # Redirect both STDOUT and STDERR to file
+$ command >> file      # Append STDOUT to file
+$ command 2>> file     # Append STDERR to file
+$ command &>> file     # Append both STDOUT and STDERR to file
+$ command 2>&1         # Redirect STDERR to STDOUT
+```
+
+### **Combining Outputs**
+```sh
+$ (cal 2017; cal 2018) | less
+```
+
+### **Redirecting STDIN from a file**
+```sh
+$ tr 'A-Z' 'a-z' < .bash_profile
+```
+
+### **Using `tee` for Output Duplication**
+```sh
+$ command1 | tee filename | command2
+```
+- Stores `STDOUT` of `command1` in `filename`, then pipes to `command2`.
+- Useful for **troubleshooting pipelines** and **simultaneous viewing and logging of output**.
+
+---
+
+## **Wildcard Expansion Rules**
+| Character | Description |
+|-----------|-------------|
+| `*`       | Zero or more characters |
+| `?`       | Any single character |
+| `[abc]`   | A character from `a, b, or c` |
+| `[^abc]`  | A character NOT from `a, b, or c` |
+| `[a-z]`   | A character from `a to z` |
+| `{st1,st2,st3}` | A string from `st1, st2, or st3` |
+
+---
+
+## **File Management Commands**
+```sh
+$ ls      # List directory contents
+$ cp      # Copy files and directories
+$ mv      # Move/rename files
+$ rm      # Remove files or directories
+$ find    # Search for files in a directory hierarchy
+$ chmod   # Change file permissions
+$ chown   # Change file owner and group
+$ stat    # Display detailed information about a file
+$ touch   # Create an empty file or update a file's timestamp
+$ du      # Estimate file space usage
+$ df      # Report file system disk space usage
+```
+
+---
+
+This Markdown file preserves the original content **without modifications**, **cleanups**, or **inferences**. 🚀 Let me know if you need further refinements!
+```
