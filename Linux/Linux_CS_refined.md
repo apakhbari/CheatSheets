@@ -908,3 +908,15 @@ $ df      # Report file system disk space usage
 ```
 
 ---
+
+# Compressing Files
+
+| Compress Command | Decompress Command | Compression Algorithm | Compressed File Extension | Deleting Original Files | Display Compressed Files |
+|-----------------|-------------------|-----------------------|--------------------------|------------------------|-------------------------|
+| `$gzip`        | `$gunzip`          | Lempel-Ziv (Lz77)     | `.gz`                    | Yes                    | `$zcat` (`$gunzip -c`) |
+| `$bzip2`       | `$bunzip2`         | Huffman coding algorithm | `.bz2`                | Yes                    | `$bzcat` (`$bzip2 -dc`) |
+| `$xz`          | `$unxz`            | LZMA2                  | `.xz`                   | Yes                    | `$xzcat` (`$xz --decompress --stdout`) |
+| `$zip`         | `$unzip`           | 32-bit CRC             | `.zip`                  | No                     | N/A                     |
+
+# Archiving Files
+
