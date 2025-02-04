@@ -724,27 +724,114 @@ base64 encoded pub key
 - FireJail creates an isolated environment for suspicious binaries or apps.
 - It’s profile-based and isolates processes completely using a unique PID.
 
-## Malware Detection
+**Malware Detection:**
 
-- **LMD: Linux Malware Detection**
-- We are using LMD + ClamAV (clamd).
+- LMD: linux malware detection
+- **we are using LMD + ClamAv (clamd)**
+- for configuring it `$ vim /usr/local/maldetect/conf.maldet`
+  - `email_allert=“1”`
+  - `email_address=”[examle@example.com](mailto:examle@example.com)”`
+  - line 50 : `autoupdate_signature=“1”`
+  - line 58 : `autoupdate_version=“1”`
+  - line 71 : `cron_prune_days=“30”` —> after how many days delete isolated malwares that are kind of like logs
+  - line 76 : `cron_daily_scan=“1”` —> scan every day
+  - line 104 : `scan_max_depth=“21”` —> how many directories should I go down. Best practice to make it 21 because of in depth directories. attacker knows maldet is default to 15, so make 16 directories and bypass maldet
+  - line 108 : `scan_min_filesize=“19”`
+  - line 115 : `scan_max_filesize=“8M”`
+  - line 141 : `scan_clamscan=“1”` —> use clamd as an other engine to be better
+  - line 173 : `scan_ignore_root=“0”` —> if a file is owned by root, dont bypass scanning
 
-- To configure it:
-  - `$ vim /usr/local/maldetect/conf.maldet`
-  - Set email alert:
-    - `email_alert="1"`
-    - `email_address="example@example.com"`
-  - Set auto-update:
-    - `autoupdate_signature="1"`
-    - `autoupdate_version="1"`
-  - Set prune period:
-    - `cron_prune_days="30"`
-  - Set daily scan:
-    - `cron_daily_scan="1"`
-  - Set scan max depth:
-    - `scan_max_depth="21"`
+- `$ freshclam` —> update clamAV
+- `$ maldet -u` —> update maldet
+- `$ maldet -a (analyze) /home` —> scan directory
+- `$ maldet —report [SCANID]` —> see report that is generated
+- `$ maldet -e list` —> show all reports that have generated
+- `$ maldet -r /var/www/html/a/upload 7` —> scan this directory for files that are created/modified for last 7 days
 
-- `$ freshclam` —> Update ClamAV.
-- `$ maldet -u` —> Update LMD.
-- `$ maldet -a /home` —> Scan directory.
-- `$ maldet --report [SCANID]` —> View scan report.
+**root kit hunter:**
+
+- `$ rkhunter —update`
+- `$ rkhunter -c (check) --cronjob —rwo` —> scan all system, cronjob means you don’t have to press enter in middle of scan for continuing process, rwo means just show warnings/errors
+
+**AIDE (advanced Intrusion Detection Environment)**
+
+- Integrity checking. it is scanning all system and make a DB full of hash of all of files that system contains. then on second time that you scan system, it is going to compare DB2 with DB1 for all of files that are modified.
+- also after attack it is good for analyzing what has been part of attack.
+- `$ aide —init` —> it start scanning
+- `$ vim /etc/aide.conf` —> config file
+  - line 91 : assign directories that want to scan, with sort of scan parameters it should have
+  - ! IMPORTANT ! : first time that you scan change name of DB that it makes : `$ cd /var/lib/aide/ $ mv aide.db.new.gz aide.db.gz` —> this is because comparing is based on two files, aide.db.gz : main file (DB1), aide.db.new.gz : main file (DB2)
+- `$ aide —check` —> just show files that have modified, create DB in RAM
+- `$ aide —update` —> show files that have modified, create DB in /var/lib/aide
+
+———————————————
+
+[6- auditd, dnssec, OpenSCAP]
+
+**AuditD:**
+
+- auditd is a component of kernel. Can log Everything.
+- It is being used by auditctl, being searched with ausearch & for generating report you can use aureport. its config file is in `/etc/audit/auditd.conf`, there is no need to make changes, rules can be written in `/etc/audit/audit.rules`. address of logs are `/var/log/audit/audit.log`
+- `$ vim /etc/audit/audit.rules` —> there is by default this values there, don’t change them in any situation, they are good, you can add rules below them but it is best practice to add rules in another file:
+  - `-D` —> delete all of rules that are being written in RAM
+  - `-b 8192` —> how much is my audit buffer in kernel memory
+  - `-f 1` —> failure mode, 0 : when audit failed do nothing, 1: when failed printk(), 2: when failed panic
+  - `—backlog_wait_time 60000` —> low level concept, what my frequency (hertz) would be for your auditd
+- `$ auditctl -l` —> see rules that are loaded on system
+- `$ auditctl -w (watch) /etc/shadow -p (permisiion) rwxa (read/write/execute/change attribute) -k (key) SHADOW_CHANGED`
+- for permanenting rules : `$ auditctl -w /etc/shadow -p w -k SHADOW_CHANGED >> /etc/audit/rules.d/askari.rules`
+- for a basic seeing of logs you can : `$ cat /var/log/audit/audit.log | grep -ia shadow_changed`
+- `$ ausearch -i (interpret) - k SHADOW_CHANGED` —> seeing logs
+- `$ ausearch -i -x useradd` —> for searching using command that was executed
+- `$ ausearch -i -ua 1000` —> for searching using logined user
+- `$ ausearch —event 562` —> for finding event
+- Log fields :
+  - type: SYSCALL - USERLOGIN - USERLOGOUT - ADDUSER - ADDGROUP - AVC - CWD - PASS - PROCTITLE, …
+  - msg: by whom and when this log was created : audit(166723324 (epoch time, for converting epoch time using terminal —> `$ date -d @1671122464):149 (event id, for each event auditd assign an id because it is easier to search in it this way))
+  - arch: cpu architecture - c000003e for x86/64
+  - syscall: number of syscall that caused this log to happen - could find syscall using its number : 1- searching in `$ vim /usr/include/asm/unistd_64.h` 2- `$ ausyscall —dump`
+  - success: [systemic atrr] has syscall finished successfully or not
+  - exit: [systemic atrr] return code of syscall to the kernel. has nothing to do with famous app exit code
+  - a0 a1 a2 a3: [systemic atrr] hex arguments of syscall
+  - items: [systemic atrr] how many pass auxiliary records existed in syscall
+  - ppid: parent process id
+  - pid: process id
+  - auid: audit user id, login id, with which user was logined to system in first time
+  - uid: user id
+  - gid: group id
+  - guid: group user id
+  - euid: effective user id
+  - suid: set user id
+  - fsuid: file system user id (for file sharing in network)
+  - egid: effective group id
+  - sgid: set group id
+  - fsgid: file system group id (for file sharing in network)
+  - tty: console kind
+  - ses: [systemic atrr] what was session id of process that was invoked that caused this log
+  - comm: what command was hitted
+  - exe: executable path of command
+  - subj: SELinux Context
+  - key: key of log
+
+- IMPORTANT : `uid=-1/unset/40,000,000` means it is systemic user
+- `$ aureport —start 03/17/2022 00:00:00 —end 01/14/2023 00:00:00`
+- `$ aureport -x` —> create executable report
+- `$ aureport —summary` —> create مدیریتی report
+- `$ aureport -i —login` —> create report of who has logged in
+- `$ aureport -i —login —summary`
+- for writing rules in auditd, it is like firewall that adds from above to below, and order of it matters
+- auditctl -a (append this rule below all rules) -A (append this rule above all rules) action (what to do about this syscall, values are : always - never), filter (different values —> task : is systemic and rarely used, when fork() or clone() was executed by a parent then log - exit : by the time system call is exiting do this log - user : filter events that are originated in user space - exclude : dont show this as log, like never in action) [mostly always, exit] -S system_call -F field=value -k key_name
+
+- SCENARIO : defense evasion, Persistence, Privilege Escalation, Initial Access (T1078 MITRE ATT&CK):
+  - `$ auditctl -a always,exit -F arch=b64 -F path=/bin/su -F perm=x (execute) -F “auid>=1000” -f “auid!=-1” -k T1078_PE`
+- SCENARIO : log all commands a user execute
+  - `$ auditctl -a always,exit -F arch=b64 -S execve -F “auid=1000” -k HACKER_EXEC` —> it is very noisy, don’t do it for all the time
+  - tip: `$ file echo` —> it is a shell built-in, not going to call execve syscall
+- SCENARIO : log all commands a systemic user execute, in order to find whether it is hacked
+  - `$ auditctl -a always,exit -F arch=b64 -F path=/etc/passwd -F perm=war -k PASSWD_CHANGE`
+  - `$ auditctl -1 always,exit -F arch=b64 -S ptrace -k PROCESS_INJECTION`  
+  - (test this one, was not working) `$ auditctl -a always,exit -F arch=b aas64 -S open -S openat -F exit=-EACCES -k PERM` —> when ever a user tried to open a file that haven’t had permission to, log it. open/openat syscalls are for opening files and EACCES is error that is being sent with permission denied so if you have to
+
+also watch `/etc/sudoers` file
+
+**DNSSEC:**
