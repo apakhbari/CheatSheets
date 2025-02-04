@@ -1,3 +1,6 @@
+
+## Commit messages examples
+
 ### 1. **Feature Implementation**
    - `feat: add user authentication with JWT`
    - `feat: implement payment gateway integration`
