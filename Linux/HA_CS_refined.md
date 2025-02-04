@@ -107,3 +107,78 @@ Commands:
 - `$ apt install keepalived`
 - `$ apt install haproxy`
 - `$ apt install haproxyctl`
+
+---
+
+**3rd session: Crosync - Pacemaker**
+
+- Crosync: a cluster engine, which creates a group of systems with additional features for implementing HA within apps. It must be installed on all nodes for it to work. It doesn’t care about services and what is inside cluster it just connects nodes altogether
+- corosync config file → /etc/corosync/corosync.conf
+- Qourum: minimum number of votes that a distributed transaction has to obtain in order to be allowed to perform an operation in a distributed system. It reduces split brain. more than 2 systems must be involved. It even decide for who is in charge (DC) of cluster by having CIB
+- In a cluster, all nodes are asking for more resource
+- The Totem Single Ring Protocol (SRP), used by corosync, imposes a logical token-passing ring on the network to accomplish
+  - Reliable delivery of messages
+  - Flow Control
+  - Fault Detection: This is based on IP, so if there is a problem in networking, it is going to be offline
+  - Group Membership
+  - Allowing a node, part of a cluster, to broadcast a message only if it holds the token
+
+- Pacemaker: HA cluster resource manager - software that runs on a set of hosts (a cluster of nodes) in order to preserve integrity and minimize downtime of desired services (resources). It must be installed on all nodes for it to work.
+- A resource is made of 3 parts
+  - Standard
+  - Provider (could be removed sometimes, so standard directly contact agent)
+  - Agent
+
+- Note: first config cluster, then launch pacemaker, then integrate desired service
+- PCS Cli helps us. for integration of crosync + pacemaker
+- Pacemaker Key Features
+  - Detection of and recovery from node- and service-level failures
+  - Ensure data integrity by fencing faulty nodes
+  - Support for multiple nodes per cluster
+  - Support for multiple resource interface standards (anything that can be scripted can be clustered)
+  - Support for practically any redundancy configuration (active/passive, N+1, etc.)
+  - Automatically replicated configuration that can be updated from any node
+  - Relationships between services, such as ordering, colocation and anticolocation
+- Fencing: also known as STONITH (acronym for Shoot The Other Node In The Head) is the ability to ensure that it is not possible for a node to be running a service. This is accomplished via fence devices such as intelligent power switches that cut power to the target, or intelligent network switches that cut the target’s access to the local network
+- PaceMaker master processes (Daemons)
+  - Pacemaker-based: Cluster Information Based (CIB) is an XML representation of the cluster’s configuration and the state of all nodes and resources keeps the CIB synchronized across the cluster and handles requests to modify it. It is possible to change this XML file while cluster is offline and then changes could happen
+  - Pacemeker-attrd: maintains a DB of attributes for all nodes, keeps it synchronized across the cluster, and handles requests to modify them. These attributes are usually recorded in the CIB
+  - Pacemeker-schedulerd: determines what actions are necessary to achieve the desired state of the cluster
+  - Pacemeker-execd: handles requests to execute resources on the local cluster node, and returns the result
+  - Pacemeker-fenced: handles requests to fence nodes. Given target node, the fencer decides which cluster node(s) should execute which fencing device(s), calls the necessary fencing agents (either directly, or via requests to the fencer peers on other nodes) and returns the result
+  - Pacemeker-controld (DC): Pacemaker’s coordinator, maintaining a consistent view of the cluster membership and orchestrating the other components
+
+commands:
+
+- `$ apt install haproxyctl`
+
+---
+
+**4th session: Pacemaker- Active/Passive Cluster - DRBD - GlusterFS**
+
+- If there are Two different resources on a server that have a sort of dependency, You have to use `$ pcs constraint`, in order to co-locate or order those services together.
+- e.g. Ordering Constraints → start vip then start website (kind:mandatory)
+- e.g. Colocation Constraints → website with vip (score:INFINITY)
+
+- `$ Rsync` → sync two directories, It is part of linux kernel. Can work on NFS (Network File System)
+
+- DRBD (Distributed Replicated Block Device): is a block device used to create highly available data clusters. This is done by mirroring a whole block device via an assigned network. DRBD can be compared to a network based raid-1. It is way more advanced than rsync
+- It is possible to assign only one partition of a Disk to DRBD
+- DRBD can be used when disk is not Formatted, so It is a level below that. you can assign it after partitioning. So when mounting you are not mounting disk, you are mounting DRBD. When doing FS, you are not FS disk, but you are FS DRBD
+- DRBD is now in version 9
+- DRBD is not working on 3 and above nodes, should use iSCSI for such workflows
+- Instead of TCP/IP, It is possible to use DRBD using infinity band cables, then replicate servers physically
+- DRBD Protocol (use protocol C in most cases)
+
+  - **Protocol A:** Asynchronous replication protocol. Local write operations on the primary node are considered completed as soon as the local disk write has finished, and the replication packet has been placed in the local TCP send buffer.  
+  - **Protocol B:** Memory synchronous (semi-synchronous) replication protocol. Local write operations on the primary node are considered completed as soon as the local disk write has occurred, and the replication packet has reached the peer node.
+  - **Protocol C:** Synchronous replication protocol. Local write operations on the primary node are completed only after the local and the remote disk write(s) have been confirmed. As a result, the loss of a single node is guaranteed not to lead to any data loss.
+
+- DRBD uses the TCP port 7788
+
+- GlusterFS is way better than NFS. It does not need mounting like NFS. It handles it
+- GlusterFS (Gluster File System) is an open source Distributed File System that can scale out in building-block fashion to store multiple petabytes of data.
+- The clustered file system pools storage servers over TCP/IP or InfiniBand Remote Direct Memory Access (RDMA), aggregating disk and memory and facilitating the centralized management of data through a unified global namespace.
+- It is better to use Object storages for GlusterFS
+- Best FS for GlusterFS is XFS
+- GlusterFS is like File Storage
