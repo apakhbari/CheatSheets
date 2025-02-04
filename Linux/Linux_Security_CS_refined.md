@@ -279,3 +279,135 @@ base64 encoded pub key
 - what is format of services and zones of firewallD? xml
 - /usr/lib/firewalld/services —> permanent config and zones
 - /etc/firewalld —> runtime changes. override /usr/lib/firewalld/services when apply changes in runtime
+
+———————————————
+
+# 3- SELinux, SSH Hardening
+
+## SELinux:
+
+- Make all of os to subject and objects, and then will check if a subject has access to object. which is a labeling/contexting tool.
+- DAC: is on all OSs, read write execute permissions, is not great for specified access controls.
+- MAC: upper than DAC. SELinux is in this level.
+- LSM Framework is built-in in all of distributions, security implementations are in it. SELinux is in this level. AppArmor is another LSM which is built-in for ubuntu, Tomoyo is another one.
+- Tip: after configuring SELinux on a machine, it should work for a good amount of time for staging and testing purposes, then goes for production. In this testing time, SELinux must work on permissive mode and work with it 1 week.
+- Extended regular DAC:
+
+  - Acl is file-system level, it overrides permissions.
+  - `$ setfacl $ getfacl`
+  - What is dot (.) you see in end of files (only red hat distros) after `$ ls -l` → `-rw———.`? it is linking to acl.c file, you can define access control on it, it is one of SELinux features, dot (.) show that access control is not set on this file and plus (+) show that access control has been set.
+  - What is mask in facl? It is maximum permission for a file. Implementation is on group.
+  - `$ setfacl -m u(User)|g(Group):username|groupname:Perm(rwx|7) file_name` → example: `$ setfacl -m u:hacker:rwx a.txt`
+  - `$ setfacl -x g:wheel a.txt` → delete wheel group access control
+  - `$ setfacl -b a.txt` → removes flag related to facl. (+) turns to (.).
+  
+- EA (Extra Attribute) —> at first it was implemented for ext family file system.
+
+  - `$ Lsattr a.txt` → see attributes of a file, `$ chattr a.txt` → change attributes of a file.
+  - A (append) —> users and processes can only append to a file. `$ chattr +a a.txt $ chattr -a a.txt` will remove -a attribute.
+  - I (immutable) —> all changes in file system level is discarded. modify move and remove are not allowed.
+  - S (secure delet)
+  - C (compress during writing on hdd)
+  
+- SELinux is based on two main things: 1-context 2-Boolean
+- SELinux has three modes: disabled, permissive (just log), enforcing (is active). `$ setenforce enforceing(1)|permissive(0)` changes the mode, you can’t setenforce to disable, `$ get enforce` shows the mode
+- `$ sestatus` —> show status of selinux.
+
+- SELinuxfs mount —> mount file system on another part so that it is integrated with more security. It is common to do this, since FS is virtual.
+- SELinux root directory —> where the config files are.
+- Loaded policy name —> minimum, targeted (300-400 scopes, users, sockets, processes, services, and apps have built-in profiles and monitoring is on them), MLS/MCS (Multi Level Security, Multi Category Security. it has multi-level security for who can what access to which resource. it uses bella padolla model. tuning MLS takes lots of time.)
+- current mode —> current run-time sestatus
+- Mode from config file —> config file is in `$ vim /etc/selinux/config`. for permanently making it disabled, should change this config file. there is another softlink to this file in `$ vim /etc/sysconfig/selinux`
+- Policy MLS status —> enabled means there are some profile for users, for really enabling it should install third-party packages.
+- Policy deny_unknown status —> in case a process hasn’t profile, can I deny some of its requests / syscalls were not ok for me, can I deny it access?
+- Memory protection checking —> can SELinux protect Memory? (man mprotect 2)
+- Max kernel policy version —> version of SELinux
+
+- SELinux context: User:Role:Type:Level
+- in targeted mode, every users are Unconfined, every roles are object_r, every levels are s0
+- `-Z` switch is for contexts of SELinux. for example ls, ps, mkdir, cp, etc. `$ ls -lZ`
+- `$ echo salam > /var/www/html/a.html, $ ls -lZ` —> Type of file is httpd_sys_content, because it belongs to httpd domain and SELinux has contexted it rightly. this categorizing is efficient for security, only certain processes can access certain contexts
+- For mapping groups, should map to roles not users.
+- A SELinux User is different from a Linux user. Can view all 8 SELinux Users by `$ seinfo —user :`
+  
+  - root: root user
+  - staff_u: sysadm_u but they can only `$sudo` and can’t use `$su`
+  - sysadm_u: all administrator users
+  - system_u: systematic users
+  - unconfined_u: un-labeled users
+  - user_u: unprivileged users
+  - guest_u: 
+  - xguest_u: have graphics and firefox 
+
+- Scenario: Create a guest_u user and try to establish a ssh connection (although in targeted mode it is not that much meaningful): `$ useradd -Z guest_u alex` (took time because there are labeling happening in background), `$ passwd alex`, `su - alex`, reset system and login with alex user, `$ id -Z`, now let’s test, `$ su - root` (failed), sudo cat /etc/shadow (failed), ping 8.8.8.8 (failed), could be changed `$ usermod -Z staff_u`
+- `$ semanage login -l` —> show all user mappings of system
+- `$ seinfo —role :` (15 roles)
+
+  - auditadm_r
+  - dbadm_r
+  - guest_r
+  - logadm_r
+  - nx_server_r
+  - object_r
+  - secadm_r
+  - staff_r
+  - sysadm_r
+  - system_r
+  - unconfined_r
+  - user_r
+  - webadm_r
+  - xguest_r
+
+- `$ seinfo —type | nl` —> 4932 types
+- Booleans are policies that are watching system for security. Combining with contexts, it’s another layer for security (Defence in depth)
+- `$ semanage boolean -l | nl` —> 338 booleans. (on : runtime , on : permanent)
+- `$ getsebool httpd_enable_cgi` (runtime) | `$ getsebool -P httpd_enable_cgi` (permanent)
+- `$ setsebool httpd_enable_cgi 0` (runtime) | `$ getsebool -P httpd_enable_cgi 0` (permanent)
+- if an attacker could attack and get root permission, first thing he’d do is set selinux to permissive mode because he cannot disable it, since it needs reboot and makes lots of noise
+- `$ setsebool secure_mode_policyload 1` —> after all configurations done, do this so no one (even root) can’t change SELinux to permissive mode. If done this Permanently and in runtime and you want to change it, should disable SELinux, then change it, then enable it again.
+- `$ setsebool secure_mode_insmode 1` —> most of complex linux attacks are module-based. hackers insert modules into kernel, so their codes are being run in kernel space. to disable any further a do, we secure insmode, after making it true, no modules could be added or inserted by process/user. If this is on, wireless could have problems, because it has to load multiple modules
+- `$ setsebool deny_ptrace 1` —> attackers inject some malicious activity to processes. they do so by injecting to the process 1 for example, it is almost impossible to find some of binded process injections. one of tools to do so is by ptrace (which is a tool for debugging software that a developer developed)
+- `$ setsebool deny_execmem 1` —> Don’t let a user/process execute code directly from RAM
+- `$ vim /etc/selinux/targeted/contexts/files/file_contexts` —> all of labels for contexts. there are lots of regexes set there. should be noticed that latter rule overrides first one
+- `$ vim /etc/selinux/targeted/contexts/files/file_contexts.local` —> all of labels for contexts that are added by sysadmin
+- for managing file system labeling:
+
+  - `$ chcon` —> Temporary Change (run time). [could use -R for recursive changes] `$ chcon -t ssh_home_t a.txt`
+  - `$ semanage fcontext` —> Persistent Change. [could use -R for recursive changes]. `$ semanage fcontext -a -t ssh_home_t /etc/z.txt` —> add this rule to config file: any time a z.txt created in etc, type of it will be ssh_home_t. `$ semanage fcontext -d -t ssh_home_t /etc/z.txt` —> delete this rule from config file
+  - `$ restorecon` —> relabel run time configs to persistent configs. [could use -R for recursive changes]. `$ restorecon -v /etc/z.txt` —> relabel using verbose. `$ restorecon -n -v /etc/z.txt` —> simulate relabeling without actually changing context.
+
+- Scenario: set a new DocumentRoot for apache: open config file of apache `$ vim /etc/httpd/conf/httpd.conf`, change document root to “/web”, change line number 122 and 134, `$ mkdir /web`, `echo New Page > /web/index.html`, `$ systemctl restart httpd`, `$ curl 127.0.0.1/index.html` [403 Error forbidden], first step is setting DAC then MAC, `$ ls -ld /web/`, `$ chown -R (recursively) apache:apache /web`, `$ ls -ld /web/`, now let’s set MAC, `$ ls -ldZ /web/`, solution 1 for finding right type to be given : `ls -lZ /var/www/html/` —> type is httpd_sys_content_t, solution 2 : `vim /etc/selinux/targeted/contexts/files/file_contexts` and then search in vim `/www`, now let's give it the proper type `$ semanage fcontext -a -t httpd_sys_context_t "/web(/.*)?",` `$ restorecon -R -v /web`
+
+---
+
+# 4- SSH Hardening, Fail2ban, TCP Wrapper, NGINX, Kernel Parameters Hardening
+
+## SSH Hardening:
+
+- metasploit is a tool for offensive ssh. `$ msfconsole`. `$ search mikrotik`, `$ search ssh_login`, `$ use auxiliary/scanner/ssh/ssh_login`, `$ show options`, RHOST means remote host address, RPORT means remote port, `$ set RHOSTS 127.0.0.1`, `$ set user_file ~/user.txt`, `$ set password ~/pass.txt`, `$ set verbose true`, for running you can `$ run OR $ exploit`, this way you can brute force.
+  
+### Scenario: SSH using public key:
+  
+1. generate key pairs, `$ ssh-keygen -t rsa -b 4096`, default place to save this key pair is /home/hacker/.ssh/id_rsa, it asks for a passphrase which is for the private key, check out key randomart, `$ ssh-keygen -l` (viewing fingerprint) -v (visualized randomart) -f (file) id_rsa.pub
+2. Transfer public key to host, `$ ssh-copy-id hacker@127.0.0.1`, first time you connect to a machine via ssh, it shows the fingerprint of it with algorithm for being sure you are connecting to the right machine
+3. private key used to sign a challenge and generate a message
+4. message transferred to host PC
+5. Message authenticity verified using public key, and access is granted
+
+- Fingerprint of the machines we want to connect to is being saved in `/home/hacker/.ssh/known_hosts`
+- Public key of users that can connect to the machine via ssh are being saved in `/home/hacker/.ssh/authorized_keys`
+
+- Disabling weak ssh encryption algorithms:
+  
+  - Ciphers: Symmetric algorithms (AES, 3DES)
+  - HostKeyAlgorithms: public key algorithms for authentication between machines (RSA, ECDSA)
+  - KexAlgorithm: method of exchanging symmetric keys after HostKeyAlgorithms did their job (Diffie Hellman)
+  - MAC: hashing, for integrity purposes
+  
+  `$ vim /etc/ssh/sshd_config` —>
+  
+  - line 48: PublicKeyAuthentication yes
+  - PasswordAuthentication no → Better than commenting is to write no, It will have a higher score in openSCAP
+  - line 43: PermitRootLogin no
+  - for adding ciphers, line 28: Ciphers aes256-cbc,aes256-ctr
+  - for adding KexAlgorithms, line 29: KexAlgorithms ecdh-sha2-nistp
