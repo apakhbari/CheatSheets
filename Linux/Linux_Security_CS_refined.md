@@ -933,3 +933,141 @@ also watch `/etc/sudoers` file
 
 - vulnerability assessment (ارزیابی آسیب‌پذیری)
 - main core of openVAS is GVM (Greenbone vulnerability Manager), it accepts user data, scap cert is for openscap profiles, NVT (network vulnerability test) is field of greenbone, NVTs on free version is updated monthly but in commercial is very fast, OSP (open scanner protocol) scanner is a framework that has lots of other scanners APIs and can export them and pass them to GVM, GMP (greenbone management protocol) Clients is making data standardized and viewable, it is xml based, using GreenBone Security Assistant it could be make it html viewable
+
+---
+
+[7- OpenVAS, Securing user accounts, PAM, Suricata]
+
+**OpenVAS:**
+
+- vulnerability assessment (ارزیابی آسیب‌پذیری)
+- when scanning using openVAS, should turn antivirus off. so its a great machine for exploit and attacks.
+- scan —> new task
+- recommendation is using built-in openVAS on kali linux. should do these commands
+  - `$ sudo -u gvm greenbone-feed-sync —type CERT` —> update cert advisories
+  - `$ sudo -u gvm greenbone-feed-sync —type GVMD_DATA` —> update cve
+  - `$ sudo -u gvm greenbone-feed-sync —type SCAP` —> update scap
+  - `$ sudo -u gvm greenbone-feed-sync —type NVT` (if not worked this command instead `$sudo -u gvm greenbone-nvt-sync`) —> update nvt
+
+**Securing user accounts:**
+
+- for working with /etc/sudoers its best practice to use visudo because it does syntax checking, but vim could also be used
+- users with /bin/bash are dangerous
+- `$ visudo /etc/sudoers`
+- Defaults !visiblepw —> password is not visible in terminal
+- Defaults env_reset —> reset environment variables
+- Defaults timestamp_timeout=3 —> after 3 mins require sudo password, default is 5. it could be 0 : it will ask password every time. -1 : never expire password so if once entered then don’t ask for password again.
+- Defaults:john timestamp_timeout = 2 —> only for user john do this
+- line 100 : root (user)  ALL(host, in centralized 100 systems there are 100 root users, which one )=(ALL(by whom user’s accessibility can execute):ALL(only debian has this, by whom groups’s accessibility can execute))  ALL(what command)
+- when an attacker exploit a machine it is adding his own user to this like this, so there is no need to add himself to wheel(red hat)/sudoer(debian) group : mysqld  ALL=(ALL)  ALL
+- john  ALL=(ALL)  /usr/bin/systemctl —> john user can do sudo all systemctl commands
+- john  ALL=(ALL)  /usr/bin/systemctl  restart * —> john user can do sudo systemctl restart
+- john  ALL=(ALL)  /usr/bin/systemctl  restart httpd, /usr/bin/systemctl restart sshd
+- john  ALL=(hacker)  /usr/local/sbin/data.sh —> john user can execute data.sh with hacker accessibility, then run it like `$ sudo -u hacker /usr/local/sbin/data.sh`
+- %john  ALL=(hacker)  NOPASSWD:  /usr/local/sbin/data.sh —> for group john (group defined with %), it has risk since you are bypassing password, don’t do it
+- john  ALL=(ALL)  sudoedit /etc/ssh/sshd_config —> you can open a bash terminal with root very easily.
+- `$ sudo -l` —> see all sudoers accessibilities that user has
+
+**PAM:**
+
+- when you are developing an  API(app)/SPI(service), it is best practice to use PAM library for authentication & authorization instead of secure coding. it has these modules:
+  - Authentication service modules
+  - Account management modules
+  - Session management modules
+  - Password management modules
+
+- you are not going to config these modules, you are just going to call these methods
+- there is no need to restart anything. but if app/service is modified must restart
+- `$ ldd /usr/sbin/sshd | grep pam` —> seeing if app/service has used pam
+- system-auth and password-auth are exactly same, system is for console (tty-pts-…) & password is for remote (ssh-telnet)
+- `$ vim /etc/pam.d/system-auth` (for example system-auth)
+  - first row: [module interface]
+  - auth : identity of user is right, are username and password ok?
+  - account [account validity] : check for validity of account, account is ok not disabled valid unlocked
+  - password [updating password] : is user allowed, does this pass have complexity
+  - session [session management] : setting environment, home directory initialization, flush keys when session is ended
+
+- second row: [control flag]
+  - requisite (strongest flag) : if failed, don’t proceed any further
+  - required : if failed, proceed and then after all modules checked in end show error
+  - sufficient : if it passed, there is no need to check further modules
+  - optional : ignore errors
+  - default :
+
+- third row: [modules] (see all modules in `$ ls /lib64/security/`) (for info of each module `$ man pam_env`)
+  - pam_env.so —>
+  - pam_unix.so —> check /etc/shadow & /etc/passwd for user and password  
+  - pam_deny.so —> return error, failed
+  - pam_pwquality.so —> password quality checking
+
+- fourth row: modules options, could find info about it in modules man
+  - nullok : it is ok for pass to be null
+  - try_first_pass : first pass that user entered at first module is being checked for this, if not passed ask for password
+  - `$ vim /etc/security/pwquality.conf` —> can perform password quality from here too
+  - SCENARIO : ssh brute force prevention using pam_faillock
+  - `$ vim system-auth`
+    - line 2 : auth   required     pam_faillock.so   preauth (history of failed enters matters) silent (don’t show that has entered many times with wrong password) audit (log with printk) deny=5 (return error if tried more than 5 times) fail_interval=400 (lock user if 5 times wrong password in 400s ) unlock_time=400 (seconds)
+    - line 4 after pam_unix.so try_first_pass: auth   required     pam_faillock.so   authfail audit deny=5 unlock_time=400
+    - last line of account : account   required   pam_faillock.so  —> lock account for 400s, because it is targeted
+  - `$ cp system-auth password-auth`
+  - `$ faillock` —> show all locked users
+  - `$ faillock —user john` —> info about a specific user
+  - `$ faillock —user john —reset` —> unlock
+
+- SCENARIO: two step authentication using google authenticator for ssh
+  - HARDENING: `$ vim /etc/pam.d/system-auth`, in pam_unix.so :
+    - remove nullok
+    - add remember=10 —> can’t use passwords that have been used in previous 10 times
+
+**Suricata:**
+
+- open source intrusion detection system (IDS) & intrusion prevention system (IPS) & network monitoring system (NSM)
+- 10 core cpu, 20GB RAM, for enterprise environments
+- suricata is good for inside network attacks, so it is not like a firewall which is on edge of network
+- best practice is to port mirror all traffic of our network on a stand-alone server which has suricata on it, so it can perform all
+- `$ cd /etc/suricata/`
+  - classification : classes for suricate
+  - reference : from where rules are being got. list of DB sources
+  - suricata.yaml : config file
+  - /rules/ : built-in rules/signatures for detecting protocols
+  - `$ vim /var/lib/suricata/rules/suricata.rules` —> file of finding rules
+  - `$ suricata-update` —> updating signatures  
+  - `$ suricata-update list-sources` —> show all sources  
+  - `$ suricata-update list-sources —free` —> show all free sources  
+  - `$ suricata-update list-enabled-sources` —> show all enabled sources
+  - `$ suricata-update enable-source tgreen/hunting` —> enable this source
+  - `$ suricata -T` —> test & check if everything is ok.
+  - `$ vim /etc/suricata/suricata.yaml`
+    - HOME_NET : all IPs that are mine
+    - EXTERNAL_NET : not my asset
+    - af-packet (very low level network packet)
+    - interface : enp0s8
+    - threads: auto (auto = as much as cpu cores)
+    - LRO: network card makes bundles, so they are going for processing in cpu. should be disabled for suricata. —> `$ ethtool -K enp0s8 gro off lro off`
+    - GRO : for times LRO couldn’t be done
+    - `$ vim /etc/sysconfig/suricata`
+      - OPTIONS=“-i enp0s8 —user suricate”
+    - IT IS NOW CONFIGURED.
+    - `$ ls /var/log/suricata/`
+      - eve.json : all events are being logged. should be disabled
+      - fast.log : all alerts
+      - stats.log : every 8 seconds, create statistics. should be disabled
+      - suricata.log : daemon log
+    - writing rules is complex, but :
+      - action : alert (IDS), pass, drop, reject
+      - header : tcp (what protocol I’m working on) $HOME_NET (direction) any (source port) -> (<- or <> for both ways) $EXTERNAL_NET any
+      - rule options : (msg{how should log it as event in fast.log}:”ET MALWARE Likely Bot Nick in IRC (USA + ..)”; flow: established,to_server; content:”NICK ”; depth:5; {inspect 5 layers inside packet} content:”USA”; within:10; reference:url,[doc.emergingthreats.net/2008124](http://doc.emergingthreats.net/2008124); classtype:trojan-activity; sid:2008124; {signature id} rev:5; metadata:created_at 2010_07_30, updated_at 2010_07_30;)
+    - performance tuning
+      - `$ vim /etc/suricata/suricata.yaml`
+        - search for runmode, line 1063 : runmode: workers --> it is turning buffer into a single thread. instead of multithreading, which needs cpu usage to join results in the end
+        - search for mpm, line 1492 : mpm-algo: hs --> what mpm-algo (Multi Pattern Matching) does is searching for rules/signatures inside. HyperScan is best option
+        - search for profile, line 1438 : profile: high --> for performance related stuff, suricata bundles all signatures that are look alike
+        - line 622: ring-size: 20000 --> how many packets could be saved in buffer, make it higher would result in not having queue
+        - line 364: pcap-log: enabled: yes, compression: lz4, lz4-level: 4 (if have cpu, could go up to 16) --> when you are under attack, it gives you all flow of network in a pcap format
+        - line 65: stats: enabled: no --> stats logs are disabled
+        - line 87: eve-log: enabled: no --> eve logs are disabled
+        - line 569: file: enabled: no --> eve logs are disabled
+
+**Bro (Zeek):**
+
+- could map all network flow. very useful tool
