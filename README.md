@@ -12,8 +12,16 @@
 
 <br>
 
-## © APA, ALL RIGHTS RESERVED, 2021-2023
 
+
+# acknowledgment
+## Contributors
+
+APA 🖖🏻
+
+## Links
+
+## APA, Live long & prosper
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
   a::::::::::::a p::::ppp:::::::::p    a::::::::::::a
