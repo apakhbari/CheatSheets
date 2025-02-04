@@ -384,30 +384,243 @@ base64 encoded pub key
 
 ## SSH Hardening:
 
-- metasploit is a tool for offensive ssh. `$ msfconsole`. `$ search mikrotik`, `$ search ssh_login`, `$ use auxiliary/scanner/ssh/ssh_login`, `$ show options`, RHOST means remote host address, RPORT means remote port, `$ set RHOSTS 127.0.0.1`, `$ set user_file ~/user.txt`, `$ set password ~/pass.txt`, `$ set verbose true`, for running you can `$ run OR $ exploit`, this way you can brute force.
-  
-### Scenario: SSH using public key:
-  
-1. generate key pairs, `$ ssh-keygen -t rsa -b 4096`, default place to save this key pair is /home/hacker/.ssh/id_rsa, it asks for a passphrase which is for the private key, check out key randomart, `$ ssh-keygen -l` (viewing fingerprint) -v (visualized randomart) -f (file) id_rsa.pub
-2. Transfer public key to host, `$ ssh-copy-id hacker@127.0.0.1`, first time you connect to a machine via ssh, it shows the fingerprint of it with algorithm for being sure you are connecting to the right machine
-3. private key used to sign a challenge and generate a message
-4. message transferred to host PC
-5. Message authenticity verified using public key, and access is granted
+- metasploit is a tool for offenssing ssh. 
+  - `$ msfconsole`
+  - `$ search mikrotik`
+  - `$ search ssh_login`
+  - `$ use auxiliary/scanner/ssh/ssh_login`
+  - `$ show options`
+  - RHOST means remote host address, RPORT means remote port.
+  - `$ set RHOSTS 127.0.0.1`
+  - `$ set user_file ~/user.txt`
+  - `$ set password ~/pass.txt`
+  - `$ set verbose true`
+  - To run you can use `$ run` OR `$ exploit`. This way you can brute force.
 
-- Fingerprint of the machines we want to connect to is being saved in `/home/hacker/.ssh/known_hosts`
-- Public key of users that can connect to the machine via ssh are being saved in `/home/hacker/.ssh/authorized_keys`
+- Scenario: SSH using public key:
 
-- Disabling weak ssh encryption algorithms:
+  1. Generate key pairs:
+     - `$ ssh-keygen -t rsa -b 4096`
+     - Default place to save this key pair is `/home/hacker/.ssh/id_rsa`
+     - It will ask for a passphrase which is for the private key.
+     - Check out key randomart:
+       - `$ ssh-keygen -l` (viewing fingerprint)
+       - `$ ssh-keygen -v` (visualized randomart)
+       - `$ ssh-keygen -f id_rsa.pub`
   
+  2. Transfer public key to host:
+     - `$ ssh-copy-id hacker@127.0.0.1`
+     - First time you connect to a machine via SSH, it will show the fingerprint of it with its algorithm for verification.
+
+  3. The private key is used to sign a challenge and generate a message.
+
+  4. The message is transferred to the host PC.
+
+  5. The message authenticity is verified using the public key, and access is granted.
+
+- The fingerprint of the machines we want to connect to is saved in `/home/hacker/.ssh/known_hosts`.
+
+- The public key of users that can connect to the machine via SSH is saved in `/home/hacker/.ssh/authorized_keys`.
+
+- Disabling weak SSH encryption algorithms:
+
   - Ciphers: Symmetric algorithms (AES, 3DES)
-  - HostKeyAlgorithms: public key algorithms for authentication between machines (RSA, ECDSA)
-  - KexAlgorithm: method of exchanging symmetric keys after HostKeyAlgorithms did their job (Diffie Hellman)
-  - MAC: hashing, for integrity purposes
+  - HostKeyAlgorithms: Public key algorithms for authentication between machines (RSA, ECDSA)
+  - KexAlgorithm: Method of exchanging symmetric keys after HostKeyAlgorithms did their job (Diffie Hellman)
+  - MAC: Hashing, for integrity purposes
+
+- To configure SSH settings:
+
+  - `$ vim /etc/ssh/sshd_config`
+
+  - Line 48: `PublicKeyAuthentication yes`
+  - `PasswordAuthentication no` — Better than commenting, write `no` to improve openSCAP score.
+  - Line 43: `PermitRootLogin no`
+  - For adding ciphers:
+    - Line 28: `Ciphers aes256-cbc,aes256-ctr`
+  - For adding KexAlgorithms:
+    - Line 29: `KexAlgorithms ecdh-sha2-nistp384`
+  - `X11Forwarding no`
+
+- SSH tunneling:
+  - Line 105: `AllowTcpForwarding no`
+  - Line 106: `GateWayPorts no`
+  - Line 125: `PermitTunnel no`
+  - `AllowStreamLocalForwarding no`
+  - Port 37000
+
+- To check all SSH algorithms a machine supports:
+  - `$ nmap --script ssh2-enum-algos -sV -p 22 127.0.0.1`
+
+- For disabling weak algorithms, configure `crypto-policies`:
+  - `$ vim /lib/systemd/system/sshd.service`
+  - `$ /etc/crypto-policies/back-ends/opensshserver.config`
+  - Delete undesired algorithms.
+
+- Setting a whitelist in the SSH config file:
+
+  - `DenyUsers`: All have access except the one I declare.
+  - Line 147, `AllowUsers`: No one has access except the ones I declare — `AllowUsers root john`.
+
+- Automatic Logout:
+  - `$ vim /etc/profile.d/logout.sh`
+  - `#!bin/bash`
+  - `TMOUT=20` (timeout in seconds)
+  - `readonly TMOUT`
+  - `export TMOUT`
+
+- Setting Banner on server:
+  - Line 130: `Banner /etc/ssh/banner.txt`
+
+- Mitigation of DOS attack:
+  - Line 124: `MaxStartups 10:30:60` (number of unauthenticated concurrent connections before dropping, percentage chance of dropping when reaching 10, maximum concurrent connections to start dropping).
+  - `MaxStartups 2000` (on 2000 concurrent connections, start dropping everything).
+
+## Fail2Ban:
+
+- Fail2Ban is a service that works on authentication-based services such as SSH, and can stop unauthorized access attempts.
+- The config file is `/etc/fail2ban/fail2ban.conf`, but don’t touch it. Any changes should be made inside `/etc/fail2ban/jail.d`.
   
-  `$ vim /etc/ssh/sshd_config` —>
+  To configure Fail2Ban:
+
+  - `$ vim /etc/fail2ban/jail.d/ssh.local`
   
-  - line 48: PublicKeyAuthentication yes
-  - PasswordAuthentication no → Better than commenting is to write no, It will have a higher score in openSCAP
-  - line 43: PermitRootLogin no
-  - for adding ciphers, line 28: Ciphers aes256-cbc,aes256-ctr
-  - for adding KexAlgorithms, line 29: KexAlgorithms ecdh-sha2-nistp
+  - `[sshd]`
+  - `enabled = true`
+  - `port = ssh,22000`
+  - `banaction = iptables-multiport` (if using firewalld, use `firewallcmd-ipset`)
+  - `logpath = /var/log/secure`
+  - `maxretry = 4` (ban the IP after 5 unsuccessful tries)
+  - `bantime = 120` (ban duration in seconds)
+
+- To restart Fail2Ban:
+  - `$ systemctl restart fail2ban.service`
+  - `$ systemctl status fail2ban.service` — Ensure it is active (running).
+  - `$ fail2ban-client banned` — Show banned IPs.
+  - `$ fail2ban-client unban 192.168.56.1` — Unban this IP.
+
+## TCP Wrapper:
+
+- TCP Wrapper is deprecated by RedHat 8; libwrap is the dynamic shared library behind it. RedHat recommends implementing this via Firewall, but Debian still supports it.
+- To check if the SSH module supports it:
+  - `$ ldd /usr/sbin/sshd | grep libwrap`
+  
+  First implement `allow` then `deny`. No need to reload or reboot.
+
+  - `$ vim /etc/hosts.deny`:
+    - `SSHD: ALL`
+
+## NGINX:
+
+- Apache is thread-based, while NGINX is worker-based. It handles 10K concurrent connections (C10K).
+- NGINX architecture:
+  - Master Process → Child Process (on RAM) → Workers (as many as CPU cores). Workers have shared memory since they handle sessions. Each worker has:
+    - 1 Cache Manager
+    - 2 Cache Loader
+  
+- NGINX on SELinux:
+  - Set `execmem` boolean to true and enable `http_setrlimit`.
+- NGINX considers each connection an open file.
+
+- To monitor NGINX processes:
+  - `$ ps -aux | grep nginx` — Shows master and worker processes. The master process runs as root (for privileged ports), and the worker process runs as nginx.
+
+- To check the server's response:
+  - `$ curl -I anisa.co.ir` — This returns the header. If it is not hardened, the NGINX version will be visible.
+
+- If compiling NGINX from source and want to hide the version:
+  - `$ vim /root/nginx/src/ngx_http_header_filter_module.c` (look at lines 49-51)
+  - `$ vim /root/nginx/src/core/nginx.h` (change NGINX to IIS or another name)
+
+- NGINX configuration:
+  - `$ vim /etc/nginx/nginx.conf`
+    - Line 14: `events { worker_connections 4096; }`
+    - Line 23: `http { server_tokens off; }`
+
+- Controlling buffer overflow attacks:
+  - ```nginx
+    http {
+      client_body_buffer_size 128k;
+      client_header_buffer_size 2k;
+      large_client_header_buffers 4 8k;
+    }
+    ```
+
+- To test the NGINX configuration for syntax errors:
+  - `$ nginx -t`
+
+- Timeouts to improve server performance:
+  - `client_body_timeout 30s`
+  - `client_header_timeout 30s`
+  - `keepalive_timeout 45s`
+
+- Limiting concurrent connections from a specific IP:
+  - ```nginx
+    http {
+      limit_conn_zone $binary_remote_addr zone=one: 10m;
+      server {
+        limit_conn one 40;
+      }
+    }
+    ```
+
+- Limiting the request rate:
+  - ```nginx
+    http {
+      limit_req_zone $binary_remote_addr zone=two: 10m rate=250r/s;
+      location / {
+        limit_req zone=two;
+      }
+    }
+    ```
+
+- Limiting request methods:
+  - ```nginx
+    location / {
+      limit_except HEAD POST {
+        deny all;
+      }
+    }
+    ```
+
+- Limiting user agents:
+  - ```nginx
+    location / {
+      if ($http_user_agent ~_ (wget|curl|acunetix|mirai|nessus)) {
+        return 444;
+      }
+    }
+    ```
+
+- To check a user agent:
+  - `$ curl --user-agent "jafar" -X GET 127.0.0.1`
+
+- Avoid clickjacking by disabling `<iframe>`:
+  - ```nginx
+    http {
+      add_header X-Frame-Options SAMEORIGIN;
+      add_header X-Content-Type_Options nosniff;
+      add_header X-XSS-Protection "1; mode=block";
+    }
+    ```
+
+- HSTS (HTTP Strict Transport Security) to enforce SSL:
+  - `add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";`
+
+## Kernel Hardening & Process Isolation:
+
+- The kernel has 4 main jobs:
+  1. Memory Management
+  2. Process Management
+  3. Device Drivers
+  4. System Calls & Security
+
+- Kernel parameters can be modified in three ways:
+  1. When building the kernel: in the kernel's config file.
+  2. When starting the kernel: using command-line parameters, via a boot loader.
+  3. At runtime: through files in `/proc/sys/` (vm, net, kernel, fs, dev, crypto, abi).
+
+- To check the `swappiness` value:
+  - `$ cat /proc/sys/vm/swappiness`
+  - To change it:
+    - `$ echo 10 > /proc/sys/vm/swappiness`
