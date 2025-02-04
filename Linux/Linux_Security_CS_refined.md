@@ -835,3 +835,101 @@ base64 encoded pub key
 also watch `/etc/sudoers` file
 
 **DNSSEC:**
+
+- DNS protocol wasn’t secure in first place.
+- DNS Attacks :
+  - NX Domain
+  - Phantom domain
+  - Rebinding attack
+  - Lock-up attack
+  - DRDOS
+  - Cache poisoning
+  - DNS hijack
+  - Random subdomain attack
+
+- DNSSEC allows : verification of integrity of each record - validation that the record originates from the authoritative DNS server for the record (authenticity) - chain of trust
+- what is NX record? it is the record that DNS sends when the domain is not resolved, means there is no info about this domain in DNS
+- DNSSEC adds a new record to DNS : RRSET (resource record set), it is bundling all alike records, for example all MX records are being bundled together, all AAAA records are being bundled together, and then each bundle is being signed. This is good for performance and also security.
+- ZSK (zone signing key): first key DNS generates.
+  - RRSIG —> RRSET signed with private key of ZSK
+  - DNSKEY —> public key of ZSK + public key of KSK, signed with private key of KSK
+
+- KSK (key signing key): to validate ZSK
+- steps:
+  - client asks for resolving a domain
+  - DNS returns RRSIG + DNSKEY
+  - client asks for public key of KSK in order to verify DNSKEY
+  - DNS returns public key of KSK
+
+- DS (dedication signer): hashed public key of KSK, for chain of trust
+- we are going to implement it using chroot, it is a defense in depth method for jailing system, what it does is replicating everything bind needs from system to a local / directory and then isolating it, when attacker comes thinks / is main root directory, but he’s wrong:
+  - `$ rpm -aq | grep chroot`
+  - `$ dnf install bind-chroot`
+  - directories gonna change :
+    - `/etc/named.conf` —> `/var/named/chroot/etc/named.conf`
+    - `/var/named` —> `/var/named/chroot/var/named`
+  - `$ systemctl stop named`
+  - `$ systemctl start named-chroot`
+  - `/var/named/chroot/etc`
+  - get this script for automation of slave:
+    - `$ wget [https://kernel110.com/named.conf](https://kernel110.com/named.conf)`
+    - `$ wget [https://kernel110.com/iran.ir.db](https://kernel110.com/iran.ir.db)`
+    - `$ cp -f named.conf /var/named/chroot/etc/`
+    - `$ cp -f named.conf /var/named/chroot/var/named`
+    - `$ echo “nameserver 127.0.0.1” > /etc/resolv.conf`
+    - `$ chattr +i /etc/resolv.conf`
+    - `$ systemctl stop firewalld`
+    - `$ systemctl disable firewalld`
+    - `$ dig mx [iran.ir](http://iran.ir)`
+  - notice that chroot mount files, because of security level of things, it is making a virtual file system and then mount files, so you can’t change or modify files. if any modification want to be made, should stop chroot and then edit and then start it again.
+    - `$ mv named.conf.1 named.conf`
+    - `$ /usr/libexec/setup-named-chroot.sh /var/named/chroot/ on` —> a bash script which is copy all requirements of our jailing. so duplicate some files and libraries to inner / so service could work completely isolated
+  - `$ vim named.conf:`
+    - line 11 : acl AllowQuery { 192.168.56.0/24; }; : for setting access control and not letting anybody to change it
+    - line 13 : listen-on-v6 port 53 {none;};
+    - line 21 : allow query { any; }; —> {AllowQuery;};
+    - line 66 : allow-transfer { 192.168.56.104;}; : for allowing transfer to slave
+  - `$ named-checkconf /var/named/chroot/etc/named.conf` —> it checks whether or not config is in right syntax
+  - `$ dnssec-keygen -a NSEC3RSASHA1 -b 2048 -n ZONE [iran.ir](http://iran.ir)` —> NSEC is a protocol which in case there is no domain to return, dns send before and after of those domains, but in a hashed way
+  - `$ dnssec-keygen -f KSK -a NSEC3RSASHA1 -b 2048 -n ZONE [iran.ir](http://iran.ir)`
+  - `$ echo “\$INCLUDE /var/named/chroot/etc/[Kiran.ir](http://Kiran.ir).+007+22757.key” >> /var/named/chroot/var/named/[iran.ir](http://iran.ir).db`
+  - `$ echo “\$INCLUDE /var/named/chroot/etc/[Kiran.ir](http://Kiran.ir).+007+57339.key” >> /var/named/chroot/var/named/[iran.ir](http://iran.ir).db`
+  - `$ dnssec-signzone -A -3 $(head -c 1000 /dev/random | sha1sum | cut -b 1-16) -N INCREMENT -o [iran.ir](http://iran.ir) -t /var/named/chroot/var/named/iran.ir.db` —> A: algorithm NSEC3 , 3: salt or random string, here we are running a script inside our script, N : increment version of SOA, o : origin, which zone, t : verbose
+  - `$ vim /var/named/chroot/etc/named.conf.local —>`
+    - zone “[iran.ir](http://iran.ir)” {
+    - type master;
+    - file “/var/named/chroot/var/named/iran.ir.db.signed”;
+    - allow-transfer { 192.168.56.104; };
+    - also-notify { 192.168.56.104; };
+    - auto-dnssec maintain; —> periodically check, other option is allow
+  - DNSKEY 256(ZSK, 257 : KSK) 3(DNSSEC 3) 7(algorithm type)
+  - `$ dig DNSKEY @192.168.56.102 [iran.ir](http://iran.ir)`
+
+**OpenSCAP:**
+
+- compliance testing (تست انطباق پذیری) using for auditing. based on profiles tailored from specialists and companies in security.
+- it is a standard
+- SSG (scap security guide) : profiles for testing by companies and foundations. famous ones: PCIDSS (Banking industries), DISA-STIG (Enterprise Network Infrastructure), CIS, ACSC (Australian Cyber Security Centre), HIPPA (Health Insurance Portability and Accountability Act). xml format
+- use DISA-STIG
+- it is possible to create a profile by yourself
+- in installing os, you can go forward using scap profiles. it is going to ask you for hardening step by step during installation.
+- there are two forms of data model in security, imagine there is a firewall and a microsoft server and a linux server, logs of them are very different, for gathering all logs together there should be a protocol/data model. we should choose one for using.
+  - XCCDF (Extensible Configuration Checklist Description Format)
+  - OVAL (Open Vulnerability and Assessment Language)
+  - CPE (Common Platform Enumeration) : for each os there is a number assigned, so referencing is easier. for example redhat 8.6 has a CPE
+  - CVE (Common Vulnerabilities and Exposures)
+  - CWE (Common Weakness Enumeration) : it is a simple way for referencing CVEs to everyone in tech industry. for example CWE-121 is related to stack overflow, one could see lots of info about that when search it
+- `$ oscap info ssg-rl8-ds-1.2.xml` —> show info, ds-1.2 is better because has lots of things inside. it is about 35000 lines of code
+- copy id of desired profile from last command
+- `$ oscap info —profile xccdf_org.ssgproject.content_profile_pci-dss ssg-rl8-ds-1.2.xml` —> see all profile info with a little bit of description
+- `$ oscap xccdf eval —results output.xml —profile xccdf_org.ssgproject.content_profile_pci-dss ssg-rl8-ds-1.2.xml` —> evaluate based on profile and save result in output.xml, output.xml is about 250000 lines
+- `$ oscap xccdf generate report output.xml > report.html` —> create a human readable interactive report
+- below 60 score results in isolating system in network
+- `$ oscap xccdf generate guide —profile xccdf_org.ssgproject.content_profile_pci-dss ssg-rl8-ds-1.2.xml > guide.html` —> shows all of checklist that profile uses + lots of best practices on how to harden stuff, it is good for finding elements for creating your own list
+- IMPORTANT : Don’t use remediate (a tool that oscap automatically corrects the whats wrong)
+- `$ oscap xccdf eval —remediate —profile xccdf_org.ssgproject.content_profile_pci-dss ssg-rl8-ds-1.2.xml`
+
+**OpenVAS:**
+
+- vulnerability assessment (ارزیابی آسیب‌پذیری)
+- main core of openVAS is GVM (Greenbone vulnerability Manager), it accepts user data, scap cert is for openscap profiles, NVT (network vulnerability test) is field of greenbone, NVTs on free version is updated monthly but in commercial is very fast, OSP (open scanner protocol) scanner is a framework that has lots of other scanners APIs and can export them and pass them to GVM, GMP (greenbone management protocol) Clients is making data standardized and viewable, it is xml based, using GreenBone Security Assistant it could be make it html viewable
