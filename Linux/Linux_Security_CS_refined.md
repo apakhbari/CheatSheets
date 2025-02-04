@@ -1071,3 +1071,97 @@ also watch `/etc/sudoers` file
 **Bro (Zeek):**
 
 - could map all network flow. very useful tool
+
+---
+
+[8- IPSEC, USBGuard, Reset Root Password & hardening GRUB2, Securing cronjob, FreeIPA]
+
+**IPSEC:**
+
+- IP is not a secure protocol. IPSEC is a collection of protocols, main one is IKE (internet key exchange) then SA (security association) which is managing keys, such as how much ttl should it have, how much live should it be
+- In IPSEC there is no client and server. There are left & right
+- IKE
+
+- phase1 (ISAKMP or IKE SA) : SA - Key exchange - Authentication
+- Phase2 (IPSEC SA) which has 2 modes : AH(not that popular, authentication - integrity - anti replay : not let man in the middle ) - ESP ( authentication - integrity - anti replay : not let man in the middle )
+
+- In AH, there is sequence for preventing man in the middle and integrity and key
+- In ESP, if there is a man in the middle, he can understand to which destination IP this packet is going, but can’t understand what’s inside packet
+- It is possible to use AH and ESP together
+- IPSEC has two modes :
+
+  - Transport : host to host, use packets original header
+  - Tunnel : router to router, Firewall to Firewall, encapsulate entire packet, even packets header is not readable
+
+- For each connection/tunnel, there is a unique key pair needed
+- For implement it we use this package : libreswan
+
+- left & right : $ def install libreswan
+- left & right : $ systemic enable ipse —now
+- left & right : $ firewall-cmd —add-service=“”ipse
+- left & right : $ ipsec newhostkey —> create key pair
+- Left : $ ipse showhostkey —left —ckaid [id] —> show public key
+- Right : $ ipse showhostkey —right —ckaid [id] —> show public key
+- Left& right : $ vim /etc/ipsec.d/host-tohost.cong
+
+- conn mytunnel
+
+- leftid=@west
+- left=192.168.56.106
+- leftrsasigkey=[pub key]
+- rightid=@east
+- right=192.168.56.104
+- rightrsasigkey=[pub key]
+
+- left & right : $ systemctl restart ipsec
+- left & right : $ ipsec auto —add mytunnel
+- left & right : $ ipsec auto —up mytunnel
+- it is done!
+- for testing:
+- $ dnf install tcpdump
+- $ tcpdump -n -i enp0s8 host 192.168.56.104
+
+**usbguard:**
+
+- good for bad usb. could easily find it on internet, for example it introduce itself as keyboard while it is not keyboard and going to exploit system
+- $ sudo pacman -S usbguard
+- $ cd /etc/usbguard/
+- $ usbguard generate policey -X > /etc/usbguard/rules.conf —> allow all that are attached now on this system, block everything else
+- $ lsusb —> see all USBs that are connected
+- $ dmesg | grep -i authorized —> see logs
+- $ usbguard allow-device [id in $lsusb] —> runtime
+- $ usbguard allow-device [id in $lsusb] -p —> permanent
+- $ vim /etc/usbguard/rules.conf —> see all rules
+- $ usbguard list-rules
+- $ usbguard remove-rule 8 (number of rule in list-rules)
+
+**Reset Root Password & hardening GRUB2:**
+
+- reboot
+- press e on menu that choose OSs
+- before initrd, at the end of linux kernel line, add : rd.break —> it is going to interrupt system when loading
+- cntrl-x
+- system is mounted in read-only now
+- $ mount -o remount,rw sysroot
+- $ chroot /sysroot/
+- sh-4.4$ passwd root —> set new pass
+- if now restart, password is not set. problem is selinux, because labels are changed and selinux is not gonna accept this new one we set. for bypassing it $ touch /.autorelabel , by doing this we are forcing selinux to re-label all selinux labels after boot
+- $ exit
+- $ reboot
+- how to prevent this from happening :
+- $ grub2-setpassword —> will change /boot/grub2/user.cfg
+- $ grub2-mkconfig -o /boot/grub2/grub.cfg —> to save changes in user.cfg into grub
+
+**Securing cronjob:**
+
+- one of things that an attacker does is modifying cron job to automate a task or operate a code periodically
+- $ vim /etc/cron.allow —> define only user that can access this
+
+- root
+
+**FreeIPA:**
+
+- centralized authentication for user’s identity. ldap and kerberos and CA and lots of other things will be integrated
+- users created in FreeIP will not be accessible in /etc/shadow
+- $ yum install ipa-server ipa-server-dns —> ipa-server-dns for dns resolving. if had dns in network don’t install this
+- $ ipa-sever-install
