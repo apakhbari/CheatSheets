@@ -190,3 +190,92 @@ base64 encoded pub key
 # Bash Script for automation:
 
 - $ awk -F ‘($3 == “0”) {print}’ /etc/passwd —> check if attackers would create a user and change its UID & GID in /etc/passwd to 0:0, in lots of situations this number is being checked so attacker has root level access to lots of things.
+
+# Classes
+
+---
+
+## [1- intro, memory vulnerability, dnf update, gpg, luks]
+
+- integrity, availability, confidentiality
+- what is CVE: common vulnerability and exposures. شناسه
+- cvss3 score: update more than 7.5. in [first.org](http://first.org) —> مرجع رسیدگی به رخدادهای امنیتی جهانی. there is a calculator.
+- ۹۰ درصد مشکلات سیستم عامل به خاطر مدیریت حافظه، بافر اورفلو، استک اورفلو و این‌هاست. چون ۹۰ درصد سیستم عامل با c کد خورده است و c می‌تواند مدیریت معماری سطح پایین کند که می‌تواند مشکل آفرین باشد.
+- ساختار معماری هنگامی که نرم‌افزاری اجرا می‌شود:
+  پایین کد، بعد متغیرهایی که در کد assign شده اند، بعد متغیرهای assign نشده، بعد هیپ که داینامیک مقداردهی می‌شود، بعد استک. استک به صورت خودکار خالی می‌شود ولی هیپ باید توسط دولوپر در برنامه خالی شود.
+- asgari machine: user —> root, pass —> qazwsx
+- $dhclient —> get ip after machine started up
+- $gunzip /etc/yum.repos.d/* —> to enable update on asgari machine
+- fileless malware: straightly on ram. using memfd syscall
+- segmentation fault —> on ram, you are writing on a sector that you don’t have permission too write on.
+- core dump —> will dump all of ram when a crash happens
+- executable file format on windows is PE, on linux is ELF(executable and linkable and libraries format)
+- what is posix? a standard library for different distributions.
+- virtual dynamic share object —> kernel level, for optimizing performance of library
+
+### gpg:
+
+- $ gpg —keyid-format LONG —list-keys —> for showing keyID
+- $ gpg —edit-key Ahmadi > trust —> for trusting a public key
+- $ gpg —send-keys —keyserver [keyserver.ubunto.com](http://keyserver.ubunto.com) [KeyID] —> send public keys to a key server
+- $ gpg —keyserver [keyserver.ubunto.com](http://keyserver.ubunto.com) —search-keys [ahmadi@ahmadi.ir](mailto:ahmadi@ahmadi.ir) —> send public keys to a key server
+- pub —> public primary key, sub —> public sub key, it is implemented for the day pub primary key is compromised and you want to revoke it. it is also being used for signing and for encrypting.
+- how to encrypt a test directory:
+  - $ tar -cvf test.tar test/*
+  - $ gpg -c test.tar
+- how to decrypt a test encrypted directory:
+  - $ gpg -d test.tar.gpg > test.tar
+  - $ tar -xvf test.tar
+
+### luks:
+
+- symmetric encryption, kernel space, make hdd slots, then encrypt them, has about 1-3% overhead and less than 20s for first mount. when write a file in it, data isn’t encrypted, blocks of hdd are encrypted. because it has encrypted blocks when mounting, there is no overhead after that. luks interface keeps offsets of encrypted blocks.
+- first add hdd, then partition it ($ fdisk /dev/sdb), then $ cryptsetup luksFormat /dev/sdb1, passphrase must have complexity because it will fail at the end if it’s not complex enough, then $ cryptsetup luksOpen /dev/sdb1 secret (for mounting and mapping with name), now filesystem $ mkfs -t ext4 /dev/mapper/secret, make mount point in / dir $ mkdir /secret $ mount /dev/mapper/secret /secret/, now we want to make it somehow that there is no need to enter pass each time system boot $ dd if=/dev/urandom of=/root/key bs=1M count=1, $ ls -lh, $ chmod 600 key, $ ls -lh, now add this key to luks interface $ cryptsetup luksAddkey /dev/sdb1 /root/key, for making these changes permanent after reset $ vim /etc/crypttab, then write this column inside it : secret        /dev/sdb1        /root/key        defaults, now configure fstab $ vim /etc/fstab, and write this column inside it : /dev/mapper/secret        /secret            ext4        defaults               0    0, echo $?,$ reboot
+- for unmounting a luks hdd: $ umount /secret, then because hdd’s pass is cached another sudoer can easily see it should do $ cryptsetup luksClose /dev/mapper/secret
+- must have two keys set, one spare one primary.
+
+---
+
+## [2- openssl, FireWall, iptables, Nmap, firewallD]
+
+### openssl:
+
+- what is difference between ssl & tls? ssl v1 was not released, ssl v2 was released in 1995 and worked till 2011, had drown attack, ssl v3 was in 2015, had poodle attack. then tls was used instead as an improved version, v1.0 1999-2020 had technical and implementation problems, v1.1, v1.2 2008-2020, v1.3 2018-now
+- Diffie Hellman is for symmetric key exchange in TLS triple handshake, It has nothing to do with encryption
+- There are different kind of ssl certificates. For example: DV cert —> Domain Validation (classic one), OV cert —> organization validation, EV cert —> both domain and organization, as a result in browser it shows [digital.com](http://digital.com) after ssl lock, wildcard cert —> *.[a.com](http://a.com)
+- CSR: certificate signing request, what you send to CA
+- PKCS: set of cryptographic standards.
+- X.509: data structure of a certificate
+- CRL: certification revocation list
+- You can get pub key from a private key, but not vice versa. It is being done by modulus & exponent part of private key
+- Why set a password on CSR? To disable revocation by a bad/ex-employee
+- FIPS: a set of standards by US nist, which a software have to have in order to publish and being used
+- testssl.sh ابزار —> scan vulnerabilities on ssl/tls. Find on GitHub. $ ./testssl.sh [lms.anisa.co.ir](http://lms.anisa.co.ir)
+- Use let’s encrypt with 3 months timespan certificate, certbot is the tool for automation of it
+- $ openssl x509 -pubkey -noout -in cert.crt —> public key from certificate
+- $ openssl rsa -in private.key -pubout —> public key from private key
+- $ openssl s_client -connect [kernel11.com:443](http://kernel11.com:443) —> show text info of a cert on internet
+
+### iptables:
+
+- In linux, firewall is netfilter. In new OSs it is nftable. It is a kernel-level framework
+- Port scan (one of first actions a hacker do)
+- What does -j (jump) RETURN does? It is for returning from a newly created chain to another chain (for example INPUT/OUTPUT)
+- Use sniff for logging all of body and header of packets.
+- Extension modules: ( -m )
+  - Multiport
+  - IPRange
+  - Connlimit : for concurrent connections that are established. It is right now, not last 60 sec for example
+  - State [NEW (establishing) - ESTABLISHED - RELATED (recursive establishing request) - INVALID (send inappropriate request, for example for establishing a connection send ack instead of syn)]
+  - Conntrack : create flow of established connections and save it in ram (address of flow is /proc/net/xt_recent). It uses a window time
+  - Recent : actions based on conntrack flow
+- How to refuse SSH Brute Force (fail2ban has better performance): $ iptables -I INPUT -p tcp —sport ssh -m conntrack —ctstate NEW -m recent —set $ iptables -I INPUT -p tcp —sport ssh -m conntrack —ctstate NEW -m recent —update —second 60 —hitcount 10 -j DROP (each 60 sec update flow inside ram, if there were 10 new connections from a specific source, drop 11th and all of next requests)
+- How to refuse port scan: create a new chain and then write rules there, because if it’s in default chains, there’s gonna be overhead for each request that comes in. $ iptables -N PORTSCAN $ iptables -A PORTSCAN -p tcp —syn -m limit —limit 2000/hour -j RETURN $ iptables -A PORTSCAN -m limit —limit 1000/minute -j LOG —log-prefix “PORT SCAN DETECTED” $ iptables -A PORTSCAN -j DROP $ iptables -A INPUT -p tcp —syn -j PORTSCAN
+- $ iptables -I INPUT -p tcp -m state —state ESTABLISHED,RELATED -j ACCEPT
+- Use —number-line for numbering lines
+
+### FirewallD:
+
+- what is format of services and zones of firewallD? xml
+- /usr/lib/firewalld/services —> permanent config and zones
+- /etc/firewalld —> runtime changes. override /usr/lib/firewalld/services when apply changes in runtime
