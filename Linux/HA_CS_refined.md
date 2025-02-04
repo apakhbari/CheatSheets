@@ -182,3 +182,86 @@ commands:
 - It is better to use Object storages for GlusterFS
 - Best FS for GlusterFS is XFS
 - GlusterFS is like File Storage
+
+---
+
+**5th session: Ceph**
+
+- Traditionally shared Storages (such as HP3par, EMC and Qnap) were being used which needed SAN Switches and HBA and also needed licensing and were expensive
+- DevOps and Cloud Computing (like Openstack) went to OpenSource options for storages. They wanted OpenSource solution on SAN storages. Ceph was born here. Ceph was heavily linux based and operating it was different with HP3par, EMC and Qnap
+- Traditionally HBA cards were needed in order to connect storage to servers. Ceph does not need that. It uses cards that support both network and storage
+- Ceph storage solution can support all 3 (which was impossible before Ceph): File storage - block storage - object storage
+- Ceph has a Native API which allows apps to directly communicate storage
+- Hypervisors and VMs want to contact Block storages
+- Ceph does its own replication, so there is no need to RAID storages when using Ceph
+
+- Network Card in servers:
+  - FC HBA (Fibre Channel) → only for storages
+  - NIC (Ethernet) → only for Network
+  - CNA (Fibre Channel + Ethernet) → for both storages & Network
+
+- Ceph uses 3 or more nodes for clustering
+- If you `$ vi /etc/ceph/ceph.conf`, you’ll see there are two sets of networks, Cluster Network & public network. they could be on same network but it is also possible to be on different networks
+  - Cluster network: Cluster configurations and Replicating data happens here
+  - Public network: all external services such as kubernetes, apps, Openstack, Vmware
+
+- Ceph has different protocols for each kind of storage:
+  - File Storage: MDS (MetaData Service)
+  - Block Storage: RBD Protocol → for Vmware, kvm, all Hypervisors
+  - Object Storage: Rados-GW (Rados GateWay) → for API, like Swift or Amazon S3
+
+- Ceph does not assign names to its clusters, they have an fsid
+- Inside A Ceph Cluster:
+  - OSD: a Ceph node which contain SSD or HDD
+  - MONs/MGRs: monitors and manages nodes. in /etc/ceph/ceph.conf refers to it as mon host. It is best practice to assign it to another server instead of one of OSDs. It is like corosync, a very vital component to Ceph cluster. It is possible to make mon dockerized. It is best practice to have it sort of clustered itself e.g. active/passive. Command for monitoring is `$ monmaptool`
+
+- Inside a Ceph Cluster:
+  - **Cluster monitors** (**ceph-mon**) that maintain the map of the cluster state, keeping track of active and failed cluster nodes, cluster configuration, and information about data placement and manage authentication.
+  - **Managers (ceph-mgr)** that maintain cluster runtime metrics, enable dashboarding capabilities, and provide an interface to external monitoring systems.
+  - **Object storage devices** (ceph-osd) that store data in the Ceph cluster and handle data replication, erasure coding, recovery, and rebalancing. SSD or HDD
+  - **Rados Gateways** (ceph-rgw) that provide object storage APIs (swift and S3) via http/https.
+  - **Metadata servers** (ceph-mds) that store metadata for the Ceph File System, mapping filenames and directories of the file system to RADOS objects
+  - **iSCSI Gateways** (ceph-iscsi) that provide iSCSI targets for traditional block storage workloads such as VMware or Windows Server.
+
+- Object storages are like icloud or dropbox, each object has a http address, it is accessible using API, you are not limited to a certain location. Object storage is one level upper than block storage, so it has better performance in upload/download purposes. Object Storages has certain Payloads, metadatas and ID. Usually all of video/music contents are Object Storages so it is easy to see video counts online and when you ask for a video, closest/fastest server to you respond and all servers are in replication with each other
+- pg (placement group): a 20Gb data won’t store directly on an OSD. It is going to PGs then assigns to OSDs. This assignment is automatically being used by Ceph using CRUSH/CRASH service which is using lots of mathematical algorithms for doing so. Best Practice Number of PGs are whether 32, 64 or 128. The only thing admin interacts with is Pool.
+- Pool: pools are like namespaces, they logically differentiate between different resources
+
+- Since Ceph is Ip based, its security can be compromised, so CephX authentication system is used by Ceph to authenticate users and daemons and to protect against man-in-the-middle attacks.
+- cephx uses shared secret keys for **authentication**. This means that both the client and the monitor cluster keep a copy of the client’s secret key.
+
+- It is best practice to ssh-copy-id between Ceph components so there is agent-less and passwordless communication amongst them
+
+---
+
+**6th session: Ceph - iSCSI - Active/Active clustering**
+
+- Ceph needs libvirt library for KVM APIs (specially GUI web-based dashboard) to work correctly, It is not being installed automatically, you have to install it in order to work with it
+- iSCSI facilitates data transfers over intranets and to manage storage over long distances. It can be used to transmit data over local area networks (LANs), wide area networks (WANs), or the Internet and can enable location-independent data storage and retrieval.
+- Using iscsi it is possible to mount storage of a server on another server
+- Naming convention for ISCSI: iqn.2023-09.anisa.local:node1.target1
+  - node1 is server1 and target is disk, so we know which storage is assigned to which disk
+- All Linux FileSystems are working locally, they are not working in clusters.
+- FileSystems that are working in cluster:
+  - CLVM
+  - GFS2
+  - OCFS2
+
+- Lots of Active/Active Services (including FileSystems) are developed by oracle
+- Distributed Lock Manager (DLM) is a mechanism that allows cluster nodes to synchronize their access to shared resources. The main goal of the lock manager is to act as a gatekeeper, controlling the access to the shared resources. DLM is able to communicate between nodes in order to manage lock traffic
+
+---
+
+**7th session: Bonding**
+
+- Bonding is for LB and Failover
+- Bonding: a method for aggregating multiple network interfaces into a single logical bonded interface. When bonding interfaces you will see an increase in maximum throughput.
+- Mode 0 ⭐ → balance-rr (round robin, will have failover in packets if a channel is failed)
+- Mode 1 ⭐ → active-backup (will only do LB)
+- Mode 2 → balance-xor
+- Mode 3 → broadcast
+- Mode 4 ⭐ → link aggregation (IEEE 802.3ad / 802.1ax) (both interfaces connect to same place in order to increase throughput)
+- Mode 5 → balance-tlb (transmit load balancing)
+- Mode 6 → balance-alb (adaptive load balancing)
+
+- Notice: Never install network-manager package on your servers for installing nmcli and bonding, use netplan instead
