@@ -607,20 +607,144 @@ base64 encoded pub key
 - HSTS (HTTP Strict Transport Security) to enforce SSL:
   - `add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";`
 
-## Kernel Hardening & Process Isolation:
+# Kernel Hardening & Process Isolation
 
-- The kernel has 4 main jobs:
+- Kernel has 4 jobs:
   1. Memory Management
   2. Process Management
   3. Device Drivers
   4. System Calls & Security
+- There is no information about it anywhere.
+- There are 3 ways to modify these parameters:
+  1. When building the kernel: in the kernel’s config file.
+  2. When starting the kernel: using command line parameters, through a boot loader.
+  3. At runtime: through the files in `/proc/sys/` —> 
+     - `vm`: virtual memory
+     - `net`: network
+     - `kernel`
+     - `fs`: file system
+     - `dev`: devices
+     - `crypto`: cryptographic
+     - `abi`: application binary interface
 
-- Kernel parameters can be modified in three ways:
-  1. When building the kernel: in the kernel's config file.
-  2. When starting the kernel: using command-line parameters, via a boot loader.
-  3. At runtime: through files in `/proc/sys/` (vm, net, kernel, fs, dev, crypto, abi).
+- `$ cat /proc/sys/vm/swappiness` —> 30 (means on 70% of memory goes to swap)
+- For changing, there are 2 ways: 
+  - `$ echo 10 > /proc/sys/vm/swappiness`
+- Notice that sometimes when installing new apps, the app might need sudoer access and change lots of kernel parameters.
 
-- To check the `swappiness` value:
-  - `$ cat /proc/sys/vm/swappiness`
-  - To change it:
-    - `$ echo 10 > /proc/sys/vm/swappiness`
+---
+
+# Kernel Parameters Hardening, Lynis, Process Isolation & Limits, Control Groups, FireJail, Malware Detection
+
+## Kernel Parameters Hardening
+
+- `$ sysctl Tunable_Class.Parameter` —> `$ sysctl vm.swappiness` : For viewing Kernel Parameters.
+- `$ sysctl -w (write) Tunable_Class.Parameter=value` —> `$ sysctl -w vm.swappiness=20` : For changing Kernel Parameters Temporarily.
+- `$ sysctl -a (all)` : Show all parameters.
+- For changing parameters permanently, note that there is a `sysctl.conf` file, but it's best practice to write in the `sysctl.d` file instead: 
+  - `$ vim /etc/sysctl.conf`
+  - `$ sysctl -w vm.swappiness=30 >> /etc/sysctl.conf`
+  - Best practice: `$ sysctl -w vm.swappiness=30 >> /etc/sysctl.d/parameters.conf` and then set it immediately (not after reboot) via `$ sysctl -p /etc/sysctl.d/parameters.conf`
+  
+- Check out [sysctl-explorer.net](http://sysctl-explorer.net) for all parameters with details.
+
+### Parameters:
+
+1. `kernel.kptr_restrict=2` —> List of all virtual memory offsets that are loaded on RAM during runtime. If `=1`, the list of all is available but mapping to memory is not shown. If `=0`, the restriction is disabled and all pointers are visible to everyone. If `=2`, only UID=0 (root) can see it. These informations are inside `/proc/kallsyms`.
+2. `kernel.dmesg_restrict=1` —> Restrict access to kernel ring buffer and logs from booting to current state.
+3. `kernel.printk="3 3 3 3"` —> Controls the log level of kernel print statements. Values range from `0` to `7`, with each number representing different logging severity levels.
+4. `kernel.kexec_load_disabled=1` —> Disables the `kexec` feature which allows loading a new kernel without rebooting.
+5. `kernel.sysrq=4` —> Controls the system request key combination functionalities. For example, `alt+sysrq+b` for reboot, `alt+sysrq+c` for crash and core dump.
+6. For disabling core dump:
+   - `$ sysctl -a | grep coredump`
+   - `$ sysctl -w kernel.core_pattern="|/bin/false"`
+   - `$ sysctl -w fs.suid_dumpable=0`
+7. `net.ipv4.tcp_syncookies=1` —> Sets a TCP cookie to avoid filling up the TCP queue during DOS attacks.
+8. `net.ipv4.tcp_rfc1337=1` —> Ends a TCP connection after sending a `FINACK`, preventing connection from staying open post-termination.
+9. `net.ipv4.conf.all.rp_filter=1`, `net.ipv4.conf.default.rp_filter=1` —> Enables reverse path filtering to prevent IP spoofing.
+10. `net.ipv4.conf.all.log_martians=1` —> Logs all packets coming from invalid or "martian" IPs.
+11. `net.ipv4.icmp_echo_ignore_all=1` —> Prevents ICMP echo (ping) requests to avoid network scanning.
+12. `net.ipv4.tcp_sack=0`, `net.ipv4.tcp_dsack=0`, `net.ipv4.tcp_fack=0` —> Disable selective acknowledgment in TCP connections.
+13. `net.ipv4.ipfrag_low_thresh`, `net.ipv4.ipfrag_high_thresh` —> Increases the threshold for fragmented packets in RAM.
+14. `net.ipv4.tcp_max_syn_backlog=4096` —> Sets the maximum number of TCP connection requests in the backlog.
+15. `net.ipv4.tcp_synack_retries=3` —> Sets how many times a TCP SYN-ACK can be sent before aborting the connection.
+16. `net.ipv4.tcp_keepalive_time=2000` —> Specifies how long to keep an inactive connection alive before checking its status.
+17. `net.ipv4.tcp_keepalive_probes=4` —> Sets the number of probes sent before declaring a connection dead.
+18. `kernel.randomize_va_space=2` —> Randomizes memory locations for heap, stack, and code to improve security.
+19. `kernel.yama.ptrace_scope` —> Controls ptrace for process debugging; restricts it to root user.
+20. `kernel.threads-max=10000` —> Specifies the maximum number of threads allowed to run.
+21. To disable `CTRL+ALT+DEL`:
+   - Solution 1: `systemctl mask ctrl-alt-del.target`
+   - Solution 2: `sysctl kernel.ctrl-alt.del`
+22. `kernel.watchdog` —> Enable the kernel watchdog to monitor system health.
+
+## Lynis
+
+- It’s a tool for checking system’s hardening parameters.
+- It is good for dockerized environments.
+- `$ lynis audit system` —> For scanning the system.
+- `$ lynis show details KRNL-5820` —> To show details about error/warning/suggestions generated by Lynis.
+
+## Process Isolation & Limits
+
+- `$ ulimit -a` —> Show all limits.
+- `$ ulimit -u 100` —> Change soft limit within hard limit boundaries.
+- `$ vim /etc/security/limits.conf` —> Resource limitation, deprecated, but still in use.
+  - Format: `<domain> : <user> - @group - * - 1000:1005 - 1000: (for all users except root)`
+  - `soft` means user-space limits and `hard` means kernel-space limits.
+  - Example: 
+    - `soft core 0`
+    - `hard core 0`
+- For limiting the number of concurrent processes for a user:
+  - `hacker soft nproc 40`
+  - `hacker hard nproc 1000`
+
+- How to limit other users from seeing other processes using `$ top` or `$ ps -aux`:
+  - Inside `/etc/fstab`, add this line: `proc /proc proc hidepid=2 0 0`
+  - Then run: `$ mount -a`, `$ mount -o remount proc`.
+  - Difference between `hidepid=1` and `hidepid=2`:
+    - `1` allows users to see PIDs but not access them.
+    - `2` hides PIDs entirely, isolating processes.
+
+## Control Groups
+
+- It's systemd-level and can handle isolation & limitation separately (sockets, I/O, users, processes) for security and management purposes.
+- `$ systemctl set-property httpd.service CPUAccounting=1 MemoryAccounting=1 BlockIOAccounting=1` —> Enable accounting and set limitations.
+- For viewing all accounting values: `/etc/systemd/system.control/`
+- `$ systemctl set-property httpd.service CPUQuota=30% MemoryLimit=500M` —> Set limitations.
+
+- `$ systemctl set-property user-1000.slice CPUAccounting=1 MemoryAccounting=1`
+- `$ systemctl set-property user-1000.slice CPUQuota=30% MemoryLimit=1G`
+- `$ dd if=/dev/zero of=/dev/null bs=1M &` —> Fake CPU usage for benchmarking.
+
+- To stop fork bomb attacks that make the system hang, you can use CGroups limitations.
+
+## Sandboxing with FireJail
+
+- FireJail creates an isolated environment for suspicious binaries or apps.
+- It’s profile-based and isolates processes completely using a unique PID.
+
+## Malware Detection
+
+- **LMD: Linux Malware Detection**
+- We are using LMD + ClamAV (clamd).
+
+- To configure it:
+  - `$ vim /usr/local/maldetect/conf.maldet`
+  - Set email alert:
+    - `email_alert="1"`
+    - `email_address="example@example.com"`
+  - Set auto-update:
+    - `autoupdate_signature="1"`
+    - `autoupdate_version="1"`
+  - Set prune period:
+    - `cron_prune_days="30"`
+  - Set daily scan:
+    - `cron_daily_scan="1"`
+  - Set scan max depth:
+    - `scan_max_depth="21"`
+
+- `$ freshclam` —> Update ClamAV.
+- `$ maldet -u` —> Update LMD.
+- `$ maldet -a /home` —> Scan directory.
+- `$ maldet --report [SCANID]` —> View scan report.
