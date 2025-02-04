@@ -48,3 +48,34 @@ Choosing the right tools
 - Manifests are a good choice for small ro medium-sized deployments with a limited number of objects and simple configurations.
 - Helm Charts are a good choice for managing complex applications with multiple objects and configurations.
 - Kustomize is a good choice for customizing exisiting YAML files or generating new ones based on a set of rules and patches.
+
+
+# acknowledgment
+## Contributors
+
+APA 🖖🏻
+
+## Links
+
+
+## APA, Live long & prosper
+```
+  aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
+  a::::::::::::a p::::ppp:::::::::p    a::::::::::::a
+  aaaaaaaaa:::::ap:::::::::::::::::p   aaaaaaaaa:::::a
+           a::::app::::::ppppp::::::p           a::::a
+    aaaaaaa:::::a p:::::p     p:::::p    aaaaaaa:::::a
+  aa::::::::::::a p:::::p     p:::::p  aa::::::::::::a
+ a::::aaaa::::::a p:::::p     p:::::p a::::aaaa::::::a
+a::::a    a:::::a p:::::p    p::::::pa::::a    a:::::a
+a::::a    a:::::a p:::::ppppp:::::::pa::::a    a:::::a
+a:::::aaaa::::::a p::::::::::::::::p a:::::aaaa::::::a
+ a::::::::::aa:::ap::::::::::::::pp   a::::::::::aa:::a
+  aaaaaaaaaa  aaaap::::::pppppppp      aaaaaaaaaa  aaaa
+                  p:::::p
+                  p:::::p
+                 p:::::::p
+                 p:::::::p
+                 p:::::::p
+                 ppppppppp
+```
