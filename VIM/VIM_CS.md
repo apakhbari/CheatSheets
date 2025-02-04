@@ -1,77 +1,107 @@
-**VIM**
+# VIM
 
 VIM has three standard modes:
 
-1.  Command Mode
-2.  Insert Mode (enter: pressing i key, leve: pressing esc key)
-3.  Ex Mode, or colon command (start with : )
+1. Command Mode
+2. Insert Mode (enter: pressing i key, leave: pressing esc key)
+3. Ex Mode, or colon command (start with `:`)
 
-**Moving [command mode]**
+## Moving [command mode]
 
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**h —>** Move cursor left one character.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**l —>** Move cursor right one character.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**j —>** Move cursor down one line (the next line in the text).
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**k —>** Move cursor up one line (the previous line in the text).
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**w —>** Move cursor forward one word to front of next word.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**e —>** Move cursor to end of current word.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**b —>** Move cursor backward one word.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**^ —>** Move cursor to beginning of line.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**$ —>** Move cursor to end of line.<span class="Apple-converted-space"> </span>
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**gg —>** Move cursor to the file’s first line.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**G —>** Move cursor to the file’s last line.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**nG —>** Move cursor to file line number n.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Ctrl+B —>** Scroll up almost one full screen.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Ctrl+F —>** Scroll down almost one full screen.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Ctrl+U —>** Scroll up half of a screen.<span class="Apple-converted-space"> </span>
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Ctrl+D —>** Scroll down half of a screen.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Ctrl+Y —>** Scroll up one line.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Ctrl+E —>** Scroll down one line<span class="Apple-converted-space"> </span>
+- **h →** Move cursor left one character.
+- **l →** Move cursor right one character.
+- **j →** Move cursor down one line (the next line in the text).
+- **k →** Move cursor up one line (the previous line in the text).
+- **w →** Move cursor forward one word to front of next word.
+- **e →** Move cursor to end of current word.
+- **b →** Move cursor backward one word.
+- **^ →** Move cursor to beginning of line.
+- **$ →** Move cursor to end of line.
+- **gg →** Move cursor to the file’s first line.
+- **G →** Move cursor to the file’s last line.
+- **nG →** Move cursor to file line number n.
+- **Ctrl+B →** Scroll up almost one full screen.
+- **Ctrl+F →** Scroll down almost one full screen.
+- **Ctrl+U →** Scroll up half of a screen.
+- **Ctrl+D →** Scroll down half of a screen.
+- **Ctrl+Y →** Scroll up one line.
+- **Ctrl+E →** Scroll down one line
 
-**Editting [command mode]**
+## Editing [command mode]
 
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**a —>** Insert text after cursor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**A —>** Insert text at end of text line.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**dd —>** Delete current line.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**dw —>** Delete current word.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**i —>** Insert text before cursor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**I —>** Insert text before beginning of text line.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**ZZ —>** Write buffer to file and quit editor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**o —>** Open a new text line below cursor, and move to insert mode.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**O —>** Open a new text line above cursor, and move to insert mode.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**p —>** Paste copied text after cursor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**P —>** Paste copied (yanked) text before cursor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**yw —>** Yank (copy) current word.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**yy —>** Yank (copy) current line.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Alt+U —>** undo last modification.
+- **a →** Insert text after cursor.
+- **A →** Insert text at end of text line.
+- **dd →** Delete current line.
+- **dw →** Delete current word.
+- **i →** Insert text before cursor.
+- **I →** Insert text before beginning of text line.
+- **ZZ →** Write buffer to file and quit editor.
+- **o →** Open a new text line below cursor, and move to insert mode.
+- **O →** Open a new text line above cursor, and move to insert mode.
+- **p →** Paste copied text after cursor.
+- **P →** Paste copied (yanked) text before cursor.
+- **yw →** Yank (copy) current word.
+- **yy →** Yank (copy) current line.
+- **Alt+U →** undo last modification.
 
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>COMMAND [NUMBER-OF-TIMES] ITEM
+### COMMAND [NUMBER-OF-TIMES] ITEM
 
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**d-3-w —>** delete three words
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**d-3-d —>** delete three lines
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**d-G —>** delete to end of file
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Y-3 —>** copy (yank) the 3 lines from the cursor
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**Y-$ —>** copy (yank) the text from the cursor to the end of the text line
+- **d-3-w →** delete three words
+- **d-3-d →** delete three lines
+- **d-G →** delete to end of file
+- **Y-3 →** copy (yank) the 3 lines from the cursor
+- **Y-$ →** copy (yank) the text from the cursor to the end of the text line
 
-**Searching [command mode]**
+## Searching [command mode]
 
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**?** **—>** Start a backward search
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**/** **—>** Start a forward search.
+- **? →** Start a backward search
+- **/ →** Start a forward search.
+- **n →** Move to the next matching text pattern.
+- **N →** Move to the previous matching text pattern
 
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**n** **—>** Move to the next matching text pattern.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**N** **—>** Move to the previous matching text pattern
+## Ex mode commands
 
-**Ex mode commands**
+- **:! command →** Execute shell command and display results, but don’t quit editor.
+- **:r! command →** Execute shell command and include the results in editor buffer area.
+- **:r file →** Read file contents and include them in editor buffer area.
 
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:! command —>** Execute shell command and display results, but don’t quit editor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:r! command —>** Execute shell command and include the results in editor buffer area.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:r file —>** Read file contents and include them in editor buffer area.
+## Saving changes
 
-**Saving changes**
+- **:x →** Write buffer to file and quit editor.
+- **:wq →** Write buffer to file and quit editor.
+- **:wq! →** Write buffer to file and quit editor (overrides protection).
+- **:w →** Write buffer to file and stay in editor.
+- **:w! →** Write buffer to file and stay in editor (overrides protection).
+- **:q** Quit editor without writing buffer to file.
+- **:q! →** Quit editor without writing buffer to file (overrides protection).
 
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:x —>** Write buffer to file and quit editor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:wq —>** Write buffer to file and quit editor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:wq! —>** Write buffer to file and quit editor (overrides protection).
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:w —>** Write buffer to file and stay in editor.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:w! —>** Write buffer to file and stay in editor (overrides protection).
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:q** Quit editor without writing buffer to file.
-*   <span class="s1" style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-stretch: normal; font-size: 12px; line-height: normal;"></span>**:q! —>** Quit editor without writing buffer to file (overrides protection).<span class="Apple-converted-space"> </span>
+
+# acknowledgment
+## Contributors
+
+APA 🖖🏻
+
+## Links
+
+
+## APA, Live long & prosper
+```
+  aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
+  a::::::::::::a p::::ppp:::::::::p    a::::::::::::a
+  aaaaaaaaa:::::ap:::::::::::::::::p   aaaaaaaaa:::::a
+           a::::app::::::ppppp::::::p           a::::a
+    aaaaaaa:::::a p:::::p     p:::::p    aaaaaaa:::::a
+  aa::::::::::::a p:::::p     p:::::p  aa::::::::::::a
+ a::::aaaa::::::a p:::::p     p:::::p a::::aaaa::::::a
+a::::a    a:::::a p:::::p    p::::::pa::::a    a:::::a
+a::::a    a:::::a p:::::ppppp:::::::pa::::a    a:::::a
+a:::::aaaa::::::a p::::::::::::::::p a:::::aaaa::::::a
+ a::::::::::aa:::ap::::::::::::::pp   a::::::::::aa:::a
+  aaaaaaaaaa  aaaap::::::pppppppp      aaaaaaaaaa  aaaa
+                  p:::::p
+                  p:::::p
+                 p:::::::p
+                 p:::::::p
+                 p:::::::p
+                 ppppppppp
+```
