@@ -2619,3 +2619,116 @@ A common server these days in many data centers is a central logging host that r
 | **SystemMaxFileSize=**    | Set to a number followed by a unit (such as K, M, or G) that sets the amount of disk space systemd-journald journal files can consume if it is persistent.              |
 | **SystemMaxUse=**         | Set to a number followed by a unit (such as K, M, or G) that sets the amount of disk space systemd-journald can consume when employing persistent storage. (Default is 10% of current space.) |
 
+
+# Storage Directive Values
+
+- **auto**: Causes systemd-journald to look for the /var/log/journal directory and store event messages there. If that directory doesn’t exist, it stores the event messages in the temporary /run/log/journal directory, which is deleted when the system shuts down.
+- **persistent**: Causes systemd-journald to automatically create the /var/log/journal directory if it doesn’t currently exist and store event messages there.
+- **volatile**: Forces systemd-journald to store only event messages in the temporary /run/log/journal directory.
+- **none**: Event messages are discarded.
+
+You may have one or more active journal files on your system, depending on how systemd-journald is configured. For example, if you have Storage set to persistent, you can employ the SplitMode directive to divide up the journal file into multiple active files, one per user as well as a system journal file.
+
+- The system’s active journal file is named system.journal, with user active journal files (if used) named user-UID.journal.
+- After the files are rotated, they are renamed and considered archived. The archived journal filenames start with either system or user-UID, contain an @ followed by several letters and numbers, and end in a .journalfile extension.
+- You can have both systemd-journald and a syslog protocol application, such as rsyslog, running and working together.
+
+There are two primary ways to accomplish this:
+
+- **Journal Client Method**: allows a syslog protocol program to act as a journal client, reading entries stored in the journal file(s). It is the preferred way, because it avoids losing any important messages that may occur during the system boot, before the syslog service starts.
+- **Forward to Syslog Method**: employs the file /run/systemd/journal/syslog. Messages are forwarded to the file (called a socket) where a syslog protocol program can read them.
+
+The systemd-journald program does not store journal entries in text format, they are binary format and work similar to a DB.
+
+```bash
+$ journalctl --> query the systemd journal
+```
+
+## Common journalctl MATCHES Parameter Used For Filtering
+
+- **field** → Match the specific field in the journal. Can enter multiple occurrences of field on the same line but must be separated with a space. You can separate multiple field specifications with a plus sign (+) to use a logical or between them.
+- **OBJECT_PID=pid** → Match only entries made by the specified application pid.
+- **PRIORITY=value** → Match only entries with the specified priority value. The value can be set to one of the following numbers or keywords: emerg (0), alert (1), crit (2), err (3), warning (4), notice (5), info (6), debug (7).
+- **_HOSTNAME=host** → Match only entries from the specified host.
+- **_SYSTEMD_UNIT=unit.type** → Match only entries made by the specified systemd unit. type.
+- **_TRANSPORT=transport** → Match only entries received by the specified transport method.
+- **_UDEV_SYSNAME=dev** → Match only entries received from the specified device.
+- **_UID=userid** → Match only entries made by the specified user ID.
+
+```bash
+$ journalctl --disk-usage --> check the current disk usage of the journal file(s) by employing the command.
+$ journalctl --vacuum-size --> manually clean up disk space by size (K,M,G or T)
+$ journalctl --vacuum-size --> manually clean up disk space by time (s, min, h, days, months) 
+```
+(vacuum options work only on archived journal files.)
+
+- **-D directory-name, --directory=directory-name** → Because journalctl looks for the active journal files in either the /run/log/journal or the /var/log/journal directory, you can point it to a different directory location where a copied or another system’s journal file is located.
+- **--file=pattern** → If the file you are trying to view has a different name than system.journal or user-UID.journal. Set the pattern to be the exact name of the file you wish to view.
+- **-m or --merge** → If you have recently rescued your system and now have two or more journal files with entries to view, you can merge them. Keep in mind this does not physically merge the journal files but instead merges their entries in the output for your perusal.
+- **$ systemd-cat** → Connect a pipeline or program's output with the journal.
+  
+```bash
+$ echo "Test of systemd-cat" | systemd-cat
+```
+
+---
+
+# Network:
+
+## OSI (Open Systems Interconnection) Model:
+
+1. **Physical Layer**: The hardware required to connect your Linux system to the network: wired - wireless.
+   
+   Each access point uses a unique service set identifier (SSID) to identify it from other access points. You just tell your Linux system which access point to connect to by specifying the correct SSID value.
+
+3. **Network layer**: Controls how data is sent between connected network devices, both in your local network and across the Internet. For data to get to the correct destination device, some type of network addressing scheme must be used to uniquely identify each network device.
+
+- **IP address**: A unique 32-bit address. Network layer embeds the source and destination IP addresses into the data packet. To make it easier for humans to recognize the address, IP addresses are split into four 8-bit values, represented by decimal numbers, with a period between each value. Format is called dotted-decimal notation. IP addresses are split into two sections:
+  - **The network address**: All devices on the same physical network have the same network address portion of their IP addresses.
+  - **The host address**: Each device on the same network must have a unique host address.
+
+- **Netmask value**: Distinguishes between the network and host address portions in the IP address by using 1 bit to show which bits of the 32-bit IP address are used by the network and 0 bits to show which bits represent the host address. Most people don’t like working with binary numbers, the netmask address is usually shown in dotted-decimal format. For example, the netmask address 255.255.255.0 indicates the first three decimal numbers in the IP address represent the network address, and the last decimal number represents the host address.
+
+- Another way to represent netmask addresses is called Classless Inter-Domain Routing (CIDR) notation, shown with a slash between the network address and the CIDR value. Thus, the network 192.168.1.0 and netmask 255.255.255.0 would have the CIDR notation of 192.168.1.0/24.
+
+- **Default router (Default gateway)**: With IP and IPv6, devices can communicate directly only with other devices on the same physical network. To connect different physical networks together, you use a router. A router passes data from one private network to another. Usually, a network will contain a single router to forward packets to an upper-level network.
+
+- **Hostname**: Domain Name System (DNS) assigns a name to IP hosts on the network. Each network address is assigned a domain name (such as linux.org) that uniquely identifies the network, and each host in that network is assigned a unique host name, which is added to the domain name to uniquely identify the host on the network. The DNS system uses servers to map host and domain names to the specific network addresses required to communicate with that server. Servers responsible for defining the network and host names for a local network interoperate with upper-level DNS servers to resolve remote host names.
+
+For a device to communicate in an IP network, it must know three separate pieces of information:
+- Its own host address on the network. (e.g., Host address: 192.168.20.5)
+- The netmask address for the local physical network. (e.g., Netmask address: 255.255.255.0)
+- The address of a local router used to send packets to remote networks. (e.g., Default gateway: 192.168.20.1)
+
+- **IPv6 Address**: Uses 128-bit addresses instead of the 32-bit addresses. It uses hexadecimal numbers. The 128-bit address is split into eight groups of four hexadecimal digits separated by colons, such as: `fed1:0000:0000:08d3:1319:8a2e:0370:7334`.
+
+If one or more groups of four digits is `0000`, that group or those groups may be omitted, leaving two colons.
+
+- **IPv6 protocol** also provides for two different types of host addresses:
+  - **Link local addresses**: On a host device, it automatically assigns the link local address. The link local address uses a default network address of `fe80::` and then derives the host part of the address from the media access control (MAC) address built into the network card. This ensures that any IPv6 device can automatically communicate with any other IPv6 device on a local network without any configuration.
+  - **Global addresses**: Each network is assigned a unique network address, and each host on the network must have a unique host address.
+
+- Specific subnetwork ranges are reserved for private IP networks. These private IP addresses can’t be used for Internet traffic; they work only on local networks:
+  - `10.0.0.0` to `10.255.255.255`
+  - `172.16.0.0` to `172.31.255.255`
+  - `192.168.0.0` to `192.168.255.255`
+
+- **Internet Assigned Numbers Authority (IANA)** maintains strict control over the assignment of IP network addresses. It didn’t take long for IANA to run out of available public IP address networks.
+  - The idea of **network address translation (NAT)** saved the day. A NAT server can take an entire private IP network and assign it a single public IP address on the Internet. This is how you can connect your entire home network to a single ISP Internet connection and everything works.
+
+- **The Dynamic Host Configuration Protocol (DHCP)**: Trying to keep track of host addresses for all of the devices on a large network can become cumbersome.
+  - With DHCP, the client communicates with a DHCP server on the network using a temporary address.
+  - The DHCP server then tells the client exactly which IP address, netmask address, default gateway, and even DNS server to use.
+  - Each time the client reboots, it may receive a different IP address, but that doesn’t matter as long as it’s unique on the network.
+  - Servers need to have a fixed IP address so that clients can always find them. While it’s possible to configure static IP addresses in DHCP, usually it’s safest to manually configure the network information for servers. This is called a static host address.
+
+### Transport layer:
+Whereas the network layer helps get data to a specific host on the network, the transport layer helps get the data to the correct application contained on the host. It does that by using ports.
+
+- **Three common transport protocols** are used in the IP networking world:
+  - **Transmission Control Protocol (TCP)**: A transport protocol that sends data using a guaranteed delivery method. Ensures that the server receives each portion of data that the client computer sends, and vice versa. The downside is that a lot of overhead is required to track and verify all of the data sent, which can slow down the data transfer speed.
+  - **User Datagram Protocol (UDP)**: A transport protocol used for data that’s sensitive to transfer speed (such as real-time data like voice and video), which can cause unwanted delays.
+  - **Internet Control Message Protocol (ICMP)**: Not used for sending application data. Provides a simple way for network devices to pass information such as error messages and network routing information to make it easy for each client to find the required resource on the network.
+
+### Application Layer:
+Where all the action happens. This is where the network programs process the data sent across the network and then return a result. Most network applications behave using the client/server paradigm. One network device acts as the server, offering some type of service to multiple network clients (such as a web server offering content via web pages). The server listens for incoming connections on a specific transport layer port assigned to the application. The clients must know what transport layer port to use to send requests to the server application. To simplify that process, both TCP and UDP use well-known reserved ports to represent common applications.
