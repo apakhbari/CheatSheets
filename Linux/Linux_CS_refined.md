@@ -2786,3 +2786,115 @@ Some networks can have more than one DNS server, just add multiple `nameserver` 
 | 4    | 802.3ad         | Aggregates the interfaces to create one connection combining the interface bandwidths |
 | 5    | balance-tlb     | Provides load balancing and fault tolerance based on the current transmit load on each interface |
 | 6    | balance-alb     | Provides load balancing and fault tolerance based on the current receive load on each interface |
+
+
+- To initialize network interface bonding, you must first load the bonding module in the Linux kernel:
+  ```bash
+  $ sudo modprobe bonding
+  ```
+
+- This creates a bond0 network interface, which you can then define using the ip utility:
+  ```bash
+  $ sudo ip link add bond0 type bond mode 4
+  ```
+
+- Once you’ve defined the bond type, you can add the appropriate network interfaces to the bond using the ip utility:
+  ```bash
+  $ sudo ip link set eth0 master bond0
+  $ sudo ip link set eth1 master bond0
+  ```
+
+- The Linux system will then treat the bond0 device as a single network interface utilizing the load balancing or aggregation method you defined.
+
+---
+
+# Troubleshooting
+
+- One way to test network connectivity is to send test packets to known hosts. Linux provides the `ping` and `ping6` commands to do that. They send ICMP packets, and if the remote host supports ICMP, it will send a reply packet back when it receives a ping packet.
+
+  ```bash
+  $ ping --> send ICMP ECHO_REQUEST to network hosts
+  $ ping -c 4 8.8.8.8
+  ```
+
+- Traceroute commands:
+  ```bash
+  $ traceroute --> print the route packets trace to network host (use ICMP packets)
+  $ tracepath --> traces path to a network host discovering MTU along this path (use UDP packets)
+  ```
+
+- DNS lookup utilities:
+  ```bash
+  $ host --> DNS lookup utility, returns all IP addresses assigned to a host name
+  $ dig --> DNS lookup utility, display all data records associated with a specific host or network
+  $ nslookup --> query internet name servers interactively
+  ```
+
+- Network statistics:
+  ```bash
+  $ netstat --> Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships
+  $ ss --> another utility to investigate sockets
+  $ nc --> arbitrary TCP and UDP connections and listens
+  ```
+
+---
+
+# Securing System
+
+- `$ nmap` → Network exploration tool and security / port scanner.
+- `$ netstat` → Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships.
+- `$ ss` → Another utility to investigate sockets.
+- `$ systemctl list-unit-files --type=socket --no-pager` → To find the potential network socket systemd configuration (unit) files. A disabled value only means systemd does not manage that particular network socket; it does not mean the service is disabled.
+- `$ systemctl cat rpcbind.socket` → Take a look at the contents of each enabled network socket’s unit file.
+- `$ lsof` → List open files.
+- `$ fuser` → Identify processes using files or sockets.
+
+---
+
+# Disabling the Services
+
+- First, stop the service, if it is running, and check that it is stopped:
+  ```bash
+  $ systemctl stop SERVICE-NAME
+  $ systemctl status SERVICE-NAME
+  ```
+
+- When the service is stopped, be sure to disable it, employing super user privileges, so that when the system reboots, it won’t start:
+  ```bash
+  $ systemctl disable SERVICE-NAME
+  $ systemctl is-enabled SERVICE-NAME
+  ```
+
+- To disable a network service on a Debian-based distro, use super user privileges and the following command:
+  ```bash
+  $ update-rc.d -f SERVICE-NAME remove
+  ```
+
+---
+
+# Super Server
+
+- Some network services can employ a super server (also called a super daemon) to act as a guard for them. Instead of the network service, the super server directly listens for packets containing the designated port number. When such a packet comes into the system, after initial processing, the super server starts the network service and hands the packet off to it.
+- `inetd` was the original super server on Linux systems.
+- `xinetd` (extended super daemon) has additional security features.
+- `/etc/xinetd.conf` → Primary configuration file of xinetd. Contains only global default options.
+
+---
+
+# TCP Wrappers
+
+- If a service can employ TCP Wrappers, it will have the libwrap library compiled with it.
+
+  ```bash
+  $ who --> shows all the current system users, the terminal they are using, the date and time they entered the system, and in cases of remote users, their remote IP address
+  $ w --> The first displayed line shows the current time, how long the system has been up, how many users are currently accessing the system, the CPU load averages for the last 1, 5, and 15 minutes. The next several lines concern current system user information. USER, TTY, LOGIN, IDLE, JCPU, PCPU, WHAT. The w utility pulls user information from the /var/run/utmp file. It also gathers additional data for display from the /proc/ directory files.
+  $ last --> The last command pulls information from the /var/log/wtmp file and displays a list of accounts showing the last time they logged in or out of the system or if they are still logged on.
+  $ ulimit --> get and set user, Login, Process, and Memory Limits
+  ```
+
+- OpenSSH configuration files:
+  - `~/.ssh/known_hosts` → The OpenSSH application keeps track of any previously connected hosts here. Data contains the remote servers’ public keys.
+  - `~/.ssh/config` → Contains OpenSSH client configurations. May be overridden by ssh command options. For an individual user’s connections to a remote system.
+  - `/etc/ssh/ssh_config` → Contains OpenSSH client configurations. May be overridden by ssh command options or settings in the `~/.ssh/config` file. For every user’s connection to a remote system.
+  - `/etc/ssh/sshd_config` → Contains the OpenSSH daemon (sshd) configurations. For incoming SSH connection requests.
+  - `/etc/ssh/` → Where OpenSSH will save its system’s public/private key pairs.
