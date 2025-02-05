@@ -41,6 +41,7 @@
 23. [Subtitles](#subtitles)
 24. [Export](#export)
 
+
 ---
 
 ## Shortcuts
@@ -322,44 +323,54 @@
 - For making a subclip out of a footage, define in and out points in Source Monitor (north east) then right-click > Make Subclip …, then it’s going to
 ing to be added to Sequence Window
 
-Essential graphics
+## Essential Graphics
 
 - You can create a template of your own to re-use, by right click > Export As Motion Graphics Template, now it’s in your essential graphics
 - Do responsive time to your effects in order to be responsive whenever there are trims
 - It is possible to create text styles and export them for re-use
 
-File Management
+---
+
+## File Management
 
 - For removing duplicate footages from Project Window (south west), Select Project Window (south west) > Edit Tab > Consolidate Duplicates
 - For removing unused footages from Project Window (south west), Select Project Window (south west) > Edit Tab > Remove Unused. TIP: You can do this and then Undo so unused ones are getting highlighted
 
-Audio
+---
+
+## Audio
 
 - You can lower/higher volume by using { or } shortcut on keyboard
 - WAV format is better than mp3 for editing
 - Tips For recording:
   - Don’t use long cables because they have noise
-  - Don’t record with high gain because theres gonna be lots of hiss
-  - Don’t plugged in to power your laptop when recording because theres gonna be noise, unless you adaptor have earth connection
-  - check different laptop plugs for lesser noise/hiss, because they are not the same
-- Iran’s electronics work on 50 hz so for dehuming use proper 50 hz tools
-- Hold Option key an click on one of fx buttons in Effect Controls to turn all effects off
-- in Effects Control you can play only audio part of a heavy clip + make playback
-- changing audio effects while playing clip might add KeyFrames to it, its best practice to pause clip then change effect then play it again
-- You can right click on timeline > Show Audio Time Units , in order to edit sound in hz
+  - Don’t record with high gain because there’s gonna be lots of hiss
+  - Don’t plug in to power your laptop when recording because there’s gonna be noise, unless your adaptor has earth connection
+  - Check different laptop plugs for lesser noise/hiss, because they are not the same
+- Iran’s electronics work on 50 Hz, so for dehuming use proper 50 Hz tools
+- Hold Option key and click on one of fx buttons in Effect Controls to turn all effects off
+- In Effects Control you can play only audio part of a heavy clip + make playback
+- Changing audio effects while playing clip might add KeyFrames to it, it’s best practice to pause clip then change effect then play it again
+- You can right-click on timeline > Show Audio Time Units, in order to edit sound in Hz
 
-Subtitles
+---
 
-- subtitles: for speaker of another language
-- Close Caption: for people with hear loss
-- Open Caption: burned on video, can’t take it off
+## Subtitles
 
-Export
+- Subtitles: For speaker of another language
+- Close Caption: For people with hearing loss
+- Open Caption: Burned on video, can’t take it off
+
+---
+
+## Export
 
 - FHD:
   - 25 fps = 10 Mbps
   - 60 fps = 15 Mbps
-- UHD/4K: - 25 fps = 50 Mbps - 60 fps = 75 Mbps
+- UHD/4K:
+  - 25 fps = 50 Mbps
+  - 60 fps = 75 Mbps
 
 # acknowledgment
 ## Contributors
