@@ -1,4 +1,13 @@
 # Tekton
+```
+ _______  _______  ___   _  _______  _______  __    _ 
+|       ||       ||   | | ||       ||       ||  |  | |
+|_     _||    ___||   |_| ||_     _||   _   ||   |_| |
+  |   |  |   |___ |      _|  |   |  |  | |  ||       |
+  |   |  |    ___||     |_   |   |  |  |_|  ||  _    |
+  |   |  |   |___ |    _  |  |   |  |       || | |   |
+  |___|  |_______||___| |_|  |___|  |_______||_|  |__|
+```
 
 ## About Tekton
 - Tekton pipelines are built from separate containers that are sequenced via internal Kubernetes events on the K8 API server. They are an example of the event-driven choreography sequencing type. There is no single process manager to lock up, get restarted, hog resources or otherwise fail. Tekton will allow each pod to instantiate when it is needed in order to perform whatever stage of pipeline process that it’s responsible for. When it finishes, it will shut down, freeing up the resources it used for something else
