@@ -9,18 +9,50 @@
 |___| |_||_______||_______|
 ```
 
+# Table of Contents
+1. [Commands](#commands)
+2. [Configs](#configs)
+3. [Print Status](#print-status)
+4. [LOG](#log)
+5. [Deployment Commands](#deployment-commands)
+6. [Minikube](#minikube)
+7. [Don't Know](#dont-know)
+8. [Programs](#programs)
+9. [Terminology](#terminology)
+10. [Takeaways](#takeaways)
+11. [Imperative vs Declarative Deployments](#imperative-vs-declarative-deployments)
+12. [YAML File Line by Line](#yaml-file-line-by-line)
+13. [Object Types](#object-types)
+14. [Network Services](#network-services)
+15. [Docker Compose vs K8s](#docker-compose-vs-k8s)
+16. [Pod Object vs Deployment](#pod-object-vs-deployment)
+17. [PersistentVolumeClaim Access Modes](#persistentvolumeclaim-access-modes)
+18. [Ingress Nginx](#ingress-nginx)
+19. [Kubernetes Objects](#kubernetes-objects)
+20. [Commands](#commands-1)
+21. [NameSpaces](#namespaces)
+22. [ConfigMap](#configmap)
+23. [Helm (v2.0)](#helm-v20)
+24. [Acknowledgment](#acknowledgment)
+25. [Links](#links)
+
+---
 
 ## Commands:
 
 - `-c` flag —> address a running container in a pod
 
+---
+
 ## Configs:
 
-- `kubectl apply -f [config file name]` —> feed a config file to k8s. needs to be written for each file. create a deployment out of a config file
+- `kubectl apply -f [config file name]` —> feed a config file to k8s. Needs to be written for each file. Create a deployment out of a config file
 - `kubectl delete -f [config file name]` —> remove an object
-- `kubectl set image [object type] / [object name] [container name] = [new image to use]` —> imperative command to update image
+- `kubectl set image [object type] / [object name] [container name] = [new image to use]` —> Imperative command to update image
 
-## Print status:
+---
+
+## Print Status:
 
 - `kubectl get pods` —> print out information about all of the running pods
 - `kubectl get services` —> print out information about all of the running services
@@ -30,17 +62,23 @@
 - `kubectl get secrets` —> get all of secrets
 - `kubectl get namespaces` —> get all namespaces inside of our cluster
 
+---
+
 ## LOG:
 
 - `kubectl logs [pod_name]` —> print out logs from the given pod
 - `kubectl describe [object type] [object name / can be none to get all of objects]` —> print out details about a specific object
 - `kubectl describe pod [pod_name]` —> print out some information about the running pod
 
+---
+
 ## Deployment Commands:
 
 - `kubectl delete deployment [depl_name]` —> delete a deployment
 - `kubectl rollout restart deployment [depl_name]` —> for updating new built container
 - `skaffold dev` —> start
+
+---
 
 ## Minikube:
 
@@ -52,7 +90,10 @@
 - `kubectl config view` —> show all things that are running, different contexts and namespaces
 - `kubectl config use-context <namespace>` —> change context
 
-## Don't know:
+---
+
+## Don't Know:
+
 - restart statefulset --> `$ kubectl --kubeconfig ./kubeconfig rollout restart statefulset <shopping-stage-back-pgha1-mbrq>`
 - change namespace --> `$ kubectl config set-context --current --namespace=my-namespace`
 
@@ -60,12 +101,13 @@
 
 ## Programs:
 
-- **minikube** (just for development, local only) —> use for managing the VM itself. creates k8s node.
+- **minikube** (just for development, local only) —> use for managing the VM itself. Creates k8s node.
 - **kubectl** —> use for managing containers in the node
 - **ingress-nginx** —> [github.com/kubernetes/ingress-nginx](http://github.com/kubernetes/ingress-nginx) and not kubernetes-ingress by nginx [github.com/nginxc/kubernetes-ingress](http://github.com/nginxc/kubernetes-ingress)
 
 ---
-# Terminology:
+
+## Terminology:
 
 - **masters**: are machines (or vm’s) with a set of programs to manage nodes. A series of 4 programs that control the entire cluster’s deployment, mostly using `kube-apiserver`, which is monitoring the status of all nodes inside the cluster and making sure they’re doing the correct thing. It reads the config file and interprets it. We are communicating with the master for changes, not nodes. The master decides inside which node to run a certain container. To deploy something, we update the desired state of the master with a config file, and the master works constantly to meet your desired state.
 - **nodes**: individual machines (or vm’s) that run containers. They are inside a cluster. There is a docker running in each node. Pods are inside nodes. We developers never communicate directly to nodes. It’s being done by the master.
@@ -76,7 +118,7 @@
 
 ---
 
-# Takeaways:
+## Takeaways:
 
 - K8s don’t build our images. It gets them from somewhere else.
 - Deployment is a type of controller. Also, ingress makes a controller for routing.
@@ -88,7 +130,7 @@
 
 ---
 
-# Imperative vs Declarative Deployments:
+## Imperative vs Declarative Deployments:
 
 K8s can do both.
 
@@ -97,7 +139,7 @@ K8s can do both.
 
 ---
 
-# YAML File Line by Line:
+## YAML File Line by Line:
 
 1. `apiVersion: v1` or `apps/v1`
    - Defines objects we can use.
@@ -160,7 +202,7 @@ K8s can do both.
 
 ---
 
-# Object Types:
+## Object Types:
 
 - **statefulset**
 - **ReplicaController**
@@ -176,7 +218,7 @@ K8s can do both.
 
 ---
 
-# Network Services
+## Network Services
 
 1. **Cluster IP**: Sets up an easy-to-remember URL to access a pod. Only exposes pods in the cluster (DEFAULT)
 2. **Node Port**: Makes a pod accessible from outside the cluster. Usually only used for dev purposes, because of funky random nodePort.
@@ -188,7 +230,7 @@ K8s can do both.
 
 ---
 
-# Docker Compose vs K8s:
+## Docker Compose vs K8s:
 
 - **docker**: Each entry can optionally get docker-compose to build an image. 
 - **k8s**: Expects all images to already be built.
@@ -201,7 +243,7 @@ K8s can do both.
 
 ---
 
-# Pod Object vs Deployment:
+## Pod Object vs Deployment:
 
 - **pod**: Runs a single set of containers. 
 - **deployment**: Runs a set of identical pods (one or more).
@@ -216,7 +258,7 @@ K8s can do both.
 
 ---
 
-# PersistentVolumeClaim Access Modes:
+## PersistentVolumeClaim Access Modes:
 
 - **ReadWriteOnce** —> Can be used by a single node
 - **ReadOnlyMany** —> Multiple nodes can read from this
@@ -224,7 +266,7 @@ K8s can do both.
 
 ---
 
-# Ingress Nginx:
+## Ingress Nginx:
 
 In ingress-nginx, something that accepts incoming traffic and ingress controller are in one module.
 
@@ -292,16 +334,19 @@ There is also a default-backend pod created by ingress-nginx which has health ch
   - **templates**:
     - **deployment.yaml**:
     - **values.yaml**: Values of template and our project in general.
+
 ---
 
-
-# acknowledgment
-## Contributors
+## Acknowledgment
+### Contributors
 
 APA 🖖🏻
 
+---
+
 ## Links
 
+---
 
 ## APA, Live long & prosper
 ```
