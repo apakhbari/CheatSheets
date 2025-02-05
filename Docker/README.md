@@ -1,33 +1,51 @@
 # Docker
+```
+ ______   _______  _______  ___   _  _______  ______   
+|      | |       ||       ||   | | ||       ||    _ |  
+|  _    ||   _   ||       ||   |_| ||    ___||   | ||  
+| | |   ||  | |  ||       ||      _||   |___ |   |_||_ 
+| |_|   ||  |_|  ||      _||     |_ |    ___||    __  |
+|       ||       ||     |_ |    _  ||   |___ |   |  | |
+|______| |_______||_______||___| |_||_______||___|  |_|
+```
 
-—————————
+
+
+# Table of Contents
+1. [Commands](#commands)
+2. [Tips & Tricks](#tips--tricks)
+3. [Network Drivers](#network-drivers)
+4. [Creating a Dockerfile](#creating-a-dockerfile)
+5. [Creating a Docker Compose](#creating-a-docker-compose)
+6. [Alpine Image](#alpine-image)
+7. [How to Push to Docker Hub](#how-to-push-to-docker-hub)
+8. [Acknowledgment](#acknowledgment)
+9. [Links](#links)
+
+---
 
 ## Commands:
 
 - `docker ps --all` —> List all running containers
 - `docker create <image name>`
 - `docker start -a <container id>`
-- `docker system prune` —> clean all resources
+- `docker system prune` —> Clean all resources
 - `docker logs <container id>`
 - `docker stop <container id>`
 - `docker kill <container id>`
 - `docker exec -it <container id> <command>` —> Execute an additional command in a container
-- `docker build .` —> generate image out of a dockerfile
+- `docker build .` —> Generate image out of a Dockerfile
 - `docker build -t apakhbari/redis:latest .`
-- `docker run -it <image name>` —> Creating and Running a Container from an Image + active terminal access
-- `docker run -p 8080:8080 <image id>` —> docker run with port mapping
-- `docker push apakhbari/posts` —> push to docker hub
+- `docker run -it <image name>` —> Creating and running a container from an image + active terminal access
+- `docker run -p 8080:8080 <image id>` —> Docker run with port mapping
+- `docker push apakhbari/posts` —> Push to Docker hub
 - `docker compose up --build`
 - `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d`
+- `docker-compose up`
+- `docker-compose down`
+- `docker-compose down -v`  --> Frees up all mount points
 
-```bash
-$ docker-compose up
-$ docker-compose down
-$ docker-compose down -v
-``` 
---> frees up all mount points
-
-—————————
+---
 
 ## Tips & Tricks
 
@@ -38,16 +56,15 @@ $ docker network create --driver=bridge --subnet=192.168.0.0/16 --ip-range=172.2
 ```
 
 - Containers will be in this dir, their files are here too: `/var/lib/docker/overlay2/containerid`
-- `docker volume ls` —> see all volumes
-- `docker run -it --name nginx1 -v first_container_vol:/data4 nginx bash` —> create volume
-- `docker volume create sec_container_vol` —> create volume
+- `docker volume ls` —> See all volumes
+- `docker run -it --name nginx1 -v first_container_vol:/data4 nginx bash` —> Create volume
+- `docker volume create sec_container_vol` —> Create volume
 - For bind mounting: `docker run -it --name nginx1 -v /root/data4/:/data4 nginx bash`
 
 ### In Dockerfile:
 
 - The difference between `add` & `copy` is that `add` is like wget, it adds stuff from the web to our image.
 - The difference between `CMD` & `ENTRYPOINT` is that `ENTRYPOINT` cannot be overwritten.
-
 - Usually inside spec add `imagePullPolicy: IfNotPresent`
 - `apk` —> Alpine images package manager
 - To add a package with no cache to image: 
@@ -55,7 +72,7 @@ $ docker network create --driver=bridge --subnet=192.168.0.0/16 --ip-range=172.2
 $ apk --no-cache add curl
 ```
 
-—————————
+---
 
 ## Network Drivers
 
@@ -67,7 +84,7 @@ $ apk --no-cache add curl
 - **none:** Completely isolate a container from the host and other containers. `none` is not available for Swarm services.
 - [**Network plugins**](https://docs.docker.com/engine/extend/plugins_services/): You can install and use third-party network plugins with Docker.
 
-—————————
+---
 
 ## Creating a Dockerfile:
 1- Specify a base image —> `FROM alpine`
@@ -89,7 +106,7 @@ COPY ./package.json ./
 
 RUN npm install
 
-# copy all other things
+# Copy all other things
 COPY ./ ./
 
 # Default command
@@ -98,7 +115,7 @@ CMD ["npm", "start"]
 
 - Add `.dockerignore`
 
-—————————
+---
 
 ## Creating a Docker Compose:
 
@@ -131,11 +148,11 @@ services:
 
   api:
     build:
-      dockerfile: Dockerfile.dev # don’t include directory address, just the name of dockerfile
+      dockerfile: Dockerfile.dev # don’t include directory address, just the name of Dockerfile
       context: ./server
     volumes:
       - /app/node_modules # don’t override this one
-      - ./server:/app # copy everything on ./server (except node_modules) into /app
+      - ./server:/app # Copy everything on ./server (except node_modules) into /app
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -166,13 +183,13 @@ services:
       - REDIS_PORT=6379
 ```
 
-—————————
+---
 
 ## Alpine Image —> Minimal version of image
 
-—————————
+---
 
-## How to push to Docker Hub:
+## How to Push to Docker Hub:
 
 1- Login —> `docker login -u apakhbari`  
 For password enter **ACCESS TOKEN**
@@ -183,7 +200,7 @@ For password enter **ACCESS TOKEN**
 
 4- Push image —> `docker image push apakhbari/<image_name>:latest`
 
-—————————
+---
 
 Don’t forget to add `.dockerignore` with:
 
@@ -192,16 +209,21 @@ node_modules
 .next
 ```
 
+---
 
-# acknowledgment
+# Acknowledgment
 ## Contributors
 
 APA 🖖🏻
 
+---
+
 ## Links
 
+---
 
 ## APA, Live long & prosper
+
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
   a::::::::::::a p::::ppp:::::::::p    a::::::::::::a
