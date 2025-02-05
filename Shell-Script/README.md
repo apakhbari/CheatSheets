@@ -1,4 +1,13 @@
 # Shell Script
+```
+ _______  __   __  _______  ___      ___          _______  _______  ______    ___   _______  _______ 
+|       ||  | |  ||       ||   |    |   |        |       ||       ||    _ |  |   | |       ||       |
+|  _____||  |_|  ||    ___||   |    |   |        |  _____||       ||   | ||  |   | |    _  ||_     _|
+| |_____ |       ||   |___ |   |    |   |        | |_____ |       ||   |_||_ |   | |   |_| |  |   |  
+|_____  ||       ||    ___||   |___ |   |___     |_____  ||      _||    __  ||   | |    ___|  |   |  
+ _____| ||   _   ||   |___ |       ||       |     _____| ||     |_ |   |  | ||   | |   |      |   |  
+|_______||__| |__||_______||_______||_______|    |_______||_______||___|  |_||___| |___|      |___|  
+```
 
 - Bash shell uses a feature called environment variables to store information about the shell session and the working environment (thus the name environment variables). This feature stores the data in memory so that any program or script running from the shell can easily access it.  
 - There are two types of environment variables in the Bash shell:
