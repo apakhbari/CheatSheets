@@ -1,5 +1,14 @@
 
 # Linux
+```
+ ___      ___   __    _  __   __  __   __ 
+|   |    |   | |  |  | ||  | |  ||  |_|  |
+|   |    |   | |   |_| ||  | |  ||       |
+|   |    |   | |       ||  |_|  ||       |
+|   |___ |   | |  _    ||       | |     | 
+|       ||   | | | |   ||       ||   _   |
+|_______||___| |_|  |__||_______||__| |__|
+```
 
 ## Table of Contents
 
@@ -15,7 +24,6 @@
 - Cron jobs
 - Manual
 - Tips & Tricks
-- `$ mv /etc/zabbix/zabbix_agent2.d/{mariadb,service}.conf`
 - CLI, Shell
 - Files
 - Managing Software
