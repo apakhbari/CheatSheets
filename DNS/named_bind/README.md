@@ -1,3 +1,15 @@
+# named_bind
+```
+ _______  ___   __    _  ______  
+|  _    ||   | |  |  | ||      | 
+| |_|   ||   | |   |_| ||  _    |
+|       ||   | |       || | |   |
+|  _   | |   | |  _    || |_|   |
+| |_|   ||   | | | |   ||       |
+|_______||___| |_|  |__||______| 
+
+```
+
 Run the following command to check the syntax of the `named.conf*` files:
 
 ```
