@@ -30,22 +30,21 @@
 24. [Acknowledgment](#acknowledgment)
 25. [Links](#links)
 
----
 
-# Commands:
+## Commands:
 
 - restart statefulset --> `$ kubectl --kubeconfig ./kubeconfig rollout restart statefulset <shopping-stage-back-pgha1-mbrq>`
 - change namespace --> `$ kubectl config set-context --current --namespace=my-namespace`
 
 - TIP: `-c` flag —> address a running container in a pod
 
-## Configs:
+### Configs:
 
 - `kubectl apply -f [config file name]` —> feed a config file to k8s. Needs to be written for each file. Create a deployment out of a config file
 - `kubectl delete -f [config file name]` —> remove an object
 - `kubectl set image [object type] / [object name] [container name] = [new image to use]` —> Imperative command to update image
 
-## Print Status:
+### Print Status:
 
 - `kubectl get pods` —> print out information about all of the running pods
 - `kubectl get services` —> print out information about all of the running services
@@ -55,20 +54,20 @@
 - `kubectl get secrets` —> get all of secrets
 - `kubectl get namespaces` —> get all namespaces inside of our cluster
 
-## LOG:
+### LOG:
 
 - `kubectl logs [pod_name]` —> print out logs from the given pod
 - `kubectl describe [object type] [object name / can be none to get all of objects]` —> print out details about a specific object
 - `kubectl describe pod [pod_name]` —> print out some information about the running pod
 
-## Deployment Commands:
+### Deployment Commands:
 
 - `kubectl delete deployment [depl_name]` —> delete a deployment
 - `kubectl rollout restart deployment [depl_name]` —> for updating new built container
 - `skaffold dev` —> start
 
 
-## Minikube:
+### Minikube:
 
 - `minikube ip` —> show IP address of node to access on local machine
 - `kubectl exec -it [pod_name] [cmd].` —> execute the given command in a running pod
@@ -78,7 +77,7 @@
 - `kubectl config view` —> show all things that are running, different contexts and namespaces
 - `kubectl config use-context <namespace>` —> change context
 
----
+
 
 ## Programs:
 
