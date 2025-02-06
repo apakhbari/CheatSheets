@@ -15,7 +15,6 @@
 9. [Terminology](#terminology)
 10. [Takeaways](#takeaways)
 11. [Imperative vs Declarative Deployments](#imperative-vs-declarative-deployments)
-12. [YAML File Line by Line](#yaml-file-line-by-line)
 13. [Object Types](#object-types)
 14. [Network Services](#network-services)
 15. [Docker Compose vs K8s](#docker-compose-vs-k8s)
@@ -270,14 +269,14 @@ There is also a default-backend pod created by ingress-nginx which has health ch
 
   - **It is possible to have two containers in a pod**, for example for log purposes. This happens with sidecar containers / init containers, which are the same.
 
-- **Kubernetes objects**
+## **Kubernetes objects**
   - Creating a `yml` file for k8s objects we want to create:
     - `apiVersion`: Version number of k8s API
     - `kind`: What kind of object we want to create
     - `metadata`: Data to help uniquely identify object
     - `spec`: Desired state for the object
 
-- **Commands**
+## **Commands**
   - `$ kubectl scale rc (replication controller) nginx --replica=5` —> For scaling up/down
   - `kubectl edit rc (replication controller) nginx` —> Another way to scale up/down
   - **RabbitMQ** and **ElasticSearch** use StatefulSet instead of deployment.
@@ -293,7 +292,7 @@ There is also a default-backend pod created by ingress-nginx which has health ch
   - **NodePort** service is used for external access. The range is 30000 to 32767, not used in production environments.
   - **LoadBalancer** service is the default when you want access from outside and are using the cloud. The downside is each service gets an IP, so it's expensive. LB is accessible by outside via its port.
 
-- **NameSpaces**
+## **NameSpaces**
   - **Default**: All namespaces that don’t belong to public/system.
   - **kube-public**: Publicly available/readable by all.
   - **kube-system**: Objects/resources created by k8s systems.
