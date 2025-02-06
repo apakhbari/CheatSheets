@@ -11,12 +11,6 @@
 
 # Table of Contents
 1. [Commands](#commands)
-2. [Configs](#configs)
-3. [Print Status](#print-status)
-4. [LOG](#log)
-5. [Deployment Commands](#deployment-commands)
-6. [Minikube](#minikube)
-7. [Don't Know](#dont-know)
 8. [Programs](#programs)
 9. [Terminology](#terminology)
 10. [Takeaways](#takeaways)
@@ -38,19 +32,15 @@
 
 ---
 
-## Commands:
+# Commands:
 
 - `-c` flag —> address a running container in a pod
-
----
 
 ## Configs:
 
 - `kubectl apply -f [config file name]` —> feed a config file to k8s. Needs to be written for each file. Create a deployment out of a config file
 - `kubectl delete -f [config file name]` —> remove an object
 - `kubectl set image [object type] / [object name] [container name] = [new image to use]` —> Imperative command to update image
-
----
 
 ## Print Status:
 
@@ -62,15 +52,11 @@
 - `kubectl get secrets` —> get all of secrets
 - `kubectl get namespaces` —> get all namespaces inside of our cluster
 
----
-
 ## LOG:
 
 - `kubectl logs [pod_name]` —> print out logs from the given pod
 - `kubectl describe [object type] [object name / can be none to get all of objects]` —> print out details about a specific object
 - `kubectl describe pod [pod_name]` —> print out some information about the running pod
-
----
 
 ## Deployment Commands:
 
@@ -78,7 +64,6 @@
 - `kubectl rollout restart deployment [depl_name]` —> for updating new built container
 - `skaffold dev` —> start
 
----
 
 ## Minikube:
 
@@ -89,8 +74,6 @@
 - `kubectl get services -n <NAMESPACE>` —> get all services that are inside of a namespace
 - `kubectl config view` —> show all things that are running, different contexts and namespaces
 - `kubectl config use-context <namespace>` —> change context
-
----
 
 ## Don't Know:
 
