@@ -250,7 +250,7 @@ There is also a default-backend pod created by ingress-nginx which has health ch
   - docker
   - rocketd
 
-- **components**
+## **components**
   - **Master node**
     - **API server**: Gatekeeper receives calls, creates, deletes, or modifies components.
     - **kube controller**
