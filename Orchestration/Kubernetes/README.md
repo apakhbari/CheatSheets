@@ -11,7 +11,7 @@
 
 # Table of Contents
 1. [Commands](#commands)
-8. [Programs](#programs)
+2. [Programs](#programs)
 9. [Terminology](#terminology)
 10. [Takeaways](#takeaways)
 11. [Imperative vs Declarative Deployments](#imperative-vs-declarative-deployments)
@@ -34,7 +34,10 @@
 
 # Commands:
 
-- `-c` flag —> address a running container in a pod
+- restart statefulset --> `$ kubectl --kubeconfig ./kubeconfig rollout restart statefulset <shopping-stage-back-pgha1-mbrq>`
+- change namespace --> `$ kubectl config set-context --current --namespace=my-namespace`
+
+- TIP: `-c` flag —> address a running container in a pod
 
 ## Configs:
 
@@ -74,11 +77,6 @@
 - `kubectl get services -n <NAMESPACE>` —> get all services that are inside of a namespace
 - `kubectl config view` —> show all things that are running, different contexts and namespaces
 - `kubectl config use-context <namespace>` —> change context
-
-## Don't Know:
-
-- restart statefulset --> `$ kubectl --kubeconfig ./kubeconfig rollout restart statefulset <shopping-stage-back-pgha1-mbrq>`
-- change namespace --> `$ kubectl config set-context --current --namespace=my-namespace`
 
 ---
 
