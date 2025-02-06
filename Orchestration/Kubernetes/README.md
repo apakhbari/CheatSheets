@@ -113,68 +113,6 @@ K8s can do both.
 - **Imperative**: Do exactly these steps to arrive at this container setup.
 - **Declarative**: Our container setup should look like this, make it happen.
 
-## YAML File Line by Line:
-
-1. `apiVersion: v1` or `apps/v1`
-   - Defines objects we can use.
-2. `kind: Pod`
-   - Specifies the purpose of this object.
-
-[Examples of Object Types:]
-
-3. `metadata`
-   - `name` —> name of pod. Mostly used for logging purposes.
-   - `labels: component: web` [label selector system]
-
-4. `spec: containers:` [an array. Could be multiple containers]
-   - Each container inside a pod is defined here.
-   - `name: client`
-   - `image: apakhbari/multi-client`
-   - `ports: containerPorts: 3000`
-
-5. **Service**
-   - `spec: type: NodePort`
-   - `ports:` [an array. Could be multiple ports]
-   - `port: 3050`
-   - `targetPort: 3000`
-   - `nodePort: 31515` —> random 30000 - 32767
-   - `selector: component: web` [label selector system]
-
-6. **Deployment**
-   - `apiVersion: apps/v1`
-   - `kind: Deployment`
-   - `metadata:`
-     - `name: client-deployment`
-   - `spec:`
-     - `replicas: 1`
-     - `selector:` [used for assigning some label, for monitoring pods by deployment]
-       - `matchLabels:`
-         - `component: web`
-     - `template:` [configs that are used for every single pod made by this deployment]
-       - `metadata:`
-         - `labels:`
-           - `component: web`
-       - `spec:`
-         - `containers:`
-           - `name: client`
-           - `image: apakhbari/multi-client`
-           - `ports:`
-             - `containerPort: 3000`
-
-7. **PersistentVolumeClaim**
-   - `apiVersion: v1`
-   - `kind: PersistentVolumeClaim`
-   - `metadata:`
-     - `name: database-persistent-volume-claim`
-   - `spec:`
-     - `accessMode:`
-       - `- ReadWriteOnce`
-     - `resources:`
-       - `requests:`
-         - `storage: 2Gi`
-     - `[StorageClassName can be assigned too. We stick to default]`
-
----
 
 ## Object Types:
 
@@ -238,7 +176,68 @@ K8s can do both.
 - **ReadOnlyMany** —> Multiple nodes can read from this
 - **ReadWriteMany** —> Can be read and written to by many nodes
 
----
+## YAML File Line by Line:
+
+1. `apiVersion: v1` or `apps/v1`
+   - Defines objects we can use.
+2. `kind: Pod`
+   - Specifies the purpose of this object.
+
+[Examples of Object Types:]
+
+3. `metadata`
+   - `name` —> name of pod. Mostly used for logging purposes.
+   - `labels: component: web` [label selector system]
+
+4. `spec: containers:` [an array. Could be multiple containers]
+   - Each container inside a pod is defined here.
+   - `name: client`
+   - `image: apakhbari/multi-client`
+   - `ports: containerPorts: 3000`
+
+5. **Service**
+   - `spec: type: NodePort`
+   - `ports:` [an array. Could be multiple ports]
+   - `port: 3050`
+   - `targetPort: 3000`
+   - `nodePort: 31515` —> random 30000 - 32767
+   - `selector: component: web` [label selector system]
+
+6. **Deployment**
+   - `apiVersion: apps/v1`
+   - `kind: Deployment`
+   - `metadata:`
+     - `name: client-deployment`
+   - `spec:`
+     - `replicas: 1`
+     - `selector:` [used for assigning some label, for monitoring pods by deployment]
+       - `matchLabels:`
+         - `component: web`
+     - `template:` [configs that are used for every single pod made by this deployment]
+       - `metadata:`
+         - `labels:`
+           - `component: web`
+       - `spec:`
+         - `containers:`
+           - `name: client`
+           - `image: apakhbari/multi-client`
+           - `ports:`
+             - `containerPort: 3000`
+
+7. **PersistentVolumeClaim**
+   - `apiVersion: v1`
+   - `kind: PersistentVolumeClaim`
+   - `metadata:`
+     - `name: database-persistent-volume-claim`
+   - `spec:`
+     - `accessMode:`
+       - `- ReadWriteOnce`
+     - `resources:`
+       - `requests:`
+         - `storage: 2Gi`
+     - `[StorageClassName can be assigned too. We stick to default]`
+
+
 
 ## Ingress Nginx:
 
