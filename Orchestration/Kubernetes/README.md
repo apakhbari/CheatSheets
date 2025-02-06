@@ -95,8 +95,6 @@
 - **Ingress or Ingress Controller**: A pod with a set of routing rules to distribute traffic to other services.
 - **Persistent Volume Claim (PVC)**
 
----
-
 ## Takeaways:
 
 - K8s don’t build our images. It gets them from somewhere else.
@@ -107,7 +105,6 @@
 
 - K8s has a limit of 150000 Pods.
 
----
 
 ## Imperative vs Declarative Deployments:
 
