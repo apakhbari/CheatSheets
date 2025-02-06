@@ -85,7 +85,6 @@
 - **kubectl** —> use for managing containers in the node
 - **ingress-nginx** —> [github.com/kubernetes/ingress-nginx](http://github.com/kubernetes/ingress-nginx) and not kubernetes-ingress by nginx [github.com/nginxc/kubernetes-ingress](http://github.com/nginxc/kubernetes-ingress)
 
----
 
 ## Terminology:
 
