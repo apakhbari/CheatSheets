@@ -100,8 +100,8 @@
 - K8s don’t build our images. It gets them from somewhere else.
 - Deployment is a type of controller. Also, ingress makes a controller for routing.
 
-  * Usually inside spec add `imagePullPolicy: IfNotPresent`
-  * `apk` —> Alpine images package manager
+- Usually inside spec add `imagePullPolicy: IfNotPresent`
+- `apk` —> Alpine images package manager
 
 - K8s has a limit of 150000 Pods.
 
