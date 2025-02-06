@@ -113,8 +113,6 @@ K8s can do both.
 - **Imperative**: Do exactly these steps to arrive at this container setup.
 - **Declarative**: Our container setup should look like this, make it happen.
 
----
-
 ## YAML File Line by Line:
 
 1. `apiVersion: v1` or `apps/v1`
