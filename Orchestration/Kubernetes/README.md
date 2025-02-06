@@ -120,7 +120,7 @@ K8s can do both.
 2. `kind: Pod`
    - Specifies the purpose of this object.
 
-### Examples of Object Types:
+[Examples of Object Types:]
 
 3. `metadata`
    - `name` —> name of pod. Mostly used for logging purposes.
