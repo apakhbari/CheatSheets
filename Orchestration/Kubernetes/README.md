@@ -128,7 +128,7 @@ K8s can do both.
 
   Defined in `spec: type:`
 
----
+
 
 ## Network Services
 
@@ -140,7 +140,7 @@ K8s can do both.
    *... don't worry about this one...*
 5. **Ingress**: Exposes a set of services to the outside world.
 
----
+
 
 ## Docker Compose vs K8s:
 
@@ -153,7 +153,7 @@ K8s can do both.
 - **docker**: Each entry defines the networking requirements (ports). 
 - **k8s**: We have to manually set up all networking.
 
----
+
 
 ## Pod Object vs Deployment:
 
@@ -168,7 +168,7 @@ K8s can do both.
 - **pod**: Rarely used directly in production. 
 - **deployment**: Good for production.
 
----
+
 
 ## PersistentVolumeClaim Access Modes:
 
@@ -245,7 +245,7 @@ In ingress-nginx, something that accepts incoming traffic and ingress controller
 
 There is also a default-backend pod created by ingress-nginx which has health check purposes. It ideally could be implemented inside an express server.
 
----
+
 
 - **k8s supports two kinds of containers**
   - docker
@@ -308,18 +308,18 @@ There is also a default-backend pod created by ingress-nginx which has health ch
     - **deployment.yaml**:
     - **values.yaml**: Values of template and our project in general.
 
----
+
 
 ## Acknowledgment
 ### Contributors
 
 APA 🖖🏻
 
----
+
 
 ## Links
 
----
+
 
 ## APA, Live long & prosper
 ```
