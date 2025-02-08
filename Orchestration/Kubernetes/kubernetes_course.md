@@ -1027,21 +1027,33 @@ etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server
 
 ## Session 9 (10 on classes)
 
-## Session 10
+## Session 10 (12 on classes)
 
-## Session 11
+## Session 11 (13 on classes)
+```
 
-## Session 12
+tar Cxzvvf /usr/local nerdctl-full-1.7.6-linux-amd64.tar.gz
+====
+/etc/gitlab-runner/config.toml
+====
+kubectl create secret docker-registry anisa-registry --docker-username=burux --docker-password=@nis@12345678
+====
+image: docker:latestservices:  - docker:dindstages:  - build  - deployvariables:  COMMIT: $CI_COMMIT_SHORT_SHA  IMAGE_TAG1: burux/nginx:$COMMITBUILD:  stage: build  only:    - main    script:    - docker build -t $IMAGE_TAG1 .    - docker push $IMAGE_TAG1    - echo "push on docker hub"DEPLOY:  stage: deploy  only:    - main      script:    - kubectl set image deployment/anisa-web nginx-container=$IMAGE_TAG1    - echo "deploy done"
 
-## Session 13
 
-## Session 14
+```
 
-## Session 15
+## Session 12 (14 on classes)
 
-## Session 16
+## Session 13 (15 on classes)
 
-## Session 17
+## Session 14 (16 on classes)
+
+## Session 15 (17 on classes)
+
+## Session 16 (18 on classes)
+
+## Session 17 (19 on classes)
 
 
 # Session2 - HA Master Nodes
