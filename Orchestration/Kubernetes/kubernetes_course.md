@@ -101,6 +101,12 @@ plugins."io.containerd.grpc.v1.cri".registry
 ```
 
 ## Session 3
+```
+kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kubernetes/pki/etcd/server.crt" --cacert="/etc/kubernetes/pki/etcd/ca.crt" --key="/etc/kubernetes/pki/etcd/server.key" --prefix --keys-only
+======
+```
+
+
 ## Session 4
 ## Session 5
 ## Session 6
