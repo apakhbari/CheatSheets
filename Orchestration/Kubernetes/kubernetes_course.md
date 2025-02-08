@@ -1271,6 +1271,15 @@ spec:
 ## Session 16 (18 on classes)
 
 ## Session 17 (19 on classes)
+```
+
+echo "Password: $(kubectl -n argocd get secret argocd-secret -o jsonpath="{.data.clearPassword}" | base64 -d)"
+====
+$(Build.Repository.Name):$(Build.BuildId)
+Copy Files to: $(Build.ArtifactStagingDirectory)
+
+
+```
 
 
 # Session2 - HA Master Nodes
