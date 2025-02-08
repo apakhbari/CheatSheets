@@ -265,6 +265,84 @@ spec:
 ```
 
 ## Session 5
+```
+apiVersion: apps/v1
+kind: v
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-anisa
+spec:   
+  replicas: 6
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21  ====
+kubectl config set-context kubernetes-admin@kubernetes --namespace=dev
+====
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:   
+  replicas: 6
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21  
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "10M"
+            limits:
+              cpu: "2"
+              memory: "512M" 
+==========
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: dev-quota
+  namespace: dev 
+spec:
+  hard: 
+    pods: "10"
+    count/deployments.apps: "2"
+    cpu: "100m"
+    memory: "100M"
+    =====
+    apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 80
+      port: 8080
+          nodePort: 31457
+  selector:
+    app: nginx
+====
+```
+
 ## Session 6
 ## Session 7
 ## Session 8
