@@ -672,11 +672,23 @@ spec:
 
 ```
 
-## Session 10
+## Session 10 (12 on classes)
+```
 
-## Session 11
+```
 
-## Session 12
+## Session 11 (13 on classes)
+```
+
+etcdctl snapshot save snapshot20240718.db --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt
+=====
+etcdctl snapshot status snapshot20240718.db --write-out=table
+=====
+
+
+```
+
+## Session 12 (14 on classes)
 
 
 # Advanced Kubernetes Course
