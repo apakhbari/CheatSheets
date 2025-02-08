@@ -786,7 +786,89 @@ subjects:
 # Advanced Kubernetes Course
 # Sessions
 ## Session 1
-## Session 2
+## Session 2 (3 on classes)
+```
+frontend kubernetes-frontend
+  bind *:6443
+  mode tcp
+  option tcplog
+  default_backend kubernetes-backend
+
+backend kubernetes-backend
+  option httpchk GET /healthz
+  http-check expect status 200
+  mode tcp
+  option ssl-hello-chk
+  balance roundrobin
+    server kmaster1 192.168.1.5:6443 check fall 3 rise 2
+    server kmaster2 192.168.1.6:6443 check fall 3 rise 2
+    server kmaster3 192.168.1.7:6443 check fall 3 rise 2
+======
+apt install haproxy keepalived -y
+=====
+#!/bin/sh
+
+errorExit() {
+  echo "*** $@" 1>&2
+  exit 1
+}
+
+curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || errorExit "Error GET https://localhost:6443/"
+if ip addr | grep -q 192.168.1.20; then
+  curl --silent --max-time 2 --insecure https://192.168.1.20:6443/ -o /dev/null || errorExit "Error GET https://192.168.1.20:6443/"
+fi
+====
+vrrp_script check_apiserver {
+  script "/etc/keepalived/check_apiserver.sh"
+  interval 3
+  timeout 10
+  fall 5
+  rise 2
+  weight 2
+}
+
+vrrp_instance VI_1 {
+    state MASTER
+    interface enp0s3
+    virtual_router_id 1
+    priority 100
+    advert_int 5
+    authentication {
+        auth_type PASS
+        auth_pass mysecret
+    }
+    virtual_ipaddress {
+        192.168.1.20
+    }
+    track_script {
+        check_apiserver
+    }
+}
+====
+etcdctl version
+===
+[Unit]
+Description=etcd
+
+[Service]
+Type=exec
+ExecStart=/usr/local/bin/etcd \
+  --name etcd1 \
+  --initial-advertise-peer-urls http://192.168.1.10:2380 \
+  --listen-peer-urls http://192.168.1.10:2380 \
+  --advertise-client-urls http://192.168.1.10:2379 \
+  --listen-client-urls http://192.168.1.10:2379,http://127.0.0.1:2379 \
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster etcd1=http://192.168.1.10:2380,etcd2=http://192.168.1.11:2380,etcd3=http://192.168.1.12:2380 \
+  --initial-cluster-state new
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+====
+```
+
 - Master node resources:
 
   - Minimum: 8 GB Ram + 4 core CPU
@@ -794,21 +876,36 @@ subjects:
 
 - Worker node resources:
   - Minimum: 16 GB Ram + 16 core CPU
-## Session 3
-## Session 4
-## Session 5
-## Session 6
-## Session 7
-## Session 8
-## Session 9
+## Session 3 (4 on classes)
+
+## Session 4 (5 on classes)
+
+## Session 5 (6 on classes)
+
+## Session 6 (7 on classes)
+
+## Session 7 (8 on classes)
+
+## Session 8 (9 on classes)
+
+## Session 9 (10 on classes)
+
 ## Session 10
+
 ## Session 11
+
 ## Session 12
+
 ## Session 13
+
 ## Session 14
+
 ## Session 15
+
 ## Session 16
+
 ## Session 17
+
 
 # Session2 - HA Master Nodes
 
