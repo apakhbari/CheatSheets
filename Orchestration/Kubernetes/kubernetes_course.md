@@ -876,7 +876,144 @@ WantedBy=multi-user.target
 
 - Worker node resources:
   - Minimum: 16 GB Ram + 16 core CPU
+
 ## Session 3 (4 on classes)
+```
+
+https://github.com/cloudflare/cfssl/
+===
+ca-config.json:
+
+{
+    "signing": {
+        "default": {
+            "expiry": "87600h"
+        },
+        "profiles": {
+            "etcd": {
+                "expiry": "8760h",
+                "usages": ["signing","key encipherment","server auth","client auth"]
+            }
+        }
+    }
+}
+====
+ca-csr.json :
+ 
+{
+  "CN": "etcd cluster",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "GB",
+      "L": "England",
+      "O": "Kubernetes",
+      "OU": "ETCD-CA",
+      "ST": "Cambridge"
+    }
+  ]
+}
+
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+====
+etcd-csr.json :
+
+{
+  "CN": "etcd",
+  "hosts": [
+    "localhost",
+    "127.0.0.1",
+    "192.168.1.10",
+    "192.168.1.11",
+    "192.168.1.12"
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "GB",
+      "L": "England",
+      "O": "Kubernetes",
+      "OU": "etcd",
+      "ST": "Cambridge"
+    }
+  ]
+}
+
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd etcd-csr.json | cfssljson -bare etcd
+=====
+/etc/systemd/system/etcd.service:
+
+[Unit]
+Description=etcd
+
+[Service]
+Type=notify
+ExecStart=/usr/local/bin/etcd \
+  --name etcd1 \
+  --cert-file=/etc/etcd/pki/etcd.pem \
+  --key-file=/etc/etcd/pki/etcd-key.pem \
+  --peer-cert-file=/etc/etcd/pki/etcd.pem \
+  --peer-key-file=/etc/etcd/pki/etcd-key.pem \
+  --trusted-ca-file=/etc/etcd/pki/ca.pem \
+  --peer-trusted-ca-file=/etc/etcd/pki/ca.pem \
+  --peer-client-cert-auth \
+  --client-cert-auth \
+  --initial-advertise-peer-urls https://192.168.1.10:2380 \
+  --listen-peer-urls https://192.168.1.10:2380 \
+  --advertise-client-urls https://192.168.1.10:2379 \
+  --listen-client-urls https://192.168.1.10:2379,https://127.0.0.1:2379 \
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster etcd1=https://192.168.1.10:2380,etcd2=https://192.168.1.11:2380,etcd3=https://192.168.1.12:2380 \
+  --initial-cluster-state new \
+  --data-dir=/etc/etcd/pki
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+systemctl daemon-reload
+systemctl start etcd
+
+etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/etcd/pki/ca.pem --cert=/etc/etcd/pki/etcd.pem --key=/etc/etcd/pki/etcd-key.pem member list
+======
+kubeadm-config.yaml:
+
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: v1.28.9
+controlPlaneEndpoint: 192.168.1.50:6443
+networking:
+  podSubnet: "10.10.0.0/16"
+etcd:
+    external:
+        endpoints:
+        - https://192.168.1.10:2379
+        - https://192.168.1.11:2379
+        - https://192.168.1.12:2379
+        caFile: /etc/kubernetes/pki/etcd/ca.pem
+        certFile: /etc/kubernetes/pki/etcd/etcd.pem
+        keyFile: /etc/kubernetes/pki/etcd/etcd-key.pem
+
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: "192.168.1.5"
+======
+etcdctl get / --endpoints=https://192.168.1.10:2379 --cacert=/etc/etcd/pki/ca.pem --cert=/etc/etcd/pki/etcd.pem --key=/etc/etcd/pki/etcd-key.pem --prefix --keys-only
+====
+etcdctl snapshot restore snapshot20240605.db --data-dir /var/lib/etcd/ --initial-cluster etcd1=https://192.168.1.10:2380 --initial-advertise-peer-urls https://192.168.1.10:2380 --name etcd1
+====
+etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/ca.crt --key=/etc/kubernetes/pki/etcd/server.key
+====
+```
 
 ## Session 4 (5 on classes)
 
