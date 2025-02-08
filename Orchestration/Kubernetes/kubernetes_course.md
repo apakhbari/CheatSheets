@@ -1214,6 +1214,59 @@ spec:
 ```
 
 ## Session 15 (17 on classes)
+```
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web-server-hpa
+  namespace: dev
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: php-apache
+    apiVersion: apps/v1
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: AverageValue
+          averageValue: 200Mi
+====
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+  namespace: dev
+spec: 
+  selector: 
+    matchLabels:
+      run: apache
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: apache
+    spec:
+      containers:
+        - name: php-apache-container
+          image: registry.k8s.io/hpa-example
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 100m
+====
+```
 
 ## Session 16 (18 on classes)
 
