@@ -459,7 +459,146 @@ kubectl taint node worker1 app=nginx:NoExecute
 =====
 ```
 
-## Session 7
+## Session 7 (8 on classes)
+```
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+==========
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.21
+      nodeSelector:
+        size: small
+========
+kubectl label node kubeworker-2 size=small
+=====
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.18
+      affinity:
+        nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                 - key: "size"
+                   operator: "In"
+                   values:
+                     - "large"
+                     - "small"
+============
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      type: frontend
+  template:
+    metadata:
+      labels:
+        type: frontend
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.20
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: color
+                    operator: In
+                    values:
+                      - blue
+==========
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-red
+  namespace: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "color"
+                  operator: "In"
+                  values:
+                    - red
+      tolerations:
+        - key: "color"
+          operator: "Equal"
+          value: "red"
+          effect: "NoSchedule"
+      containers:
+        - name: nginx
+          image: nginx
+========       
+
+```
+
+
 ## Session 8
 ## Session 9
 ## Session 10
