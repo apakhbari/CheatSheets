@@ -599,10 +599,83 @@ spec:
 ```
 
 
-## Session 8
-## Session 9
+## Session 8 (9 on classes)
+
+## Session 9 (11 on classes)
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alpine-pod
+  namespace: default
+spec:
+  containers:
+    - name: alpine-container
+      image: registry.docker.ir/alpine
+      command:
+        - sleep
+        - infinity
+      env:
+        - name: WORDPRESS_DB_NAME
+          value: "anisa"
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_USER
+=====
+kubectl create configmap config --from-env-file=.env
+======
+kubectl -n dev create secret docker-registry ckatestaccount --docker-username=burux --docker-password=@nis@12345678 --dry-run=client -o yaml > docker-registry-secret.yaml
+======
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-multi
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  volumes:
+    - name: myvol
+      emptyDir:
+        sizeLimit: 10Mi
+  initContainers:
+    - name: config-creator
+      image: registry.docker.ir/alpine
+      volumeMounts:
+        - name: myvol
+          mountPath: /mnt/vol
+      command:
+        - /bin/sh
+        - -c
+        - |
+          echo "$(date) here is your Config" > /mnt/vol/init1.txt
+          sleep 5
+    - name: git-cloner
+      image: registry.docker.ir/alpine
+      volumeMounts:
+        - name: myvol
+          mountPath: /mnt/vol
+      command:
+        - /bin/sh
+        - -c
+        - |
+          echo "$(date) here is your git repository" > /mnt/vol/init2.txt
+  containers:
+    - name: nginx-container
+      image: registry.docker.ir/nginx:1.21
+      volumeMounts:
+        - name: myvol
+          mountPath: /mnt/vol
+======
+
+```
+
 ## Session 10
+
 ## Session 11
+
 ## Session 12
 
 
