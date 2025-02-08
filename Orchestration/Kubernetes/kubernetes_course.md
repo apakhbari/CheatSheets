@@ -108,6 +108,162 @@ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kuber
 
 
 ## Session 4
+```
+kubectl get all --all-namespaces
+======
+kubectl create -f pod.yaml
+kubectl describe pod nginx-pod
+===
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.21
+======
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.20
+  restartPolicy: Never
+  ====
+  nerdcl -n k8s.io kill <container_name>
+  ========
+  kubectl delete -f  "path/name.yaml"
+  ====
+  kubectl edit pod <pod_name>
+  ====
+kubectl run nginx-pod --image nginx:1.21
+===
+kubectl get pod nginx-pod -o yaml > pod-nginx.yaml
+ ====== 
+ apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.20
+      imagePullPolicy: Never
+=======
+kubectl run nginx-pod  --image nginx:1.21
+====
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+        course: kubernetes
+  template:
+    metadata: 
+      labels:
+        anisa: devops
+        course: kubernetes
+    spec:    
+      containers:
+        - name: nginx-container
+          image: nginx:1.21     
+====kubectl get all --all-namespaces
+======
+kubectl create -f pod.yaml
+kubectl describe pod nginx-pod
+===
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.21
+======
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.20
+  restartPolicy: Never
+  ====
+  nerdcl -n k8s.io kill <container_name>
+  ========
+  kubectl delete -f  "path/name.yaml"
+  ====
+  kubectl edit pod <pod_name>
+  ====
+kubectl run nginx-pod --image nginx:1.21
+===
+kubectl get pod nginx-pod -o yaml > pod-nginx.yaml
+ ====== 
+ apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.20
+      imagePullPolicy: Never
+=======
+kubectl run nginx-pod  --image nginx:1.21
+====
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+        course: kubernetes
+  template:
+    metadata: 
+      labels:
+        anisa: devops
+        course: kubernetes
+    spec:    
+      containers:
+        - name: nginx-container
+          image: nginx:1.21     
+====
+```
+
 ## Session 5
 ## Session 6
 ## Session 7
