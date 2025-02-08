@@ -343,7 +343,122 @@ spec:
 ====
 ```
 
-## Session 6
+## Session 6 (7 on classes)
+```
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-internal
+  namespace: dev
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 80
+      port: 8080
+  selector:
+    app: nginx
+====
+kubectl -n default run debugger --image alpine --command -- sleep infinity
+====
+alpine: apk add curl
+=====
+curl http://nginx-internal.dev.svc.cluster.local:8080
+curl http://nginx-internal.dev:8080
+==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  type: LoadBalancer
+  ports:
+    - targetPort: 80
+      port: 8080
+  selector:
+    app: nginx
+=======
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  nodeName: master1
+====
+Label and selector:
+kubectl get node --show-labels
+kubectl get pod --show-labels
+kubectl get deployment --show-labels
+kubectl get pod --selector app=nginx -o wide
+========
+kubectl create deployment web-server --image docker.arvancloud.ir/nginx:1.21 --replicas 5
+====
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:   
+  replicas: 8
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21 
+      tolerations:
+        - key: "anisa"
+          operator: "Equal"
+          value: "kubernetes"
+          effect: "NoSchedule"
+    =====
+    kubectl taint node worker1 anisa-
+========
+kubectl taint node worker1 anisa=kubernetes:NoSchedule-
+=======
+kubectl taint node worker1 anisa=kubernetes:NoSchedule
+====
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:   
+  replicas: 8
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21 
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+====
+kubectl taint node worker2 app=nginx:PreferNoSchedule
+=======
+kubectl taint node worker1 app=nginx:NoExecute
+=====
+```
+
 ## Session 7
 ## Session 8
 ## Session 9
