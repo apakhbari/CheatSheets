@@ -689,6 +689,98 @@ etcdctl snapshot status snapshot20240718.db --write-out=table
 ```
 
 ## Session 12 (14 on classes)
+```
+
+ kubectl --kubeconfig /root/.kube/config config use-context anisa@kubernetes
+ =====
+ apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: webserver
+  namespace: dev
+spec:
+  podSelector:
+    matchLabels:
+      app: webserver
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: green
+      ports:
+        - port: 80
+          protocol: TCP
+=====
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: anisa-developer
+  namespace: dev
+roleRef:
+  apiGroup: "rbac.authorization.k8s.io"
+  kind: "Role"
+  name: "developer"
+subjects:
+  - apiGroup: "rbac.authorization.k8s.io"
+    kind: "User"
+    name: "anisa"
+    ====
+    apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: developer
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - "pods"
+      - "deployments"
+      - "nodes"
+    verbs:
+      - "list"    
+      - "get"
+      ======
+      apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer
+  namespace: dev
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - "pods"
+    verbs:
+      - "list"
+      - "get"
+    resourceNames:
+      - nginx-pod
+  - apiGroups:
+      - "apps"
+    resources:
+      - "deployments"
+    verbs:
+      - "list"
+      - "get"
+      - "watch"
+      ======
+      apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: anisa-developer
+roleRef:
+  apiGroup: "rbac.authorization.k8s.io"
+  kind: "ClusterRole"
+  name: "developer"
+subjects:
+  - apiGroup: "rbac.authorization.k8s.io"
+    kind: "User"
+    name: "anisa"
+    ======
+```
 
 
 # Advanced Kubernetes Course
