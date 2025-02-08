@@ -1048,6 +1048,170 @@ image: docker:latestservices:  - docker:dindstages:  - build  - deployvariables:
 ## Session 13 (15 on classes)
 
 ## Session 14 (16 on classes)
+```
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: helloworld
+spec:
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["echo", "Hello Kubernetes!!!"]
+      restartPolicy: Never
+=====
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: helloworld
+spec:
+  ttlSecondsAfterFinished: 20
+  template:
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["echo", "hello Kubernetes!!!"]
+      restartPolicy: Never
+====
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: helloworld
+spec:
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["sleep", "60"]
+      restartPolicy: Never
+      ===
+      apiVersion: batch/v1
+kind: Job
+metadata:
+  name: helloworld
+spec:
+  completions: 2
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["echo", "Hello Kubernetes!!!"]
+      restartPolicy: Never
+      ====
+      apiVersion: batch/v1
+kind: Job
+metadata:
+  name: helloworld
+spec:
+  completions: 2
+  parallelism: 2
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["echo", "Hello Kubernetes!!!"]
+      restartPolicy: Never
+===
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: helloworld
+spec:
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["ls", "/anisa"]
+      restartPolicy: Never
+===
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: helloworld
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["ls", "/anisa"]
+      restartPolicy: Never
+    ====
+    kubectl apply -f jobs.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: helloworld-cron
+spec:
+  schedule: "* * * * *"
+  suspend: true
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox
+            command: ["echo", "Hello Kubernetes!!!"]
+          restartPolicy: Never
+   
+   ======
+   apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: helloworld-cron
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 0 
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox
+            command: ["echo", "Hello Kubernetes!!!"]
+          restartPolicy: Never 
+          =====
+          apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: helloworld-cron
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox
+            command: ["echo", "Hello Kubernetes!!!"]
+          restartPolicy: Never
+          ====
+          apiVersion: batch/v1
+kind: Job
+metadata:
+  name: helloworld
+spec:
+  activeDeadlineSeconds: 10
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["sleep", "60"]
+      restartPolicy: Never 
+```
 
 ## Session 15 (17 on classes)
 
