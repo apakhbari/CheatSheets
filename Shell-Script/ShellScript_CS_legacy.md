@@ -199,9 +199,9 @@ echo "Hello $name, welcome to my program."
 
 $ ./test5.sh
 
-Enter your name: Moshen Mohammad Amini
+Enter your name: apa
 
-Hello Moshen Mohammad Amini, welcome to my program.
+Hello apa, welcome to my program.
 
 —————————
 
