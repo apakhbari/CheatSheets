@@ -25,6 +25,7 @@
 # Kubernetes Course
 # Sessions
 ## Session 1
+
 ## Session 2
 ```
 https://gist.github.com/ishad0w/788555191c7037e249a439542c53e170#file-sources-list
@@ -786,6 +787,7 @@ subjects:
 # Advanced Kubernetes Course
 # Sessions
 ## Session 1
+
 ## Session 2 (3 on classes)
 ```
 frontend kubernetes-frontend
