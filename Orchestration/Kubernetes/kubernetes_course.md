@@ -41,7 +41,7 @@
 - Worker Nodes: Applications are there
 - ETCD Cluster: Is for archiving everything. Key-value pair DB
 - Kube Scheduler: scheduled which workloads is going to be assigned to which worker
-- Contreoller Manager: Checks status of workers and workloads
+- Contreoller Manager: Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller
 
 ## Session 2
 ```
