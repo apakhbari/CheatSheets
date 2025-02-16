@@ -35,13 +35,14 @@
 - Networking
 
 # Sessions
-## Session 1 - Core Concepts
+## Session 1 - Core Concepts & Architecture
 ### Architecture:
 - Master Nodes: manages k8s cluster
 - Worker Nodes: Applications are there
 - ETCD Cluster: Is for archiving everything. Key-value pair DB
 - Kube Scheduler: scheduled which workloads is going to be assigned to which worker
 - Contreoller Manager: Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller
+- Kube APIServer: A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
 
 ## Session 2
 ```
