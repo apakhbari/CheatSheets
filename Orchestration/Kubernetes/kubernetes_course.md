@@ -39,10 +39,24 @@
 ### Architecture:
 - Master Nodes: manages k8s cluster
 - Worker Nodes: Applications are there
-- ETCD Cluster: Is for archiving everything. Key-value pair DB
+- ETCD Cluster: Is for archiving everything. Key-value pair DB. Jason-based
 - Kube Scheduler: scheduled which workloads is going to be assigned to which worker
-- Contreoller Manager: Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller
+- Contreoller Manager: Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
 - Kube APIServer: A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
+- Kubelet: Exists on master node + worker node. Have so many responsibilities. Kubelet does status checks to API-Server.
+- CRD (Container Runtime Engine): A container controller
+
+### Deploying an app procedure
+- Setup a yaml file for my-app
+- After applying, yaml file is being passed to API-Server. In this stage "Pod is Created" is being outputted, but it is not actually created yet.
+- Then it is passed to ETCD then scheduler. 
+- After Scheduler make checks, it passes it request to related kublet of a worker node.
+- Kublet of worker node then commadns Containerd to create containers.
+- After it starts to run, kubelet acknowledge API-Server
+- API-Server tells ETCD that node is active and running
+- Controller Manager checks all components during the process
+
+- It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
 
 ## Session 2
 ```
