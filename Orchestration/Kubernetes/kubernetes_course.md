@@ -1291,7 +1291,7 @@ APA 🖖🏻
 
 ## Links
 
-```                                                                                                       
+```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
   a::::::::::::a p::::ppp:::::::::p    a::::::::::::a  
   aaaaaaaaa:::::ap:::::::::::::::::p   aaaaaaaaa:::::a 
@@ -1310,5 +1310,4 @@ a:::::aaaa::::::a p::::::::::::::::p a:::::aaaa::::::a
                  p:::::::p                             
                  p:::::::p                             
                  ppppppppp                             
-                                                       
 ```
