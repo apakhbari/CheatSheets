@@ -76,7 +76,7 @@
 - Controller Manager checks all components during the process
 
 
-
+- K8s is written in GO lang
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
 
 ## Session 2
