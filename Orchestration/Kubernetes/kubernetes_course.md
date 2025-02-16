@@ -23,6 +23,17 @@
 ## Commands
 
 # Kubernetes Course
+# Contents
+- Install, Configure and validation
+- Core Concept (Architecture, Pods, Deployments, etc)
+- Scheduling
+- Logging & Monitoring
+- Application Lifecycle Management
+- Cluster Maintenance
+- Security
+- Storage
+- Networking
+
 # Sessions
 ## Session 1
 
