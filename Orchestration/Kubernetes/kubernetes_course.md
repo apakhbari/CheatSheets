@@ -39,7 +39,7 @@
 ### Architecture:
 - Master Nodes: manages k8s cluster
 - Worker Nodes: Applications are there
-- ETCD Cluster: Is for archiving everything. 
+- ETCD Cluster: Is for archiving everything. Key-value pair DB
 
 ## Session 2
 ```
