@@ -14,10 +14,13 @@
 - Directories
 - Ports
 - Commands
+
 - Kubernetes Course
 - Advanced Kubernetes Course
 
 ## Tips & Tricks
+- It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
+
 ## Directories
 ## Ports
 ## Commands
@@ -36,15 +39,31 @@
 
 # Sessions
 ## Session 1 - Core Concepts & Architecture
-### Architecture:
+### Components:
 - Master Nodes: manages k8s cluster
 - Worker Nodes: Applications are there
 - ETCD Cluster: Is for archiving everything. Key-value pair DB. Jason-based
 - Kube Scheduler: scheduled which workloads is going to be assigned to which worker
-- Contreoller Manager: Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
+- Kube Contreoller Manager: Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
 - Kube APIServer: A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
-- Kubelet: Exists on master node + worker node. Have so many responsibilities. Kubelet does status checks to API-Server.
+- Kubelet: Exists on master node + worker node. Have so many responsibilities. Kubelet does status checks to API-Server. Master node Kubelet checks 
 - CRD (Container Runtime Engine): A container controller
+- Kube Proxy: Exists on master node + worker node. Set Firewall Rules. For example for port forwarding
+
+### Architecture
+#### Master Node
+- Kubelet
+- Kube Proxy
+- CRD
+- Kube APIServer
+- ETCD Cluster
+- Kube Contreoller Manager
+- Kube Scheduler
+
+#### Worker Node
+- Kubelet
+- Kube Proxy
+- CRD
 
 ### Deploying an app procedure
 - Setup a yaml file for my-app
@@ -55,6 +74,8 @@
 - After it starts to run, kubelet acknowledge API-Server
 - API-Server tells ETCD that node is active and running
 - Controller Manager checks all components during the process
+
+
 
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
 
