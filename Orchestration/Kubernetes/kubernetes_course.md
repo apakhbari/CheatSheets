@@ -109,6 +109,13 @@
       C-->H(container 3);
 ```
 
+- You usually don't need to interact with containers directly, but when need to troubleshoot them, instead of ` $ docker ` you have to use ` $ ctr ` for example:
+```
+$ ctr images pull doceker.io/library/redis:alpine
+$ ctr run doceker.io/library/redis:alpine redis
+```
+- instead of ` $ ctr` use ` $ nerdctl ` It is exactly like ` $ docker `
+
 ### Deploy a k8s Cluster
 
 ## Session 2
