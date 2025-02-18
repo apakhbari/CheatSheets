@@ -99,7 +99,7 @@
 <span style="font-size: 2em;">&#x2B07;</span>
 
 
-- cri-containerd
+- cri-containerd developed as a driver between kubelet and containerd, so it improved performance of dockershim and docker
 ```mermaid
   graph LR;
       A(kublet)<-- CRI -->B;
