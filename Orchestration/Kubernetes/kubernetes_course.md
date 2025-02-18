@@ -81,6 +81,9 @@
 - API-Server tells ETCD that node is active and running
 - Controller Manager checks all components during the process
 
+### dockershim vs cri-containerd
+- docker uses containerd for its lifecycle management (start, stop, ...)
+
 - dockershim
 ```mermaid
   graph LR;
