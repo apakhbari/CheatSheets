@@ -20,6 +20,7 @@
 
 ## Tips & Tricks
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
+- k8s policy for deprecating some feature is after 3 versions, for example if it has deprecated some thing in 1.19, it will stop working in 1.23
 
 ## Directories
 ## Ports
@@ -42,6 +43,7 @@
 
 - K8s is written in GO lang
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
+- k8s policy for deprecating some feature is after 3 versions, for example if it has deprecated some thing in 1.19, it will stop working in 1.23
 
 ### Components:
 - Master Nodes: manages k8s cluster
@@ -78,6 +80,31 @@
 - After it starts to run, kubelet acknowledge API-Server
 - API-Server tells ETCD that node is active and running
 - Controller Manager checks all components during the process
+
+- dockershim
+```mermaid
+  graph LR;
+      A(kublet)<-- CRI -->B;
+      B(dockershim)<-->C;
+      C(docker)<-->D;
+      D(containerd)-->F(container 1);
+      D-->G(container 2);
+      D-->H(container 3);
+```
+<span style="font-size: 2em;">&#x2B07;</span>
+<span style="font-size: 2em;">&#x2B07;</span>
+<span style="font-size: 2em;">&#x2B07;</span>
+
+
+- cri-containerd
+```mermaid
+  graph LR;
+      A(kublet)<-- CRI -->B;
+      B(cri-containerd)<-->C;
+      C(containerd)-->F(container 1);
+      C-->G(container 2);
+      C-->H(container 3);
+```
 
 ### Deploy a k8s Cluster
 
