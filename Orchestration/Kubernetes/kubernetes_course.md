@@ -39,6 +39,10 @@
 
 # Sessions
 ## Session 1 - Core Concepts & Architecture
+
+- K8s is written in GO lang
+- It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
+
 ### Components:
 - Master Nodes: manages k8s cluster
 - Worker Nodes: Applications are there
@@ -75,9 +79,7 @@
 - API-Server tells ETCD that node is active and running
 - Controller Manager checks all components during the process
 
-
-- K8s is written in GO lang
-- It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
+### Deploy a k8s Cluster
 
 ## Session 2
 ```
