@@ -152,7 +152,14 @@ properly
 |      TCP     |    Inbound    |      10259     |      Kube-Scheduler     |         self         |
 |      TCP     |    Inbound    |      10257     | Kube-Controller-Manager |         self         |
 
+- 2379 --> is a port that API-SERVER commuicate with ETCD 
+- 2380 --> is a port that ETCDs commuicate with ETCD
 
+#### Worker node
+| **Protocol** | **Direction** | **Port Range** |    **Purpose**    |     **Used By**     |
+|:------------:|:-------------:|:--------------:|:-----------------:|:-------------------:|
+|      TCP     |    Inbound    |      10250     |    Kubelet API    | self, Control Plane |
+|      TCP     |    Inbound    |   30000-32767  | NodePort Services |         ALL         |
 
 ## Session 2
 ```
