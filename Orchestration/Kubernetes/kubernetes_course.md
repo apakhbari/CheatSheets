@@ -22,6 +22,8 @@
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
 - k8s policy for deprecating some feature is after 3 versions, for example if it has deprecated some thing in 1.19, it will stop working in 1.23
 - Kubelet has purpose of managing RAM & CPU on node, when swap is enabled, it is not able to manage resources properly. Must turn it off in order to work properly
+- runc is creating namespaces and Cgroups
+
 
 
 ## Directories
@@ -120,7 +122,7 @@ $ ctr run doceker.io/library/redis:alpine redis
 
 ### Initialize a k8s Cluster
 1. Provision the VMs (Min of 1 Master, 1 Worker):
-2. Select and Install CRE (Containerd or others) on all the nodes. Get containerd from github
+2. Select and Install CRE (Containerd or others) on all the nodes. Get containerd from github. Install runc
 3. Install Kubeadm, kubectl & kubelet on all the nodes
 4. Initialize the cluster (on the master node)
 5. Apply a CNI (Calico or flannel) on cluster
@@ -160,6 +162,8 @@ properly
 |:------------:|:-------------:|:--------------:|:-----------------:|:-------------------:|
 |      TCP     |    Inbound    |      10250     |    Kubelet API    | self, Control Plane |
 |      TCP     |    Inbound    |   30000-32767  | NodePort Services |         ALL         |
+
+- runc is creating namespaces and Cgroups
 
 ## Session 2
 ```
