@@ -124,6 +124,22 @@ $ ctr run doceker.io/library/redis:alpine redis
 5. Apply a CNI (Calico or flannel) on cluster
 6. Join worker nodes to the cluster
 
+### Install & Configure K&s:
+- A compatible Linux host (Debian or Red Hat)
+- 2GB or more of RAM per machine (any less will leave little room for your
+apps).
+- 2 CPUs or more.
+- Full network connectivity between all machines in the cluster (public or
+private network is fine).
+- Unique hostname, MAC address, and product_uuid for every node.
+- Certain ports are open on your machines
+- Swap disabled. You MUST disable swap in order for the kubelet to work
+properly
+- Set Time Zone (Asia/Tehran)
+- static IP on each node
+- Set Public DNS (shecan.ir, 403.online or VPN for Iran)
+- Join the Worker Nodes
+
 ## Session 2
 ```
 https://gist.github.com/ishad0w/788555191c7037e249a439542c53e170#file-sources-list
