@@ -21,6 +21,8 @@
 ## Tips & Tricks
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
 - k8s policy for deprecating some feature is after 3 versions, for example if it has deprecated some thing in 1.19, it will stop working in 1.23
+- Kubelet has purpose of managing RAM & CPU on node, when swap is enabled, it is not able to manage resources properly. Must turn it off in order to work properly
+
 
 ## Directories
 ## Ports
