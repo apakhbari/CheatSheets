@@ -116,7 +116,13 @@ $ ctr run doceker.io/library/redis:alpine redis
 ```
 - instead of ` $ ctr` use ` $ nerdctl ` It is exactly like ` $ docker `
 
-### Deploy a k8s Cluster
+### Initialize a k8s Cluster
+1. Provision the VMs (1 Master, 2 Worker):
+2. Select and Install CRE (Docker or Containerd) on all the nodes
+3. Install Kubeadm on all the nodes
+4. Initialize the cluster (on the master node)
+5. Apply a CNI (Calico or flannel) on cluster
+6. Join worker nodes to the cluster
 
 ## Session 2
 ```
