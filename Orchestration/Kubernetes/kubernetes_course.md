@@ -142,6 +142,18 @@ properly
 - Set Public DNS (shecan.ir, 403.online or Open-VPN for Iran)
 - Join the Worker Nodes
 
+### Ports & Protocols
+#### Control plane
+| **Protocol** | **Direction** | **Port Range** |       **Purpose**       |      **Used By**     |
+|:------------:|:-------------:|:--------------:|:-----------------------:|:--------------------:|
+|      TCP     |    Inbound    |      6443      |      K8s API Server     |          All         |
+|      TCP     |    Inbound    |    2379-2380   |  ETCD server client API | kube-apiserver, etcd |
+|      TCP     |    Inbound    |      10250     |       Kubelet API       |  self, Control Plane |
+|      TCP     |    Inbound    |      10259     |      Kube-Scheduler     |         self         |
+|      TCP     |    Inbound    |      10257     | Kube-Controller-Manager |         self         |
+
+
+
 ## Session 2
 ```
 https://gist.github.com/ishad0w/788555191c7037e249a439542c53e170#file-sources-list
