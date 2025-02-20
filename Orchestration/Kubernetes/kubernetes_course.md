@@ -139,7 +139,7 @@ private network is fine).
 properly
 - Set Time Zone (Asia/Tehran)
 - static IP on each node
-- Set Public DNS (shecan.ir, 403.online or VPN for Iran)
+- Set Public DNS (shecan.ir, 403.online or Open-VPN for Iran)
 - Join the Worker Nodes
 
 ## Session 2
