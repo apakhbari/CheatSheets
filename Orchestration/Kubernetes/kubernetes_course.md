@@ -120,7 +120,7 @@ $ ctr run doceker.io/library/redis:alpine redis
 
 ### Initialize a k8s Cluster
 1. Provision the VMs (Min of 1 Master, 1 Worker):
-2. Select and Install CRE (Containerd or others) on all the nodes
+2. Select and Install CRE (Containerd or others) on all the nodes. Get containerd from github
 3. Install Kubeadm, kubectl & kubelet on all the nodes
 4. Initialize the cluster (on the master node)
 5. Apply a CNI (Calico or flannel) on cluster
