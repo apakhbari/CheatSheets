@@ -225,6 +225,11 @@ sudo sysctl --system
 - [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 - After adding related k8s version source to sources.list ` $ apt install kubelet=1.27.12-1.1 kubeadm=1.27.12-1.1 kubectl=1.27.12-1.1 -y `
 
+#### Initializing k8s cluster on master nodes
+- ` $ kubeadm init --pod-network-cidr=10.10.0.0/16 --apiserver-advertise-address=<IP of master node>`
+
+01:35
+
 
 ```
 
