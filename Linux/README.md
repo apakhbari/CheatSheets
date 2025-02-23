@@ -616,6 +616,8 @@ Most Linux distributions use only one of these three:
 - **Cronjob**:  
   - **Minute** is the smallest unit.
 
+- Default ubuntu source list ` https://gist.github.com/ishad0w/788555191c7037e249a439542c53e170#file-sources-list `
+
 ---
 ## When you go to a system for the first time:
 

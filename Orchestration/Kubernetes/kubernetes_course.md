@@ -167,6 +167,10 @@ properly
 
 ## Session 2
 
+- runc: is in docker, create and manages cgroups and namespaces in linux kernel
+
+### Initialize a k8s Cluster
+
 
 
 ```
