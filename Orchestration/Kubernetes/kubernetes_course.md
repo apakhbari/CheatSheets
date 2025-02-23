@@ -139,7 +139,12 @@ private network is fine).
 - Certain ports are open on your machines
 - Swap disabled. You MUST disable swap in order for the kubelet to work
 properly
-- Set Time Zone (Asia/Tehran)
+```
+$ free -m --> check how much swap is being used
+$ swappoff -a --> temporarily turn swap off
+$ nano /etc/fstab --> To permanently turn swap off
+```
+- Set Time Zone (Asia/Tehran) ` $ timedatectl set-timezone Asia/Tehran `
 - static IP on each node
 - Set Public DNS (shecan.ir, 403.online or Open-VPN for Iran)
 - Join the Worker Nodes
