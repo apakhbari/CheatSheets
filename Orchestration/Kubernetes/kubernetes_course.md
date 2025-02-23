@@ -179,22 +179,20 @@ $ nano /etc/fstab --> To permanently turn swap off
 - get containerd from [https://www.github.com/containerd/containerd/releases/download/v1.7.16/containerd-1.7.16.tar.gz](https://www.github.com/containerd/containerd/releases/download/v1.7.16/containerd-1.7.16.tar.gz)
 - extract it to /usr/local/ ` $ tar Cxzvf /usr/local/ containerd-1.6.31-linux-amd64.tar.gz `
 - Download containerd service ` $ wget https://raw.githubsercontent.com/containerd/containerd/main/containerd.service ` and then ` $ mv containerd.service /usr/lib/systemd/system ` then ` $ systemtl deamon-reload` and ` $ systemctl start containerd.service `
+
 #### runc
 - get runc from [https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64](https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64)
-31:52
+- ` $ install -m 755 runc.amd64 /usr/local/sbin/runc `
 
+- ` $ mkdir /etc/containerd `
+- ` containerd config default | tee /etc/containerd/config.toml ` --> created default config
 
-
+#### CNI for containerd
+- see project [https://github.com/containernetworking/plugins/](https://github.com/containernetworking/plugins/)
+- get CNI plugin from [https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz](https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz)
 
 
 ```
-https://gist.github.com/ishad0w/788555191c7037e249a439542c53e170#file-sources-list
-=====
-containerd config default | tee /etc/containerd/config.toml
-=============
-https://github.com/containernetworking/plugins/
-=================
-https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz
 =========
 plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc
 ============
