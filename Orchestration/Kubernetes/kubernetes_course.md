@@ -175,7 +175,9 @@ $ nano /etc/fstab --> To permanently turn swap off
 - runc: is in docker, create and manages cgroups and namespaces in linux kernel
 
 ### Initialize a k8s Cluster
-
+- wget containerd from [github.com/containerd/containerd](https://www.github.com/containerd/containerd)
+- extract it to /usr/local/ ` $ tar Cxzvf /usr/local/ containerd-1.6.31-linux-amd64.tar.gz `
+- Download containerd service ` $ wget https://raw.githubsercontent.com/containerd/containerd/main/containerd.service ` and then ` $ mv containerd.service /usr/lib/systemd/system ` then ` $ systemtl deamon-reload` and ` $ systemctl start containerd.service `
 
 
 ```
