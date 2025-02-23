@@ -199,16 +199,16 @@ $ nano /etc/fstab --> To permanently turn swap off
 - Now we have to introduce cgroup to containerd
 ```
 $ vim /etc/containerd/config.toml
-search for `plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc`
+search for { plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc }
+add this line to end of section: SystemdCgroup = true
+
+go to next section: { plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options }
+change: SystemdCgroup = false --> SystemdCgroup = true
+```
+- then ` $ systemctl restart containerd.service `
+
 
 ```
-
-
-```
-=========
-plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc
-============
-SystemdCgroup = true
 ================
 # sysctl params required by setup, params persist across rebootscat <<EOF | sudo tee /etc/sysctl.d/k8s.confnet.ipv4.ip_forward = 1EOF# Apply sysctl params without rebootsudo sysctl --system
 =============
