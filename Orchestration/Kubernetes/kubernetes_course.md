@@ -190,6 +190,7 @@ $ nano /etc/fstab --> To permanently turn swap off
 #### CNI for containerd
 - see project [https://github.com/containernetworking/plugins/](https://github.com/containernetworking/plugins/)
 - get CNI plugin from [https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz](https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz)
+- ` $ mkdir -p /opt/cni/bin ` and then ` $ tar Cxzv /opt/cni/bin/ ni-plugins-linux-amd64-v1.4.1.tgz `
 
 
 ```
