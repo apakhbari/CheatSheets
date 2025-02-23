@@ -184,6 +184,8 @@ $ nano /etc/fstab --> To permanently turn swap off
 - get runc from [https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64](https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64)
 - ` $ install -m 755 runc.amd64 /usr/local/sbin/runc `
 
+<br>
+
 - ` $ mkdir /etc/containerd `
 - ` containerd config default | tee /etc/containerd/config.toml ` --> created default config
 
@@ -191,6 +193,15 @@ $ nano /etc/fstab --> To permanently turn swap off
 - see project [https://github.com/containernetworking/plugins/](https://github.com/containernetworking/plugins/)
 - get CNI plugin from [https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz](https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz)
 - ` $ mkdir -p /opt/cni/bin ` and then ` $ tar Cxzv /opt/cni/bin/ ni-plugins-linux-amd64-v1.4.1.tgz `
+
+<br>
+
+- Now we have to introduce cgroup to containerd
+```
+$ vim /etc/containerd/config.toml
+search for `plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc`
+
+```
 
 
 ```
