@@ -23,6 +23,7 @@
 - k8s policy for deprecating some feature is after 3 versions, for example if it has deprecated some thing in 1.19, it will stop working in 1.23
 - Kubelet has purpose of managing RAM & CPU on node, when swap is enabled, it is not able to manage resources properly. Must turn it off in order to work properly
 - runc is creating namespaces and Cgroups
+- Kubeadm, Kubelet & kubectl are versioned together
 
 
 
@@ -220,17 +221,13 @@ sudo sysctl --system
 - Verify that net.ipv4.ip_forward is set to 1 with: ` $ sysctl net.ipv4.ip_forward `
 
 
+#### Installing Kubeadm, Kubelet & kubectl
+- [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+- After adding related k8s version source to sources.list ` $ apt install kubelet=1.27.12-1.1 kubeadm=1.27.12-1.1 kubectl=1.27.12-1.1 -y `
+
 
 ```
-================
-# sysctl params required by setup, params persist across rebootscat <<EOF | sudo tee /etc/sysctl.d/k8s.confnet.ipv4.ip_forward = 1EOF# Apply sysctl params without rebootsudo sysctl --system
-=============
-https://kubernetes.io/releases/
-===========
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
-==================
-apt install kubelet=1.27.12-1.1 kubeadm=1.27.12-1.1 kubectl=1.27.12-1.1 -y
-==================
+
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -1475,6 +1472,10 @@ Copy Files to: $(Build.ArtifactStagingDirectory)
 APA 🖖🏻
 
 ## Links
+### Initializing a k8s cluster
+- [https://https://kubernetes.io/releases/](https://https://kubernetes.io/releases/)
+- [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
