@@ -231,6 +231,7 @@ sudo sysctl --system
 01:35
 
 
+
 ```
 
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
