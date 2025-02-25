@@ -29,6 +29,8 @@
 
 ## Directories
 ## Ports
+- 6443 API SERVER
+
 ## Commands
 
 # Kubernetes Course
@@ -248,6 +250,16 @@ sudo sysctl --system
 
 #### Initializing k8s cluster on master nodes
 - ` $ kubeadm init --pod-network-cidr=10.10.0.0/16 --apiserver-advertise-address=<IP of master node, On network Interface that we want> --kubernetes-version 1.27.12`
+
+
+#### Copying Kube-config file
+- Now you can use ` $ kubectl get node  --kubeconfig /etc/kubernetes/admin.conf `
+- For convenience Now you 
+```
+$ mkdir -p $HOME/.kube
+$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+$ sudo chown $(id -u):%(id -f) $HOME/.kube/config
+```
 
 
 
