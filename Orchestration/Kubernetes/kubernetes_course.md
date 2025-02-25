@@ -254,7 +254,7 @@ sudo sysctl --system
 
 #### Copying Kube-config file
 - Now you can use ` $ kubectl get node  --kubeconfig /etc/kubernetes/admin.conf `
-- For convenience Now you 
+- For convenience and not passing ` --kubeconfig /etc/kubernetes/admin.conf ` everytime, you can:
 ```
 $ mkdir -p $HOME/.kube
 $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
