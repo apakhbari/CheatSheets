@@ -15,6 +15,7 @@
 - Ports
 - Commands
 - Components
+- Concepts
 - Architecture
 
 - Kubernetes Course
@@ -26,10 +27,14 @@
 - Kubelet has purpose of managing RAM & CPU on node, when swap is enabled, it is not able to manage resources properly. Must turn it off in order to work properly
 - runc is creating namespaces and Cgroups
 - Kubeadm, Kubelet & kubectl are versioned together
+- There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
 
 
 
 ## Directories
+### Kube Config
+- $HOME/.kube
+- /etc/kubernetes/admin.conf
 
 
 ## Ports
@@ -65,6 +70,14 @@
 
 ### Kube Proxy
 - Exists on master node + worker node. Set Firewall Rules. For example for port forwarding
+
+## Components
+
+### POD
+- There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
+- Kubelet actually does not understand container, you need some logical thing as pod
+
+### Namespace
 
 ## Architecture
 ### Master Node
