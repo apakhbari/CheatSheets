@@ -14,6 +14,8 @@
 - Directories
 - Ports
 - Commands
+- Components
+- Architecture
 
 - Kubernetes Course
 - Advanced Kubernetes Course
@@ -28,10 +30,59 @@
 
 
 ## Directories
+
+
 ## Ports
 - 6443 API SERVER
 
 ## Commands
+
+## Components:
+### Master Nodes
+- manages k8s cluster
+
+### Worker Nodes
+- Applications are there
+
+### ETCD Cluster
+- I is for archiving everything. Key-value pair DB. Jason-based
+
+### Kube Scheduler
+- scheduled which workloads is going to be assigned to which worker
+
+### Kube Contreoller Manager
+- Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
+
+### Kube APIServer
+- A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
+
+### Kubelet
+- Exists on master node + worker node. Have so many responsibilities. Kubelet does status checks to API-Server. Master node Kubelet checks
+- Does not recognize anything as a container. just Pod
+
+### CRD (Container Runtime Engine)
+- A container controller
+
+### Kube Proxy
+- Exists on master node + worker node. Set Firewall Rules. For example for port forwarding
+
+## Architecture
+### Master Node
+- Kubelet
+- Kube Proxy
+- CRD
+- Kube APIServer
+- ETCD Cluster
+- Kube Contreoller Manager
+- Kube Scheduler
+
+### Worker Node
+- Kubelet
+- Kube Proxy
+- CRD
+
+
+---
 
 # Kubernetes Course
 # Contents
