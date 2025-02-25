@@ -220,20 +220,8 @@ sudo sysctl --system
 ```
 - Verify that net.ipv4.ip_forward is set to 1 with: ` $ sysctl net.ipv4.ip_forward `
 
-
-#### Installing Kubeadm, Kubelet & kubectl
-- [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
-- After adding related k8s version source to sources.list ` $ apt install kubelet=1.27.12-1.1 kubeadm=1.27.12-1.1 kubectl=1.27.12-1.1 -y `
-
-#### Initializing k8s cluster on master nodes
-- ` $ kubeadm init --pod-network-cidr=10.10.0.0/16 --apiserver-advertise-address=<IP of master node>`
-
-01:35
-
-
-
+#### Allow Bridge Network packets for IPTables Configuration
 ```
-
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -251,6 +239,19 @@ EOF
 
 # Apply sysctl params without reboot
 sudo sysctl --system
+```
+
+
+#### Installing Kubeadm, Kubelet & kubectl
+- [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+- After adding related k8s version source to sources.list ` $ apt install kubelet=1.27.12-1.1 kubeadm=1.27.12-1.1 kubectl=1.27.12-1.1 -y `
+
+#### Initializing k8s cluster on master nodes
+- ` $ kubeadm init --pod-network-cidr=10.10.0.0/16 --apiserver-advertise-address=<IP of master node, On network Interface that we want> --kubernetes-version 1.27.12`
+
+
+
+```
 =====
 https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart
 =======
