@@ -325,7 +325,7 @@ $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 $ sudo chown $(id -u):%(id -f) $HOME/.kube/config
 ```
 
-
+02:24
 
 ```
 =====
