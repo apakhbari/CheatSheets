@@ -390,7 +390,7 @@ $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
 - for managing and Troubleshooting containers
 - [https://github.com/containerd/nerdctl](https://github.com/containerd/nerdctl)
 - Lots of Nerdctl commands are like docker. you can check differneces here: [https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md](https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md)
-- Download full version of it.
+- Download full version of it. [https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-full-1.7.6-linux-amd64.tar.gz](https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-full-1.7.6-linux-amd64.tar.gz)
 
 ### E2E Test
 - Full test has around 1000 checks – takes ages (12h)
@@ -401,9 +401,8 @@ $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
   - DNS should provide DNS for services
   - Service endpoints latency should not be very high
 
+
 ```
-https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-full-1.7.6-linux-amd64.tar.gz
-===========
 server = "https://registry-1.docker.io"
 host."https://registry.dokcer.ir".capabilities = ["pull", "resolve"]
 ========
