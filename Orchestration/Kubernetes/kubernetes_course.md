@@ -342,8 +342,9 @@ $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 $ sudo chown $(id -u):%(id -f) $HOME/.kube/config
 ```
 
-02:24
+<br>
 
+- When we initialize a cluster, etcd, kube-apiserver, kube-controller, kube-Proxy, kube-scheduler are going to be assigned IP Address of bridge (exact host IP), but coreDNS won't initialize untill we have a CNI. In this state, our node is not schedulable since It can't assign an IP address to created pods.
 
 ```
 =====
