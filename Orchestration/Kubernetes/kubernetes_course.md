@@ -392,6 +392,8 @@ $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
 - Lots of Nerdctl commands are like docker. you can check differneces here: [https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md](https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md)
 - Download full version of it. [https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-full-1.7.6-linux-amd64.tar.gz](https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-full-1.7.6-linux-amd64.tar.gz)
 
+- You can see all k8s related containers ` $ nerdtctl -n k8s.io ps `
+
 ### E2E Test
 - Full test has around 1000 checks – takes ages (12h)
 - Conformance test has around 160 checks – enough to be certified (1.5h)
