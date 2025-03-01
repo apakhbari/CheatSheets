@@ -55,7 +55,7 @@
 ### Kube Scheduler
 - scheduled which workloads is going to be assigned to which worker
 
-### Kube Contreoller Manager
+### Kube Controller Manager
 - Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
 
 ### Kube APIServer
@@ -78,6 +78,23 @@
 - Kubelet actually does not understand container, you need some logical thing as pod
 
 ### Namespace
+
+#### default
+
+#### kube-node-lease
+
+#### kube-public
+
+#### kube-system
+```
+$ kubectl get pod -n kube-system
+coredns (2 pods)
+etcd
+kube-apiserver
+kube-controller
+kube-Proxy
+kube-scheduler
+```
 
 ## Architecture
 ### Master Node
@@ -326,6 +343,7 @@ $ sudo chown $(id -u):%(id -f) $HOME/.kube/config
 ```
 
 02:24
+
 
 ```
 =====
