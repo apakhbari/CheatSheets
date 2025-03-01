@@ -41,6 +41,9 @@
 - 6443 API SERVER
 
 ## Commands
+### Token
+- To list token: ` $ kubeadm token list `
+- To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
 ## Components:
 ### Master Nodes
@@ -358,6 +361,11 @@ $ kubectl create -f custom-resources.yaml
 ```
 
 - If in process of initialization have any problems, ` $ service kubelet restart `
+
+
+#### Joining Workers
+- To list token: ` $ kubeadm token list `
+- To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
 ```
 =====
