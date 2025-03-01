@@ -10,16 +10,16 @@
 ```
 
 # Table of contents
-- Tips & Tricks
-- Directories
-- Ports
-- Commands
-- Components
-- Concepts
-- Architecture
+- [Tips & Tricks](#tips--tricks)
+- [Directories](#directories)
+- [Ports](#ports)
+- [Commands](#commands)
+- [Components](#components)
+- [Concepts](#concepts)
+- [Architecture](#architecture)
 
-- Kubernetes Course
-- Advanced Kubernetes Course
+- [Kubernetes Course](#kubernetes-course)
+- [Advanced Kubernetes Course](#advanced-kubernetes-course)
 
 ## Tips & Tricks
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
@@ -36,6 +36,8 @@
 ### Kube Config
 - $HOME/.kube
 - /etc/kubernetes/admin.conf
+
+- /opt/cni/bin --> Network Driver
 
 
 ## Ports
@@ -386,7 +388,7 @@ $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
 
 ```
 
-/opt/cni/bin => network driver
+
 =================
 https://github.com/containerd/nerdctl
 ===========
