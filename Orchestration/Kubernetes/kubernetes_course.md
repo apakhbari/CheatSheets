@@ -385,15 +385,13 @@ $ source <(kubectl completion bash) --> kubectl auto complete
 $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
 ```
 
+#### Installing Nerdctl
+- for managing and Troubleshooting containers
+- [https://github.com/containerd/nerdctl](https://github.com/containerd/nerdctl)
+- Lots of Nerdctl commands are like docker. you can check differneces here: [https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md](https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md)
+- Download full version of it.
 
 ```
-
-
-=================
-https://github.com/containerd/nerdctl
-===========
-https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md
-==========
 https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-full-1.7.6-linux-amd64.tar.gz
 ===========
 server = "https://registry-1.docker.io"
