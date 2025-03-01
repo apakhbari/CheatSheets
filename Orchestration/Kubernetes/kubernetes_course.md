@@ -42,9 +42,18 @@
 - 6443 API SERVER
 
 ## Commands
+
+### Information
+- ` $ kubectl version `
+- ` $ kubeadm version `
+- ` $ kubectl cluster-info `
+
 ### Token
 - To list token: ` $ kubeadm token list `
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
+
+## Label
+- defined Role, that's being shown in $ kubectl get nodes --> ' $ kubectl label node worker2 kubernetes.io/role=worker-2-B '
 
 ## Components:
 ### Master Nodes
@@ -368,27 +377,15 @@ $ kubectl create -f custom-resources.yaml
 - To list token: ` $ kubeadm token list `
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
+#### Auto completion bash for kubectl
 ```
-=====
-https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart
-=======
-kubectl label node worker2 kubernetes.io/role=worker-2-B
-=========
-kubectl get node 
-kubectl get ns
-kubectl get pod
-kubectl get pod -o wide
-kubectl get pod -n kube-system
-===========
-kubeadm token list
-kubeadm token create --print-join-command --ttl 2h
-==============
-source <(kubectl completion bash) --> kubectl auto complete
-echo 'source <(kubectl completion bash)' >> ~/.bashrc
-===========
-kubectl version
-kubeadm version
-kubectl cluster-info
+$ source <(kubectl completion bash) --> kubectl auto complete
+$ echo 'source <(kubectl completion bash)' >> ~/.bashrc
+```
+
+
+```
+
 /opt/cni/bin => network driver
 =================
 https://github.com/containerd/nerdctl
@@ -1586,9 +1583,6 @@ Copy Files to: $(Build.ArtifactStagingDirectory)
 
 
 ```
-
-
-# Session2 - HA Master Nodes
 
 # acknowledgment
 ## Contributors
