@@ -28,6 +28,7 @@
 - runc is creating namespaces and Cgroups
 - Kubeadm, Kubelet & kubectl are versioned together
 - There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
+- If any problems hapened during creation of a pod, you can ` $ service kubelet restart`
 
 
 
@@ -1599,6 +1600,9 @@ APA 🖖🏻
 - [https://https://kubernetes.io/releases/](https://https://kubernetes.io/releases/)
 - [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 - calico: [https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart](https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart)
+
+### Proxy
+- [https://github.com/myxuchangbin/dnsmasq_sniproxy_install](https://github.com/myxuchangbin/dnsmasq_sniproxy_install)
 
 
 ```
