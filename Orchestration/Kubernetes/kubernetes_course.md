@@ -385,11 +385,21 @@ $ source <(kubectl completion bash) --> kubectl auto complete
 $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
 ```
 
+
 #### Installing Nerdctl
 - for managing and Troubleshooting containers
 - [https://github.com/containerd/nerdctl](https://github.com/containerd/nerdctl)
 - Lots of Nerdctl commands are like docker. you can check differneces here: [https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md](https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md)
 - Download full version of it.
+
+### E2E Test
+- Full test has around 1000 checks – takes ages (12h)
+- Conformance test has around 160 checks – enough to be certified (1.5h)
+- Examples:
+  - Networking should function for intra-pod communication
+  - Services should serv basic endpoint form pods
+  - DNS should provide DNS for services
+  - Service endpoints latency should not be very high
 
 ```
 https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-full-1.7.6-linux-amd64.tar.gz
