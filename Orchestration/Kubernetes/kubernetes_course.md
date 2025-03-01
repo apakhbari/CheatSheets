@@ -342,9 +342,20 @@ $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 $ sudo chown $(id -u):%(id -f) $HOME/.kube/config
 ```
 
-<br>
+#### Installing Calico
+- When we initialize a cluster, etcd, kube-apiserver, kube-controller, kube-Proxy, kube-scheduler are going to be assigned IP Address of bridge (exact host IP), but coreDNS won't initialize untill we have a CNI. In this state, our node is not schedulable since It can't assign an IP address to created pods. So we need an overlay network.
+- [https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart](https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart)
 
-- When we initialize a cluster, etcd, kube-apiserver, kube-controller, kube-Proxy, kube-scheduler are going to be assigned IP Address of bridge (exact host IP), but coreDNS won't initialize untill we have a CNI. In this state, our node is not schedulable since It can't assign an IP address to created pods.
+- ` $ kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/tigera-operator.yaml `
+
+- IMPORTANT! DO NOT PROCEED LIKE DOCUMENT, INSTEAD:
+```
+$ wget https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/custom-resources.yaml
+$ vim custom-resources.yaml
+Change: cidr: 192.168.0.0/16 --> cidr: 10.10.0.0/16 
+
+$ kubectl create -f custom-resources.yaml
+```
 
 ```
 =====
@@ -1577,6 +1588,7 @@ APA 🖖🏻
 ### Initializing a k8s cluster
 - [https://https://kubernetes.io/releases/](https://https://kubernetes.io/releases/)
 - [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+- calico: [https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart](https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart)
 
 
 ```
