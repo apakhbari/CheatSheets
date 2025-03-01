@@ -48,6 +48,20 @@ table {
 
 ```
 
+# Proxy docker
+- put inside deamon.json
+
+# proxy k8s
+- This directories does not exist. create them. 
+```
+$ cat /etc/containerd/certs.d/docker.io/hosts.toml
+
+server = "https://registry-1.docker.io"
+host."https://registry.dokcer.ir".capabilities = ["pull", "resolve"]
+
+$ restart containerd
+```
+
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
   a::::::::::::a p::::ppp:::::::::p    a::::::::::::a  
