@@ -357,6 +357,8 @@ Change: cidr: 192.168.0.0/16 --> cidr: 10.10.0.0/16
 $ kubectl create -f custom-resources.yaml
 ```
 
+- If in process of initialization have any problems, ` $ service kubelet restart `
+
 ```
 =====
 https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart
