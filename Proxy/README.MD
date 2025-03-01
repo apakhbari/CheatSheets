@@ -52,6 +52,12 @@ table {
 - put inside deamon.json
 
 # proxy k8s
+- In containerd settings, search and edit this:
+```
+[plugins."io.containerd.grpc.v1.cri".registry]
+config_path = "/etc/containerd/certs.d"
+```
+
 - This directories does not exist. create them. 
 ```
 $ cat /etc/containerd/certs.d/docker.io/hosts.toml
