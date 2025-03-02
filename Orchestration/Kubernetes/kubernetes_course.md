@@ -45,6 +45,9 @@
 - /etc/kubernetes/manifests/kube-controller.yaml
 - /etc/kubernetes/manifests/kube-scheduler.yaml
 
+#### ETCD stores data
+- /var/lib/etcd
+
 
 ## Ports
 - 6443: API SERVER
