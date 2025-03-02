@@ -65,7 +65,7 @@
 - Applications are there
 
 ### ETCD Cluster
-- Iف is for archiving everything. Key-value pair DB. Jason-based.
+- It is for archiving everything. Key-value pair DB. Jason-based.
 - ETCD is an open source distributed key-value store used to hold and manage thecritical information that distributed systems need to keep running.
 
 ### Kube Scheduler
@@ -86,6 +86,8 @@
 
 ### Kube Proxy
 - Exists on master node + worker node. Set Firewall Rules. For example for port forwarding
+
+### CoreDNS
 
 ## Components
 
