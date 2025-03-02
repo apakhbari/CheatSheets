@@ -69,7 +69,7 @@
 ### Label
 - defined Role, that's being shown in $ kubectl get nodes --> ` $ kubectl label node worker2 kubernetes.io/role=worker-2-B `
 
-
+### Executing a command inside pod
 - ` $ kubectl -n kube-system exec -it etcd-master1 -- sh ` --> connects to a pod to execute something
 - ` $ nerdctl -n k8s.io exec -it a42ffs4y sh ` --> connects to a pod to execute something
 
@@ -288,7 +288,7 @@ $ nano /etc/fstab --> To permanently turn swap off
 
 - runc is creating namespaces and Cgroups
 
-## Session 2
+## Session 2 - Initialize a k8s Cluster
 
 - runc: is in docker, create and manages cgroups and namespaces in linux kernel
 
@@ -423,11 +423,15 @@ $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
   - Service endpoints latency should not be very high
 
 
-## Session 3
+## Session 3 - Components
+- To get all keys of ETCD:
 ```
-kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kubernetes/pki/etcd/server.crt" --cacert="/etc/kubernetes/pki/etcd/ca.crt" --key="/etc/kubernetes/pki/etcd/server.key" --prefix --keys-only
-======
+$ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kubernetes/pki/etcd/server.crt" --cacert="/etc/kubernetes/pki/etcd/ca.crt" --key="/etc/kubernetes/pki/etcd/server.key" --prefix --keys-only
 ```
+
+### Kube API Server
+- how 
+
 
 
 ## Session 4
