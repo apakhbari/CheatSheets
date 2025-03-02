@@ -65,7 +65,8 @@
 - Applications are there
 
 ### ETCD Cluster
-- I is for archiving everything. Key-value pair DB. Jason-based
+- Iف is for archiving everything. Key-value pair DB. Jason-based.
+- ETCD is an open source distributed key-value store used to hold and manage thecritical information that distributed systems need to keep running.
 
 ### Kube Scheduler
 - scheduled which workloads is going to be assigned to which worker
@@ -403,15 +404,6 @@ $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
   - DNS should provide DNS for services
   - Service endpoints latency should not be very high
 
-
-```
-server = "https://registry-1.docker.io"
-host."https://registry.dokcer.ir".capabilities = ["pull", "resolve"]
-========
-plugins."io.containerd.grpc.v1.cri".registry
-========
-
-```
 
 ## Session 3
 ```
