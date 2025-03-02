@@ -83,6 +83,7 @@
 ### ETCD Cluster
 - It is for archiving everything. Key-value pair DB. Jason-based.
 - ETCD is an open source distributed key-value store used to hold and manage thecritical information that distributed systems need to keep running.
+- You can see its process: ` $ ps -aux | grep etcd `
 
 ### Kube Scheduler
 - scheduled which workloads is going to be assigned to which worker
@@ -92,6 +93,9 @@
 
 ### Kube APIServer
 - A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
+- You can see its process: ` $ ps -aux | grep kube-api
+ `
+
 
 ### Kubelet
 - Exists on master node + worker node. Have so many responsibilities. Kubelet does status checks to API-Server. Master node Kubelet checks
@@ -443,6 +447,7 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 5. Scheduler
 6. Kubelet
 
+3 --> 01:43
 
 ## Session 4
 ```
