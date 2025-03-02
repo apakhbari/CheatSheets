@@ -66,8 +66,12 @@
 - To list token: ` $ kubeadm token list `
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
-## Label
-- defined Role, that's being shown in $ kubectl get nodes --> ' $ kubectl label node worker2 kubernetes.io/role=worker-2-B '
+### Label
+- defined Role, that's being shown in $ kubectl get nodes --> ` $ kubectl label node worker2 kubernetes.io/role=worker-2-B `
+
+
+- ` $ kubectl -n kube-system exec -it etcd-master1 -- sh ` --> connects to a pod to execute something
+- ` $ nerdctl -n k8s.io exec -it a42ffs4y sh ` --> connects to a pod to execute something
 
 ## Components:
 ### Master Nodes
