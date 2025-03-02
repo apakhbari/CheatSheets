@@ -47,7 +47,10 @@
 
 
 ## Ports
-- 6443 API SERVER
+- 6443: API SERVER
+- 2379: API SERVER --> ETCD
+- 2380: ETCD <--> ETCD
+- 2381: monitoring ETCD
 
 ## Commands
 
