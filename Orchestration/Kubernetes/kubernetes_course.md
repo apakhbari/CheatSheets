@@ -39,6 +39,12 @@
 
 - /opt/cni/bin --> Network Driver
 
+### Core components of k8s
+- /etc/kubernetes/manifests/etcd.yaml
+- /etc/kubernetes/manifests/kube-apiserver.yaml
+- /etc/kubernetes/manifests/kube-controller.yaml
+- /etc/kubernetes/manifests/kube-scheduler.yaml
+
 
 ## Ports
 - 6443 API SERVER
