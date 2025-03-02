@@ -430,8 +430,18 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 ```
 
 ### Kube API Server
-- how 
+- steps after execution of a simple get command using kubectl is passed to kube API Server, for example $ kubectl get nodes :
+1. authenticate User
+2. Validate request (authorization)
+3. Retrieve data from ETCD
 
+- steps after execution of a simple post command using kubectl is passed to kube API Server, for example $ kubectl create node :
+1. authenticate User
+2. Validate request (authorization)
+3. Retrieve data from ETCD
+4. Update ETCD
+5. Scheduler
+6. Kubelet
 
 
 ## Session 4
