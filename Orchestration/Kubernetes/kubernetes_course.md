@@ -29,7 +29,7 @@
 - Kubeadm, Kubelet & kubectl are versioned together
 - There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
 - If any problems hapened during creation of a pod, you can ` $ service kubelet restart`
-
+- Mostly API-Server is aimed for attacks
 
 
 ## Directories
