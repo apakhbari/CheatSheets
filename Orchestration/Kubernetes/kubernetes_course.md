@@ -92,7 +92,7 @@
 - scheduled which workloads is going to be assigned to which worker
 - Kube scheduler schedule based on:
 1. Filter nodes: For example if it matches lable of node, It is going to be scheduled there. And if there is a taint on node, It is not going to be scheduled
-2. Rank Nodes
+2. Rank Nodes (based on resources)
 
 ### Kube Controller Manager
 - Checks status of workers and workloads. In a 5 second interval check health of components.
