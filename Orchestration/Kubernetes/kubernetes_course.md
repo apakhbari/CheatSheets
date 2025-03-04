@@ -127,6 +127,12 @@
 ### Kubelet
 - Exists on master node + worker node. Have so many responsibilities. Kubelet does status checks to API-Server. Master node Kubelet checks
 - Does not recognize anything as a container. just Pod. Pod is just a concept that does not acyually exists.
+- Its home directory is: ` /var/lib/kubelet `
+- Works as a unit service, not a pod
+- Has different responsibilities:
+1. Register Node
+2. Create PODs
+3. Monitor Node & PODs
 
 ### CRD (Container Runtime Engine)
 - A container controller
