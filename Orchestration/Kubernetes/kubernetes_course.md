@@ -31,6 +31,8 @@
 - There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
 - If any problems hapened during creation of a pod, you can ` $ service kubelet restart`
 - Mostly API-Server is aimed for attacks
+- If we change any manifests in /etc/kubernetes/manifests/ then after editting, there is no need to restart anything. Changes are going to be made.
+- Always have a backup from /etc/kubernetes/manifests/
 
 
 ## Directories
@@ -88,6 +90,9 @@
 
 ### Kube Scheduler
 - scheduled which workloads is going to be assigned to which worker
+- Kube scheduler schedule based on:
+1. Filter nodes: For example if it matches lable of node, It is going to be scheduled there. And if there is a taint on node, It is not going to be scheduled
+2. Rank Nodes
 
 ### Kube Controller Manager
 - Checks status of workers and workloads. In a 5 second interval check health of components.
