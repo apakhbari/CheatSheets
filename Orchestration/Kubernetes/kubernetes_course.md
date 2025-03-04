@@ -91,7 +91,12 @@
 
 ### Kube Controller Manager
 - Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
-- It watch status of all pods all the time.
+#### Node Controller
+- Watch status
+- Remediate Situation
+- Node Monitor Period = 5s
+- Node Monitor Grace Perido = 40s --> After this 40s, The node is going to have an unschedulable taint
+- POD Eviction Timeout = 5m
 
 ### Kube APIServer
 - A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
@@ -100,7 +105,7 @@
 
 ### Kubelet
 - Exists on master node + worker node. Have so many responsibilities. Kubelet does status checks to API-Server. Master node Kubelet checks
-- Does not recognize anything as a container. just Pod
+- Does not recognize anything as a container. just Pod. Pod is just a concept that does not acyually exists.
 
 ### CRD (Container Runtime Engine)
 - A container controller
