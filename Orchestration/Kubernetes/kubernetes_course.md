@@ -112,7 +112,7 @@
 ### CoreDNS
 
 ## Errors
-- CrashLoopBackoff: When container gets restarted so many times
+- CrashLoopBackoff: When container gets restarted so many times. So container creation has an error somewhere.
 
 ## Components
 
