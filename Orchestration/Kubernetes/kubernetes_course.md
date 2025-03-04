@@ -90,13 +90,29 @@
 - scheduled which workloads is going to be assigned to which worker
 
 ### Kube Controller Manager
-- Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
+- Checks status of workers and workloads. In a 5 second interval check health of components.
+-  Has so many Controllers. It is not a centralized contrller:
 #### Node Controller
-- Watch status
-- Remediate Situation
-- Node Monitor Period = 5s
-- Node Monitor Grace Perido = 40s --> After this 40s, The node is going to have an unschedulable taint
-- POD Eviction Timeout = 5m
+1. Watch status
+2. Remediate Situation
+3. Node Monitor Period = 5s
+4. Node Monitor Grace Perido = 40s --> After this 40s, The node is going to have an unschedulable taint
+5. POD Eviction Timeout = 5m --> Pods are going to other nodes, scheduler decides on how
+
+#### Replication controller
+- In times of Evicting node, Replication controller moves Pods that are buid using Replicaset or Deployment to nodes that are working 
+
+#### PV-Binder Controller
+#### Service-Account Controller
+#### Stateful-Set Controller
+#### ReplicaSet Controller
+#### CronJob Controller
+#### Job-Controller Controller
+#### PV-Protection Controller
+#### Deployment Controller
+#### Namespace Controller
+#### Endpoint Controller
+
 
 ### Kube APIServer
 - A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
@@ -123,6 +139,11 @@
 ### POD
 - There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
 - Kubelet actually does not understand container, you need some logical thing as pod
+- Differetn forms of creating pod:
+1. manifests
+2. Deployment
+3. ReplicaSet
+4. DaemonSet
 
 ### Namespace
 
