@@ -91,12 +91,11 @@
 
 ### Kube Controller Manager
 - Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
-- 
+- It watch status of all pods all the time.
 
 ### Kube APIServer
 - A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
-- You can see its process: ` $ ps -aux | grep kube-api
- `
+- You can see its process: ` $ ps -aux | grep kube-api `
 
 
 ### Kubelet
