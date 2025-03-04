@@ -15,6 +15,7 @@
 - [Ports](#ports)
 - [Commands](#commands)
 - [Components](#components)
+- [Errors](Errors)
 - [Concepts](#concepts)
 - [Architecture](#architecture)
 
@@ -90,6 +91,7 @@
 
 ### Kube Controller Manager
 - Checks status of workers and workloads. Has so many Controllers. It is not a centralized contrller. In a 5 second interval check health of components
+- 
 
 ### Kube APIServer
 - A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
@@ -108,6 +110,9 @@
 - Exists on master node + worker node. Set Firewall Rules. For example for port forwarding
 
 ### CoreDNS
+
+## Errors
+- CrashLoopBackoff: When container gets restarted so many times
 
 ## Components
 
