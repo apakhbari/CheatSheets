@@ -489,7 +489,7 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 6. Kubelet
 
 
-3 --> 01:43
+3 --> 03:39
 
 ## Session 4
 ```
