@@ -508,7 +508,7 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 ## Session 4 - Pod deploy
 - In YAML File, first values are named top level.
 
-- necessary top levels for pod in a manifest:
+### necessary top levels for pod in a manifest:
 ```
 apiVersion:
 kind:
@@ -517,7 +517,18 @@ metadata:
 spec:
 ```
 
+#### apiVersion
+- For apiVersion reference:
+  - [https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/)
+  - [https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/) 
+#### Kind
 - in kind top level, first word is Always capital
+
+#### Metadata
+
+#### spec
+
+
 
 ```
 kubectl get all --all-namespaces
