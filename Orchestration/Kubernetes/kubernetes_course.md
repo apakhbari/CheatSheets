@@ -76,7 +76,7 @@
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
 ### Label
-- defined Role, that's being shown in $ kubectl get nodes --> ` $ kubectl label node worker2 kubernetes.io/role=worker-2-B `
+- ` $ kubectl label node worker2 kubernetes.io/role=worker-2-B ` --> defined Role, that's being shown in $ kubectl get nodes
 
 ### Executing a command inside pod
 - ` $ kubectl -n kube-system exec -it etcd-master1 -- sh ` --> connects to a pod to execute something
@@ -145,6 +145,7 @@
 
 ### Kube Proxy
 - Exists on master node + worker node. Set Firewall Rules. For example for port forwarding
+- Create IPTables Rules for network of K8S
 - Services are transforming into IPtables firewall rules. Also take note that Services don't actually exists, They are logical constructs
 - Every 5 seconds Check for service creations/changes
 
