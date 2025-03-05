@@ -33,6 +33,7 @@
 - Mostly API-Server is aimed for attacks
 - If we change any manifests in /etc/kubernetes/manifests/ then after editting, there is no need to restart anything. Changes are going to be made.
 - Always have a backup from /etc/kubernetes/manifests/
+- What is a ` /pause ` container that all of containers have it when you ` $ nerdctl -n k8s.io ps ` ? It is a sandbox container that executes before actual container is up. sandbox asks for IP for actual container network from kube-proxy
 
 
 ## Directories
