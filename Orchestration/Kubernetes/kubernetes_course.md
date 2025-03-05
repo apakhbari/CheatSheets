@@ -148,6 +148,11 @@
 - Services are transforming into IPtables firewall rules. Also take note that Services don't actually exists, They are logical constructs
 - Every 5 seconds Check for service creations/changes
 
+### Service
+- has 2 main pros:
+1. Load balancing
+2. connecting via name, not IP
+
 ### CoreDNS
 
 ## Errors
