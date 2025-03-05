@@ -505,9 +505,9 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 6. Kubelet
 
 
-3 --> 03:39
-
 ## Session 4
+
+
 ```
 kubectl get all --all-namespaces
 ======
