@@ -42,7 +42,8 @@
 
 - ` /opt/cni/bin ` --> Network Driver
 
-### Core components of k8s
+### Core components of k8s (Static Pod Path)
+- Kubelet watch this path and make changes as soon as you make them in this directory
 - ` /etc/kubernetes/manifests/etcd.yaml `
 - ` /etc/kubernetes/manifests/kube-apiserver.yaml `
 - ` /etc/kubernetes/manifests/kube-controller.yaml `
