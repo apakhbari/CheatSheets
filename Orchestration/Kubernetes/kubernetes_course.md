@@ -505,8 +505,19 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 6. Kubelet
 
 
-## Session 4
+## Session 4 - Pod deploy
+- In YAML File, first values are named top level.
 
+- necessary top levels for pod in a manifest:
+```
+apiVersion:
+kind:
+metadata:
+
+spec:
+```
+
+- in kind top level, first word is Always capital
 
 ```
 kubectl get all --all-namespaces
