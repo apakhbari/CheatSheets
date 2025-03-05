@@ -145,6 +145,8 @@
 
 ### Kube Proxy
 - Exists on master node + worker node. Set Firewall Rules. For example for port forwarding
+- Services are transforming into IPtables firewall rules. Also take note that Services don't actually exists, They are logical constructs
+- Every 5 seconds Check for service creations/changes
 
 ### CoreDNS
 
