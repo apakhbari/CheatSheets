@@ -165,6 +165,7 @@
 - There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
 - Kubelet actually does not understand container, you need some logical thing as pod
 - You can not have same kind of containers on a pod, because there are network/namespace conflicts
+- despite of how many containers/volumes a Pod have, it is going to be assigned 1 IP Address
 - Differetn forms of creating pod:
 1. manifests
 2. Deployment
