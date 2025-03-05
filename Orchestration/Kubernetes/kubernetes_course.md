@@ -83,6 +83,12 @@
 - ` $ kubectl -n kube-system exec -it etcd-master1 -- sh ` --> connects to a pod to execute something
 - ` $ nerdctl -n k8s.io exec -it a42ffs4y sh ` --> connects to a pod to execute something
 
+### Deleting resources
+- ` nerdcl -n k8s.io kill <container_name> `
+
+- ` kubectl delete -f  "path/name.yaml" `
+
+
 ## Components:
 ### Master Nodes
 - manages k8s cluster
@@ -523,23 +529,19 @@ spec:
   - [https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/)
   - [https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/) 
 - If our resource was part of core group, you don't need to write: core/v1 , You just write: v1
-
+  nerdcl -n k8s.io kill <container_name>
+ 
 #### Kind
 - in kind top level, first word is Always capital
 
-#### Metadata
+#### Metadata 
 
 #### spec
 
 - A container name consists of: [Namespace]/[Pod Name]/[Container Name]
-- When we kill a 
 
+- examples for manifests:
 ```
-kubectl get all --all-namespaces
-======
-kubectl create -f pod.yaml
-kubectl describe pod nginx-pod
-===
 apiVersion: v1
 kind: Pod
 metadata:
@@ -565,9 +567,7 @@ spec:
       image: nginx:1.20
   restartPolicy: Never
   ====
-  nerdcl -n k8s.io kill <container_name>
-  ========
-  kubectl delete -f  "path/name.yaml"
+
   ====
   kubectl edit pod <pod_name>
   ====
