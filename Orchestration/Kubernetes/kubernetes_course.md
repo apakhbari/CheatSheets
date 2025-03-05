@@ -37,19 +37,24 @@
 
 ## Directories
 ### Kube Config
-- $HOME/.kube
-- /etc/kubernetes/admin.conf
+- ` $HOME/.kube `
+- ` /etc/kubernetes/admin.conf `
 
-- /opt/cni/bin --> Network Driver
+- ` /opt/cni/bin ` --> Network Driver
 
 ### Core components of k8s
-- /etc/kubernetes/manifests/etcd.yaml
-- /etc/kubernetes/manifests/kube-apiserver.yaml
-- /etc/kubernetes/manifests/kube-controller.yaml
-- /etc/kubernetes/manifests/kube-scheduler.yaml
+- ` /etc/kubernetes/manifests/etcd.yaml `
+- ` /etc/kubernetes/manifests/kube-apiserver.yaml `
+- ` /etc/kubernetes/manifests/kube-controller.yaml `
+- ` /etc/kubernetes/manifests/kube-scheduler.yaml `
 
 #### ETCD stores data
-- /var/lib/etcd
+- ` /var/lib/etcd
+
+#### Kubelet drivers
+- ` /var/lib/kubelet/device-plugins/kubelet.sock ` --> Driver for containerd
+- ` /var/lib/kubelet/plugins_registry/csi.tigera.io-reg.sock ` --> Setting IPs using Calico
+- ` /var/lib/kubelet/plugins/csi.sock ` --> storage and PVs drivers
 
 
 ## Ports
