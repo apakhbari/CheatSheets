@@ -9,6 +9,10 @@
 |___|    |___|  |_||_______||__| |__|  |___|  
 ```
 
+## Container registries
+- [registry.docker.ir](registry.docker.ir)
+- [docker.arvancloud.ir](docker.arvancloud.ir)
+
 
 - [https://github.com/myxuchangbin/dnsmasq_sniproxy_install](https://github.com/myxuchangbin/dnsmasq_sniproxy_install)
 
