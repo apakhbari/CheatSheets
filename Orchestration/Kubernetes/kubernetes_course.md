@@ -521,6 +521,8 @@ spec:
 - For apiVersion reference:
   - [https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/)
   - [https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/) 
+- If our resource was part of core group, you don't need to write: core/v1 , You just write: v1
+
 #### Kind
 - in kind top level, first word is Always capital
 
