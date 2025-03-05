@@ -150,7 +150,7 @@
 
 ### Service
 - has 2 main pros:
-1. Load balancing
+1. Load balancing (Round Robin by default)
 2. connecting via name, not IP
 
 ### CoreDNS
