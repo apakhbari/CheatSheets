@@ -52,6 +52,9 @@ table {
 - put inside deamon.json
 
 # proxy k8s
+
+- [https://github.com/containerd/containerd/blob/main/docs/hosts.md](https://github.com/containerd/containerd/blob/main/docs/hosts.md)
+
 - In containerd settings, search and edit this:
 ```
 [plugins."io.containerd.grpc.v1.cri".registry]
