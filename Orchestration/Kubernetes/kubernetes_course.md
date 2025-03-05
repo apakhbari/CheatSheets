@@ -567,14 +567,6 @@ spec:
     - name: nginx-container
       image: nginx:1.20
   restartPolicy: Never
-  ====
-
-  ====
-  kubectl edit pod <pod_name>
-  ====
-kubectl run nginx-pod --image nginx:1.21
-===
-kubectl get pod nginx-pod -o yaml > pod-nginx.yaml
  ====== 
  apiVersion: v1
 kind: Pod
@@ -612,7 +604,6 @@ spec:
       containers:
         - name: nginx-container
           image: nginx:1.21     
-====kubectl get all --all-namespaces
 ======
 kubectl create -f pod.yaml
 kubectl describe pod nginx-pod
