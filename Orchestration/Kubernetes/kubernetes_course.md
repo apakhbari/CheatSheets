@@ -85,8 +85,8 @@
 
 ### Deleting resources
 - ` nerdcl -n k8s.io kill <container_name> `
-
 - ` kubectl delete -f  "path/name.yaml" `
+- ` kubectl delete pod  nginx-pod `
 
 
 ## Components:
@@ -514,6 +514,7 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 
 ## Session 4 - Pod deploy
 - In YAML File, first values are named top level.
+- In Yaml file, we write in camel case style
 
 ### necessary top levels for pod in a manifest:
 ```
