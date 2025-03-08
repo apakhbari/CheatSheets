@@ -14,7 +14,7 @@
 - [Directories](#directories)
 - [Ports](#ports)
 - [Commands](#commands)
-- [Components](#components)
+- [Resources](#resources)
 - [Errors](Errors)
 - [Concepts](#concepts)
 - [Architecture](#architecture)
@@ -89,6 +89,7 @@
 - ` kubectl delete -f  "path/name.yaml" `
 - ` kubectl delete pod  nginx-pod `
 
+- ` $ kubectl run nginx-pod  --image nginx:1.21 `
 
 ## Components:
 ### Master Nodes
@@ -167,7 +168,7 @@
 ## Errors
 - CrashLoopBackoff: When container gets restarted so many times. So container creation has an error somewhere.
 
-## Components
+## Resources
 
 ### POD
 - There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
@@ -198,6 +199,9 @@ kube-controller
 kube-Proxy
 kube-scheduler
 ```
+
+### Replicaset
+- is a layer above pod. managed by kube-controller
 
 ## Architecture
 ### Master Node
@@ -586,7 +590,6 @@ spec:
       image: nginx:1.20
       imagePullPolicy: Never
 =======
-kubectl run nginx-pod  --image nginx:1.21
 ====
 apiVersion: apps/v1
 kind: ReplicaSet
