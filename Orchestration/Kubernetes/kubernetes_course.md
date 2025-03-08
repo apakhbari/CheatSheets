@@ -10,6 +10,7 @@
 ```
 
 # Table of contents
+- [Architecture](#architecture)
 - [Tips & Tricks](#tips--tricks)
 - [Directories](#directories)
 - [Ports](#ports)
@@ -17,10 +18,24 @@
 - [Resources](#resources)
 - [Errors](Errors)
 - [Concepts](#concepts)
-- [Architecture](#architecture)
 
 - [Kubernetes Course](#kubernetes-course)
 - [Advanced Kubernetes Course](#advanced-kubernetes-course)
+
+## Architecture
+### Master Node
+- Kubelet
+- Kube Proxy
+- CRD
+- Kube APIServer
+- ETCD Cluster
+- Kube Contreoller Manager
+- Kube Scheduler
+
+### Worker Node
+- Kubelet
+- Kube Proxy
+- CRD
 
 ## Tips & Tricks
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
@@ -61,10 +76,12 @@
 
 
 ## Ports
-- 6443: API SERVER
-- 2379: API SERVER --> ETCD
-- 2380: ETCD <--> ETCD
-- 2381: monitoring ETCD
+| **Port** |     **Utility**     |
+|:--------:|:-------------------:|
+|   6443   |      API SERVER     |
+|   2379   | API SERVER --> ETCD |
+|   2380   |    ETCD <--> ETCD   |
+|   2381   |   Monitoring ETCD   |
 
 ## Commands
 
@@ -245,20 +262,7 @@ spec:
           image: nginx:1.21
 ```
 
-## Architecture
-### Master Node
-- Kubelet
-- Kube Proxy
-- CRD
-- Kube APIServer
-- ETCD Cluster
-- Kube Contreoller Manager
-- Kube Scheduler
 
-### Worker Node
-- Kubelet
-- Kube Proxy
-- CRD
 
 
 ---
