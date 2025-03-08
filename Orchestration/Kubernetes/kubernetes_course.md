@@ -541,7 +541,9 @@ spec:
 
 - A container name consists of: [Namespace]/[Pod Name]/[Container Name]
 
-4 --> 02:19
+
+
+
 
 - examples for manifests:
 ```
