@@ -41,7 +41,12 @@
 - ` $HOME/.kube `
 - ` /etc/kubernetes/admin.conf `
 
+### Drivers
 - ` /opt/cni/bin ` --> Network Driver
+#### Kubelet drivers
+- ` /var/lib/kubelet/device-plugins/kubelet.sock ` --> Driver for containerd
+- ` /var/lib/kubelet/plugins_registry/csi.tigera.io-reg.sock ` --> Setting IPs using Calico
+- ` /var/lib/kubelet/plugins/csi.sock ` --> storage and PVs drivers
 
 ### Core components of k8s (Static Pod Path)
 - Kubelet watch this path and make changes as soon as you make them in this directory
@@ -53,10 +58,6 @@
 #### ETCD stores data
 - ` /var/lib/etcd
 
-#### Kubelet drivers
-- ` /var/lib/kubelet/device-plugins/kubelet.sock ` --> Driver for containerd
-- ` /var/lib/kubelet/plugins_registry/csi.tigera.io-reg.sock ` --> Setting IPs using Calico
-- ` /var/lib/kubelet/plugins/csi.sock ` --> storage and PVs drivers
 
 
 ## Ports
