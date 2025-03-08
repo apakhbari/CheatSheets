@@ -181,6 +181,22 @@
 3. ReplicaSet
 4. DaemonSet
 
+```
+ apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.20
+      imagePullPolicy: Never
+  restartPolicy: Never
+```
+
 ### Namespace
 
 #### default
@@ -202,6 +218,30 @@ kube-scheduler
 
 ### Replicaset
 - is a layer above pod. managed by kube-controller
+
+```
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+        course: kubernetes
+  template:
+    metadata:
+      labels:
+        anisa: devops
+        course: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.21
+```
 
 ## Architecture
 ### Master Node
@@ -550,33 +590,8 @@ spec:
 
 
 
-- examples for manifests:
+- example for manifests:
 ```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-nginx
-  labels:
-    app: nginx
-    type: frontend
-spec:
-  containers:
-    - name: nginx-container
-      image: nginx:1.21
-======
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-nginx
-  labels:
-    app: nginx
-    type: frontend
-spec:
-  containers:
-    - name: nginx-container
-      image: nginx:1.20
-  restartPolicy: Never
- ====== 
  apiVersion: v1
 kind: Pod
 metadata:
@@ -589,6 +604,7 @@ spec:
     - name: nginx-container
       image: nginx:1.20
       imagePullPolicy: Never
+  restartPolicy: Never
 =======
 ====
 apiVersion: apps/v1
@@ -604,14 +620,14 @@ spec:
     matchLabels:
         course: kubernetes
   template:
-    metadata: 
+    metadata:
       labels:
         anisa: devops
         course: kubernetes
-    spec:    
+    spec:
       containers:
         - name: nginx-container
-          image: nginx:1.21     
+          image: nginx:1.21
 ======
 kubectl create -f pod.yaml
 kubectl describe pod nginx-pod
