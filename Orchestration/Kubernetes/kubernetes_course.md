@@ -184,6 +184,7 @@
 
 ## Errors
 - CrashLoopBackoff: When container gets restarted so many times. So container creation has an error somewhere.
+- ImagePullBackoff: Can't pull image
 
 ## Resources
 
@@ -259,7 +260,7 @@ spec:
     spec:
       containers:
         - name: nginx-container
-          image: nginx:1.21
+          image: docker.arvancloud.ir/nginx:1.21
 ```
 
 
