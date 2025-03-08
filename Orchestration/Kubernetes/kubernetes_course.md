@@ -237,8 +237,7 @@ kube-scheduler
 ### Replicaset
 - is a layer above pod. managed by kube-controller
 - In replicaset yaml file, first metadata is assigned to our replicaset, second metadata is assigned to our pods.
-- You can't assign replicaset's pod's a name
-
+- You can't assign replicaset's pod's a name.
 ```
 apiVersion: apps/v1
 kind: ReplicaSet
@@ -262,6 +261,7 @@ spec:
         - name: nginx-container
           image: docker.arvancloud.ir/nginx:1.21
 ```
+- ` $ kubectl describe replicasetes.apps nginx-replicaset ` 
 
 
 
