@@ -239,6 +239,9 @@ kube-scheduler
 - In replicaset yaml file, first metadata is assigned to our replicaset, second metadata is assigned to our pods.
 - You can't assign replicaset's pod's a name.
 - When you use ` $ kubectl create -f relicaset.yml ` you cannot change number of replicas and then ` $ kubectl apply -f relicaset.yml ` You have to ` $ kubectl replace -f relicaset.yml `
+- ` $ kubectl scale --replicas=6 -f replicaset.yml ` 
+- ` $ kubectl scale --replicas=6 replicaset myapp-nginx-replica `
+ 
 ```
 apiVersion: apps/v1
 kind: ReplicaSet
