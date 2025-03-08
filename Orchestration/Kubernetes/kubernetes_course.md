@@ -218,6 +218,8 @@ kube-scheduler
 
 ### Replicaset
 - is a layer above pod. managed by kube-controller
+- In replicaset yaml file, first metadata is assigned to our replicaset, second metadata is assigned to our pods.
+- You can't assign replicaset's pod's a name
 
 ```
 apiVersion: apps/v1
@@ -557,7 +559,7 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 6. Kubelet
 
 
-## Session 4 - Pod deploy
+## Session 4 - Pod, Replicaset
 - In YAML File, first values are named top level.
 - In Yaml file, we write in camel case style
 
