@@ -250,6 +250,7 @@ slide 4
 4 --> 4:09
 Add contets to k8s_course
 
+
 ```
 apiVersion: apps/v1
 kind: ReplicaSet
