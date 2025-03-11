@@ -246,6 +246,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: pod-nginx
+  namespace: dev
   labels:
     app: nginx
     type: frontend
@@ -274,6 +275,7 @@ apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
   name: nginx-replicaset
+  namespace: dev
   labels:
     app: nginx
     type: frontend
