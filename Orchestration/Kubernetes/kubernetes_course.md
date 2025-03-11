@@ -90,6 +90,12 @@
 - ` $ kubeadm version `
 - ` $ kubectl cluster-info `
 
+<br>
+
+- ` $ kubectl describe pod nginx-pod `
+- ` $ kubectl edit pod <pod_name> `
+- ` $ kubectl get pod nginx-pod -o yaml > pod-nginx.yaml `
+
 ### Token
 - To list token: ` $ kubeadm token list `
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
@@ -246,11 +252,6 @@ $ kubectl scale --replicas=6 -f replicaset.yml
 $ kubectl scale --replicas=6 replicaset myapp-nginx-replica
 ```
 
-slide 4
-4 --> 4:09
-Add contets to k8s_course
-
-
 ```
 apiVersion: apps/v1
 kind: ReplicaSet
@@ -283,7 +284,10 @@ spec:
 
 ### Deployment
 - Is a layer above Replicaset, So that it manages replicaset + pod
-- In rolling updates (versions) it is useful because it has 0 downtime
+- Benefits:
+  - Rolling Updates: In rolling updates (versions) it is useful because it has 0 downtime. It is maximum cahnges 25% of pods at a version update.
+  - Rollback Changes: Rolling back is also really easy
+  - Pause/Resume Changes: You can also pause deploying a version. and start it at a certain time, so everything is ready for resume changes
 
 ```
 
@@ -615,126 +619,14 @@ spec:
 - A container name consists of: [Namespace]/[Pod Name]/[Container Name]
 
 
-
-
-
-- example for manifests:
-```
- apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-nginx
-  labels:
-    app: nginx
-    type: frontend
-spec:
-  containers:
-    - name: nginx-container
-      image: nginx:1.20
-      imagePullPolicy: Never
-  restartPolicy: Never
-=======
-====
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: nginx-replicaset
-  labels:
-    app: nginx
-    type: frontend
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-        course: kubernetes
-  template:
-    metadata:
-      labels:
-        anisa: devops
-        course: kubernetes
-    spec:
-      containers:
-        - name: nginx-container
-          image: nginx:1.21
-======
-kubectl create -f pod.yaml
-kubectl describe pod nginx-pod
-===
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-nginx
-  labels:
-    app: nginx
-    type: frontend
-spec:
-  containers:
-    - name: nginx-container
-      image: nginx:1.21
-======
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-nginx
-  labels:
-    app: nginx
-    type: frontend
-spec:
-  containers:
-    - name: nginx-container
-      image: nginx:1.20
-  restartPolicy: Never
-  ====
-  nerdcl -n k8s.io kill <container_name>
-  ========
-  kubectl delete -f  "path/name.yaml"
-  ====
-  kubectl edit pod <pod_name>
-  ====
-kubectl run nginx-pod --image nginx:1.21
-===
-kubectl get pod nginx-pod -o yaml > pod-nginx.yaml
- ====== 
- apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-nginx
-  labels:
-    app: nginx
-    type: frontend
-spec:
-  containers:
-    - name: nginx-container
-      image: nginx:1.20
-      imagePullPolicy: Never
-=======
-kubectl run nginx-pod  --image nginx:1.21
-====
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: nginx-replicaset
-  labels:
-    app: nginx
-    type: frontend
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-        course: kubernetes
-  template:
-    metadata: 
-      labels:
-        anisa: devops
-        course: kubernetes
-    spec:    
-      containers:
-        - name: nginx-container
-          image: nginx:1.21     
-====
-```
-
 ## Session 5
+
+
+
+slide 4
+4 --> 4:09
+Add contets to k8s_course
+
 ```
 apiVersion: apps/v1
 kind: v
