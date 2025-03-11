@@ -209,6 +209,21 @@ metadata:
   name: dev
 ```
 
+#### Namespace Policy
+```
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: dev-quota
+  namespace: dev 
+spec:
+  hard: 
+    pods: "10"
+    count/deployments.apps: "2"
+    cpu: "100m"
+    memory: "100M"
+```
+
 #### Systematic Namespaces
 ##### default
 - default namespace when you login to k8s using admin user
@@ -664,7 +679,7 @@ spec:
 - A container name consists of: [Namespace]/[Pod Name]/[Container Name]
 
 
-## Session 5
+## Session 5 - Namespace, NamespacePolicy
 
 
 
