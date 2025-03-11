@@ -194,6 +194,29 @@
 
 ## Resources
 
+### Namespace
+
+#### Systematic Namespaces
+##### default
+- default namespace when you login to k8s using admin user
+
+##### kube-node-lease
+
+##### kube-public
+- Whatever resource you put here, is accessible for all other namespaces
+
+##### kube-system
+- systemcatic resources for k8s
+```
+$ kubectl get pod -n kube-system
+coredns (2 pods)
+etcd
+kube-apiserver
+kube-controller
+kube-Proxy
+kube-scheduler
+```
+
 ### POD
 - There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
 - Kubelet actually does not understand container, you need some logical thing as pod
@@ -219,25 +242,6 @@ spec:
       image: nginx:1.20
       imagePullPolicy: Never
   restartPolicy: Never
-```
-
-### Namespace
-
-#### default
-
-#### kube-node-lease
-
-#### kube-public
-
-#### kube-system
-```
-$ kubectl get pod -n kube-system
-coredns (2 pods)
-etcd
-kube-apiserver
-kube-controller
-kube-Proxy
-kube-scheduler
 ```
 
 ### Replicaset
