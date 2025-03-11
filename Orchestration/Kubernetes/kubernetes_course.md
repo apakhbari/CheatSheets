@@ -282,7 +282,8 @@ spec:
 ---
 
 ### Deployment
-
+- Is a layer above Replicaset, So that it manages replicaset + pod
+- In rolling updates (versions) it is useful because it has 0 downtime
 
 ```
 
