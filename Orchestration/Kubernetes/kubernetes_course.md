@@ -108,9 +108,15 @@
 - ` $ nerdctl -n k8s.io exec -it a42ffs4y sh ` --> connects to a pod to execute something
 
 ### Deleting resources
-- ` nerdcl -n k8s.io kill <container_name> `
-- ` kubectl delete -f  "path/name.yaml" `
-- ` kubectl delete pod  nginx-pod `
+- ` $ nerdcl -n k8s.io kill <container_name> `
+- ` $ kubectl delete -f  "path/name.yaml" `
+- ` $ kubectl delete pod  nginx-pod `
+
+### Namespace
+- ` $ kubectl create -f namespace-dev.yml `
+- ` $ kubectl create namespace dev `
+
+<br>
 
 - ` $ kubectl run nginx-pod  --image nginx:1.21 `
 
@@ -195,6 +201,13 @@
 ## Resources
 
 ### Namespace
+- To create Namespace using yaml file:
+```
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+```
 
 #### Systematic Namespaces
 ##### default
@@ -229,7 +242,7 @@ kube-scheduler
 4. DaemonSet
 
 ```
- apiVersion: v1
+apiVersion: v1
 kind: Pod
 metadata:
   name: pod-nginx
