@@ -684,7 +684,7 @@ spec:
 
 
 slide 4
-5 --> 4:09
+5 --> 1:06
 Add contets to k8s_course
 
 ```
