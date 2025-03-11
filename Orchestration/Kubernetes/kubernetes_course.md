@@ -281,6 +281,13 @@ spec:
 
 ---
 
+### Deployment
+
+
+```
+
+```
+
 # Kubernetes Course
 # Contents
 - Install, Configure and validation
@@ -577,7 +584,7 @@ $ kubectl -n kube-system exec -it etcd-master1 -- etcdctl get / --cert="/etc/kub
 6. Kubelet
 
 
-## Session 4 - Pod, Replicaset
+## Session 4 - Pod, Replicaset, Deployment
 - In YAML File, first values are named top level.
 - In Yaml file, we write in camel case style
 
