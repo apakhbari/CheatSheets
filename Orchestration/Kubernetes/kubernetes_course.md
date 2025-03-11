@@ -624,7 +624,7 @@ spec:
 
 
 slide 4
-4 --> 4:09
+5 --> 4:09
 Add contets to k8s_course
 
 ```
@@ -646,7 +646,8 @@ spec:
     spec:
       containers:
         - name: nginx-container
-          image: docker.arvancloud.ir/nginx:1.21  ====
+          image: docker.arvancloud.ir/nginx:1.21
+====
 kubectl config set-context kubernetes-admin@kubernetes --namespace=dev
 ====
 apiVersion: apps/v1
