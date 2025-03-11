@@ -288,7 +288,7 @@ spec:
   - Rolling Updates: In rolling updates (versions) it is useful because it has 0 downtime. It is maximum cahnges 25% of pods at a version update.
   - Rollback Changes: Rolling back is also really easy
   - Pause/Resume Changes: You can also pause deploying a version. and start it at a certain time, so everything is ready for resume changes
-
+- When you create a deployment, your pod name lloks like: ` <Deployment name> - <Replicaset name> - <Pod name> `
 ```
 apiVersion: apps/v1
 kind: Deployment
