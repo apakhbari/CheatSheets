@@ -290,7 +290,33 @@ spec:
   - Pause/Resume Changes: You can also pause deploying a version. and start it at a certain time, so everything is ready for resume changes
 
 ```
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:   
+  replicas: 6
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21  
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "10M"
+            limits:
+              cpu: "2"
+              memory: "512M" 
 ```
 
 # Kubernetes Course
@@ -650,33 +676,7 @@ spec:
 ====
 kubectl config set-context kubernetes-admin@kubernetes --namespace=dev
 ====
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  namespace: dev
-  labels:
-    app: nginx-anisa
-spec:   
-  replicas: 6
-  selector: 
-    matchLabels:
-      anisa: kubernetes
-  template: 
-    metadata:
-      labels:
-        anisa: kubernetes
-    spec:
-      containers:
-        - name: nginx-container
-          image: docker.arvancloud.ir/nginx:1.21  
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "10M"
-            limits:
-              cpu: "2"
-              memory: "512M" 
+
 ==========
 apiVersion: v1
 kind: ResourceQuota
