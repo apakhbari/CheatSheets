@@ -10,14 +10,22 @@
 |___|    |___|  |_||_______||_|   |_||___|      |___|    |_______||_|  |__||_______||___| |_|  |__||_______||_______||___|  |_||___| |_|  |__||_______|
 ```
 
-## AI Persona
+## Table of contents
+- [Different Parts of a perfect prompt](#different-parts-of-a-perfect-prompt)
+- [Examples](#examples)
+- [My Personal Draft](#my-personal-draft)
+- [acknowledgment](#acknowledgment)
+
+## Different Parts of a perfect prompt
+
+### AI Persona
 - Defines the role the AI should take, including expertise level and relevant skills.
 - Clearly state the AI’s role (e.g., Senior Product Manager, CPO, UX Designer, Business
 Strategist).
 - Specify the level of experience (Senior, Expert, Specialist).
 - Mention relevant areas of expertise (UI/UX design, business development, documentation, product strategy, etc.).
 - Helps AI align responses to industry best practices and professional expectations.
-## Context (Input)
+### Context (Input)
 - Describes the background, situation, and relevant details related to the request.
 - Explain the product, project, or problem AI should focus on.
 - Provide industry context (fintech, SaaS, e-commerce, etc.).
@@ -25,30 +33,32 @@ Strategist).
 App and need an optimized onboarding flow").
 - Include relevant constraints (timeline, budget, user needs, competitors).
 
-## Task (Output)
+### Task (Output)
 - Defines the specific output or action you want from the AI.
 - Be clear and precise about what AI should do.
 - Use action verbs (e.g., Analyze, Generate, Improve, Compare, Suggest).
 - If relevant, specify key elements AI should consider (KPIs, best practices, frameworks).
 
-## Format
+### Format
 - Defines the preferred structure of the response.
 - Can specify bullet points, lists, tables, reports, or step-by-step guides.
 - If applicable, request framework-based outputs (e.g., SWOT analysis, AARRR funnel,
 user journey map).
 
-## Tone
+### Tone
 - Defines the communication style of the response.
 - Choose a tone based on the audience (e.g., formal, analytical, engaging, persuasive,
 concise).
 
-## Example
+
+## Examples
+### Example1
 [Persona]: You are a friendly, knowledgeable assistant.
 [Goal]: Provide a helpful answer.
 [Context]: The user is asking about [Product Name] with the following details [Description]
 [Format]: Short response + optional links to further reading.
 
-## Example
+### Example2
 ### AI Persona:
 - "Your role is a Senior Product Manager with expertise in UI/UX design, business development, and
 documentation. You specialize in defining product strategies, creating intuitive user experiences, and
@@ -71,22 +81,23 @@ KPIs."
 - "Professional and analytical."
 
 
-## My Draft
+## My Personal Draft
 To ensure an optimized conversation, my prompt consists of five key sections. Please analyze all the provided information thoroughly and respond accordingly.  
 
 ### 1. AI Persona:
 - You are a wise expert with decades of experience in understanding complex systems, specializing in the body, mind, and soul. You have mastered divergent thinking and possess sharp analytical skills. In your responses, you acknowledge that seemingly unrelated events are not random but part of deeper underlying patterns.
-- I am highly introverted and struggle with understanding social norms. If you can offer solutions to help me become more social and connect with like-minded individuals, that would be greatly appreciated.
 - You genuinely care about my growth and well-being, helping me avoid risks—like an older brother looking out for me.
 - Your role is that of a cool and knowledgeable medical doctor.
 
 ### 2. Context (My Input Data):
+- I am highly introverted and struggle with understanding social norms. If you can offer solutions to help me become more social and connect with like-minded individuals, that would be greatly appreciated.
 - I prioritize my circadian rhythm (sleep cycle).
 - My job requires me to wake up before 7 AM.
 - I maintain a highly active lifestyle with various workout sessions throughout the week.
+- I consume coffee before my workouts. However, some of my workout sessions take place late at night, leading me to drink coffee as late as 7 PM. 
 
 ### 3. Task (Your Response):
-I consume coffee before my workouts. However, some of my workout sessions take place late at night, leading me to drink coffee as late as 7 PM. Is this okay for my sleep cycle? Also, would a matcha latte be a better alternative for late-night sessions?
+Is drinking coffee in this setting okay for my sleep cycle? Also, would a matcha latte be a better alternative for late-night sessions?
 
 ### 4. Response Format:
 Text
