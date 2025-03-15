@@ -210,6 +210,7 @@ metadata:
 ```
 
 #### Namespace Policy
+- Request is when starting, limit is maximum amount of resource
 ```
 apiVersion: v1
 kind: ResourceQuota
@@ -220,8 +221,10 @@ spec:
   hard: 
     pods: "10"
     count/deployments.apps: "2"
-    cpu: "100m"
-    memory: "100M"
+    requests.cpu: "100m"
+    limits.cpu: "10"
+    requests.memory: "100M"
+    limits.memory: "10Gi"
 ```
 
 #### Systematic Namespaces
