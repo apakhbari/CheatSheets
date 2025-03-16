@@ -319,6 +319,21 @@ spec:
 - Used for inter-cluster connections
 - Is default form of service. If you Don't assign anything in spec/type, It is going to be
 
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 80
+      port: 80
+  selector:
+    type: back-end
+```
+
 #### LoadBalancer Service
 - Mostly used in cloud environments
 
