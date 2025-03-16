@@ -267,6 +267,11 @@ of the application
 #### NodePort Service
 - Is a layer above ClusterIP, So you can use it for both external and inter-cluster connections
 - Port Range: 30000 - 32767
+- Service has an internal IP Address with an assigned desired internal Port.
+- There are 3 different ports:
+1. Target Port: Port of Pod that we want to map to
+2. Port: Assigned to Internal part of Service
+3. NodePort: External Port that we connect to service using it
 
 ```
 apiVersion: v1
