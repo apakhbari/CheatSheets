@@ -335,7 +335,9 @@ spec:
 ```
 
 #### LoadBalancer Service
-- Mostly used in cloud environments
+- Mostly used in cloud environments.
+- Is a layer above NodePort
+- After you create a loadBalancer Service, You are going to have an External-IP (Public) So you can LoadBalance using domain to differnet services.
 
 
 
