@@ -273,6 +273,8 @@ of the application
 2. Port: Assigned to Internal part of Service
 3. NodePort: External Port that we connect to service using it
 
+- Port Forwarding is happening using Kube-Proxy in IPTables level 
+
 ```
 apiVersion: v1
 kind: Service
@@ -291,6 +293,7 @@ spec:
 
 #### ClusterIP Service
 - Used for inter-cluster connections
+- Is default form of service. If you Don't assign anything in spec/type, It is going to be
 
 #### LoadBalancer Service
 - Mostly used in cloud environments
