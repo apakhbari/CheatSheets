@@ -77,13 +77,13 @@
 
 
 ## Ports
-| **Port** |     **Utility**     |
-|:--------:|:-------------------:|
-|   6443   |      API SERVER     |
-|   2379   | API SERVER --> ETCD |
-|   2380   |    ETCD <--> ETCD   |
-|   2381   |   Monitoring ETCD   |
-|   30000 - 32767   |   NodePort Range   |
+| **Port**          |     **Utility**     |
+|:-----------------:|:-------------------:|
+|   6443            |      API SERVER     |
+|   2379            | API SERVER --> ETCD |
+|   2380            |    ETCD <--> ETCD   |
+|   2381            |   Monitoring ETCD   |
+|   30000 - 32767   |   NodePort Range    |
 
 ## Commands
 
@@ -122,6 +122,9 @@
 <br>
 
 - ` $ kubectl run nginx-pod  --image nginx:1.21 `
+
+### Service
+- ` $ kubectl get endpoints nginx-svc ` 
 
 ## Components:
 ### Master Nodes
@@ -271,7 +274,7 @@ of the application
 - Service has an internal IP Address (From ClusterIP part of NodePort Serive) with an assigned desired internal Port.
 - There are 3 different ports:
 1. Target Port: Port of Pod that we want to map to
-2. Port (From ClusterIP part of NodePort Serive): Assigned to Internal part of Service
+2. Port (From ClusterIP part of NodePort Serive): Assigned to Internal part of Service. Can be not unique across cluster, since there are lots of services that can be created and al of them are going to have different IPs, so they are having
 3. NodePort: External Port that we connect to service using it
 
 - Port Forwarding is happening using Kube-Proxy in IPTables level 
