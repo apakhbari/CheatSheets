@@ -82,6 +82,7 @@
 |   2379   | API SERVER --> ETCD |
 |   2380   |    ETCD <--> ETCD   |
 |   2381   |   Monitoring ETCD   |
+|   30000 - 32767   |   NodePort Range   |
 
 ## Commands
 
@@ -265,6 +266,7 @@ of the application
 
 #### NodePort Service
 - Is a layer above ClusterIP, So you can use it for both external and inter-cluster connections
+- Port Range: 30000 - 32767
 
 ```
 apiVersion: v1
