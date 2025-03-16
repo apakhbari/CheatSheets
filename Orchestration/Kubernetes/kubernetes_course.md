@@ -274,6 +274,8 @@ of the application
 3. NodePort: External Port that we connect to service using it
 
 - Port Forwarding is happening using Kube-Proxy in IPTables level 
+- Using Internal Serivce, You can LoadBalance traffic to different Pods. LoadBalancing Algorithm is RoundRobin.
+- thing is session is to sensitive to IP. So If you Change IP of clinet (Refresh page for example) There is this chance that You are going to be connected to a different pod. If You want this to not happen, You can ` SessionAffinity: Yes ` 
 
 ```
 apiVersion: v1
@@ -286,7 +288,7 @@ spec:
   ports:
     - targetPort: 80
       port: 8080
-          nodePort: 31457
+      nodePort: 31457
   selector:
     app: nginx
 ```
