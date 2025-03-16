@@ -115,6 +115,7 @@
 ### Namespace
 - ` $ kubectl create -f namespace-dev.yml `
 - ` $ kubectl create namespace dev `
+- ` $ kubectl config set-context kubernetes-admin@kubernetes --namespace=dev ` --> make dev namespace default namespace inside kube.config file
 
 <br>
 
@@ -227,6 +228,12 @@ spec:
     limits.memory: "10Gi"
 ```
 
+<br>
+
+- For connecting to a service outside of current namespace:
+  - db-service.dev.svc.cluster-local
+  - Service name . Namespace . Service . domain
+
 #### Systematic Namespaces
 ##### default
 - default namespace when you login to k8s using admin user
@@ -247,6 +254,11 @@ kube-controller
 kube-Proxy
 kube-scheduler
 ```
+
+### Service
+- Enable communication between various components within and outside
+of the application
+
 
 ### POD
 - There is nothing as a pod. You can't see any procss mamed pod, but containers actually exesits
@@ -688,7 +700,7 @@ spec:
 
 
 slide 4
-5 --> 1:06
+5 --> 1:52
 Add contets to k8s_course
 
 ```
