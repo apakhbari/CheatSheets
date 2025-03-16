@@ -293,6 +293,28 @@ spec:
     app: nginx
 ```
 
+- To Use SessionAffinity:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: myservice
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: myapp
+  # The Following adds session affinity
+  SessionAffinity: ClientIP
+  SessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 600
+```
+
 #### ClusterIP Service
 - Used for inter-cluster connections
 - Is default form of service. If you Don't assign anything in spec/type, It is going to be
