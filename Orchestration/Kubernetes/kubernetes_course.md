@@ -779,18 +779,17 @@ spec:
 - A container name consists of: [Namespace]/[Pod Name]/[Container Name]
 
 
-## Session 5 - Namespace, NamespacePolicy
-
-
-
-
-slide 4
-5 --> 1:52
-Add contets to k8s_course
-
+## Session 5 - Namespace, NamespacePolicy, Setvice
 
 
 ## Session 6 (7 on classes)
+
+
+slide 5
+6 --> 1:52
+Add contets to k8s_course
+
+
 ```
 
 apiVersion: v1
