@@ -259,9 +259,12 @@ kube-scheduler
 - Enable communication between various components within and outside
 of the application
 - Different Types of services:
-1. NodePort: Is a layer above ClusterIP, So you can use it for both external and inter-cluster connections
-2. ClusterIP: Used for inter-cluster connections
+1. NodePort
+2. ClusterIP
 3. LoadBalancer
+
+#### NodePort Service
+- Is a layer above ClusterIP, So you can use it for both external and inter-cluster connections
 
 ```
 apiVersion: v1
@@ -278,6 +281,13 @@ spec:
   selector:
     app: nginx
 ```
+
+#### ClusterIP Service
+- Used for inter-cluster connections
+
+#### LoadBalancer Service
+- Mostly used in cloud environments
+
 
 
 ### POD
