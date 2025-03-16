@@ -258,6 +258,26 @@ kube-scheduler
 ### Service
 - Enable communication between various components within and outside
 of the application
+- Different Types of services:
+1. NodePort: Is a layer above ClusterIP, So you can use it for both external and inter-cluster connections
+2. ClusterIP: Used for inter-cluster connections
+3. LoadBalancer
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 80
+      port: 8080
+          nodePort: 31457
+  selector:
+    app: nginx
+```
 
 
 ### POD
@@ -703,58 +723,7 @@ slide 4
 5 --> 1:52
 Add contets to k8s_course
 
-```
-apiVersion: apps/v1
-kind: v
-metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx-anisa
-spec:   
-  replicas: 6
-  selector: 
-    matchLabels:
-      anisa: kubernetes
-  template: 
-    metadata:
-      labels:
-        anisa: kubernetes
-    spec:
-      containers:
-        - name: nginx-container
-          image: docker.arvancloud.ir/nginx:1.21
-====
-kubectl config set-context kubernetes-admin@kubernetes --namespace=dev
-====
 
-==========
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: dev-quota
-  namespace: dev 
-spec:
-  hard: 
-    pods: "10"
-    count/deployments.apps: "2"
-    cpu: "100m"
-    memory: "100M"
-    =====
-    apiVersion: v1
-kind: Service
-metadata:
-  name: nginx
-  namespace: dev
-spec:
-  type: NodePort
-  ports:
-    - targetPort: 80
-      port: 8080
-          nodePort: 31457
-  selector:
-    app: nginx
-====
-```
 
 ## Session 6 (7 on classes)
 ```
