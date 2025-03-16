@@ -267,14 +267,14 @@ of the application
 #### NodePort Service
 - Is a layer above ClusterIP, So you can use it for both external and inter-cluster connections
 - Port Range: 30000 - 32767
-- Service has an internal IP Address with an assigned desired internal Port.
+- Service has an internal IP Address (From ClusterIP part of NodePort Serive) with an assigned desired internal Port.
 - There are 3 different ports:
 1. Target Port: Port of Pod that we want to map to
-2. Port: Assigned to Internal part of Service
+2. Port (From ClusterIP part of NodePort Serive): Assigned to Internal part of Service
 3. NodePort: External Port that we connect to service using it
 
 - Port Forwarding is happening using Kube-Proxy in IPTables level 
-- Using Internal Serivce, You can LoadBalance traffic to different Pods. LoadBalancing Algorithm is RoundRobin.
+- Using Internal Serivce (From ClusterIP part of NodePort Serive), You can LoadBalance traffic to different Pods. LoadBalancing Algorithm is RoundRobin.
 - thing is session is to sensitive to IP. So If you Change IP of clinet (Refresh page for example) There is this chance that You are going to be connected to a different pod. If You want this to not happen, You can ` SessionAffinity: Yes ` 
 
 ```
