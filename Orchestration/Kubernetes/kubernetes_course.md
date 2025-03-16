@@ -50,6 +50,7 @@
 - Always have a backup from /etc/kubernetes/manifests/
 - What is a ` /pause ` container that all of containers have it when you ` $ nerdctl -n k8s.io ps ` ? It is a sandbox container that executes before actual container is up. sandbox asks for IP for actual container network from kube-proxy
 - In K8s restart policy is always
+- For LoadBalancing Network Traffic, We use HAPRoxy + keepalived in Masters and Nginx reverse proxy in workers
 
 ## Directories
 ### Kube Config
