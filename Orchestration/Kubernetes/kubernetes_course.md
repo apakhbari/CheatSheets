@@ -819,11 +819,22 @@ spec:
 - A container name consists of: [Namespace]/[Pod Name]/[Container Name]
 
 
-## Session 5 - Namespace, NamespacePolicy, Setvice
+## Session 5 - Namespace, NamespacePolicy, ClusterIP Service, NodePort Service
 
 
-## Session 6 (7 on classes)
-
+## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling
+- For manual scheduling, add ` nodeName ` to your yaml file:
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  nodeName: master1
+```
 
 slide 5
 6 --> 1:52
