@@ -876,6 +876,7 @@ $ curl --header "Content-Type:application/jason" --request POST '{"apiVersion":"
 ### Annotations
 - You can add some notes to your yaml file in order to keep things in mind. This functionality is not being used often.
 - Mostly it is being used for config saving. For example in this annotation ` cache: True ` then read this value and set caching of app to true
+- put values in " "
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -885,7 +886,7 @@ metadata:
   labels:
     app: nginx-anisa
   annotation:
-    buildVersion: 1.34
+    buildVersion: "1.34"
 spec:   
   replicas: 8
   selector: 
