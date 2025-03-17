@@ -822,8 +822,8 @@ spec:
 ## Session 5 - Namespace, NamespacePolicy, ClusterIP Service, NodePort Service
 
 
-## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling
-
+## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors
+### Scheduling Using NodeName
 - For manual scheduling using NodeName, add ` nodeName ` to your yaml file:
 ```
 apiVersion: v1
@@ -837,6 +837,36 @@ spec:
   nodeName: worker2
 ```
 - Using NodeName you override all taints, so you can deploy directly on master nodes
+
+### Scheduling in No Scheduler
+- In this setting, since you don't have automatic scheduling, you need to define a binding resource, then using curl pass it to API-Server
+```
+pod-definition.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+      - containerPort: 8000
+
+
+pod-bind-definition.yaml
+apiVersion: v1
+kind: Binding
+metadata:
+  name: nginx
+target:
+  apiversion: v1
+  kind: Node
+  name: node02
+```
+```
+$ curl --header "Content-Type:application/jason" --request POST '{"apiVersion":"v1", "kind":"Binding" ... }' http://$SERVER/api/v1/namespace/default/pods/$PODNAME/binding/
+```
 
 slide 5
 6 --> 1:52
