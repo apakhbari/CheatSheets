@@ -51,6 +51,8 @@
 - What is a ` /pause ` container that all of containers have it when you ` $ nerdctl -n k8s.io ps ` ? It is a sandbox container that executes before actual container is up. sandbox asks for IP for actual container network from kube-proxy
 - In K8s restart policy is always
 - For LoadBalancing Network Traffic, We use HAPRoxy + keepalived in Masters and Nginx reverse proxy in workers. On Workers you can also use terafic because it has a good UI
+- You can't ping a k8s service. Because it is actually some forwarding firewall rules, unless you don't specify port number of service, There is nothing to actually see
+- You can increase probability of packets sending to a specific node by changing its related IPTables rule
 
 ## Directories
 ### Kube Config
