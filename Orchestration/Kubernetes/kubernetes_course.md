@@ -874,6 +874,32 @@ $ curl --header "Content-Type:application/jason" --request POST '{"apiVersion":"
 ```
 
 ### Annotations
+- You can add some notes to your yaml file in order to keep things in mind.
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+  annotation:
+    buildVersion: 1.34
+spec:   
+  replicas: 8
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21 
+```
+
 
 slide 5
 6 --> 1:52
