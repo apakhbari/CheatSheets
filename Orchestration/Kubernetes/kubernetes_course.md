@@ -369,7 +369,20 @@ spec:
 - Mostly used in cloud environments.
 - Is a layer above NodePort
 - After you create a loadBalancer Service, You are going to have an External-IP (Public) So you can LoadBalance using domain to differnet services.
-
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  type: LoadBalancer
+  ports:
+    - targetPort: 80
+      port: 8080
+  selector:
+    app: nginx
+```
 
 
 ### POD
@@ -818,29 +831,6 @@ Add contets to k8s_course
 
 
 ```
-
-
-====
-kubectl -n default run debugger --image alpine --command -- sleep infinity
-====
-alpine: apk add curl
-=====
-curl http://nginx-internal.dev.svc.cluster.local:8080
-curl http://nginx-internal.dev:8080
-==========
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx
-  namespace: dev
-spec:
-  type: LoadBalancer
-  ports:
-    - targetPort: 80
-      port: 8080
-  selector:
-    app: nginx
-=======
 apiVersion: v1
 kind: Pod
 metadata:
