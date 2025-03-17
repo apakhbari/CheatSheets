@@ -85,6 +85,26 @@
 |   2381            |   Monitoring ETCD   |
 |   30000 - 32767   |   NodePort Range    |
 
+
+#### Control plane
+| **Protocol** | **Direction** | **Port Range** |       **Purpose**       |      **Used By**     |
+|:------------:|:-------------:|:--------------:|:-----------------------:|:--------------------:|
+|      TCP     |    Inbound    |      6443      |      K8s API Server     |          All         |
+|      TCP     |    Inbound    |    2379-2380   |  ETCD server client API | kube-apiserver, etcd |
+|      TCP     |    Inbound    |      10250     |       Kubelet API       |  self, Control Plane |
+|      TCP     |    Inbound    |      10259     |      Kube-Scheduler     |         self         |
+|      TCP     |    Inbound    |      10257     | Kube-Controller-Manager |         self         |
+
+- 2379 --> is a port that API-SERVER commuicate with ETCD 
+- 2380 --> is a port that ETCDs commuicate with ETCD
+
+#### Worker node
+| **Protocol** | **Direction** | **Port Range** |    **Purpose**    |     **Used By**     |
+|:------------:|:-------------:|:--------------:|:-----------------:|:-------------------:|
+|      TCP     |    Inbound    |      10250     |    Kubelet API    | self, Control Plane |
+|      TCP     |    Inbound    |   30000-32767  | NodePort Services |         ALL         |
+
+
 ## Commands
 
 ### Information
@@ -119,12 +139,16 @@
 - ` $ kubectl create namespace dev `
 - ` $ kubectl config set-context kubernetes-admin@kubernetes --namespace=dev ` --> make dev namespace default namespace inside kube.config file
 
-<br>
 
+### Testing
 - ` $ kubectl run nginx-pod  --image nginx:1.21 `
+- ` $ kubectl run test-pod  --image docker.arvancloud.ir/alpine --command -- sleep infinity `
+
+
 
 ### Service
 - ` $ kubectl get endpoints nginx-svc ` 
+
 
 ## Components:
 ### Master Nodes
@@ -329,6 +353,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend
+  namespace: dev
 spec:
   type: ClusterIP
   ports:
@@ -792,18 +817,7 @@ Add contets to k8s_course
 
 ```
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-internal
-  namespace: dev
-spec:
-  type: ClusterIP
-  ports:
-    - targetPort: 80
-      port: 8080
-  selector:
-    app: nginx
+
 ====
 kubectl -n default run debugger --image alpine --command -- sleep infinity
 ====
