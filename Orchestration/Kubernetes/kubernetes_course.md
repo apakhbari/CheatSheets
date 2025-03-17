@@ -124,8 +124,13 @@
 - To list token: ` $ kubeadm token list `
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
-### Label
+### Labels & Selectors
 - ` $ kubectl label node worker2 kubernetes.io/role=worker-2-B ` --> defined Role, that's being shown in $ kubectl get nodes
+- ` $ kubectl get node --show-labels `
+- ` $ kubectl get pod --show-labels `
+- ` $ kubectl get deployment --show-labels `
+- ` $ kubectl get pod --selector app=nginx -o wide `
+
 
 ### Executing a command inside pod
 - ` $ kubectl -n kube-system exec -it etcd-master1 -- sh ` --> connects to a pod to execute something
@@ -822,7 +827,7 @@ spec:
 ## Session 5 - Namespace, NamespacePolicy, ClusterIP Service, NodePort Service
 
 
-## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors
+## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors, Annotations
 ### Scheduling Using NodeName
 - For manual scheduling using NodeName, add ` nodeName ` to your yaml file:
 ```
@@ -868,27 +873,18 @@ target:
 $ curl --header "Content-Type:application/jason" --request POST '{"apiVersion":"v1", "kind":"Binding" ... }' http://$SERVER/api/v1/namespace/default/pods/$PODNAME/binding/
 ```
 
+### Annotations
+
 slide 5
 6 --> 1:52
 Add contets to k8s_course
 
 
 ```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-  nodeName: master1
+
 ====
 Label and selector:
-kubectl get node --show-labels
-kubectl get pod --show-labels
-kubectl get deployment --show-labels
-kubectl get pod --selector app=nginx -o wide
+
 ========
 kubectl create deployment web-server --image docker.arvancloud.ir/nginx:1.21 --replicas 5
 ====
