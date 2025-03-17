@@ -823,7 +823,8 @@ spec:
 
 
 ## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling
-- For manual scheduling, add ` nodeName ` to your yaml file:
+
+- For manual scheduling using NodeName, add ` nodeName ` to your yaml file:
 ```
 apiVersion: v1
 kind: Pod
@@ -833,8 +834,9 @@ spec:
   containers:
   - name: nginx
     image: nginx
-  nodeName: master1
+  nodeName: worker2
 ```
+- Using NodeName you override all taints, so you can deploy directly on master nodes
 
 slide 5
 6 --> 1:52
