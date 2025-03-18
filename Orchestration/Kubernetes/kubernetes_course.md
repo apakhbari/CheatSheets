@@ -827,8 +827,9 @@ spec:
 ## Session 5 - Namespace, NamespacePolicy, ClusterIP Service, NodePort Service
 
 
-## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors, Annotations
-### Scheduling Using NodeName
+## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors, Annotations, Taint & Tolerations
+### Scheduling
+#### Scheduling Using NodeName
 - For manual scheduling using NodeName, add ` nodeName ` to your yaml file:
 ```
 apiVersion: v1
@@ -843,7 +844,7 @@ spec:
 ```
 - Using NodeName you override all taints, so you can deploy directly on master nodes
 
-### Scheduling in No Scheduler
+#### Scheduling in No Scheduler
 - In this setting, since you don't have automatic scheduling, you need to define a binding resource, then using curl pass it to API-Server
 ```
 pod-definition.yaml
@@ -902,10 +903,12 @@ spec:
           image: docker.arvancloud.ir/nginx:1.21 
 ```
 
+### Taint & Tolerations
 
 slide 5
-6 --> 1:52
+6 --> 2:55
 Add contets to k8s_course
+
 
 
 ```
