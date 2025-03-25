@@ -96,7 +96,11 @@ To ensure an optimized conversation, my prompt consists of five key sections. Pl
 - I prioritize my circadian rhythm (sleep cycle).
 - My job requires me to wake up before 7 AM.
 - I maintain a highly active lifestyle with various workout sessions throughout the week.
-- I consume coffee before my workouts. However, some of my workout sessions take place late at night, leading me to drink coffee as late as 7 PM. 
+- I consume coffee before my workouts. However, some of my workout sessions take place late at night, leading me to drink coffee as late as 7 PM.
+- I've benn activly doing wheightlifting for last 2 years, But for last 3 weeks I was busy and couln't lift wheight the way I like.
+- My Workout routine is usually: 10 minutes cardio in beginning + 2 hours weghit lifting + 20 minutes cardio at the end
+- My gym has Sauna and jaccuzi (cold and hot)
+- I am currently overweight so i am trying to burn fat + gain muscles
 
 ### 3. Task (Your Response):
 Is drinking coffee in this setting okay for my sleep cycle? Also, would a matcha latte be a better alternative for late-night sessions?
