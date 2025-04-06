@@ -475,6 +475,7 @@ Most Linux distributions use only one of these three:
 | 636  | TCP      | LDAPS (Lightweight Directory Access Protocol over TLS/SSL) |
 | 993  | TCP      | IMAPS (Internet Message Access Protocol over TLS/SSL) |
 | 995  | TCP      | POP3S (Post Office Protocol 3 over TLS/SSL) |
+| 2049 | TCP      | NFS |
 
 ---
 ## Tips & Tricks:
