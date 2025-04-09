@@ -125,6 +125,7 @@
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
 ### Labels & Selectors
+- ` $ kubectl label nodes <node-name> <label-key>=<label-value> `
 - ` $ kubectl label node worker2 kubernetes.io/role=worker-2-B ` --> defined Role, that's being shown in $ kubectl get nodes
 - ` $ kubectl get node --show-labels `
 - ` $ kubectl get pod --show-labels `
@@ -132,7 +133,7 @@
 - ` $ kubectl get pod --selector app=nginx -o wide `
 
 ### Taints & Tolerations
-- ` $ kubectl taint nodes node-name key=value:taint-effect (NoSchedule | PreferNoSchedule | NoExecute) `
+- ` $ kubectl taint nodes <node-name> <key>=<value>:<taint-effect> (NoSchedule | PreferNoSchedule | NoExecute) `
 - ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule `
 - ` $ kubectl taint node worker1 anisa- ` --> For removing all taints with key anisa
 - ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule- ` --> For removing taint
