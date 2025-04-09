@@ -127,10 +127,12 @@
 ### Labels & Selectors
 - ` $ kubectl label nodes <node-name> <label-key>=<label-value> `
 - ` $ kubectl label node worker2 kubernetes.io/role=worker-2-B ` --> defined Role, that's being shown in $ kubectl get nodes
-- ` $ kubectl get node --show-labels `
+- ` $ kubectl get node worker2 --show-labels `
 - ` $ kubectl get pod --show-labels `
 - ` $ kubectl get deployment --show-labels `
 - ` $ kubectl get pod --selector app=nginx -o wide `
+- ` $ kubectl label node worker1 anisa- ` --> For removing all labels with key anisa
+- ` $ kubectl label node worker1 anisa=kubernetes:NoSchedule- ` --> For removing label
 
 ### Taints & Tolerations
 - ` $ kubectl taint nodes <node-name> <key>=<value>:<taint-effect> (NoSchedule | PreferNoSchedule | NoExecute) `
@@ -987,6 +989,31 @@ spec:
 ## Session 7 (8 on classes) - Node Selector, 
 ### Node Selector
 - Its opposit of taints, You can decide where your pod must go to
+- a use case:
+```
+$ kubectl label node kubeworker-2 size=small
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.21
+      nodeSelector:
+        size: small
+```
 
 
 
@@ -1009,28 +1036,8 @@ spec:
         - name: nginx
           image: nginx
 ==========
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-  namespace: dev
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: nginx:1.21
-      nodeSelector:
-        size: small
+
 ========
-kubectl label node kubeworker-2 size=small
 =====
 apiVersion: apps/v1
 kind: Deployment
