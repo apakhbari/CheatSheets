@@ -919,6 +919,9 @@ spec:
   - Existing PODs are evicted
 
 - Master nodes are NoSchedule by default
+- You can set a taint without a value, just a key, so for tolerating it you can use ` operator: exists `
+- An empty ` key ` with operator ` exists ` matches all keys, values and effects which means that this will tolerate everything
+
 - For tolerating a taint we can do
 ```
 apiVersion: apps/v1
