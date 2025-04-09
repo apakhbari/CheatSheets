@@ -982,12 +982,13 @@ spec:
           operator: "Exists"
 ```
 
-slide 5
-6 --> 2:55
-Add contets to k8s_course
+
+## Session 7 (8 on classes) - Node Selector, 
+### Node Selector
+- Its opposit of taints, You can decide where your pod must go to
 
 
-## Session 7 (8 on classes)
+
 ```
 apiVersion: apps/v1
 kind: DaemonSet
