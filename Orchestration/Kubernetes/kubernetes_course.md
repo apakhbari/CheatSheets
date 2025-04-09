@@ -1018,7 +1018,14 @@ spec:
 - Node Selector is not optimized for when you want to use some logical rules for example ` NOT small ` or ` large OR medium ` so we use node affinity
 
 ### Node Affinity
-- Some Operators you can use: ` IN ` & ` NotIn ` & ` Exists `
+- Node Affinity Types:
+| **Operator** |                           **Behavior**                          |
+|:------------:|:---------------------------------------------------------------:|
+|      In      |    The label value is present in the supplied set of strings    |
+|     NotIn    | The label value is not contained in the supplied set of strings |
+|    Exists    |            A label with this key exists on the object           |
+| DoesNotExist |           No label with this key exists on the object           |
+
 
 - Type 3 & 4 of this table are planned for future
 |        | **During Scheduling** | **During Execution** |
