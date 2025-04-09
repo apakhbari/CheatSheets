@@ -1070,28 +1070,6 @@ spec:
 
 
 ```
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: nginx
-  namespace: dev
-spec:
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: nginx
-==========
-
-========
-=====
-
 ============
 apiVersion: apps/v1
 kind: Deployment
