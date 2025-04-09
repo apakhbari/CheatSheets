@@ -134,7 +134,9 @@
 ### Taints & Tolerations
 - ` $ kubectl taint nodes node-name key=value:taint-effect (NoSchedule | PreferNoSchedule | NoExecute) `
 - ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule `
-- ` $ kubectl describe node kubemaster | grep taint `
+- ` $ kubectl taint node worker1 anisa- ` --> For removing all taints with key anisa
+- ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule- ` --> For removing taint
+- ` $ kubectl describe node kubemaster | grep taint ` --> For seeing taints on node
 
 
 ### Executing a command inside pod
@@ -952,49 +954,9 @@ spec:
           effect: "NoSchedule"
 ```
 
-slide 5
-6 --> 2:55
-Add contets to k8s_course
-
-
-
+- For removing master node taint: ` $ kubectl taint node master1 node-role.kubernetes.io/control-plane- `
+- For having a pod that can tolerate master node:
 ```
-Label and selector:
-========
-kubectl create deployment web-server --image docker.arvancloud.ir/nginx:1.21 --replicas 5
-====
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  namespace: dev
-  labels:
-    app: nginx-anisa
-spec:   
-  replicas: 8
-  selector: 
-    matchLabels:
-      anisa: kubernetes
-  template: 
-    metadata:
-      labels:
-        anisa: kubernetes
-    spec:
-      containers:
-        - name: nginx-container
-          image: docker.arvancloud.ir/nginx:1.21 
-      tolerations:
-        - key: "anisa"
-          operator: "Equal"
-          value: "kubernetes"
-          effect: "NoSchedule"
-    =====
-    kubectl taint node worker1 anisa-
-========
-kubectl taint node worker1 anisa=kubernetes:NoSchedule-
-=======
-kubectl taint node worker1 anisa=kubernetes:NoSchedule
-====
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1018,6 +980,26 @@ spec:
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
+```
+
+slide 5
+6 --> 2:55
+Add contets to k8s_course
+
+
+
+```
+Label and selector:
+========
+
+=====
+kubectl taint node worker1 anisa-
+========
+kubectl taint node worker1 anisa=kubernetes:NoSchedule-
+=======
+kubectl taint node worker1 anisa=kubernetes:NoSchedule
+====
+
 ====
 kubectl taint node worker2 app=nginx:PreferNoSchedule
 =======
