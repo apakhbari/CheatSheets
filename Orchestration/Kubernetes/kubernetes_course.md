@@ -987,26 +987,6 @@ slide 5
 Add contets to k8s_course
 
 
-
-```
-Label and selector:
-========
-
-=====
-kubectl taint node worker1 anisa-
-========
-kubectl taint node worker1 anisa=kubernetes:NoSchedule-
-=======
-kubectl taint node worker1 anisa=kubernetes:NoSchedule
-====
-
-====
-kubectl taint node worker2 app=nginx:PreferNoSchedule
-=======
-kubectl taint node worker1 app=nginx:NoExecute
-=====
-```
-
 ## Session 7 (8 on classes)
 ```
 apiVersion: apps/v1
