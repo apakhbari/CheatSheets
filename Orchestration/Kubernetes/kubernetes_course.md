@@ -909,7 +909,7 @@ spec:
 
 ### Taint & Tolerations
 - Taints have 3 effects that you can specify:
-1. No Schedule
+1. NoSchedule
   - New PODs are not schedulers on the node
   - Existing PODs stay
 2. PreferNoSchedule
@@ -918,6 +918,35 @@ spec:
   - New PODs are not Scheduled on the node
   - Existing PODs are evicted
 
+- Master nodes are NoSchedule by default
+- For tolerating a taint we can do
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:   
+  replicas: 8
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21 
+      tolerations:
+        - key: "anisa"
+          operator: "Equal"
+          value: "kubernetes"
+          effect: "NoSchedule"
+```
 
 slide 5
 6 --> 2:55
