@@ -1019,6 +1019,13 @@ spec:
 
 ### Node Affinity
 - Some Operators you can use: ` IN ` & ` NotIn ` & ` Exists `
+
+|        | **During Scheduling** | **During Execution** |
+|:------:|:---------------------:|:--------------------:|
+| Type 1 |        Required       |        Ignored       |
+| Type 2 |       Preferred       |        Ignored       |
+| Type 3 |        Required       |       Required       |
+
 ```
 apiVersion: apps/v1
 kind: Deployment
