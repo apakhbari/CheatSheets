@@ -131,6 +131,10 @@
 - ` $ kubectl get deployment --show-labels `
 - ` $ kubectl get pod --selector app=nginx -o wide `
 
+### Taints & Tolerations
+- ` $ kubectl taint nodes node-name key=value:taint-effect (NoSchedule | PreferNoSchedule | NoExecute) `
+- ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule- `
+
 
 ### Executing a command inside pod
 - ` $ kubectl -n kube-system exec -it etcd-master1 -- sh ` --> connects to a pod to execute something
@@ -904,6 +908,16 @@ spec:
 ```
 
 ### Taint & Tolerations
+- Taints have 3 effects that you can specify:
+1. No Schedule
+  - New PODs are not schedulers on the node
+  - Existing PODs stay
+2. PreferNoSchedule
+  - Like No Schedule but is not guranteed
+3. NoExecute
+  - New PODs are not Scheduled on the node
+  - Existing PODs are evicted
+
 
 slide 5
 6 --> 2:55
