@@ -133,7 +133,7 @@
 
 ### Taints & Tolerations
 - ` $ kubectl taint nodes node-name key=value:taint-effect (NoSchedule | PreferNoSchedule | NoExecute) `
-- ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule- `
+- ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule `
 - ` $ kubectl describe node kubemaster | grep taint `
 
 
@@ -923,7 +923,7 @@ spec:
 - You can set a taint without a value, just a key, so for tolerating it you can use ` operator: exists `
 - An empty ` key ` with operator ` exists ` matches all keys, values and effects which means that this will tolerate everything
 
-- For tolerating a taint we can do
+- For tolerating a taint like ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule ` we can do
 ```
 apiVersion: apps/v1
 kind: Deployment
