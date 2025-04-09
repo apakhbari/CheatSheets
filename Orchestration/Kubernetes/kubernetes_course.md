@@ -986,7 +986,7 @@ spec:
 ```
 
 
-## Session 7 (8 on classes) - Node Selector, 
+## Session 7 (8 on classes) - Node Selector, Node Affinity, 
 ### Node Selector
 - Its opposit of taints, You can decide where your pod must go to
 - a use case:
@@ -1015,6 +1015,41 @@ spec:
         size: small
 ```
 
+- Node Selector is not optimized for when you want to use some logical rules for example ` NOT small ` or ` large OR medium ` so we use node affinity
+
+### Node Affinity
+- Some Operators you can use: ` IN ` & ` NotIn ` & ` Exists `
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.18
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                 - key: "size"
+                   operator: "In"
+                   values:
+                     - "large"
+                     - "small"
+```
+
 
 
 ```
@@ -1039,34 +1074,7 @@ spec:
 
 ========
 =====
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-  namespace: dev
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: nginx:1.18
-      affinity:
-        nodeAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                 - key: "size"
-                   operator: "In"
-                   values:
-                     - "large"
-                     - "small"
+
 ============
 apiVersion: apps/v1
 kind: Deployment
