@@ -134,6 +134,7 @@
 ### Taints & Tolerations
 - ` $ kubectl taint nodes node-name key=value:taint-effect (NoSchedule | PreferNoSchedule | NoExecute) `
 - ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule- `
+- ` $ kubectl describe node kubemaster | grep taint `
 
 
 ### Executing a command inside pod
