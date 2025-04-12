@@ -1101,6 +1101,9 @@ spec:
                       - blue
 ```
 
+video 7 --> 1:35
+slide 5
+Add contets to k8s_course
 
 ```
 ============
