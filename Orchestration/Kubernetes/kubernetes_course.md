@@ -1106,7 +1106,6 @@ spec:
                     operator: In
                     values:
                       - blue
-          preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 3
               preference:
                 matchExpressions:
