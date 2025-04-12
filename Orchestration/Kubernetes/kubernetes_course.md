@@ -837,7 +837,7 @@ spec:
 ## Session 5 - Namespace, NamespacePolicy, ClusterIP Service, NodePort Service
 
 
-## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors, Annotations, Taint & Tolerations, Resource limit
+## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors, Annotations, Taint & Tolerations
 ### Scheduling
 #### Scheduling Using NodeName
 - For manual scheduling using NodeName, add ` nodeName ` to your yaml file:
@@ -988,7 +988,7 @@ spec:
 - When you are using taint and tolerations, you can't force a deployment to be deployed on certain node, It is probable to be deployed on a node with toleration but it is not guaranteed that it will 100% be deployed on that and not other free-tainted nodes
 
 
-## Session 7 (8 on classes) - Node Selector, Node Affinity, 
+## Session 7 (8 on classes) - Node Selector, Node Affinity, Resource limit 
 ### Node Selector
 - Its opposit of taints, You can decide where your pod must go to
 - a use case:
@@ -1160,8 +1160,13 @@ spec:
         - name: nginx
           image: nginx
 ```
+### Resource limit
+#### RAM limit
+- 256Mi = 256*1024*1024 = 268,435,456 Bytes
+- 256M = 256*1000*1000 = 256,000,000 Bytes
 
-
+#### CPU limit
+- 0.5 = 500m (at least=1m=0.001 of 1 core CPU)
 
 ## Session 8 (9 on classes)
 
