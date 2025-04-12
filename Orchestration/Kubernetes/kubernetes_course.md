@@ -1175,6 +1175,8 @@ spec:
   - CPU: K8s throttles the CPU for the POD
   - Memory: K8s terminate the POD (OOM-Killed)
 
+- You can see amount of resources that are set for each pod using ` $ describe node master1 ` but pay attention if you see ` 0 (0%) ` Requests/limit it means that it is using default value which is 0.5 CPU and 256 Mi Memory
+
 ## Session 8 (9 on classes)
 
 ## Session 9 (11 on classes)
