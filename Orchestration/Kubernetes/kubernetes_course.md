@@ -1121,12 +1121,12 @@ video 7 --> 1:35
 slide 5
 Add contets to k8s_course
 
-
+- Usecase: we have 4 nodes labled as blue, red, green and other. We want blue deployment to only be deployed on blue node and we don't want anything rather than blue to be deployed on blue node. We can achieve such thing using a combination of Node Affinity & Taint:
 
 ```
-============
+$ kubectl tain node worker1 color=red:NoSchedul
 
-==========
+$ vim red-deployment.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1159,9 +1159,8 @@ spec:
       containers:
         - name: nginx
           image: nginx
-========       
-
 ```
+
 
 
 ## Session 8 (9 on classes)
