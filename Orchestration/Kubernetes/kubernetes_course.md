@@ -1067,10 +1067,8 @@ spec:
                      - "small"
 ```
 
-
-
+- When you use preferredDuringSchedulingIgnoredDuringExecution you need to assign it a wheight:
 ```
-============
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1101,6 +1099,12 @@ spec:
                     operator: In
                     values:
                       - blue
+```
+
+
+```
+============
+
 ==========
 apiVersion: apps/v1
 kind: Deployment
