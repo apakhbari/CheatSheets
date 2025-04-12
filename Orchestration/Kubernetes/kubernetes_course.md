@@ -1091,14 +1091,29 @@ spec:
           image: nginx:1.20
       affinity:
         nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                 - key: "size"
+                   operator: "In"
+                   values:
+                     - "large"
           preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
+            - weight: 5
               preference:
                 matchExpressions:
                   - key: color
                     operator: In
                     values:
                       - blue
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 3
+              preference:
+                matchExpressions:
+                  - key: color
+                    operator: In
+                    values:
+                      - red
 ```
 
 video 7 --> 1:35
