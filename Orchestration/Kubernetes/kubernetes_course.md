@@ -837,7 +837,7 @@ spec:
 ## Session 5 - Namespace, NamespacePolicy, ClusterIP Service, NodePort Service
 
 
-## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors, Annotations, Taint & Tolerations
+## Session 6 (7 on classes) - LoadBalance Service, Manual Scheduling, Lables & Selectors, Annotations, Taint & Tolerations, Resource limit
 ### Scheduling
 #### Scheduling Using NodeName
 - For manual scheduling using NodeName, add ` nodeName ` to your yaml file:
@@ -1118,7 +1118,7 @@ spec:
 ```
 
 video 7 --> 1:35
-slide 5
+slide 7
 Add contets to k8s_course
 
 - Usecase: we have 4 nodes labled as blue, red, green and other. We want blue deployment to only be deployed on blue node and we don't want anything rather than blue to be deployed on blue node. We can achieve such thing using a combination of Node Affinity & Taint:
