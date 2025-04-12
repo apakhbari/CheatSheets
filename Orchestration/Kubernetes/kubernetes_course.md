@@ -1168,6 +1168,9 @@ spec:
 #### CPU limit
 - 0.5 = 500m (at least=1m=0.001 of 1 core CPU)
 
+- By default K8s assumes that each POD requires 0.5 CPU and 256 Mi Memory
+- When a Scheduler tries to place a POD on an node, it uses this number to identify which node has sufficient amount of resources
+
 ## Session 8 (9 on classes)
 
 ## Session 9 (11 on classes)
