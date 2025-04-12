@@ -1169,6 +1169,7 @@ spec:
 - 0.5 = 500m (at least=1m=0.001 of 1 core CPU)
 
 - By default K8s assumes that each POD requires 0.5 CPU and 256 Mi Memory
+- By default, K8s Set 1 vCPU and 512 Mi of Memory limits on a container
 - When a Scheduler tries to place a POD on an node, it uses this number to identify which node has sufficient amount of resources
 
 - What happens when a POD exceed beyond its limit?
