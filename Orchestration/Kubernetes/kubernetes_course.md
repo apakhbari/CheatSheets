@@ -508,6 +508,32 @@ spec:
               memory: "512M" 
 ```
 
+### Daemon Set
+- 1 instance of it is going to be deployed on all nodes
+- kube-proxy is a daemon Set
+- It is good for log & monitoring solutions
+```
+apiVersion: apps/v1
+kind: Daemonset
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:   
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21  
+```
+
 # Kubernetes Course
 # Contents
 - Install, Configure and validation
@@ -988,7 +1014,7 @@ spec:
 - When you are using taint and tolerations, you can't force a deployment to be deployed on certain node, It is probable to be deployed on a node with toleration but it is not guaranteed that it will 100% be deployed on that and not other free-tainted nodes
 
 
-## Session 7 (8 on classes) - Node Selector, Node Affinity, Resource limit 
+## Session 7 (8 on classes) - Node Selector, Node Affinity, Resource limit, Daemon Set 
 ### Node Selector
 - Its opposit of taints, You can decide where your pod must go to
 - a use case:
