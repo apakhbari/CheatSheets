@@ -985,6 +985,8 @@ spec:
           operator: "Exists"
 ```
 
+- When you are using taint and tolerations, you can't force a deployment to be deployed on certain node, It is probable to be deployed on a node with toleration but it is not guaranteed that it will 100% be deployed on that and not other free-tainted nodes
+
 
 ## Session 7 (8 on classes) - Node Selector, Node Affinity, 
 ### Node Selector
@@ -1118,6 +1120,8 @@ spec:
 video 7 --> 1:35
 slide 5
 Add contets to k8s_course
+
+
 
 ```
 ============
