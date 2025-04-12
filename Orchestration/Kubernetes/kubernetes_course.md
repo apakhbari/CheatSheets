@@ -1143,10 +1143,6 @@ spec:
                       - red
 ```
 
-video 7 --> 1:35
-slide 7
-Add contets to k8s_course
-
 - Usecase: we have 4 nodes labled as blue, red, green and other. We want blue deployment to only be deployed on blue node and we don't want anything rather than blue to be deployed on blue node. We can achieve such thing using a combination of Node Affinity & Taint:
 
 ```
@@ -1203,6 +1199,11 @@ spec:
   - Memory: K8s terminate the POD (OOM-Killed)
 
 - You can see amount of resources that are set for each pod using ` $ describe node master1 ` but pay attention if you see ` 0 (0%) ` Requests/limit it means that it is using default value which is 0.5 CPU and 256 Mi Memory
+
+
+video 7 --> 4:02
+slide 7
+Add contets to k8s_course
 
 ## Session 8 (9 on classes)
 
