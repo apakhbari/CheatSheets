@@ -1171,6 +1171,10 @@ spec:
 - By default K8s assumes that each POD requires 0.5 CPU and 256 Mi Memory
 - When a Scheduler tries to place a POD on an node, it uses this number to identify which node has sufficient amount of resources
 
+- What happens when a POD exceed beyond its limit?
+  - CPU: K8s throttles the CPU for the POD
+  - Memory: K8s terminate the POD (OOM-Killed)
+
 ## Session 8 (9 on classes)
 
 ## Session 9 (11 on classes)
