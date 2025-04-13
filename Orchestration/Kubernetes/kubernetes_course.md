@@ -1231,7 +1231,7 @@ spec:
 - You can write your own scheduler in GO lang and deploy it on your k8s cluster
 
 ### Logging & Monitoring
-- We are talking about k8s own monitoring solution here, not third party solutions like Prometheus + Grafana
+- We are talking about k8s own monitoring solution here, not third party solutions like Prometheus + Grafana which are free or DataDog and Dynatrace which require license
 - What we expect from our monitoring system:
   - Node level metrics
     - The number of nodes in the cluster
