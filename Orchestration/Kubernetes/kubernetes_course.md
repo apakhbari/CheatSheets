@@ -1065,6 +1065,7 @@ spec:
 
 ### Node Affinity
 - Node Affinity Types:
+
 | **Operator** |                           **Behavior**                          |
 |:------------:|:---------------------------------------------------------------:|
 |      In      |    The label value is present in the supplied set of strings    |
@@ -1074,6 +1075,7 @@ spec:
 
 
 - Type 3 & 4 of this table are planned for future
+
 |        | **During Scheduling** | **During Execution** |
 |:------:|:---------------------:|:--------------------:|
 | Type 1 |        Required       |        Ignored       |
@@ -1218,10 +1220,15 @@ spec:
 
 - You can see amount of resources that are set for each pod using ` $ describe node master1 ` but pay attention if you see ` 0 (0%) ` Requests/limit it means that it is using default value which is 0.5 CPU and 256 Mi Memory
 
+### Daemon Set VS Static Pods
+|                 **Static Pods**                |                   **Daemon Set**                  |
+|:----------------------------------------------:|:-------------------------------------------------:|
+|               Created by Kubelet               | Created by Kube-API Server (DaemonSet Controller) |
+| Deploy Control Plane components as Static Pods | Deploy Monitoring Agents, Logging Agents on nodes |
 
 ## Session 8 (9 on classes) - Multiple Schedulers 
 
-video 7 --> 4:02
+video 8 --> 4:02
 slide 6
 Add contets to k8s_course
 
