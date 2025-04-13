@@ -1226,10 +1226,28 @@ spec:
 |               Created by Kubelet               | Created by Kube-API Server (DaemonSet Controller) |
 | Deploy Control Plane components as Static Pods | Deploy Monitoring Agents, Logging Agents on nodes |
 
-## Session 8 (9 on classes) - Multiple Schedulers 
+## Session 8 (9 on classes) - Multiple Schedulers, Logging & Monitoring
+### Multiple Schedulers
+- You can write your own scheduler in GO lang and deploy it on your k8s cluster
+
+### Logging & Monitoring
+- We are talking about k8s own monitoring solution here, not third party solutions like Prometheus + Grafana
+- What we expect from our monitoring system:
+  - Node level metrics
+    - The number of nodes in the cluster
+    - How many of them are healthy
+    - Performance metrics
+      - CPU and Memory
+      - Network
+      - Disk utilization
+  - POD level metrics
+    - The number of PODs
+    - Performance metrics
+      - CPU and Memory
+      - Pod restart status
 
 video 8 --> 4:02
-slide 6
+slide 7
 Add contets to k8s_course
 
 ## Session 9 (11 on classes)
