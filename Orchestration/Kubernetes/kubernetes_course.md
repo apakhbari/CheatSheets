@@ -127,6 +127,10 @@
 - To list token: ` $ kubeadm token list `
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
+### Create Resources
+- ` $ kubectl create -f deployment-definition.yml ` --> For updating we need to use ` replace ` 
+- ` $ kubectl apply -f deployment-definition.yml `  --> For updating we need to use ` update ` 
+
 ### Logs
 - ` $ kubectl get logs `
 - ` $ kubectl get event `
@@ -171,7 +175,10 @@
 ### Rolling Update
 - ` $ kubectl rollout status deployment/myapp-deployment `
 - ` $ kubectl rollout history deployment/myapp-deployment `
+- ` $ kubectl rollout undo deployment/myapp-deployment ` --> RollBack 1 version
 - ` $ kubectl set image deployment/myapp-deployment \ nginx=nginx:1.9.1 ` --> It only updates value of nginx image on ETCD but it is going to keep deployment as it was before. So it is not the efficient
+- ` $ kubectl apply -f deployment-definition.yml `
+
 
 
 ### Service
@@ -1273,6 +1280,7 @@ Monitoring Solutions – Metrics Server:
 - deploymnet's default strategy for updates is rolling update
 - In a recreate strategy k8s deletes all pods and recreats all of them again. If we want to have no downtime, we should use rolling update strategy
 - In a rolling update strategy, by default **25%** of pods are going to out of access untill changes are completed
+- When we use rolling update, a new replicaSet is going to be created for new version, but the old replicaSet won't we deleted, it just going to have 0 pods inside of it. When we use rollback, vice-verca happens, so new replicaSet is going to have 0 pods inside of it. Pay attention that in a rolling update scenario, if you delete old replicaSet, You are not going to be able to rollback if it's necessary
 
 video 8 --> 2:32
 slide 7
