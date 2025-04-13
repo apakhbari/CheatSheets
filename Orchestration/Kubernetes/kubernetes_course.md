@@ -487,7 +487,7 @@ spec:
 ```
 - ` $ kubectl describe replicasetes.apps nginx-replicaset ` 
 
-- When we update a replicaSet-myapp.yml file, we need to delete old pod manually, then k8s is going to create new version automatically
+- When we update a replicaSet-myapp.yml file, we need to delete old pod manually, then k8s is going to create new version automatically. For more convenience we can make old version replicas to 0, then apply it, then update whatever we want in our yaml file , then change number of replicas to desired number. so scale down then scale up
 
 
 ---
