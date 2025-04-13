@@ -487,7 +487,7 @@ spec:
 ```
 - ` $ kubectl describe replicasetes.apps nginx-replicaset ` 
 
-
+- When we update a replicaSet-myapp.yml file, we need to delete old pod manually, then k8s is going to create new version automatically
 
 
 ---
