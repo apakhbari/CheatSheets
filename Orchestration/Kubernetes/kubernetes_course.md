@@ -55,6 +55,7 @@
 - You can increase probability of packets sending to a specific node by changing its related IPTables rule
 - kube-proxy and core-dns pods are add-on not static pod!
 - kubelet is a service (not a pod) because It is going to initialize all other pods using CRI --> containerd
+- The component that checks for taints is kube-scheduler
 
 ## Directories
 ### Kube Config
@@ -186,6 +187,7 @@
 - Kube scheduler schedule based on:
 1. Filter nodes: For example if it matches lable of node, It is going to be scheduled there. And if there is a taint on node, It is not going to be scheduled
 2. Rank Nodes (based on resources)
+- The component that checks for taints is kube-scheduler
 
 ### Kube Controller Manager
 - Checks status of workers and workloads. In a 5 second interval check health of components.
@@ -547,6 +549,8 @@ spec:
 
 - all static pods have ` -master ` at end of their name
 - You can change staticPodPath via ` /var/lib/kubelet/config.yaml ` 
+- Since the component that checks for taints is kube-scheduler, then static-pods don't need a toleration for being deployed on master nodes
+
 
 # Kubernetes Course
 # Contents
@@ -1215,11 +1219,11 @@ spec:
 - You can see amount of resources that are set for each pod using ` $ describe node master1 ` but pay attention if you see ` 0 (0%) ` Requests/limit it means that it is using default value which is 0.5 CPU and 256 Mi Memory
 
 
+## Session 8 (9 on classes) - Multiple Schedulers 
+
 video 7 --> 4:02
 slide 6
 Add contets to k8s_course
-
-## Session 8 (9 on classes)
 
 ## Session 9 (11 on classes)
 ```
