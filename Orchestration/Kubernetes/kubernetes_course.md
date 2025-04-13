@@ -1231,7 +1231,7 @@ spec:
 - You can write your own scheduler in GO lang and deploy it on your k8s cluster
 
 ### Logging & Monitoring
-- We are talking about k8s own monitoring solution here, not third party solutions like Prometheus + Grafana which are free or DataDog and Dynatrace which require license
+- We are talking about k8s own monitoring solution here, which is metric server, not third party solutions like Prometheus + Grafana which are free or DataDog and Dynatrace which require license
 - What we expect from our monitoring system:
   - Node level metrics
     - The number of nodes in the cluster
@@ -1245,6 +1245,13 @@ spec:
     - Performance metrics
       - CPU and Memory
       - Pod restart status
+
+Monitoring Solutions – Metrics Server:
+- Enables monitoring and analysis features for K8s
+- Retrieves metrics from each K8s nodes and PODs
+- Aggregates and stores metrics in memory --> so it is just real-time which is not ideal
+- The metrics exposed by the Metrics-Server is used by HorizentalPodAutoScaler (HPA) and VerticalPodAutoScaler (VPA)
+- Metrics are accessible via ` $ kubectl top `
 
 video 8 --> 4:02
 slide 7
