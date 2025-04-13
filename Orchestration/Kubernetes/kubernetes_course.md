@@ -171,6 +171,7 @@
 ### Rolling Update
 - ` $ kubectl rollout status deployment/myapp-deployment `
 - ` $ kubectl rollout history deployment/myapp-deployment `
+- ` $ kubectl set image deployment/myapp-deployment \ nginx=nginx:1.9.1 ` --> It only updates value of nginx image on ETCD but it is going to keep deployment as it was before. So it is not the efficient
 
 
 ### Service
@@ -1273,7 +1274,7 @@ Monitoring Solutions – Metrics Server:
 - In a recreate strategy k8s deletes all pods and recreats all of them again. If we want to have no downtime, we should use rolling update strategy
 - In a rolling update strategy, by default **25%** of pods are going to out of access untill changes are completed
 
-video 8 --> 4:02
+video 8 --> 2:32
 slide 7
 Add contets to k8s_course
 
