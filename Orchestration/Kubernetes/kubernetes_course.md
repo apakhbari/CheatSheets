@@ -1244,7 +1244,7 @@ spec:
 |               Created by Kubelet               | Created by Kube-API Server (DaemonSet Controller) |
 | Deploy Control Plane components as Static Pods | Deploy Monitoring Agents, Logging Agents on nodes |
 
-## Session 8 (9 on classes) - Multiple Schedulers, Monitoring, Logging, Application Lifecycle Management, 
+## Session 8 (9 on classes) - Multiple Schedulers, Monitoring, Logging, Application Lifecycle Management, Configure Application
 ### Multiple Schedulers
 - You can write your own scheduler in GO lang and deploy it on your k8s cluster
 
@@ -1284,7 +1284,9 @@ Monitoring Solutions – Metrics Server:
 - When we use rolling update, a new replicaSet is going to be created for new version, but the old replicaSet won't we deleted, it just going to have 0 pods inside of it. When we use rollback, vice-verca happens, so new replicaSet is going to have 0 pods inside of it. Pay attention that in a rolling update scenario, if you delete old replicaSet, You are not going to be able to rollback if it's necessary
 - ` $ kubectl annotate deployments.apps nginx-deploymetn kubernetes.io/change-cause="deploy new version of image 1:21" ` --> We can write a descripton to ` Change Cause ` section of rollinUpdate, This data is in form of annotation 
 
-video 8 --> 2:32
+### Configure Application
+
+video 8 --> 3:47
 slide 7
 Add contets to k8s_course
 
