@@ -1269,6 +1269,7 @@ Monitoring Solutions – Metrics Server:
 ### Application Lifecycle Management
 ### Rolling Updates & RollBacks
 - For zero downtime updates we need to use deployment resource
+- deploymnet's default strategy for updates is rolling update
 - In a recreate strategy k8s deletes all pods and recreats all of them again. If we want to have no downtime, we should use rolling update strategy
 - In a rolling update strategy, by default **25%** of pods are going to out of access untill changes are completed
 
