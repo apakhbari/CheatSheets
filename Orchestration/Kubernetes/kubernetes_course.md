@@ -54,6 +54,7 @@
 - You can't ping a k8s service. Because it is actually some forwarding firewall rules, unless you don't specify port number of service, There is nothing to actually see
 - You can increase probability of packets sending to a specific node by changing its related IPTables rule
 - kube-proxy and core-dns pods are add-on not static pod!
+- kubelet is a service (not a pod) because It is going to initialize all other pods using CRI --> containerd
 
 ## Directories
 ### Kube Config
@@ -538,6 +539,13 @@ spec:
 ### Static Pods
 - all of systematic pods that executes with your k8s cluster, which are these 4: controller, etcd, scheduler, API-Server
 - kube-proxy and core-dns pods are add-on not static pod!
+- Kubelet watch this path and make changes as soon as you make them in this directory
+- ` /etc/kubernetes/manifests/etcd.yaml `
+- ` /etc/kubernetes/manifests/kube-apiserver.yaml `
+- ` /etc/kubernetes/manifests/kube-controller.yaml `
+- ` /etc/kubernetes/manifests/kube-scheduler.yaml `
+
+- all static pods have ` -master ` at end of their name
 
 # Kubernetes Course
 # Contents
