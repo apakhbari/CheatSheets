@@ -127,6 +127,10 @@
 - To list token: ` $ kubeadm token list `
 - To create and also print all of joining command: ` $ kubeadm token create --print-join-command --ttl 1h `
 
+### Logs
+- ` $ kubectl get logs `
+- ` $ kubectl get event `
+
 ### Labels & Selectors
 - ` $ kubectl label nodes <node-name> <label-key>=<label-value> `
 - ` $ kubectl label node worker2 kubernetes.io/role=worker-2-B ` --> defined Role, that's being shown in $ kubectl get nodes
@@ -164,6 +168,9 @@
 - ` $ kubectl run nginx-pod  --image nginx:1.21 `
 - ` $ kubectl run debugger-pod  --image docker.arvancloud.ir/alpine --command -- sleep infinity `
 
+### Rolling Update
+- ` $ kubectl rollout status deployment/myapp-deployment `
+- ` $ kubectl rollout history deployment/myapp-deployment `
 
 
 ### Service
@@ -1228,11 +1235,11 @@ spec:
 |               Created by Kubelet               | Created by Kube-API Server (DaemonSet Controller) |
 | Deploy Control Plane components as Static Pods | Deploy Monitoring Agents, Logging Agents on nodes |
 
-## Session 8 (9 on classes) - Multiple Schedulers, Logging & Monitoring
+## Session 8 (9 on classes) - Multiple Schedulers, Monitoring, Logging, Application Lifecycle Management, 
 ### Multiple Schedulers
 - You can write your own scheduler in GO lang and deploy it on your k8s cluster
 
-### Logging & Monitoring
+### Monitoring
 - We are talking about k8s own monitoring solution here, which is metric server, not third party solutions like Prometheus + Grafana which are free or DataDog and Dynatrace which require license
 - What we expect from our monitoring system:
   - Node level metrics
@@ -1256,6 +1263,12 @@ Monitoring Solutions – Metrics Server:
 - The metrics exposed by the Metrics-Server is used by HorizentalPodAutoScaler (HPA) and VerticalPodAutoScaler (VPA)
 - Metrics are accessible via ` $ kubectl top `
 
+### Logging
+- from version 1.26 onward k8s keeps events for up to 60 minutes then delets those logs
+
+### Application Lifecycle Management
+### Rolling Updates & RollBacks
+- For zero downtime updates we need to use deployment resource
 
 video 8 --> 4:02
 slide 7
