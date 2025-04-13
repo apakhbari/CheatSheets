@@ -178,7 +178,7 @@
 - ` $ kubectl rollout undo deployment/myapp-deployment ` --> RollBack 1 version
 - ` $ kubectl set image deployment/myapp-deployment \ nginx=nginx:1.9.1 ` --> It only updates value of nginx image on ETCD but it is going to keep deployment as it was before. So it is not the efficient
 - ` $ kubectl apply -f deployment-definition.yml `
-
+- ` $ kubectl annotate deployments.apps nginx-deploymetn kubernetes.io/change-cause="deploy new version of image 1:21" ` --> We can write a descripton to ` Change Cause ` section of rollinUpdate, This data is in form of annotation 
 
 
 ### Service
@@ -1281,6 +1281,7 @@ Monitoring Solutions – Metrics Server:
 - In a recreate strategy k8s deletes all pods and recreats all of them again. If we want to have no downtime, we should use rolling update strategy
 - In a rolling update strategy, by default **25%** of pods are going to out of access untill changes are completed. If we have 1 pod, then new version is being deployed and after its deployment, old version is going to be deletd
 - When we use rolling update, a new replicaSet is going to be created for new version, but the old replicaSet won't we deleted, it just going to have 0 pods inside of it. When we use rollback, vice-verca happens, so new replicaSet is going to have 0 pods inside of it. Pay attention that in a rolling update scenario, if you delete old replicaSet, You are not going to be able to rollback if it's necessary
+- ` $ kubectl annotate deployments.apps nginx-deploymetn kubernetes.io/change-cause="deploy new version of image 1:21" ` --> We can write a descripton to ` Change Cause ` section of rollinUpdate, This data is in form of annotation 
 
 video 8 --> 2:32
 slide 7
