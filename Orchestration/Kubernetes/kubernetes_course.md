@@ -546,6 +546,7 @@ spec:
 - ` /etc/kubernetes/manifests/kube-scheduler.yaml `
 
 - all static pods have ` -master ` at end of their name
+- You can change staticPodPath via ` /var/lib/kubelet/config.yaml ` 
 
 # Kubernetes Course
 # Contents
