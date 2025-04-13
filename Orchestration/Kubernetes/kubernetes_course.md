@@ -53,6 +53,7 @@
 - For LoadBalancing Network Traffic, We use HAPRoxy + keepalived in Masters and Nginx reverse proxy in workers. On Workers you can also use terafic because it has a good UI
 - You can't ping a k8s service. Because it is actually some forwarding firewall rules, unless you don't specify port number of service, There is nothing to actually see
 - You can increase probability of packets sending to a specific node by changing its related IPTables rule
+- kube-proxy and core-dns pods are add-on not static pod!
 
 ## Directories
 ### Kube Config
@@ -534,6 +535,10 @@ spec:
           image: docker.arvancloud.ir/nginx:1.21  
 ```
 
+### Static Pods
+- all of systematic pods that executes with your k8s cluster, which are these 4: controller, etcd, scheduler, API-Server
+- kube-proxy and core-dns pods are add-on not static pod!
+
 # Kubernetes Course
 # Contents
 - Install, Configure and validation
@@ -1014,7 +1019,7 @@ spec:
 - When you are using taint and tolerations, you can't force a deployment to be deployed on certain node, It is probable to be deployed on a node with toleration but it is not guaranteed that it will 100% be deployed on that and not other free-tainted nodes
 
 
-## Session 7 (8 on classes) - Node Selector, Node Affinity, Resource limit, Daemon Set 
+## Session 7 (8 on classes) - Node Selector, Node Affinity, Resource limit, Daemon Set, Static Pods
 ### Node Selector
 - Its opposit of taints, You can decide where your pod must go to
 - a use case:
