@@ -229,6 +229,8 @@
 2. Create PODs
 3. Monitor Node & PODs
 
+- cAdvisor component of Kubelet has access to metrics of resourcse and can be used for monitoring solutions
+
 ### CRD (Container Runtime Engine)
 - A container controller
 
@@ -1247,11 +1249,13 @@ spec:
       - Pod restart status
 
 Monitoring Solutions – Metrics Server:
+- [https://github.com/kubernetes-sigs/metrics-server](https://github.com/kubernetes-sigs/metrics-server)
 - Enables monitoring and analysis features for K8s
-- Retrieves metrics from each K8s nodes and PODs
+- Retrieves metrics from each K8s nodes and PODs --> It has access to kubelet's component cAdvisor
 - Aggregates and stores metrics in memory --> so it is just real-time which is not ideal
 - The metrics exposed by the Metrics-Server is used by HorizentalPodAutoScaler (HPA) and VerticalPodAutoScaler (VPA)
 - Metrics are accessible via ` $ kubectl top `
+
 
 video 8 --> 4:02
 slide 7
