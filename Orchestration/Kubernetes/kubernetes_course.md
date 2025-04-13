@@ -1202,7 +1202,7 @@ spec:
 
 
 video 7 --> 4:02
-slide 7
+slide 6
 Add contets to k8s_course
 
 ## Session 8 (9 on classes)
