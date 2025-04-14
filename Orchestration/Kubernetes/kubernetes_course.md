@@ -1286,6 +1286,7 @@ Monitoring Solutions – Metrics Server:
 
 ### Configure Application
 
+
 video 8 --> 3:47
 slide 7
 Add contets to k8s_course
