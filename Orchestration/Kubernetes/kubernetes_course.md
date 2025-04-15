@@ -1304,6 +1304,31 @@ spec:
       args: ["10"]
 ```
 
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debugger-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      anisa: kubernetes
+  template:
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: debugger-container
+        image: docker.arvancloud.ir/alpine
+        command: ["/bin/sh", "-c"]
+        args: ["mkdir anisa" "&&" "ls"]
+```
+
 video 8 --> 3:47
 slide 7
 Add contets to k8s_course
