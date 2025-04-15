@@ -181,6 +181,7 @@
 - ` $ kubectl apply -f deployment-definition.yml `
 - ` $ kubectl annotate deployments.apps nginx-deploymetn kubernetes.io/change-cause="deploy new version of image 1:21" ` --> We can write a descripton to ` Change Cause ` section of rollinUpdate, This data is in form of annotation 
 
+### ENVs and ConfigMaps
 
 ### Service
 - ` $ kubectl get endpoints nginx-svc ` 
@@ -1353,6 +1354,22 @@ spec:
 
 ## Session 9 (11 on classes) - Environment Variables
 ### Environment Variables
+- ENVs have a key-value structure
+- There are 3 ways for setting an ENV:
+1. Plain Key-Value
+
+2. ConfigMap
+
+3. Secrets
+
+- for ensuring our ENV is set, we need to check it inside container
+``` 
+$ kubectl exec -it <POD_NAME> -- bash
+$ printenv
+or
+$ echo $DB_PASS
+```
+
 
 video 9 --> 07:17
 slide 7
