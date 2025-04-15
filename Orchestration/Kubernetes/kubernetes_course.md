@@ -182,6 +182,8 @@
 - ` $ kubectl annotate deployments.apps nginx-deploymetn kubernetes.io/change-cause="deploy new version of image 1:21" ` --> We can write a descripton to ` Change Cause ` section of rollinUpdate, This data is in form of annotation 
 
 ### ENVs and ConfigMaps
+- ` $ kubectl create configmap <config-name> --from-literal=<key>=<value> `  --> imperative form of defining CM
+- ` $ kubectl create configmap <config-name> --from-file=<path-to-file> `  --> imperative form of defining CM from a file
 
 ### Service
 - ` $ kubectl get endpoints nginx-svc ` 
@@ -1371,6 +1373,18 @@ env:
   - name: APP_COLOR
     valueFrom:
       configMapKeyRef:
+```
+
+- declaritive way of creating config-map.yaml
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  containers:
+    APP_COLOR: blue
+    APP_MODE: prod
 ```
 
 3. Secrets
