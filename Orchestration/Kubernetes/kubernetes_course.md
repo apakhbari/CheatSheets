@@ -1357,10 +1357,30 @@ spec:
 - ENVs have a key-value structure
 - There are 3 ways for setting an ENV:
 1. Plain Key-Value
+```
+...
+env:
+  - name: APP_COLOR
+    value: pink
+```
 
 2. ConfigMap
+```
+...
+env:
+  - name: APP_COLOR
+    valueFrom:
+      configMapKeyRef:
+```
 
 3. Secrets
+```
+...
+env:
+  - name: APP_COLOR
+    valueFrom:
+      secretKeyRef:
+```
 
 - for ensuring our ENV is set, we need to check it inside container
 ``` 
