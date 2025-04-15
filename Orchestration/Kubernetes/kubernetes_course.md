@@ -1367,6 +1367,7 @@ env:
 ```
 
 2. ConfigMap
+- conifMap values must be string. boolean and numbers must be in qoutation
 ```
 ...
 env:
@@ -1383,8 +1384,9 @@ metadata:
   name: app-config
 data:
   containers:
-    APP_COLOR: blue
-    APP_MODE: prod
+    DB_PORT: "3306"
+    DB_USER: root
+    DB_CACHE: "true"
 ```
 
 3. Secrets
