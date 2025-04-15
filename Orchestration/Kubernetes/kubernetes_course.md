@@ -1361,9 +1361,9 @@ spec:
 1. Plain Key-Value
 ```
 ...
-env:
-  - name: APP_COLOR
-    value: pink
+  env:
+    - name: APP_COLOR
+      value: pink
 ```
 
 2. ConfigMap
@@ -1371,10 +1371,9 @@ env:
 - You can update your CM in real-time with ` $ kubectl apply -f configmap.yaml `
 ```
 ...
-env:
-  - name: APP_COLOR
-    valueFrom:
+    envFrom:
       configMapKeyRef:
+        name: app-config
 ```
 
 - declaritive way of creating config-map.yaml
@@ -1399,21 +1398,7 @@ env:
       secretKeyRef:
 ```
 
-- for ensuring our ENV is set, we need to check it inside container
-``` 
-$ kubectl exec -it <POD_NAME> -- bash
-$ printenv
-or
-$ echo $DB_PASS
-```
-
-
-video 9 --> 07:17
-slide 7
-Add contets to k8s_course
-
-
-
+- It is possible to combine ENV and CM
 ```
 apiVersion: v1
 kind: Pod
@@ -1435,6 +1420,24 @@ spec:
             configMapKeyRef:
               name: app-config
               key: DB_USER
+```
+
+- for ensuring our ENV is set, we need to check it inside container
+``` 
+$ kubectl exec -it <POD_NAME> -- bash
+$ printenv
+or
+$ echo $DB_PASS
+```
+
+
+video 9 --> 07:17
+slide 7
+Add contets to k8s_course
+
+
+
+```
 =====
 kubectl create configmap config --from-env-file=.env
 ======
