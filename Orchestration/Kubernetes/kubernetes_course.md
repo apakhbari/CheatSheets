@@ -1351,11 +1351,15 @@ spec:
 
 ```
 
-video 8 --> 3:47
+## Session 9 (11 on classes) - Environment Variables
+### Environment Variables
+
+video 9 --> 07:17
 slide 7
 Add contets to k8s_course
 
-## Session 9 (11 on classes)
+
+
 ```
 apiVersion: v1
 kind: Pod
