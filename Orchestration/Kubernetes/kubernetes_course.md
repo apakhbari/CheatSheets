@@ -1419,7 +1419,7 @@ env:
       secretKeyRef:
 ```
 
-- It is possible to combine ENV and CM
+- It is possible to combine ENV and CM. If write same key for a value, the one in ENV overrides the one in CM
 ```
 apiVersion: v1
 kind: Pod
