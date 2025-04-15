@@ -1368,6 +1368,7 @@ env:
 
 2. ConfigMap
 - conifMap values must be string. boolean and numbers must be in qoutation
+- You can update your CM in real-time with ` $ kubectl apply -f configmap.yaml `
 ```
 ...
 env:
