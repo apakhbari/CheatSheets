@@ -1285,7 +1285,24 @@ Monitoring Solutions – Metrics Server:
 - ` $ kubectl annotate deployments.apps nginx-deploymetn kubernetes.io/change-cause="deploy new version of image 1:21" ` --> We can write a descripton to ` Change Cause ` section of rollinUpdate, This data is in form of annotation 
 
 ### Configure Application
-
+- How to pass command & arguments to a container:
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nginx
+  namespace: dev
+  labels:
+    app: nginx
+    type: frontend
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.20
+      command: ["sleep2.0"]
+  
+      args: ["10"]
+```
 
 video 8 --> 3:47
 slide 7
