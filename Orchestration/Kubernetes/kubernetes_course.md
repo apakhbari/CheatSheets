@@ -1304,6 +1304,7 @@ spec:
       args: ["10"]
 ```
 
+- You can write & for or and && for and in your command arguments
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -1325,8 +1326,12 @@ spec:
       containers:
         - name: debugger-container
         image: docker.arvancloud.ir/alpine
-        command: ["/bin/sh", "-c"]
-        args: ["mkdir anisa" "&&" "ls"]
+        command:
+          - /bin/sh
+          - -c
+          - |
+            mkdir anisa && ls && sleep infinity
+
 ```
 
 video 8 --> 3:47
