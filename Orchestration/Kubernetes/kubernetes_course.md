@@ -1370,7 +1370,22 @@ Deployment.yaml
 #### 2. ConfigMap
 - conifMap values must be string. boolean and numbers must be in qoutation
 - You can update your CM in real-time with ` $ kubectl apply -f configmap.yaml `
-- There are 3 ways to define a CM
+
+- declaritive way of creating config-map.yaml
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  containers:
+    DB_PORT: "3306"
+    DB_USER: root
+    DB_CACHE: "true"
+```
+
+
+- There are 3 ways to address a CM from your deployment.yml
 1. complete ENV
 ```
 Deployment.yaml
@@ -1393,21 +1408,14 @@ Deployment.yaml
 
 3. Volume
 ```
-
+Deployment.yaml
+...
+  volumes:
+  - name: app-config-volume
+    configMap:
+      name: app-config
 ```
 
-- declaritive way of creating config-map.yaml
-```
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app-config
-data:
-  containers:
-    DB_PORT: "3306"
-    DB_USER: root
-    DB_CACHE: "true"
-```
 
 #### 3. Secrets
 ```
@@ -1452,7 +1460,7 @@ $ echo $DB_PASS
 ```
 
 
-video 9 --> 07:17
+video 9 --> 1:14
 slide 7
 Add contets to k8s_course
 
