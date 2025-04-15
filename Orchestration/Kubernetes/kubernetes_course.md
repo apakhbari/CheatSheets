@@ -1334,6 +1334,23 @@ spec:
 
 ```
 
+- Or you can write it like this
+```
+...
+    spec:
+      containers:
+        - name: debugger-container
+        image: docker.arvancloud.ir/alpine
+        command:
+          - /bin/sh
+          - -c
+          - |
+            mkdir anisa
+            ls
+            sleep infinity
+
+```
+
 video 8 --> 3:47
 slide 7
 Add contets to k8s_course
