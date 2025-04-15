@@ -1358,22 +1358,42 @@ spec:
 ### Environment Variables
 - ENVs have a key-value structure
 - There are 3 ways for setting an ENV:
-1. Plain Key-Value
+#### 1. Plain Key-Value
 ```
+Deployment.yaml
 ...
   env:
     - name: APP_COLOR
       value: pink
 ```
 
-2. ConfigMap
+#### 2. ConfigMap
 - conifMap values must be string. boolean and numbers must be in qoutation
 - You can update your CM in real-time with ` $ kubectl apply -f configmap.yaml `
+- There are 3 ways to define a CM
+1. complete ENV
 ```
+Deployment.yaml
 ...
     envFrom:
       configMapKeyRef:
         name: app-config
+```
+
+2. Singel ENV
+```
+Deployment.yaml
+...
+  - name: WORDPRESS_DB_USER
+    valueFrom:
+      configMapKeyRef:
+        name: app-config
+        key: DB_USER
+```
+
+3. Volume
+```
+
 ```
 
 - declaritive way of creating config-map.yaml
@@ -1389,8 +1409,9 @@ data:
     DB_CACHE: "true"
 ```
 
-3. Secrets
+#### 3. Secrets
 ```
+Deployment.yaml
 ...
 env:
   - name: APP_COLOR
