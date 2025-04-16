@@ -183,7 +183,7 @@
 
 ### ENVs and ConfigMaps
 - ` $ kubectl create configmap <config-name> --from-literal=<key>=<value> `  --> imperative form of defining CM
-- ` $ kubectl create configmap <config-name> --from-file=<path-to-file> `  --> imperative form of defining CM from a file
+- ` $ kubectl create configmap <config-name> --from-file=<path-to-file> `  --> imperative form of defining CM from an .env file
 
 ### Service
 - ` $ kubectl get endpoints nginx-svc ` 
