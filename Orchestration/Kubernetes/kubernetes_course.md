@@ -181,9 +181,12 @@
 - ` $ kubectl apply -f deployment-definition.yml `
 - ` $ kubectl annotate deployments.apps nginx-deploymetn kubernetes.io/change-cause="deploy new version of image 1:21" ` --> We can write a descripton to ` Change Cause ` section of rollinUpdate, This data is in form of annotation 
 
-### ENVs and ConfigMaps
+### ENVs & ConfigMaps & Secrets
 - ` $ kubectl create configmap <config-name> --from-literal=<key>=<value> `  --> imperative form of defining CM
 - ` $ kubectl create configmap <config-name> --from-file=<path-to-file> `  --> imperative form of defining CM from an .env file
+
+- ` $ kubectl create secret generic <secret-name> --from-literal=<key>=<value> `  --> imperative form of defining secret
+- ` $ kubectl create secret generic <secret-name> --from-file=<path-to-file> `  --> imperative form of defining secret from an .env file
 
 ### Service
 - ` $ kubectl get endpoints nginx-svc ` 
@@ -1452,6 +1455,9 @@ spec:
 
 #### 3. Secrets
 - It is exactly like CM but it is base-64 encoded
+- ` $ echo -n "YOUR_VALUE" | base64 ` --> for encoding
+- ` $ echo -n "YOUR_VALUE" | base64 --encode ` --> for decoding
+
 
 ```
 Deployment.yaml
@@ -1460,6 +1466,7 @@ env:
   - name: APP_COLOR
     valueFrom:
       secretKeyRef:
+        name: app-secret
 ```
 
 
