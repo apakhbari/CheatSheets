@@ -1409,6 +1409,7 @@ Deployment.yaml
 3. Volume
 - MountPath will be created if it is not present
 - Mounted file if readonly
+- If config file is changed, you need to restart pod for it to apply new changes
 ```
 apiVersion: v1
 kind: ConfigMap
@@ -1447,9 +1448,11 @@ spec:
         - name: app-config-volume
           mountPath: /mnt/config
 ```
-
+- Create a tattoo design for me. I want it on my chest (on my heart). my desing have 2 parts, a pentagon and O+ (my blood typ). I want O+ to be inside and in center of pentagone. For pentagone i am looking for a tribal vibe. For O+ I want a classic sci-fi font + I want O+ lines to be filled so it is easy to realise from distance
 
 #### 3. Secrets
+- It is exactly like CM but it is base-64 encoded
+
 ```
 Deployment.yaml
 ...
