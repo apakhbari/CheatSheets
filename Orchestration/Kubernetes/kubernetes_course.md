@@ -1357,9 +1357,17 @@ spec:
 
 ```
 
-## Session 9 (11 on classes) - Environment Variables
+## Session 9 (11 on classes) - Environment Variables, Multi Container PODs
 ### Environment Variables
 - ENVs have a key-value structure
+- for ensuring our ENV is set, we need to check it inside container
+``` 
+$ kubectl exec -it <POD_NAME> -- bash
+$ printenv
+or
+$ echo $DB_PASS
+```
+
 - There are 3 ways for setting an ENV:
 #### 1. Plain Key-Value
 ```
@@ -1462,7 +1470,7 @@ spec:
 ```
 Deployment.yaml
 ...
-env:
+envFrom:
   - name: APP_COLOR
     valueFrom:
       secretKeyRef:
@@ -1496,17 +1504,12 @@ spec:
               key: DB_USER
 ```
 
-- for ensuring our ENV is set, we need to check it inside container
-``` 
-$ kubectl exec -it <POD_NAME> -- bash
-$ printenv
-or
-$ echo $DB_PASS
-```
 
 
-video 9 --> 1:14
-slide 7
+### Multi Container PODs
+
+video 9 --> 2:20
+slide 8
 Add contets to k8s_course
 
 
@@ -1560,6 +1563,7 @@ spec:
 ======
 
 ```
+
 
 ## Session 10 (12 on classes)
 ```
