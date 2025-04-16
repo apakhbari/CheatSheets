@@ -1407,13 +1407,45 @@ Deployment.yaml
 ```
 
 3. Volume
+- MountPath will be created if it is not present
+- Mounted file if readonly
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  config.env: |
+    site-url=https://anisa.co.ir
+    site_settings {
+      port: 443
+      ssl: true
+    }
+    backend_url: backend.anisa.co.ir
+```
+
 ```
 Deployment.yaml
-...
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alpine-pod
+  namespace: default
+spec:
   volumes:
   - name: app-config-volume
     configMap:
       name: app-config
+  containers:
+    - name: alpine-container
+      image: registry.docker.ir/alpine
+      command:
+        - sleep
+        - infinity
+      volumeMounts:
+        - name: app-config-volume
+          mountPath: /mnt/config
 ```
 
 
@@ -1426,6 +1458,9 @@ env:
     valueFrom:
       secretKeyRef:
 ```
+
+
+
 
 - It is possible to combine ENV and CM. If write same key for a value, the one in ENV overrides the one in CM
 ```
