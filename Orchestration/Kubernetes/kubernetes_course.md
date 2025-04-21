@@ -1514,6 +1514,7 @@ Add contets to k8s_course
 
 
 
+
 ```
 =====
 kubectl create configmap config --from-env-file=.env
