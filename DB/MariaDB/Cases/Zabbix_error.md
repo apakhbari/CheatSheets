@@ -85,7 +85,7 @@ Key fields:
 | Name | Healthy value |
 |------|---------------|
 | `wsrep_cluster_size` | Full node count |
-| `wsrep_cluster_status` | **Primary** |
+| `wsrep_cluster_status` | **Primary** | 
 | `wsrep_local_state_comment` | **Synced** |
 | `wsrep_flow_control_paused` | 0.0 or very small fraction |
 
