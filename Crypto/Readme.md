@@ -1,4 +1,7 @@
 # Crypto
+- supoport line
+- resistant line
+- trend line
 
 
 ## Acknowledgment
