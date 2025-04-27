@@ -11,6 +11,7 @@ MySQL: Service is down
 {EVENT.ID} --> 45829343
 ```
 
+
 A:
 
 Below is a structured “cook‑book” you can run through the next time the alarm fires.  
