@@ -1507,11 +1507,11 @@ spec:
 
 
 ### Multi Container PODs
-‍‍‍```
+```
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-multi
+  name: pod-multicontainer
   namespace: default
   labels:
     app: simple-webapp
@@ -1524,6 +1524,7 @@ spec:
     - name: log-agent
       image: log-agent
 ```
+- When you ` $ kubectl exec -it pod-multicontainer -- bash ` you are going to connect to first container (default one), for example here it is simple-webapp. If you want to connect to other container you need to ` $ kubectl exec -it pod-multicontainer -c alpine-container -- bash `
 
 
 
