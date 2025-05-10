@@ -1507,6 +1507,25 @@ spec:
 
 
 ### Multi Container PODs
+‍‍‍```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-multi
+  namespace: default
+  labels:
+    app: simple-webapp
+spec:
+  containers:
+    - name: simple-webapp
+      image: simple-webapp
+      ports:
+        - containerPort: 8080
+    - name: log-agent
+      image: log-agent
+```
+
+
 
 video 9 --> 2:20
 slide 8
@@ -1562,7 +1581,6 @@ spec:
         - name: myvol
           mountPath: /mnt/vol
 ======
-
 ```
 
 
