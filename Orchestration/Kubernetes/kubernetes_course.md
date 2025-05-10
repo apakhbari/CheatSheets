@@ -1528,11 +1528,9 @@ spec:
 
 
 
-video 9 --> 2:20
+video 9 --> 2:47
 slide 8
 Add contets to k8s_course
-
-
 
 
 ```
