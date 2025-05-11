@@ -9,6 +9,10 @@
 |___|    |___|  |_||_______||__| |__|  |___|  |_______||____||_||_______|
 ```
 
+## Tips & Tricks
+- ProxySQL works on TCP
+- ProxySQL just routes queries, nothing more nothing less
+
 
 # acknowledgment
 ## Contributors
