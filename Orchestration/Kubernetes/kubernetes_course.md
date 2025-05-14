@@ -1527,13 +1527,14 @@ spec:
 - When you ` $ kubectl exec -it pod-multicontainer -- bash ` you are going to connect to first container (default one), for example here it is simple-webapp. If you want to connect to other container you need to ` $ kubectl exec -it pod-multicontainer -c alpine-container -- bash `
 
 
+
 video 9 --> 2:47
 slide 8
 Add contets to k8s_course
 
 
 ```
-=====
+======
 kubectl create configmap config --from-env-file=.env
 ======
 kubectl -n dev create secret docker-registry ckatestaccount --docker-username=burux --docker-password=@nis@12345678 --dry-run=client -o yaml > docker-registry-secret.yaml
