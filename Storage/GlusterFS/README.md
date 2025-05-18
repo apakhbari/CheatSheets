@@ -8,6 +8,14 @@
 |   |_| ||       ||       | _____| |  |   |  |   |___ |   |  | ||   |     _____| |
 |_______||_______||_______||_______|  |___|  |_______||___|  |_||___|    |_______|
 ```
+# Concepts and & Terminology
+- Storage Pool
+- Nodes
+- Brick: a directory you create in your server for sharing
+
+# Tips & Tricks
+
+
 
 # acknowledgment
 ## Contributors
