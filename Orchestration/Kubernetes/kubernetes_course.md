@@ -1602,6 +1602,20 @@ slide 8
 Add contets to k8s_course
 
 ### Self-Healing Applications
+- Container Probes: perform diagnostics periodically by the kubelet on a container
+
+1. livenessProbe
+- indicates whether the container is running
+- If it fails, the kubelet kills the container
+
+2. readinessProbe
+- indicates whether the container is ready to respond to requests
+- If it fails, Pod's IP address is removed from the endpoints of all services
+
+3. startupProbe
+- indicates whether the application is started
+- if it fails, the kubelet kills the container
+
 ```
 ======
 kubectl create configmap config --from-env-file=.env
