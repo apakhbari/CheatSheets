@@ -1541,17 +1541,7 @@ spec:
   - A process that waits for an external service to be up
   - A process that prepares some data for the app containres
 
-video 9 --> 2:47
-slide 8
-Add contets to k8s_course
-
-
 ```
-======
-kubectl create configmap config --from-env-file=.env
-======
-kubectl -n dev create secret docker-registry ckatestaccount --docker-username=burux --docker-password=@nis@12345678 --dry-run=client -o yaml > docker-registry-secret.yaml
-======
 apiVersion: v1
 kind: Pod
 metadata:
@@ -1592,6 +1582,21 @@ spec:
       volumeMounts:
         - name: myvol
           mountPath: /mnt/vol
+```
+
+
+video 9 --> 2:47
+slide 8
+Add contets to k8s_course
+
+
+```
+======
+kubectl create configmap config --from-env-file=.env
+======
+kubectl -n dev create secret docker-registry ckatestaccount --docker-username=burux --docker-password=@nis@12345678 --dry-run=client -o yaml > docker-registry-secret.yaml
+======
+
 ======
 ```
 
