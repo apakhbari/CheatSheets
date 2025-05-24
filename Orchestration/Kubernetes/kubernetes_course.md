@@ -56,6 +56,7 @@
 - kube-proxy and core-dns pods are add-on not static pod!
 - kubelet is a service (not a pod) because It is going to initialize all other pods using CRI --> containerd
 - The component that checks for taints is kube-scheduler
+- In a multi-container situation in a pod to get a list of all of conatiners you can ` $ kubectl get pod <POD-NAME>  -ojsonpath='{.spec.containers[*].name}' `
 
 ## Directories
 ### Kube Config
