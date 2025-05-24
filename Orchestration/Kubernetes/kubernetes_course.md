@@ -1536,7 +1536,10 @@ spec:
 ### InitContainer PODs
 - Initcontainers are on-time tasksk that run and complete before the app containers are started. The app container starts when all the InitContainers are successfully done.
 - They are executed one by one sequentially, order is important
-- If any 
+- If any of the InitContainers fail to complete, the POD is repeatedly restarted untill it succeeds
+- Use cases:
+  - A process that waits for an external service to be up
+  - A process that prepares some data for the app containres
 
 video 9 --> 2:47
 slide 8
