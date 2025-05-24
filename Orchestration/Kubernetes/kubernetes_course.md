@@ -253,6 +253,7 @@
 3. Monitor Node & PODs
 
 - cAdvisor component of Kubelet has access to metrics of resourcse and can be used for monitoring solutions
+- livenessProbe, readinessProbe, startupProbe are part of kubelet
 
 ### CRD (Container Runtime Engine)
 - A container controller
@@ -1617,6 +1618,7 @@ Add contets to k8s_course
 - if it fails, the kubelet kills the container
 
 ```
+livenessProbe, readinessProbe, startupProbe
 ======
 kubectl create configmap config --from-env-file=.env
 ======
