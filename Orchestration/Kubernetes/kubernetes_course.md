@@ -1358,7 +1358,7 @@ spec:
 
 ```
 
-## Session 9 (11 on classes) - Environment Variables, Multi Container PODs
+## Session 9 (11 on classes) - Environment Variables, Multi-Container PODs, InitContainer PODs
 ### Environment Variables
 - ENVs have a key-value structure
 - for ensuring our ENV is set, we need to check it inside container
@@ -1507,7 +1507,7 @@ spec:
 
 
 
-### Multi Container PODs
+### Multi-Container PODs
 - Three common patterns when it comes to design a mlti-container POD:
 1. side-car contaieners [Mostly used]
 2. Adapter containers --> Process input and changes it to a desired format
@@ -1533,6 +1533,10 @@ spec:
 ```
 - When you ` $ kubectl exec -it pod-multicontainer -- bash ` you are going to connect to first container (default one), for example here it is simple-webapp. If you want to connect to other container you need to ` $ kubectl exec -it pod-multicontainer -c alpine-container -- bash `
 
+### InitContainer PODs
+- Initcontainers are on-time tasksk that run and complete before the app containers are started. The app container starts when all the InitContainers are successfully done.
+- They are executed one by one sequentially, order is important
+- If any 
 
 video 9 --> 2:47
 slide 8
