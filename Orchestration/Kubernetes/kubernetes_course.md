@@ -1541,6 +1541,18 @@ spec:
   - A process that waits for an external service to be up
   - A process that prepares some data for the app containres
 
+- an example could be:
+```
+...
+initContianres:
+  - name: init-myservice
+    image: busybox:1.28
+    command: ['sh', '-c',  'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
+  - name: init-mydb
+    image: busybox:1.28
+    command: ['sh', '-c',  'until nslookup mydb; do echo waiting for mydb; sleep 2; done;']
+```
+
 ```
 apiVersion: v1
 kind: Pod
