@@ -1358,7 +1358,7 @@ spec:
 
 ```
 
-## Session 9 (11 on classes) - Environment Variables, Multi-Container PODs, InitContainer PODs
+## Session 9 (11 on classes) - Environment Variables, Multi-Container PODs, InitContainer PODs, Self-Healing Applications
 ### Environment Variables
 - ENVs have a key-value structure
 - for ensuring our ENV is set, we need to check it inside container
@@ -1544,7 +1544,7 @@ spec:
 - an example could be:
 ```
 ...
-initContianres:
+initContianers:
   - name: init-myservice
     image: busybox:1.28
     command: ['sh', '-c',  'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
@@ -1601,7 +1601,7 @@ video 9 --> 2:47
 slide 8
 Add contets to k8s_course
 
-
+### Self-Healing Applications
 ```
 ======
 kubectl create configmap config --from-env-file=.env
