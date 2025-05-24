@@ -1508,6 +1508,12 @@ spec:
 
 
 ### Multi Container PODs
+- Three common patterns when it comes to design a mlti-container POD:
+1. side-car contaieners [Mostly used]
+2. Adapter containers --> Process input and changes it to a desired format
+3. Ambassador containers --> Proxy requests to outside
+
+
 ```
 apiVersion: v1
 kind: Pod
