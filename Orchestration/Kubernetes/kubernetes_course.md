@@ -1697,6 +1697,11 @@ livenessProbe:
 
 
 ## Session 10 (12 on classes)
+
+video 10 --> 4:05
+slide 8
+Add contets to k8s_course
+
 ```
 
 ```
