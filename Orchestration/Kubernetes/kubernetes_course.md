@@ -1605,27 +1605,31 @@ Add contets to k8s_course
 ### Self-Healing Applications
 - Container Probes: perform diagnostics periodically by the kubelet on a container
 
+Types of probes:
 1. livenessProbe
 - indicates whether the container is running
-- If it fails, the kubelet kills the container
+- If it fails, the kubelet kills the container (So container restarts)
 
 2. readinessProbe
 - indicates whether the container is ready to respond to requests
-- If it fails, Pod's IP address is removed from the endpoints of all services
+- If it fails, Pod's IP address is removed from the endpoints of all services (Does not restart container)
 
 3. startupProbe
 - indicates whether the application is started
 - if it fails, the kubelet kills the container
 
+- To perform a diagnostic, the **kubelet** triggers a **handler**
+
+Types of handlers:
+1. ExecAction --> Executes a specific **command** inside the container
+2. TCPSocketAction --> Performs a TCP check against the **POD's IP address** on a specific **port**
+3. HTTPGetAction --> performs an **HTTP GET request** against the **POD's IP address** on a specific **port and path**
+
+
 ```
-livenessProbe, readinessProbe, startupProbe
-======
 kubectl create configmap config --from-env-file=.env
 ======
 kubectl -n dev create secret docker-registry ckatestaccount --docker-username=burux --docker-password=@nis@12345678 --dry-run=client -o yaml > docker-registry-secret.yaml
-======
-
-======
 ```
 
 
