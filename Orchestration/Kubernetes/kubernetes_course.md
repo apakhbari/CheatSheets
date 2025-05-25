@@ -1698,7 +1698,8 @@ livenessProbe:
 
 ## Session 10 (12 on classes) - Cluster Maintenance
 ### OS Upgrade
-- If you drain a node, it'll have noExecute & noSchedule taints
+- If you drain a node, it'll have noExecute & noSchedule taints ` $ kubectl drain node-1 `
+- If you cordon a node, it'll have noSchedule taints ` $ kubectl cordon node-2 `
 
 ### Cluster Upgrade
 
