@@ -1598,11 +1598,6 @@ spec:
           mountPath: /mnt/vol
 ```
 
-
-video 9 --> 4:05
-slide 8
-Add contets to k8s_course
-
 ### Self-Healing Applications
 - Container Probes: perform diagnostics periodically by the kubelet on a container
 
