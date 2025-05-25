@@ -1697,14 +1697,16 @@ livenessProbe:
 
 
 ## Session 10 (12 on classes) - Cluster Maintenance
+### OS Upgrade
+
+### Cluster Upgrade
+
+### Backup & Restore Methodologies
 
 video 10 --> 4:05
 slide 8
 Add contets to k8s_course
 
-```
-
-```
 
 ## Session 11 (13 on classes)
 ```
