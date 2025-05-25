@@ -1698,7 +1698,7 @@ livenessProbe:
 
 ## Session 10 (12 on classes) - Cluster Maintenance
 ### OS Upgrade
-- If you drain a node, it has noExecute & noSchedule taints
+- If you drain a node, it'll have noExecute & noSchedule taints
 
 ### Cluster Upgrade
 
