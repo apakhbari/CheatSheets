@@ -58,6 +58,7 @@
 - The component that checks for taints is kube-scheduler
 - In a multi-container situation in a pod to get a list of all of conatiners you can ` $ kubectl get pod <POD-NAME>  -ojsonpath='{.spec.containers[*].namen }' `
 - in probes, default value for ` initialDelaySeconds, periodSecond & failureThreshold is 3 seconds `
+- There is no such thing as undrain. Whether you drain or cordon a node, you need to ` uncordon ` the node.
 
 ## Directories
 ### Kube Config
@@ -1700,6 +1701,7 @@ livenessProbe:
 ### OS Upgrade
 - If you drain a node, it'll have noExecute & noSchedule taints ` $ kubectl drain node-1 `
 - If you cordon a node, it'll have noSchedule taints ` $ kubectl cordon node-2 `
+- Whether you drain or cordon a node, you need to ` uncordon ` the node. There is no such thing as undrain. ` $ kubectl uncordon node-2 `
 
 ### Cluster Upgrade
 
