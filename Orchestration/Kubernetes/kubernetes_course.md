@@ -1696,7 +1696,7 @@ livenessProbe:
 ```
 
 
-## Session 10 (12 on classes)
+## Session 10 (12 on classes) - Cluster Maintenance
 
 video 10 --> 4:05
 slide 8
