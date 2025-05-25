@@ -57,6 +57,7 @@
 - kubelet is a service (not a pod) because It is going to initialize all other pods using CRI --> containerd
 - The component that checks for taints is kube-scheduler
 - In a multi-container situation in a pod to get a list of all of conatiners you can ` $ kubectl get pod <POD-NAME>  -ojsonpath='{.spec.containers[*].namen }' `
+- in probes, default value for ` initialDelaySeconds, periodSecond & failureThreshold is 3 seconds `
 
 ## Directories
 ### Kube Config
@@ -1618,6 +1619,8 @@ Types of probes:
 - indicates whether the application is started
 - if it fails, the kubelet kills the container
 
+<br>
+
 - To perform a diagnostic, the **kubelet** triggers a **handler**
 
 Types of handlers:
@@ -1625,7 +1628,9 @@ Types of handlers:
 2. TCPSocketAction --> Performs a TCP check against the **POD's IP address** on a specific **port**
 3. HTTPGetAction --> performs an **HTTP GET request** against the **POD's IP address** on a specific **port and path**
 
+<br>
 
+- default value for ` initialDelaySeconds, periodSecond & failureThreshold is 3 seconds `
 ```
 kubectl create configmap config --from-env-file=.env
 ======
