@@ -1631,10 +1631,73 @@ Types of handlers:
 <br>
 
 - default value for ` initialDelaySeconds, periodSecond & failureThreshold is 3 seconds `
+
+- livenessProbe:
 ```
-kubectl create configmap config --from-env-file=.env
-======
-kubectl -n dev create secret docker-registry ckatestaccount --docker-username=burux --docker-password=@nis@12345678 --dry-run=client -o yaml > docker-registry-secret.yaml
+...
+livenessProbe:
+  exec:
+    command:
+    - cat
+    - /tmp/healthy
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  failureThreshold: 5
+```
+```
+...
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+    httpHeaders:
+      - name: Custom-Header
+        value: Awesome
+  initialDelaySeconds: 3
+  periodSeconds: 3
+  failureThreshold: 3
+```
+
+- Readiness Probe
+```
+...
+readinessProbe:
+  tcpSocket:
+    port: 8008
+  initialDelaySeconds: 5
+  periodSeconds:10
+  failureThreshold: 3
+livenessProbe:
+  tcpSocket:
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  failureThreshold: 3
+```
+
+- Startup Probe
+```
+...
+ports:
+- name: liveness-port
+  containerPort: 8080
+  hostPort:8080
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: liveness-port
+  initialDelaySeconds: 3
+  periodSeconds: 10
+  failureThreshold: 1
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: liveness-port
+  initialDelaySeconds: 3
+  periodSeconds: 10
+  failureThreshold: 30
 ```
 
 
