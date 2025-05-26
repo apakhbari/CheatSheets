@@ -1710,10 +1710,10 @@ livenessProbe:
   - 1: major
   - 1: Minor (features - functionality)
   - 3: Patch (bug fixes)
-  
+
 ### Backup & Restore Methodologies
 
-video 10 --> 4:05
+video 10 --> 1:40
 slide 8
 Add contets to k8s_course
 
