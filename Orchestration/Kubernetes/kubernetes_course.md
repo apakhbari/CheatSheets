@@ -1708,8 +1708,9 @@ livenessProbe:
 ### Cluster Upgrade
 - k8s uses semantic versioning: V1.11.3
   - 1: major
-  - 1: Minor (features - functionality)
+  - 11: Minor (features - functionality)
   - 3: Patch (bug fixes)
+- k8s versions are following this: V1.10.0-alpha --> V1.10.0-beta --> V1.10.0-rc (release candidate) --> V1.10.0
 
 ### Backup & Restore Methodologies
 
