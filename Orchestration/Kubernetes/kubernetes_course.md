@@ -1773,8 +1773,8 @@ master-1$ sudo apt-get update
 
 ### Backup & Restore Methodologies
 
-video 10 --> 1:40
-slide 8
+video 11 --> 0:00
+slide 9
 Add contets to k8s_course
 
 
