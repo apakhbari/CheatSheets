@@ -1719,6 +1719,8 @@ livenessProbe:
   - kube-proxy --> X-2 (V1.10 or V1.09 or V1.08)
   - kubectl --> X+1, X, X-1 (V1.11 or V1.10 or V1.09)
 
+- K8s support last 3 releases, For example by the time it publishes V1.13, V1.10 becomes unsupported
+
 ### Backup & Restore Methodologies
 
 video 10 --> 1:40
