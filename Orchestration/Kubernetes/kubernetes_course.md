@@ -1768,6 +1768,9 @@ master-1$ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] htt
 master-1$ sudo apt-get update
 ```
 
+
+## Session 11 (13 on classes)
+
 ### Backup & Restore Methodologies
 
 video 10 --> 1:40
@@ -1775,7 +1778,6 @@ slide 8
 Add contets to k8s_course
 
 
-## Session 11 (13 on classes)
 ```
 
 etcdctl snapshot save snapshot20240718.db --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt
