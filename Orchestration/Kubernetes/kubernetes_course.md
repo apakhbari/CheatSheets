@@ -1711,6 +1711,13 @@ livenessProbe:
   - 11: Minor (features - functionality)
   - 3: Patch (bug fixes)
 - k8s releases are following this: V1.10.0-alpha --> V1.10.0-beta --> V1.10.0-rc (release candidate) --> V1.10.0
+- for updating to different versions, there are rules to follow. We based our update on kube-apiserver (because all componentes are connecting to api-server)
+  - kube-apiservere --> base version: X (V1.10)
+  - controller-manager --> X-1 (V1.10 or V1.09)
+  - kube-scheduler --> X-1 (V1.10 or V1.09)
+  - kubelet --> X-2 (V1.10 or V1.09 or V1.08)
+  - kube-proxy --> X-2 (V1.10 or V1.09 or V1.08)
+  - kubectl --> X+1, X, X-1 (V1.11 or V1.10 or V1.09)
 
 ### Backup & Restore Methodologies
 
