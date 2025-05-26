@@ -1706,7 +1706,11 @@ livenessProbe:
 - right after installing k8s,do ` $ apt-mark hold kubectl kubelet kubeadm ` so they are not being updated using ` apt-update `
 
 ### Cluster Upgrade
-
+- k8s uses semantic versioning: V1.11.3
+  - 1: major
+  - 1: Minor (features - functionality)
+  - 3: Patch (bug fixes)
+  
 ### Backup & Restore Methodologies
 
 video 10 --> 4:05
