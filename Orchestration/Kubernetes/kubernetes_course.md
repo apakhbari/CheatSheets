@@ -1728,6 +1728,12 @@ livenessProbe:
 - for upgrading cluster you can use ` kubeadm `
 - ` $ kubeadm upgrade plan `
 - ` $ kubeadm upgrade apply `
+- upgrading master nodes are not hard, you just upgrade them one at a time.
+- For upgrading worker nodes you need to ` drain ` them before upgrading
+- different solutions for upgrading worker nodes
+  - All at once
+  - -1/+1 --> cordon one worker, then un-cordon it
+  - +1/-1 --> add a new worker node
 
 ### Backup & Restore Methodologies
 
