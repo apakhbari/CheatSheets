@@ -195,6 +195,9 @@
 ### Service
 - ` $ kubectl get endpoints nginx-svc ` 
 
+### Cluster Maintenace
+- ` $ kubeadm upgrade plan `
+- ` $ kubeadm upgrade apply `
 
 ## Components:
 ### Master Nodes
@@ -1720,7 +1723,11 @@ livenessProbe:
   - kubectl --> X+1, X, X-1 (V1.11 or V1.10 or V1.09)
 
 - K8s support last 3 releases, For example by the time it publishes V1.13, V1.10 becomes unsupported
-- For updating to V1.10 to V1.13, you need to update ro V1.11 then V1.12 then V1.13 
+- For updating to V1.10 to V1.13, you need to update ro V1.11 then V1.12 then V1.13
+
+- for upgrading cluster you can use ` kubeadm `
+- ` $ kubeadm upgrade plan `
+- ` $ kubeadm upgrade apply `
 
 ### Backup & Restore Methodologies
 
