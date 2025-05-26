@@ -1762,6 +1762,10 @@ worker-1$ systemctl restart kubelet.service
 worker-1$ kubectl uncordon worker-1
 
 and so on for other masters/workers
+
+now for upgrading minor part of version (26 --> 27) we need to add v27 repo to our apt
+master-1$ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+master-1$ sudo apt-get update
 ```
 
 ### Backup & Restore Methodologies
