@@ -59,6 +59,7 @@
 - In a multi-container situation in a pod to get a list of all of conatiners you can ` $ kubectl get pod <POD-NAME>  -ojsonpath='{.spec.containers[*].namen }' `
 - in probes, default value for ` initialDelaySeconds, periodSecond & failureThreshold is 3 seconds `
 - There is no such thing as undrain. Whether you drain or cordon a node, you need to ` uncordon ` the node.
+- right after installing k8s,do ` $ apt-mark hold kubectl kubelet kubeadm ` so they are not being updated using ` apt-update `
 
 ## Directories
 ### Kube Config
@@ -1702,6 +1703,7 @@ livenessProbe:
 - If you drain a node, it'll have noExecute & noSchedule taints ` $ kubectl drain node-1 `
 - If you cordon a node, it'll have noSchedule taints ` $ kubectl cordon node-2 `
 - Whether you drain or cordon a node, you need to ` uncordon ` the node. There is no such thing as undrain. ` $ kubectl uncordon node-2 `
+- right after installing k8s,do ` $ apt-mark hold kubectl kubelet kubeadm ` so they are not being updated using ` apt-update `
 
 ### Cluster Upgrade
 
