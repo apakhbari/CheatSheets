@@ -1743,16 +1743,19 @@ livenessProbe:
 
 - for upgrading ` $ kubeadm upgrade plan ` is pretty self-explainatory, so before upgrading your k8s componenets you need to update kubeadm itself
 ```
-$ kubeadm upgrade plan
-$ apt-mark unhold kubeadm kubectl kubelet
-$ apt list -a kubeadm
-$ apt install kubeadm=1.26.14-1.1 kubeadm=1.26.14-1.1 (from 1.26.12)
-$ kubeadm upgrade plan
-$ kubeadm upgrade apply v1.26.14
+master-1$ kubeadm upgrade plan
+master-1$ apt-mark unhold kubeadm kubectl kubelet
+master-1$ apt list -a kubeadm
+master-1$ apt install kubeadm=1.26.14-1.1 kubeadm=1.26.14-1.1 (from 1.26.12)
+master-1$ kubeadm upgrade plan
+master-1$ kubeadm upgrade apply v1.26.14
 
-$ apt install kubelet=1.26.14-1.1 (from 1.26.12)
-$ systemctl restart kubelet.service
-$ nerdctl -n k8s.io images
+master-1$ apt install kubelet=1.26.14-1.1 (from 1.26.12)
+master-1$ systemctl restart kubelet.service
+master-1$ nerdctl -n k8s.io images
+
+worker-1$ nerdctl -n k8s.io images
+worker-1$ kubectl drain worker-1 --ignore-daemonsets
 ```
 
 ### Backup & Restore Methodologies
