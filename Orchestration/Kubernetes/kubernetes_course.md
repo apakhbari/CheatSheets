@@ -60,6 +60,7 @@
 - in probes, default value for ` initialDelaySeconds, periodSecond & failureThreshold is 3 seconds `
 - There is no such thing as undrain. Whether you drain or cordon a node, you need to ` uncordon ` the node.
 - right after installing k8s,do ` $ apt-mark hold kubectl kubelet kubeadm ` so they are not being updated using ` apt-update `
+- when you ` $ kubectl get node ` the version that is shown is kubelet's version
 
 ## Directories
 ### Kube Config
@@ -198,6 +199,11 @@
 ### Cluster Maintenace
 - ` $ kubeadm upgrade plan `
 - ` $ kubeadm upgrade apply `
+
+- ` $ kubectl get node ` --> the version that is shown is kubelet's version
+- ` $ kubeadm version `
+- ` $ kubectl version `
+- ` $ kubectl cluster-info `
 
 ## Components:
 ### Master Nodes
@@ -1733,7 +1739,7 @@ livenessProbe:
 - different solutions for upgrading worker nodes
   - All at once
   - -1/+1 --> drain one worker, then un-cordon it
-  - +1/-1 --> add a new worker node
+  - +1/-1 --> add a new updated worker node
 
 ### Backup & Restore Methodologies
 
