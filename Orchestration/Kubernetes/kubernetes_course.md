@@ -1756,6 +1756,12 @@ master-1$ nerdctl -n k8s.io images
 
 worker-1$ nerdctl -n k8s.io images
 worker-1$ kubectl drain worker-1 --ignore-daemonsets
+worker-1$ kubeadm upgrade node
+worker-1$ apt install kubelet=1.26.14-1.1 (from 1.26.12)
+worker-1$ systemctl restart kubelet.service
+worker-1$ kubectl uncordon worker-1
+
+and so on for other masters/workers
 ```
 
 ### Backup & Restore Methodologies
