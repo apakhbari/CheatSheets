@@ -1741,6 +1741,20 @@ livenessProbe:
   - -1/+1 --> drain one worker, then un-cordon it
   - +1/-1 --> add a new updated worker node
 
+- for upgrading ` $ kubeadm upgrade plan ` is pretty self-explainatory, so before upgrading your k8s componenets you need to update kubeadm itself
+```
+$ kubeadm upgrade plan
+$ apt-mark unhold kubeadm kubectl kubelet
+$ apt list -a kubeadm
+$ apt install kubeadm=1.26.14-1.1 kubeadm=1.26.14-1.1 (from 1.26.12)
+$ kubeadm upgrade plan
+$ kubeadm upgrade apply v1.26.14
+
+$ apt install kubelet=1.26.14-1.1 (from 1.26.12)
+$ systemctl restart kubelet.service
+$ nerdctl -n k8s.io images
+```
+
 ### Backup & Restore Methodologies
 
 video 10 --> 1:40
