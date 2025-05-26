@@ -1710,7 +1710,7 @@ livenessProbe:
   - 1: major
   - 11: Minor (features - functionality)
   - 3: Patch (bug fixes)
-- k8s versions are following this: V1.10.0-alpha --> V1.10.0-beta --> V1.10.0-rc (release candidate) --> V1.10.0
+- k8s releases are following this: V1.10.0-alpha --> V1.10.0-beta --> V1.10.0-rc (release candidate) --> V1.10.0
 
 ### Backup & Restore Methodologies
 
