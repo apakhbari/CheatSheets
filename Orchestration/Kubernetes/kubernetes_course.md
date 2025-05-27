@@ -1774,13 +1774,24 @@ master-1$ sudo apt-get update
 ## Session 11 (13 on classes)
 
 ### Backup & Restore Methodologies
+#### Hard way
 - Backup all of your yaml files peridocally
 - ` $ kubectl get deployments.apps --all-namespaces > all_deps.yaml ` --> save all deployments
 - Backup periodically directories:
   - ` /etc/kubernetes/manifests ` --> static pods
   - ` /etc/kubernetes `
+- Backup ` /var/lib/etcd ` peridocally
 
+#### A bit pro way
 - [velero.io](https://velero.io/) --> a cool tool for backuping stuff in clusters
+- [https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/)
+- using etcdctl
+
+#### Backup & Restore using etcdctl
+- install ` etcdctl ` on your machine
+- ` $ etcdctl snapshot save snapshot20240718.db --endpoints=https://127.0.0.1:2379 --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt `
+- ` $ etcdctl snapshot status snapshot20240718.db --write-out=table ` --> to checkout what has been backed-up
+- for restoring backup, first we need to stop api-server ` $ mv /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/kube-apiserver.yaml `
 
 video 11 --> 0:00
 slide 9
@@ -1789,9 +1800,9 @@ Add contets to k8s_course
 
 ```
 
-etcdctl snapshot save snapshot20240718.db --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt
+
 =====
-etcdctl snapshot status snapshot20240718.db --write-out=table
+
 =====
 
 
