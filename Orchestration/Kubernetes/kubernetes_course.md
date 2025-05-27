@@ -1798,7 +1798,7 @@ master-1$ sudo apt-get update
 - Now we start api-server ` $ mv /etc/kubernetes/kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml `
 
 
-video 11 --> 0:00
+video 11 --> 2:03
 slide 9
 Add contets to k8s_course
 
