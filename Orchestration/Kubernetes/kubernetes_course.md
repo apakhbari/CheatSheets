@@ -1795,6 +1795,8 @@ master-1$ sudo apt-get update
 - find these information needed in below step in ` /etc/kubernetes/manifests/etcd.yaml `
 - ` $ etcdctl snapshot restore snapshot20240718.db --data-dir /var/lib/etcd-from-backup --initial-cluster master1=https://192.168.1.5:2380 --initial-advertise-peer-urls https://192.168.1.5:2380 --name=master1 `
 - now inside ` /etc/kubernetes/manifests/etcd.yaml ` cahnge hsotPath: path: /var/lib/etcd --> /var/lib/etcd-from-backup
+- Now we start api-server ` $ mv /etc/kubernetes/kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml `
+
 
 video 11 --> 0:00
 slide 9
