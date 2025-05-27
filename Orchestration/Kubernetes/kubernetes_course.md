@@ -1771,7 +1771,7 @@ master-1$ sudo apt-get update
 ```
 
 
-## Session 11 (13 on classes)
+## Session 11 (13 on classes) - Backup & Restore Methodologies
 
 ### Backup & Restore Methodologies
 #### Hard way
@@ -2413,7 +2413,7 @@ APA 🖖🏻
 
 ### Cool tools
 - [velero.io](https://velero.io/) --> a cool tool for backuping stuff in clusters
-
+- Openpolicy agent --> webhook authorization
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
