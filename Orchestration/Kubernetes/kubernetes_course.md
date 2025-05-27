@@ -1774,6 +1774,13 @@ master-1$ sudo apt-get update
 ## Session 11 (13 on classes)
 
 ### Backup & Restore Methodologies
+- Backup all of your yaml files peridocally
+- ` $ kubectl get deployments.apps --all-namespaces > all_deps.yaml ` --> save all deployments
+- Backup periodically directories:
+  - ` /etc/kubernetes/manifests ` --> static pods
+  - ` /etc/kubernetes `
+
+- [velero.io](https://velero.io/) --> a cool tool for backuping stuff in clusters
 
 video 11 --> 0:00
 slide 9
@@ -2397,6 +2404,9 @@ APA 🖖🏻
 
 ### Proxy
 - [https://github.com/myxuchangbin/dnsmasq_sniproxy_install](https://github.com/myxuchangbin/dnsmasq_sniproxy_install)
+
+### Cool tools
+- [velero.io](https://velero.io/) --> a cool tool for backuping stuff in clusters
 
 
 ```
