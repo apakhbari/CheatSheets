@@ -1798,16 +1798,6 @@ slide 9
 Add contets to k8s_course
 
 
-```
-
-
-=====
-
-=====
-
-
-```
-
 ## Session 12 (14 on classes)
 ```
 
