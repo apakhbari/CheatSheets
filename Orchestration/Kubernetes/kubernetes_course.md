@@ -127,6 +127,8 @@
 - ` $ kubectl describe pod nginx-pod `
 - ` $ kubectl edit pod <pod_name> `
 - ` $ kubectl get pod nginx-pod -o yaml > pod-nginx.yaml `
+- ` $ kubectl get deployments.apps --all-namespaces ` --> get all deployments
+- ` $ kubectl get deployments.apps --all-namespaces > all_deps.yaml ` --> save all deployments
 
 ### Token
 - To list token: ` $ kubeadm token list `
