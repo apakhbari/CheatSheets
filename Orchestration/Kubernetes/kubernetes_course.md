@@ -1792,6 +1792,8 @@ master-1$ sudo apt-get update
 - ` $ etcdctl snapshot save snapshot20240718.db --endpoints=https://127.0.0.1:2379 --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --cacert=/etc/kubernetes/pki/etcd/ca.crt `
 - ` $ etcdctl snapshot status snapshot20240718.db --write-out=table ` --> to checkout what has been backed-up
 - for restoring backup, first we need to stop api-server ` $ mv /etc/kubernetes/manifests/kube-apiserver.yaml /etc/kubernetes/kube-apiserver.yaml `
+- find these information needed in below step in ` /etc/kubernetes/manifests/etcd.yaml `
+- ` $ etcdctl snapshot restore snapshot20240718.db --data-dir /var/lib/etcd-from-backup --initial-cluster master1=https://192.168.1.5:2380 --initial-advertise-peer-urls https://192.168.1.5:2380 --name=master1 `
 
 video 11 --> 0:00
 slide 9
