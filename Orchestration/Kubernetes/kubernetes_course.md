@@ -1836,6 +1836,9 @@ Certificates divided based on their RootCA:
 3. KUBE-PROXY SERVER:
   - kube-proxy [ kube-proxy.crt + kube-proxy.key]
 
+- Directory where kubelet-client certificate is being stored:
+  - ` /var/lib/kubelet/kubelet-node01.crt `
+  - ` /var/lib/kubelet/kubelet-node01.key `
 
 video 11 --> 2:03
 slide 9
