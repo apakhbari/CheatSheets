@@ -1801,9 +1801,9 @@ master-1$ sudo apt-get update
 #### Cerificates in K8S
 - in k8s, server and client both needs certificates for connection, so our security is doubled
 - K8s has 3 RootCAs:
-1. Kube-API
-2. ETCD
-3. Kubelet
+1. Kube-API [apiserver.crt + apiserver.key]
+2. ETCD [ etcdserver.crt + etcdserver.key]
+3. Kubelet [ kubelet.crt + kubelet.key] --> when api-server sends some information about a pod and asks kubelet to create it, kubelet is server and apiserver is client
 
 video 11 --> 2:03
 slide 9
