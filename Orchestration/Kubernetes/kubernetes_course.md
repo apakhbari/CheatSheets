@@ -210,6 +210,9 @@
 - ` $ kubectl version `
 - ` $ kubectl cluster-info `
 
+### Certificates
+- ` $ kybeadm certs check-expiration `
+
 ## Components:
 ### Master Nodes
 - manages k8s cluster
