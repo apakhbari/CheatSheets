@@ -84,6 +84,9 @@
 #### ETCD stores data
 - ` /var/lib/etcd
 
+#### Kubelet certificates
+- ` /var/lib/kubelet/kubelet-node01.crt `
+- ` /var/lib/kubelet/kubelet-node01.key `
 
 
 ## Ports
@@ -1818,10 +1821,10 @@ master-1$ sudo apt-get update
 
 
 Certificates divided based on their RootCA:
-- ETCD SERVER:
+1. ETCD SERVER:
   - ETCD [ etcdserver.crt + etcdserver.key]
   - apiserver-etcd [ apiserver-etcd-client.crt + apiserver-etcd-client.key]
-- API SERVER + KUBELET SERVER:
+2. API SERVER + KUBELET SERVER:
   - Kube-API [apiserver.crt + apiserver.key]
   - Kubelet [ kubelet.crt + kubelet.key]
   - admin user [ .crt + .key]
@@ -1830,7 +1833,7 @@ Certificates divided based on their RootCA:
   - apiserver-etcd [ apiserver-etcd-client.crt + apiserver-etcd-client.key]
   - apiserver-kubelet [ apiserver-kubelet-client.crt + apiserver-kubelet-client.key]
   - kubelet-client [ kubelet-client.crt + kubelet-client.key]
-- KUBE-PROXY SERVER:
+3. KUBE-PROXY SERVER:
   - kube-proxy [ kube-proxy.crt + kube-proxy.key]
 
 
