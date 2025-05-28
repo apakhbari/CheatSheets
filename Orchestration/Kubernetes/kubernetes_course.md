@@ -211,7 +211,8 @@
 - ` $ kubectl cluster-info `
 
 ### Certificates
-- ` $ kybeadm certs check-expiration `
+- ` $ kubeadm certs check-expiration `
+- ` $ kubeadm certs renew <NAME-OF-CERT> ` --> for renew
 
 ## Components:
 ### Master Nodes
