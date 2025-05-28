@@ -1799,6 +1799,12 @@ master-1$ sudo apt-get update
 
 ### Security
 #### Cerificates in K8S
+- in k8s, server and client both needs certificates for connection, so our security is doubled
+- K8s has 3 RootCAs:
+1. Kube-API
+2. ETCD
+3. Kubelet
+
 video 11 --> 2:03
 slide 9
 Add contets to k8s_course
