@@ -212,7 +212,8 @@
 
 ### Certificates
 - ` $ kubeadm certs check-expiration `
-- ` $ kubeadm certs renew <NAME-OF-CERT> ` --> for renew
+- ` $ kubeadm certs renew <NAME-OF-CERT> ` --> for renew specific cert
+- ` $ kubeadm certs renew all ` --> for renew all certs
 
 ## Components:
 ### Master Nodes
@@ -1846,6 +1847,7 @@ Certificates divided based on their RootCA:
   - ` /var/lib/kubelet/kubelet-node01.crt `
   - ` /var/lib/kubelet/kubelet-node01.key `
 - CA certificates are issued for 10 years but other certificates are issued for 1 year
+- When you renew CA Certificate then you need to renew all of its related certs also
 
 video 11 --> 2:03
 slide 9
