@@ -1816,6 +1816,24 @@ master-1$ sudo apt-get update
 6. apiserver-kubelet [ apiserver-kubelet-client.crt + apiserver-kubelet-client.key]
 7. kubelet-client [ kubelet-client.crt + kubelet-client.key]
 
+
+Certificates divided based on their RootCA:
+- ETCD SERVER:
+  - ETCD [ etcdserver.crt + etcdserver.key]
+  - apiserver-etcd [ apiserver-etcd-client.crt + apiserver-etcd-client.key]
+- API SERVER + KUBELET SERVER:
+  - Kube-API [apiserver.crt + apiserver.key]
+  - Kubelet [ kubelet.crt + kubelet.key]
+  - admin user [ .crt + .key]
+  - scheduler [ scheduler.crt + scheduler.key]
+  - controller-manager [ controller-manager.crt + controller-manager.key]
+  - apiserver-etcd [ apiserver-etcd-client.crt + apiserver-etcd-client.key]
+  - apiserver-kubelet [ apiserver-kubelet-client.crt + apiserver-kubelet-client.key]
+  - kubelet-client [ kubelet-client.crt + kubelet-client.key]
+- KUBE-PROXY SERVER:
+  - kube-proxy [ kube-proxy.crt + kube-proxy.key]
+
+
 video 11 --> 2:03
 slide 9
 Add contets to k8s_course
