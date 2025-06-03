@@ -1,3 +1,5 @@
+- purge a package on ubuntu
+
 ```
 sudo cp -r /var/lib/mysql ./var_lib_mysql
 sudo cp -r /etc/mysql ./etc_mysql
