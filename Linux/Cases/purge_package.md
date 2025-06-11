@@ -8,6 +8,7 @@ sudo apt-get purge -y libmariadb3:amd64  mariadb-backup mariadb-client-10.7 mari
 
 sudo rm -rf /etc/mysql /var/lib/mysql /var/log/myqsl
 
+
 sudo apt-get autoremove
 sudo apt-get autoclean
 sudo apt update
