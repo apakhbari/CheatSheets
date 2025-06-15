@@ -4,6 +4,7 @@ apt list
 ```
 
 
+
 1. Find installed version
 1.1. dpkg
 Use dpkg -l pkg-name to get package version, e.g:
