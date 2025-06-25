@@ -1849,6 +1849,8 @@ Certificates divided based on their RootCA:
 - CA certificates are issued for 10 years but other certificates are issued for 1 year
 - When you renew CA Certificate then you need to renew all of its related certs also
 
+
+
 video 11 --> 3:21
 slide 9
 Add contets to k8s_course
