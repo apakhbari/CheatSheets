@@ -217,6 +217,7 @@
 
 - ` $ kubectl get csr `
 - ` $ kubectl certificat approve anisa-csr csr ` --> approve CSR
+- ` $ kubectl certificat deny anisa-csr csr ` --> deny CSR
 - ` $ kubectl describe csr anisa-csr `
 - ` $ kubectl get csr anisa-csr -o yaml `
 - ` $ kubectl get csr anisa-csr -o jsonpath='{.status.certifiacte}' | base64 -d` --> get certficate
@@ -1902,6 +1903,7 @@ spec:
 ```
 $ kubectl get csr
 $ kubectl certificat approve anisa-csr csr --> approve CSR
+$ kubectl certificat deny anisa-csr csr --> deny CSR
 $ kubectl describe csr anisa-csr
 $ kubectl get csr anisa-csr -o yaml
 $ kubectl get csr anisa-csr -o jsonpath='{.status.certifiacte}' | base64 -d --> get certficate
@@ -1969,15 +1971,12 @@ users:
 - name: prod-user
 ```
 
+## Session 12 (14 on classes)
 
-video 11 --> 3:21
+video 12 --> 34:49
 slide 9
 Add contets to k8s_course
 
-
-
-
-## Session 12 (14 on classes)
 ```
 
  kubectl --kubeconfig /root/.kube/config config use-context anisa@kubernetes
