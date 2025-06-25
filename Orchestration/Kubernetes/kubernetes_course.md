@@ -247,6 +247,8 @@
 #### Replication controller
 - In times of Evicting node, Replication controller moves Pods that are buid using Replicaset or Deployment to nodes that are working 
 
+#### Certificate API manager
+
 #### PV-Binder Controller
 #### Service-Account Controller
 #### Stateful-Set Controller
@@ -1849,7 +1851,9 @@ Certificates divided based on their RootCA:
 - CA certificates are issued for 10 years but other certificates are issued for 1 year
 - When you renew CA Certificate then you need to renew all of its related certs also
 
-
+#### TLS in k8s
+- we have an object in k8s called ` CertificateSigningRequest Object ` which is connected to CA, when we request to sign a CSR using it it requests API-Server a
+- after recieveing CSR from a user, we 
 
 video 11 --> 3:21
 slide 9
