@@ -215,6 +215,18 @@
 - ` $ kubeadm certs renew <NAME-OF-CERT> ` --> for renew specific cert
 - ` $ kubeadm certs renew all ` --> for renew all certs
 
+- ` $ kubectl get csr `
+- ` $ kubectl certificat approve anisa-csr csr ` --> approve CSR
+- ` $ kubectl describe csr anisa-csr `
+- ` $ kubectl get csr anisa-csr -o yaml `
+- ` $ kubectl get csr anisa-csr -o jsonpath='{.status.certifiacte}' | base64 -d` --> get certficate
+
+### Create KubeConfig for a user
+- ` $  curl https://my-kube-playground:6443/api/v1/pods --key admin.key --cert admin.crt --cacert ca.crt ` --> without creating kubeconfig file, just with RestAPI
+- ` $  kubectl get pods --server my-kube-playground:6443 --client-key admin.key --client-certificate admin.crt --certificate-authority ca.crt ` --> without creating kubeconfig file, by passing
+
+
+
 ## Components:
 ### Master Nodes
 - manages k8s cluster
@@ -1861,6 +1873,46 @@ Certificates divided based on their RootCA:
   2. Review Requests
   3. Approve Requests
   4. Share Certs to Users
+
+- create a cert from client-side, CN (Common Name) is name of user we want:
+```
+$ openssl gen-rsa -out anisa.ke 2048
+$ openssl req -new -key anisa.key -out anisa.csr
+```
+
+- for signing CSR in k8s cluster, we create a k8s object, we only change ` name and requet `  in this object. requet should be base64 and without spaces
+```
+$ cat anisa.csr | base64 -w 0
+```
+
+```
+apiVersion: certifiactes.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: anisa-csr
+spec:
+  groups:
+    - system: authenticated
+  request: "< $(cat anisa.csr | base64 -w 0) >"
+  signerName: kuberntes.io/kube-apiserver-client
+  usages:
+    - client auth
+```
+
+```
+$ kubectl get csr
+$ kubectl certificat approve anisa-csr csr --> approve CSR
+$ kubectl describe csr anisa-csr
+$ kubectl get csr anisa-csr -o yaml
+$ kubectl get csr anisa-csr -o jsonpath='{.status.certifiacte}' | base64 -d --> get certficate
+```
+
+- also rememeber to give CA chain to user from ` /etc/kubernetes/pki/ca.crt `
+- add ` anisa.crt + anisa.key + ca.crt `
+
+#### Create KubeConfig for a user
+- ` $  curl https://my-kube-playground:6443/api/v1/pods --key admin.key --cert admin.crt --cacert ca.crt ` --> without creating kubeconfig file, just with RestAPI
+- ` $  kubectl get pods --server my-kube-playground:6443 --client-key admin.key --client-certificate admin.crt --certificate-authority ca.crt ` --> without creating kubeconfig file, by passing
 
 video 11 --> 3:21
 slide 9
