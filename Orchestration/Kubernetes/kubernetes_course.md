@@ -248,6 +248,9 @@
 - In times of Evicting node, Replication controller moves Pods that are buid using Replicaset or Deployment to nodes that are working 
 
 #### Certificate API manager
+- using CA, has two components:
+  1. CSR-Approving
+  2. CSR-Signinig
 
 #### PV-Binder Controller
 #### Service-Account Controller
@@ -1853,7 +1856,11 @@ Certificates divided based on their RootCA:
 
 #### TLS in k8s
 - we have an object in k8s called ` CertificateSigningRequest Object ` which is connected to CA, when we request to sign a CSR using it it requests API-Server a
-- after recieveing CSR from a user, we 
+- Steps of signing a CSR:
+  1. Create CSR Object
+  2. Review Requests
+  3. Approve Requests
+  4. Share Certs to Users
 
 video 11 --> 3:21
 slide 9
