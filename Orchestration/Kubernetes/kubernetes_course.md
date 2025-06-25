@@ -1914,9 +1914,19 @@ $ kubectl get csr anisa-csr -o jsonpath='{.status.certifiacte}' | base64 -d --> 
 - ` $  curl https://my-kube-playground:6443/api/v1/pods --key admin.key --cert admin.crt --cacert ca.crt ` --> without creating kubeconfig file, just with RestAPI
 - ` $  kubectl get pods --server my-kube-playground:6443 --client-key admin.key --client-certificate admin.crt --certificate-authority ca.crt ` --> without creating kubeconfig file, by passing
 
+- we can have multiple cluster configs in 1 kubeConfig file
+- KubeConfig file is consisted of:
+  1. Clusters
+  2. Contexts (using Contexts we assing clusters and users tigether)
+  3. Users
+
+  - currentContext in kubeConfig file shows which cluster is our default
+
 video 11 --> 3:21
 slide 9
 Add contets to k8s_course
+
+
 
 
 ## Session 12 (14 on classes)
