@@ -1920,7 +1920,55 @@ $ kubectl get csr anisa-csr -o jsonpath='{.status.certifiacte}' | base64 -d --> 
   2. Contexts (using Contexts we assing clusters and users tigether)
   3. Users
 
-  - currentContext in kubeConfig file shows which cluster is our default
+  - currentContext in kubeCon fig file shows which cluster is our default
+```
+apiVersion: v1
+kind: Config
+
+clusters:
+- name: my-kube-playground
+  cluster:
+    certificate-authority ca.crt
+    server: my-kube-playground:6443
+
+contexts:
+- name: my-kube-admin@my-kube-playground
+  context:
+    cluster: my-kube-playground
+    user: my-kube-admin
+
+users:
+- name: my-kube-admin
+  user:
+    client-certificate: admin.crt
+    client-key: admin.key
+```
+
+- for multiple clusters (values are hidden)
+```
+apiVersion: v1
+kind: Config
+
+current-context: dev-user@google
+
+clusters:
+- name: my-kube-playground
+- name: development
+- name: production
+- name: google
+
+contexts:
+- name: my-kube-admin@my-kube-playground
+- name: dev-user@google
+- name: prod-user@production
+
+users:
+- name: my-kube-admin
+- name: admin
+- name: dev-user
+- name: prod-user
+```
+
 
 video 11 --> 3:21
 slide 9
