@@ -1996,10 +1996,45 @@ users:
     client-certificate-data: < base64 of admin.crt >
     client-key-data: < base64 of admin.key >
 ```
+
+- To change context of KubeConfig:
 ```
-$  kubectl --kubeconfig /root/.kube/config config use-context anisa@kubernetes --> change context of KubeConfig
+$  kubectl --kubeconfig /root/.kube/config config use-context anisa@kubernetes
 ```
 
+- Now in order for our new created user to have access to different things in our cluster we need to create RoleBindings and Roles
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer
+  namespace: dev
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - "pods"
+    verbs:
+      - "list"    
+```
+- now we need to do a RoleBinding in order to bind user to role
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: anisa-developer
+  namespace: dev
+roleRef:
+  apiGroup: "rbac.authorization.k8s.io"
+  kind: "Role"
+  name: "developer"
+subjects:
+  - apiGroup: "rbac.authorization.k8s.io"
+    kind: "User"
+    name: "anisa"
+```
+
+- In verbs, list only show names, but get can show details like describe
 video 14 --> 34:49
 slide 9
 Add contets to k8s_course
