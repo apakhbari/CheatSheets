@@ -225,8 +225,7 @@
 ### Create KubeConfig for a user
 - ` $  curl https://my-kube-playground:6443/api/v1/pods --key admin.key --cert admin.crt --cacert ca.crt ` --> without creating kubeconfig file, just with RestAPI
 - ` $  kubectl get pods --server my-kube-playground:6443 --client-key admin.key --client-certificate admin.crt --certificate-authority ca.crt ` --> without creating kubeconfig file, by passing
-
-
+- ` $  kubectl --kubeconfig /root/.kube/config config use-context anisa@kubernete ` --> change context of KubeConfig
 
 ## Components:
 ### Master Nodes
@@ -1797,7 +1796,7 @@ master-1$ sudo apt-get update
 ```
 
 
-## Session 11 (13 on classes) - Backup & Restore Methodologies
+## Session 11 (13 on classes) - Backup & Restore Methodologies, Security
 
 ### Backup & Restore Methodologies
 #### Hard way
@@ -1930,7 +1929,7 @@ kind: Config
 clusters:
 - name: my-kube-playground
   cluster:
-    certificate-authority ca.crt
+    certificate-authority: /HOME/DATA/ca.crt
     server: my-kube-playground:6443
 
 contexts:
@@ -1942,8 +1941,8 @@ contexts:
 users:
 - name: my-kube-admin
   user:
-    client-certificate: admin.crt
-    client-key: admin.key
+    client-certificate: /HOME/DATA/admin.crt
+    client-key: /HOME/DATA/admin.key
 ```
 
 - for multiple clusters (values are hidden)
@@ -1971,9 +1970,37 @@ users:
 - name: prod-user
 ```
 
-## Session 12 (14 on classes)
+## Session 12 (14 on classes) - Security
+### Security
+#### Create KubeConfig for a user
+- instead of addressing files of certificaftes, we can put base64 value of them inside our KubeConfig
+```
+apiVersion: v1
+kind: Config
 
-video 12 --> 34:49
+clusters:
+- name: my-kube-playground
+  cluster:
+    certificate-authority-data: < base64 of ca.crt >
+    server: my-kube-playground:6443
+
+contexts:
+- name: my-kube-admin@my-kube-playground
+  context:
+    cluster: my-kube-playground
+    user: my-kube-admin
+
+users:
+- name: my-kube-admin
+  user:
+    client-certificate-data: < base64 of admin.crt >
+    client-key-data: < base64 of admin.key >
+```
+```
+$  kubectl --kubeconfig /root/.kube/config config use-context anisa@kubernetes --> change context of KubeConfig
+```
+
+video 14 --> 34:49
 slide 9
 Add contets to k8s_course
 
