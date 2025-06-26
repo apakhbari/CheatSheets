@@ -2017,6 +2017,8 @@ rules:
     verbs:
       - "list"    
 ```
+- In verbs, list only show names, but get can show details like describe
+- We can chnge Role & RoleBindings in live-time, no need to deleting and re-creating them
 
 - now we need to do a RoleBinding in order to bind user to role. We can assign multiple users to a role
 ```
@@ -2041,66 +2043,9 @@ subjects:
     name: "anisa-3"
 ```
 
-- In verbs, list only show names, but get can show details like describe
-video 14 --> 34:49
-slide 9
-Add contets to k8s_course
-
+- A more complicated role, specific access to nginx-pod resource
 ```
-
- kubectl --kubeconfig /root/.kube/config config use-context anisa@kubernetes
- =====
- apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: webserver
-  namespace: dev
-spec:
-  podSelector:
-    matchLabels:
-      app: webserver
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-              app: green
-      ports:
-        - port: 80
-          protocol: TCP
-=====
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: anisa-developer
-  namespace: dev
-roleRef:
-  apiGroup: "rbac.authorization.k8s.io"
-  kind: "Role"
-  name: "developer"
-subjects:
-  - apiGroup: "rbac.authorization.k8s.io"
-    kind: "User"
-    name: "anisa"
-    ====
-    apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: developer
-rules:
-  - apiGroups:
-      - ""
-      - "apps"
-    resources:
-      - "pods"
-      - "deployments"
-      - "nodes"
-    verbs:
-      - "list"    
-      - "get"
-      ======
-      apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: developer
@@ -2123,8 +2068,31 @@ rules:
       - "list"
       - "get"
       - "watch"
-      ======
-      apiVersion: rbac.authorization.k8s.io/v1
+```
+
+- A ClusterRole is cluster scoped resource. It is not related to a namespace
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: developer
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - "pods"
+      - "deployments"
+      - "nodes"
+    verbs:
+      - "list"    
+      - "get"
+```
+
+- If we want to give a user complete access to aresource in all namespaces in our cluster, we assign it inside resource of a clusterRole
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: anisa-developer
@@ -2136,7 +2104,33 @@ subjects:
   - apiGroup: "rbac.authorization.k8s.io"
     kind: "User"
     name: "anisa"
-    ======
+```
+
+video 14 --> 34:49
+slide 9
+Add contets to k8s_course
+
+```
+ =====
+ apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: webserver
+  namespace: dev
+spec:
+  podSelector:
+    matchLabels:
+      app: webserver
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: green
+      ports:
+        - port: 80
+          protocol: TCP
 ```
 
 
