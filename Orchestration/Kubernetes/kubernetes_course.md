@@ -2106,8 +2106,8 @@ subjects:
     name: "anisa"
 ```
 
-video 14 --> 34:49
-slide 9
+video 14 --> 2:00
+slide 9  
 Add contets to k8s_course
 
 ```
