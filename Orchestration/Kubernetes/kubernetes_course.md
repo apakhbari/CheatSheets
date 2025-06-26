@@ -2017,7 +2017,8 @@ rules:
     verbs:
       - "list"    
 ```
-- now we need to do a RoleBinding in order to bind user to role
+
+- now we need to do a RoleBinding in order to bind user to role. We can assign multiple users to a role
 ```
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -2032,6 +2033,12 @@ subjects:
   - apiGroup: "rbac.authorization.k8s.io"
     kind: "User"
     name: "anisa"
+  - apiGroup: "rbac.authorization.k8s.io"
+    kind: "User"
+    name: "anisa-2"
+  - apiGroup: "rbac.authorization.k8s.io"
+    kind: "User"
+    name: "anisa-3"
 ```
 
 - In verbs, list only show names, but get can show details like describe
