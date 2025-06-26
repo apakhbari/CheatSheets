@@ -584,6 +584,7 @@ Deployment status: Production
 # Session 9 (10 on classes)
 
 ### SNMP
+- SNMP Trapper is event based (Push based) so if anything happens its going to be written in a file as logs. SNMP Trapper is not that common to use in zabbix.
 
 # Session 10 (11 on classes)
 Items (Preprocessing) + Macro
@@ -987,6 +988,355 @@ or
 baseline(/Eshop - service/eshop[MellatGW,Successful],5h:now/h,"w",1)<0.8
 ```
 
+# Session 15 (17 on classes)
+- Defining a Forecasted Item:
+```
+Name: payment MellatGW - Forecast Successful - Linear
+Type: Calculated
+Key: payment[MellatGW,forecast,Successful,linear] (Key is not important here)
+Type of information: Numeric (float) <-- IMPORTANT
+formula: forecast(/Eshop - service/eshop[MellatGW,Failed],1h,30m,"linear")
+update interval: 0
+custom interval: scheduling m/5s30 <-- we do this so we are sure that when we read data in 5 minutes interval, it is going to forecast 30s later of gathered new data and our forecast is more percise
+```
+## Trigger Menu
+- If you forecast data of next 30m based on data of last 1h (default value for is linear) is going to be more than 20. We can omit that linear and its going to assume linear.
+- If in forecast we have an error, we can't see what is exact number of forecasted value is.
+```
+Forecast Failed requests will be more than 20 in next 30 mins
+forecast(/Eshop - service/eshop[MellatGW,Failed],1h,30m,"linear")>20
+```
+- Problem event generation mode:
+  - If on sinle: each time zabbix checks (based on time interval) and problem exists, a new trigger is not going to be arosed. If problem remains, last arosed trigger is going to be valid for all
+  - If on multiple: each time zabbix checks (based on time interval) and problem exists, a new trigger is going to be arosed
+- OK Event generation:
+  - Expression: Exactly NOT of trigger expression means problem is solved
+  - Recovery Expression: You have a recovery expression for solving problem. It is for fluctutaion so if data is around 40% forexample, we have a new threshold to achieve to pass the trigger as a problem
+  - None: never solve problem aytomatically
+- OK Event Closes Tab: coreletion among events. If Tags are the same, and problem is solved, you can close corelated tags
+- Menu Entry Name + Menu entry URL + Description: when trigger aroses show a link and a description (for example for a knowledge base or something for troubleshooting further)
+
+### Time functions inside Triggers
+- Time functions are independent of Items.
+- For example we can define a trigger for a certificate that is going to be expired:
+```
+Function: date() - Current date
+Result: > 20250725 (YYYYMMDD)
+```
+
+- A time related trigger, for checking between 09 to 20 clock
+```
+Name: Amount of Success payments are critically low
+Expression:
+last(/Eshop - service/eshop[MellatGW,Successful])=0 and time() > 090000 and time() < 200000
+OR Can be written like below
+last(/Eshop - service/eshop[MellatGW,Successful])=0 and time() > 090000 < 200000
+OR Can be written like below
+last(/Eshop - service/eshop[MellatGW,Successful])=0 and between(time(),090000,200000)=1
+```
+
+- a more complicated example of above, for checking among 7-9 AM but Average
+```
+last(/Eshop - service/eshop[MellatGW,Successful])=0 and between(time(),090000,200000)=1
+or
+avg(/Eshop - service/eshop[MellatGW,Successful],10m)=0 and between(time(),070000,085959)=1
+```
+
+## Discovery
+### Top Down
+- Zabbix scans network and add hosts
+- Data Collection > Discovery > Create Discovery Rule
+- Alert > Discovery Action
+- by default new hosts are going to be added to discovered hosts group
+
+### Bottom Up
+- Each system that starts introduce itself to zabbix
+- Active Zabbix Agents only can do Autoregistration, You need to define a hostMetaData inside ` /etc/zabbix/zabbix_agent_2.conf ` and then pass it inside Autoregistration UI, so it can be added automatically
+
+### LLD (Low Level Discovery)
+
+
+# Session 16 (18 on classes)
+## LLD (Low Level Discovery)
+Host > Discovery Rules
+- We can use a template in order to create different items usin ` dependent item ` . it's in ` item prototype ` where we create template 
+- We can monitor Vms created in VCenter using discovery
+
+## Zabbix Proxy
+- We can use Proxy Group for load balancing and HA of proxies. All proxies of a proxy group must be in same network
+
+# Session 17 (19 on classes)
+## LLD
+## Zabbix Proxy
+- Only when we can use proxy group that we have active zabbix agent enabled on zabbix proxies
+- For monitoring zabbix proxy items use ` Remote zabbix proxy ` template. Also add Zabbix Proxy IP Addresses to ` StatsAllowedIP ` inside ` /etc/zabbix/zabbix_proxy.conf `
+
+## Advanced Parameters
+- Pollers: Processes for answering Syncron requests
+
+# Session 18 (20 on classes)
+- 02:00
+- Some importnat Tables of zabbix in DB:
+  - history: numeric (float)
+  - history_bin: binary
+  - hostiry_char: characters
+  - history_log: logs
+  - history_uint: unsigned integer
+
+  - trend: numeric (float)
+  - trend_uint: unssigned integers
+
+  - events: list of all events
+
+  - auditlog: auditlogs
+
+## Tuning Zabbix DB
+- in postgresql we don't have partitioning but we have a module that automatically does it, it's called timescale DB
+- By default DB store stuff of a table in a file like ` /var/lib/mysql/zabbix/history.ibd `
+- Partitioning is making a seperating this file of DB to multiple files for easier access, for example based on different days
+- Procedures for creating partition for zabbix
+
+```
+Partitioning Database:
+    
+    partition_create Procedure:
+        
+        DELIMITER $$
+        CREATE PROCEDURE `partition_create`(SCHEMANAME varchar(64), TABLENAME varchar(64), PARTITIONNAME varchar(64), CLOCK int)
+BEGIN
+        /*
+           SCHEMANAME = The DB schema in which to make changes
+           TABLENAME = The table with partitions to potentially delete
+           PARTITIONNAME = The name of the partition to create
+        */
+        /*
+           Verify that the partition does not already exist
+        */
+
+        DECLARE RETROWS INT;
+        SELECT COUNT(1) INTO RETROWS
+        FROM information_schema.partitions
+        WHERE table_schema = SCHEMANAME AND table_name = TABLENAME AND partition_description >= CLOCK;
+
+        IF RETROWS = 0 THEN
+                /*
+                   1. Print a message indicating that a partition was created.
+                   2. Create the SQL to create the partition.
+                   3. Execute the SQL from #2.
+                */
+                SELECT CONCAT( "partition_create(", SCHEMANAME, ",", TABLENAME, ",", PARTITIONNAME, ",", CLOCK, ")" ) AS msg;
+                SET @sql = CONCAT( 'ALTER TABLE ', SCHEMANAME, '.', TABLENAME, ' ADD PARTITION (PARTITION ', PARTITIONNAME, ' VALUES LESS THAN (', CLOCK, '));' );
+                PREPARE STMT FROM @sql;
+                EXECUTE STMT;
+                DEALLOCATE PREPARE STMT;
+        END IF;
+END$$
+DELIMITER ;
+```
+
+```
+partition_drop Procedure:
+    DELIMITER $$
+CREATE PROCEDURE `partition_drop`(SCHEMANAME VARCHAR(64), TABLENAME VARCHAR(64), DELETE_BELOW_PARTITION_DATE BIGINT)
+BEGIN
+        /*
+           SCHEMANAME = The DB schema in which to make changes
+           TABLENAME = The table with partitions to potentially delete
+           DELETE_BELOW_PARTITION_DATE = Delete any partitions with names that are dates older than this one (yyyy-mm-dd)
+        */
+        DECLARE done INT DEFAULT FALSE;
+        DECLARE drop_part_name VARCHAR(16);
+
+        /*
+           Get a list of all the partitions that are older than the date
+           in DELETE_BELOW_PARTITION_DATE.  All partitions are prefixed with
+           a "p", so use SUBSTRING TO get rid of that character.
+        */
+        DECLARE myCursor CURSOR FOR
+                SELECT partition_name
+                FROM information_schema.partitions
+                WHERE table_schema = SCHEMANAME AND table_name = TABLENAME AND CAST(SUBSTRING(partition_name FROM 2) AS UNSIGNED) < DELETE_BELOW_PARTITION_DATE;
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+        /*
+           Create the basics for when we need to drop the partition.  Also, create
+           @drop_partitions to hold a comma-delimited list of all partitions that
+           should be deleted.
+        */
+        SET @alter_header = CONCAT("ALTER TABLE ", SCHEMANAME, ".", TABLENAME, " DROP PARTITION ");
+        SET @drop_partitions = "";
+
+        /*
+           Start looping through all the partitions that are too old.
+        */
+        OPEN myCursor;
+        read_loop: LOOP
+                FETCH myCursor INTO drop_part_name;
+                IF done THEN
+                        LEAVE read_loop;
+                END IF;
+                SET @drop_partitions = IF(@drop_partitions = "", drop_part_name, CONCAT(@drop_partitions, ",", drop_part_name));
+        END LOOP;
+        IF @drop_partitions != "" THEN
+                /*
+                   1. Build the SQL to drop all the necessary partitions.
+                   2. Run the SQL to drop the partitions.
+                   3. Print out the table partitions that were deleted.
+                */
+                SET @full_sql = CONCAT(@alter_header, @drop_partitions, ";");
+                PREPARE STMT FROM @full_sql;
+                EXECUTE STMT;
+                DEALLOCATE PREPARE STMT;
+                                
+
+                SELECT CONCAT(SCHEMANAME, ".", TABLENAME) AS `table`, @drop_partitions AS `partitions_deleted`;
+        ELSE
+                /*
+                   No partitions are being deleted, so print out "N/A" (Not applicable) to indicate
+                   that no changes were made.
+                */
+                SELECT CONCAT(SCHEMANAME, ".", TABLENAME) AS `table`, "N/A" AS `partitions_deleted`;
+        END IF;
+END$$
+DELIMITER ;
+```
+
+```
+partition_verify procedure:
+
+DELIMITER $$
+CREATE PROCEDURE `partition_verify`(SCHEMANAME VARCHAR(64), TABLENAME VARCHAR(64), HOURLYINTERVAL INT(11))
+BEGIN
+        DECLARE PARTITION_NAME VARCHAR(16);
+        DECLARE RETROWS INT(11);
+        DECLARE FUTURE_TIMESTAMP TIMESTAMP;
+
+        /*
+         * Check if any partitions exist for the given SCHEMANAME.TABLENAME.
+         */
+        SELECT COUNT(1) INTO RETROWS
+        FROM information_schema.partitions
+        WHERE table_schema = SCHEMANAME AND table_name = TABLENAME AND partition_name IS NULL;
+
+        /*
+         * If partitions do not exist, go ahead and partition the table
+         */
+        IF RETROWS = 1 THEN
+                /*
+                 * Take the current date at 00:00:00 and add HOURLYINTERVAL to it.  This is the timestamp below which we will store values.
+                 * We begin partitioning based on the beginning of a day.  This is because we don't want to generate a random partition
+                 * that won't necessarily fall in line with the desired partition naming (ie: if the hour interval is 24 hours, we could
+                 * end up creating a partition now named "p201403270600" when all other partitions will be like "p201403280000").
+                 */
+                SET FUTURE_TIMESTAMP = TIMESTAMPADD(HOUR, HOURLYINTERVAL, CONCAT(CURDATE(), " ", '00:00:00'));
+                SET PARTITION_NAME = DATE_FORMAT(CURDATE(), 'p%Y%m%d%H00');
+
+                -- Create the partitioning query
+                SET @__PARTITION_SQL = CONCAT("ALTER TABLE ", SCHEMANAME, ".", TABLENAME, " PARTITION BY RANGE(`clock`)");
+                SET @__PARTITION_SQL = CONCAT(@__PARTITION_SQL, "(PARTITION ", PARTITION_NAME, " VALUES LESS THAN (", UNIX_TIMESTAMP(FUTURE_TIMESTAMP), "));");
+
+                -- Run the partitioning query
+                PREPARE STMT FROM @__PARTITION_SQL;
+                EXECUTE STMT;
+                DEALLOCATE PREPARE STMT;
+        END IF;
+END$$
+DELIMITER ;
+```
+
+```
+partition_maintenance procedure:
+    DELIMITER $$
+CREATE PROCEDURE `partition_maintenance`(SCHEMA_NAME VARCHAR(32), TABLE_NAME VARCHAR(32), KEEP_DATA_DAYS INT, HOURLY_INTERVAL INT, CREATE_NEXT_INTERVALS INT)
+BEGIN
+        DECLARE OLDER_THAN_PARTITION_DATE VARCHAR(16);
+        DECLARE PARTITION_NAME VARCHAR(16);
+        DECLARE OLD_PARTITION_NAME VARCHAR(16);
+        DECLARE LESS_THAN_TIMESTAMP INT;
+        DECLARE CUR_TIME INT;
+
+        CALL partition_verify(SCHEMA_NAME, TABLE_NAME, HOURLY_INTERVAL);
+        SET CUR_TIME = UNIX_TIMESTAMP(DATE_FORMAT(NOW(), '%Y-%m-%d 00:00:00'));
+
+        SET @__interval = 1;
+        create_loop: LOOP
+                IF @__interval > CREATE_NEXT_INTERVALS THEN
+                        LEAVE create_loop;
+                END IF;
+
+                SET LESS_THAN_TIMESTAMP = CUR_TIME + (HOURLY_INTERVAL * @__interval * 3600);
+                SET PARTITION_NAME = FROM_UNIXTIME(CUR_TIME + HOURLY_INTERVAL * (@__interval - 1) * 3600, 'p%Y%m%d%H00');
+                IF(PARTITION_NAME != OLD_PARTITION_NAME) THEN
+                        CALL partition_create(SCHEMA_NAME, TABLE_NAME, PARTITION_NAME, LESS_THAN_TIMESTAMP);
+                END IF;
+                SET @__interval=@__interval+1;
+                SET OLD_PARTITION_NAME = PARTITION_NAME;
+        END LOOP;
+
+        SET OLDER_THAN_PARTITION_DATE=DATE_FORMAT(DATE_SUB(NOW(), INTERVAL KEEP_DATA_DAYS DAY), '%Y%m%d0000');
+        CALL partition_drop(SCHEMA_NAME, TABLE_NAME, OLDER_THAN_PARTITION_DATE);
+                
+                
+
+END$$
+DELIMITER ;
+```
+
+
+- A procedure to call other partitions
+```
+create maintenance_all procedure:
+    
+DELIMITER $$
+CREATE PROCEDURE `partition_maintenance_all`(SCHEMA_NAME VARCHAR(32))
+BEGIN
+               CALL partition_maintenance(SCHEMA_NAME, 'history', 365, 24, 90);
+                CALL partition_maintenance(SCHEMA_NAME, 'history_log', 365, 24, 90);
+                CALL partition_maintenance(SCHEMA_NAME, 'history_str', 365, 24, 90);
+                CALL partition_maintenance(SCHEMA_NAME, 'history_text', 365, 24, 90);
+                CALL partition_maintenance(SCHEMA_NAME, 'history_uint', 365, 24, 90);
+                CALL partition_maintenance(SCHEMA_NAME, 'trends', 730, 24, 90);
+                CALL partition_maintenance(SCHEMA_NAME, 'trends_uint', 730, 24, 90);
+END$$
+DELIMITER ;
+```
+
+- Sometimes for defragmented data of DB we can do ` optimize ` command. For example 200 GB of data would be 60 GB.
+- Attention: for optimizing a 200GB DB, we need 200GB of free space
+```
+# mariadb-check -o --all-databases
+
+SELECT table_name AS "Table", ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024, 2) AS "Data Size (MB)", ROUND(DATA_FREE / 1024 / 1024, 2) AS "Index Size (MB)" FROM information_schema.TABLES WHERE table_schema = "zabbix" order by ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024, 2) desc limit 20;
+
+ 
+ > use zabbix;
+ > optimize table history;
+```
+
+# Session 19 (21 on classes)
+## Migrate Tables to ElasticSearch
+- We can seperate 5 table of history and use elastic search instead of sql-based DBs
+- name of tables in elastic is mapping
+- name of indexing in elastic is template
+- 24:40 create mappings
+- 27:18 create templates
+- 30:56 pipelines
+- After making all configs on ElasticSearch, inside ` /etc/zabbix/zabbix_server.conf ` inside ` HistoryStorageURL=localhost:9200 ` we enter address of our Elastic search ` HistoryStorageURL=localhost:9200 ` and ` HistoryStorageType=uint,dbl,str,log,text ` and ` HistoryStorageDateIndex=1 `
+- It is best practice to keep ` uint & dbl ` inisde sql to use trends, but move ` str, log, text ` to ElasticSearch
+- For connecting zabbix_web to ElasticSearch ` /etc/zabbix/web/zabbix.conf.php ` add:
+```
+global $DB,$HISTORY;  #add at first line
+$HISTORY['url'] = 'http://localhost:9200';  #line 44
+$HISTORY['types'] = ['uint', 'text', 'dbl', 'log', 'str']  #line 49
+```
+
+- For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php ` 
+
+01:00
+
+# Session 20 (22 on classes)
+# Session 21 (23 on classes)
+# Session 22 (24 on classes)
 
 
 # Theoretical
@@ -1001,8 +1351,15 @@ baseline(/Eshop - service/eshop[MellatGW,Successful],5h:now/h,"w",1)<0.8
 - For restarting userParameters in zabbix-agent, you don't need to restart zabbix-agent.service. You can use ``` $ zabbix_agent2 -R userparameter_reload ```
 - Preprocessing in Items happens before saving in DB
 - In a host, all Item's keys should be unique
+- Zabbix Host is more of a namespace so it does not have to be assigned to a VM/Server with actual IP
+- use ` zabbix-java-gateway ` for monitoring java apps. You need to set config of ` javaGateWay & StartJavaPollers `  inside zabbix_servevr.conf file
+- For an API health chcek, we use ` web-scenario ` , If there is an API that we want to request for some data, we need to use ` HTTP AGENT ` 
+- Zabbix Server can't have load balancing but can be fail telorant. We can have passive zabbix servers for disaster
 
 ## Commands
+- ` $ zabbix_serevr -R config_cache_reload ` 
+- ` $ zabbix_serevr -R ha_status ` --> shows which passive cluster server is now online
+
 
 # Hands On
 
@@ -1016,6 +1373,11 @@ APA 🖖🏻
 - Macro functions: https://www.zabbix.com/documentation/current/en/manual/config/macros/macro_functions
 - Functions: https://www.zabbix.com/documentation/current/en/manual/appendix/functions
 
+### Cool tools
+- [tools.izi-it.io](tools.izi-it.io) --> a tool for calculating zabbix's DB
+- consul --> a discovery tool very good for prometheus
+- manageengine cmdb --> a good tool for asset Management
+- znuny --> open source Ticketing
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
