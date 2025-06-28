@@ -616,6 +616,15 @@ spec:
 - You can change staticPodPath via ` /var/lib/kubelet/config.yaml ` 
 - Since the component that checks for taints is kube-scheduler, then static-pods don't need a toleration for being deployed on master nodes
 
+## Drivers:
+### CRI (Container Runtime Interface)
+- containerd, docker, rkt, cri-o
+
+### CSI (Container Network Interface)
+- Calico, fFlannel, Cilium, Weaveworks
+
+### CNI (Container Storage Interface)
+- Local, Openstack, Amazon EBS, Dell EMC, GlusterFS, portworx
 
 # Kubernetes Course
 # Contents
@@ -1970,7 +1979,7 @@ users:
 - name: prod-user
 ```
 
-## Session 12 (14 on classes) - Security, Network Policy
+## Session 12 (14 on classes) - Security, Network Policy, Volumes
 ### Security
 #### Create KubeConfig for a user
 - instead of addressing files of certificaftes, we can put base64 value of them inside our KubeConfig
@@ -2107,11 +2116,12 @@ subjects:
 ```
 
 ### Network Policy
+- Network Policies only work on Calico
 - Outward data in network for a pod is called ` Egress `
 - Inward data in network for a pod is called ` Igress `
 
 - Using network Policy we restrict that only our back-end can send data to DB, or only frontend can access nginx
-- 
+- here we only allow the pod with app: green label to connect to our app: webserver
 ```
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -2134,6 +2144,46 @@ spec:
           protocol: TCP
 ```
 
+### Volumes
+- Only give developers PVC access
+- accessModes:
+  1. ReadOnlyMany --> can be mounted to many pods, with read access
+  2. ReadWriteOnce --> Only can be mounted to one pod at a time, with read-write access
+  3. ReadWriteMany --> can be mounted to many pods, with read-write access
+
+- PersistentVolumeReclaimPolicy:
+  1. Retain [default] --> a PVC that is being deleted, PV is still available but it is not accessible, it is only available for backup purposes
+  2. Delete --> when deleted PVC, PV is being deleted
+  3. Recycle --> a PVC that is being deleted, PV is available and accessible
+
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-vol1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 100Mi
+  hostPath:
+    path: /var/local/aaa
+  PersistentVolumeReclaimPolicy: Retain
+```
+
+- Take note that PV and PVC must have same accessModes
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+```
 
 video 14 --> 2:35
 slide 9  
