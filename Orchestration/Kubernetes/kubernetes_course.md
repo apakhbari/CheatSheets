@@ -2185,9 +2185,40 @@ spec:
       storage: 100Mi
 ```
 
+- Now we need to mount our volume to our pod
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-volume
+  namespace: dev
+spec:
+  Volumes:
+    - name: data-volume
+      PersistentVolumeClaim:
+        claimName: myclaim
+  containers:
+    - name: nginx-container
+      image: nginx:1.22
+      volumeMounts:
+        - mountPath: /data
+          name: data-volume
+```
+
+- for dynamic provisioning (storageClasses) we need to install its drivers
+- For having a storageClass, we need a shared storage, it does not work on local
+- when using storageClass we don't need to create PVs manually
+
+
+## Additional session: HA Master
 video 14 --> 2:35
 slide 9  
 Add contets to k8s_course
+
+##  Additional session: Ingress
+
+## Additional session: turn a docker project into k8s
+
 
 # Advanced Kubernetes Course
 # Sessions
