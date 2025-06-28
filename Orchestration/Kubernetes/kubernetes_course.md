@@ -1970,7 +1970,7 @@ users:
 - name: prod-user
 ```
 
-## Session 12 (14 on classes) - Security
+## Session 12 (14 on classes) - Security, Network Policy
 ### Security
 #### Create KubeConfig for a user
 - instead of addressing files of certificaftes, we can put base64 value of them inside our KubeConfig
@@ -2106,13 +2106,14 @@ subjects:
     name: "anisa"
 ```
 
-video 14 --> 2:00
-slide 9  
-Add contets to k8s_course
+### Network Policy
+- Outward data in network for a pod is called ` Egress `
+- Inward data in network for a pod is called ` Igress `
 
+- Using network Policy we restrict that only our back-end can send data to DB, or only frontend can access nginx
+- 
 ```
- =====
- apiVersion: networking.k8s.io/v1
+apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: webserver
@@ -2133,6 +2134,10 @@ spec:
           protocol: TCP
 ```
 
+
+video 14 --> 2:35
+slide 9  
+Add contets to k8s_course
 
 # Advanced Kubernetes Course
 # Sessions
