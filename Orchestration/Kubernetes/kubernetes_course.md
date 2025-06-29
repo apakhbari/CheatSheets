@@ -2214,6 +2214,8 @@ spec:
 
 
 ##  Additional session: Ingress
+09:43
+
 - metallb can give our loadbalance services external IPs
 - for doing so we need to install metallb first then make this resource of IPAddressPool
 - [https://metallb.universe.tf/installation/](https://metallb.universe.tf/installation/)
