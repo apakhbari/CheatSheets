@@ -29,7 +29,7 @@
 - CRD
 - Kube APIServer
 - ETCD Cluster
-- Kube Contreoller Manager
+- Kube Controller Manager
 - Kube Scheduler
 
 ### Worker Node
@@ -82,7 +82,7 @@
 - ` /etc/kubernetes/manifests/kube-scheduler.yaml `
 
 #### ETCD stores data
-- ` /var/lib/etcd
+- ` /var/lib/etcd `
 
 #### Kubelet certificates
 - ` /var/lib/kubelet/kubelet-node01.crt `
@@ -230,14 +230,17 @@
 ## Components:
 ### Master Nodes
 - manages k8s cluster
+---
 
 ### Worker Nodes
 - Applications are there
+---
 
 ### ETCD Cluster
 - It is for archiving everything. Key-value pair DB. Jason-based.
 - ETCD is an open source distributed key-value store used to hold and manage thecritical information that distributed systems need to keep running.
 - You can see its process: ` $ ps -aux | grep etcd `
+---
 
 ### Kube Scheduler
 - scheduled which workloads is going to be assigned to which worker
@@ -245,6 +248,7 @@
 1. Filter nodes: For example if it matches lable of node, It is going to be scheduled there. And if there is a taint on node, It is not going to be scheduled
 2. Rank Nodes (based on resources)
 - The component that checks for taints is kube-scheduler
+---
 
 ### Kube Controller Manager
 - Checks status of workers and workloads. In a 5 second interval check health of components.
@@ -274,12 +278,12 @@
 #### Deployment Controller
 #### Namespace Controller
 #### Endpoint Controller
-
+---
 
 ### Kube APIServer
 - A Manager which have to be informed for every interaction. Components do not talk to each other directly. The talk to API-Server and then API-Server communicate what have to be done. The only component that is connected to ETCD
 - You can see its process: ` $ ps -aux | grep kube-api `
-
+---
 
 ### Kubelet
 - Exists on master node + worker node. Have so many responsibilities. Kubelet does status checks to API-Server. Master node Kubelet checks
@@ -293,22 +297,27 @@
 
 - cAdvisor component of Kubelet has access to metrics of resourcse and can be used for monitoring solutions
 - livenessProbe, readinessProbe, startupProbe are part of kubelet
+---
 
 ### CRD (Container Runtime Engine)
 - A container controller
+---
 
 ### Kube Proxy
 - Exists on master node + worker node. Set Firewall Rules. For example for port forwarding
 - Create IPTables Rules for network of K8S
 - Services are transforming into IPtables firewall rules. Also take note that Services don't actually exists, They are logical constructs
 - Every 5 seconds Check for service creations/changes
+---
 
 ### Service
 - has 2 main pros:
 1. Load balancing (Round Robin by default)
 2. connecting via name, not IP
+---
 
 ### CoreDNS
+---
 
 ## Errors
 - CrashLoopBackoff: When container gets restarted so many times. So container creation has an error somewhere.
