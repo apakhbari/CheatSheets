@@ -2260,7 +2260,7 @@ metadata:
 - [https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters](https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters)
 - pay attention if you download resource from ` /cloud ` route it is making ingresses uisng LoadBalancer Service but if you create it using ` /bareMetal ` route it is making ingresses uisng NodePort Service 
 - we dont ` apply -f <RESOURCE ROUTE FOR INGRESS> ` we ` wget ` it and make ` deployment ` --> ` DeamonSet ` . Because for ingress working properly we need it on all our nodes.
-- If we are using Calico as our CNI, then there are some problems with ingress, so after installation we check for ` $ kubectl get svc -n ingress-nginx ` and then find the IP Address assigned to our ` LoadBalancer Controller ` here it is 192.168.1.240 and then we need to bind this IP Address to our Network card ` $ sudo ip addr add 192.168.1.50 dev enp0s3 `
+- If we are using Calico as our CNI, then there are some problems with ingress, so after installation we check for ` $ kubectl get svc -n ingress-nginx ` and then find the IP Address assigned to our ` LoadBalancer Controller ` this is address of our loadBalancer, here it is 192.168.1.240 and then we need to bind this IP Address to our Network card ` $ sudo ip addr add 192.168.1.50 dev enp0s3 `
 - default web page for our ingress controller is 404 not found
 - then we create a deployment and create a service for it to be exposed
 ```
@@ -2311,7 +2311,10 @@ spec:
 kubectl apply -f ingress-resource-1.yaml
 ```
 
-video 14 --> 2:35
+- Since we have set a host name in our ingress-resource-1, we need to define it in our ` /etc/hosts ` as such ` 192.168.1.240   nginx.example.com `
+- If we haven't assigned a hostname it was being routed perfectly with IP Address
+
+video --> 33:22
 slide 9  
 Add contets to k8s_course
 
