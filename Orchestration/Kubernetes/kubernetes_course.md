@@ -200,6 +200,8 @@
 
 ### Service
 - ` $ kubectl get endpoints nginx-svc ` 
+- ` $ kubectl expose deployment nginx-deploy-main --port 80 ` --> creating a fast ClusterIP service without writing yaml file 
+
 
 ### Cluster Maintenace
 - ` $ kubeadm upgrade plan `
@@ -2249,25 +2251,19 @@ spec:
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisment
 metadata:
-  name: example
+  name: first pool
   namespace: metallb-system
 ```
 
-
-video 14 --> 2:35
-slide 9  
-Add contets to k8s_course
-
-
-
+- Now we need to install ingress
+- [https://kubernetes.io/docs/concepts/services-networking/ingress/](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+- [https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters](https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters)
+- pay attention if you download resource from ` /cloud ` route it is making ingresses uisng LoadBalancer Service but if you create it using ` /bareMetal ` route it is making ingresses uisng NodePort Service 
+- we dont ` apply -f <RESOURCE ROUTE FOR INGRESS> ` we ` wget ` it and make ` deployment ` --> ` DeamonSet ` . Because for ingress working properly we need it on all our nodes.
+- If we are using Calico as our CNI, then there are some problems with ingress, so after installation we check for ` $ kubectl get svc -n ingress-nginx ` and then find the IP Address assigned to our ` LoadBalancer Controller ` here it is 192.168.1.240 and then we need to bind this IP Address to our Network card ` $ sudo ip addr add 192.168.1.50 dev enp0s3 `
+- default web page for our ingress controller is 404 not found
+- then we create a deployment and create a service for it to be exposed
 ```
-sudo ip addr add 192.168.1.50 dev enp0s3
-==========================================
-https://kubernetes.io/docs/concepts/services-networking/ingress/
-=====================================
-https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters
-
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -2288,10 +2284,13 @@ spec:
       - image: nginx
         name: nginx
 
-kubectl apply -f nginx-deploy-main.yaml
+$ kubectl apply -f nginx-deploy-main.yaml
 
-kubectl expose deployment nginx-deploy-main --port 80
+$ kubectl expose deployment nginx-deploy-main --port 80
+```
 
+- now we create an ingress
+```
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -2310,9 +2309,15 @@ spec:
             port:
               number: 80
 kubectl apply -f ingress-resource-1.yaml
-----------------------------------------------------------------
-kubectl delete -f ingress-resource-1.yaml
+```
 
+video 14 --> 2:35
+slide 9  
+Add contets to k8s_course
+
+
+
+```
 apiVersion: apps/v1
 kind: Deployment
 metadata:
