@@ -17,6 +17,11 @@
 - [acknowledgment](#acknowledgment)
 
 ## Different Parts of a perfect prompt
+1. AI Persona
+2. Context
+3. Task
+4. Format
+5. Tone
 
 ### AI Persona
 - Defines the role the AI should take, including expertise level and relevant skills.
