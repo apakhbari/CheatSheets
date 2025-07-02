@@ -227,6 +227,10 @@
 - ` $  kubectl get pods --server my-kube-playground:6443 --client-key admin.key --client-certificate admin.crt --certificate-authority ca.crt ` --> without creating kubeconfig file, by passing
 - ` $  kubectl --kubeconfig /root/.kube/config config use-context anisa@kubernete ` --> change context of KubeConfig
 
+### Curl Kubelet
+- ` $ curl localhost:10249/proxyMode `  --> returns iptables or ipvs
+
+
 ## Components:
 ### Master Nodes
 - manages k8s cluster
@@ -2228,6 +2232,9 @@ spec:
 - metallb can give our loadbalance services external IPs
 - for doing so we need to install metallb first then make this resource of IPAddressPool
 - [https://metallb.universe.tf/installation/](https://metallb.universe.tf/installation/)
+- After installation we need to config Layer 2 configurations
+- Metallb has 3 pods, 2 speaker for checking whether a loadBalancer service is being made and 1 controller
+
 - This L2Advertisment is for binding Ip Address to Network Card using ARP protocol
 ```
 apiVersion: metallb.io/v1beta1
@@ -2244,7 +2251,6 @@ kind: L2Advertisment
 metadata:
   name: example
   namespace: metallb-system
-
 ```
 
 
