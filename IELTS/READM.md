@@ -3,6 +3,32 @@
 
 ```
 
+## Layout
+1. Listening
+2. Reading
+3. Writing
+4. Speaking
+
+## tips & Tricks
+- Listening & Speaking of IELTS general and Academic are exactly the same
+
+## Listening
+- normally first one in exam
+- 30 minutes long witha an additional 10 minutes transfer time at the end
+- tape is only played once
+- It has 4 section, each 10 questions. Total 40 questions in listening
+- you may be asked to anser:
+    - multiple choice questions
+    - label a plan, map or diagram
+    - fill in a form
+    - complete a table
+    - complete a flow-chart
+    - give short answers
+- section 1 is easiest and section 4 is the hardest
+- Section 1: you will hear a conversation between two people. It tests your basic English such as names and numbers
+-
+
+
 # acknowledgment
 ## Contributors
 
