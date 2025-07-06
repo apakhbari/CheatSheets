@@ -2226,11 +2226,130 @@ spec:
 
 
 ## Additional session: HA Master
+- one way of HA for masters is to have a LoadBalancer in front of master nodes. So worker nodes request LoadBalancer and then LB propagates requests. The Master nodes are also connecting to each other using LB. Since everything is passed uisng API-Server, LB needs to listen on port 6443
+- in this model we are using stacked ETCD, which means it is inside of master nodes.
+- This is good for small/medium scale workflows
+- for achieving so we have 3 methods:
+  1. external LB [we do this] --> a disadvantage of this approach is we have a single point of failure, so if our LB fails, we are in real problem
+  2. keepalived & HAProxy --> We deploy it on our nodes using Deamonset.. we deploy a HA-Proxy pod on each of our nodes, then using keepalived we assign a virtual IP to our HAProxy. A node should be leader and we assign IP of this Leader node to our keepalived virtual IP
+  3. kube-vip: It is a sum of keepalived & HAProxy. So it will do both of their work. We deploy it on our nodes using Deamonset.
 
+doing first method: external LB:
+- we need to ` --uplad-certs ` if we don't then we have to copy certificates manually to all of our master nodes
+```
+$ sudo kubeadm init \
+  --kubernetes-version $K8S_VERSION \
+  --apiserver-advertise-address $NODE_IP \
+  --apiserver-bind-port $LOCAL_ LISTEN_PORT \
+  --pod-network-cidr $POD_CIDR \
+  --control-plane-endpoint $LOADBALANCER_DNS_NAME:$PORT \
+  --upload-certs
+
+OR
+
+cluster-config.yaml
+
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: $NODE_IP
+  bindPort: $LOCAL_LISTEN_ PORT
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+clusterName: $CLUSTER_NAME
+kubernetesVersion: $K8S_VERSION
+controlPlaneEndpoint: $LOADBALANCER_DNS_NAME: $PORT
+networking:
+  podSubnet: $POD_CIDR
+
+$ sudo kubeadm init --config cluster.config.yaml --uplad-certs
+```
+
+- for joining master
+```
+$ kubeadm join $LOADBALANCER_DNS_NAME:$PORT \
+  --control-plane \
+  --apiserver-advertise-address SNODE_IP \
+  --apiserver-bind-port $LOCAL_LISTEN_PORT \
+  --apiserver-bind-port $PORT \
+  --token $TOKEN \
+  --discovery-token-ca-cert-hash sha256:$CA_CERT_HASH \
+  --certificate-key $CERTIFICATE_KEY \
+  --ignore-preflight-errors DirAvailable--etc-kubernetes-manifests
+```
+
+- for joining worker
+```
+$ kubeadm join $LOADBALANCER_DNS_NAME:$PORT \
+  --token $TOKEN \
+  --discovery-token-ca-cert-hash sha256:$CA_CERT_HASH \
+  --certificate-key $CERTIFICATE_KEY \
+```
+
+
+video 2 --> 00:00
+slide 9  
+Add contets to k8s_course
+
+```
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/
+
+https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing
+-------------------------------------------------
+Ha-Proxy:
+===========
+/etc/haproxy/haproxy.cfg
+---------------------------------------
+frontend apiserver
+        bind *:6443
+        mode tcp
+        option tcplog
+        default_backend apiserver
+backend apiserver
+        option httpchk GET /healthz
+        http-check expect status 200
+        mode tcp
+        option ssl-hello-chk
+        balance     roundrobin
+            server Master1 Master1:6443 check
+            server Master2 Master2:6443 check
+            server Master3 Master3:6443 check
+
+-------------------------------------------------------------
+haproxy -f /etc/haproxy/haproxy.cfg -c
+service haproxy restart
+==============================================================================
+
+cluster.yaml >> Master1
+==================================================================
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: 192.168.1.5
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+clusterName: ha-kubernetes
+kubernetesVersion: v1.24.11
+controlPlaneEndpoint: 192.168.1.9:6443
+networking:
+  podSubnet: 10.10.0.0/16
+------------------------------------------------------------------------------------
+Master1:
+sudo kubeadm init --config cluster.yaml --upload-certs
+
+--apiserver-advertise-address <each_master_IP> >> end of master join command
+=====================================================================================
+Recreate master join command:
+1- kubeadm init phase upload-certs --upload-certs >> That will generate a new certificate key
+2- kubeadm token create --print-join-command --ttl=24h >> Print join command 
+3- $JOIN_COMMAND_FROM_STEP2 --control-plane --certificate-key $KEY_FROM_STEP1 >> Join a new control plane node 
+==========================================================================
+kubectl get pod -n kube-system 
+```
 
 ##  Additional session: Ingress
-09:43
-
 - metallb can give our loadbalance services external IPs
 - for doing so we need to install metallb first then make this resource of IPAddressPool
 - [https://metallb.universe.tf/installation/](https://metallb.universe.tf/installation/)
@@ -2314,12 +2433,8 @@ kubectl apply -f ingress-resource-1.yaml
 - Since we have set a host name in our ingress-resource-1, we need to define it in our ` /etc/hosts ` as such ` 192.168.1.240   nginx.example.com `
 - If we haven't assigned a hostname it was being routed perfectly with IP Address
 
-video --> 33:22
-slide 9  
-Add contets to k8s_course
 
-
-
+- Now  we want to assign a sub-domain to our workflow
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -2354,6 +2469,7 @@ spec:
         - name: webdata
           mountPath: "/usr/share/nginx/html"
 
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -2386,10 +2502,10 @@ spec:
         volumeMounts:
         - name: webdata
           mountPath: "/usr/share/nginx/html"
-		  
-kubectl apply -f nginx-deploy-blue.yaml -f nginx-deploy-green.yaml
-kubectl expose deployment nginx-deploy-blue --port 80	  
-kubectl expose deployment nginx-deploy-green --port 80
+
+$ kubectl apply -f nginx-deploy-blue.yaml -f nginx-deploy-green.yaml
+$ kubectl expose deployment nginx-deploy-blue --port 80	  
+$ kubectl expose deployment nginx-deploy-green --port 80
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -2429,9 +2545,16 @@ spec:
             port:
               number: 80
 
-kubectl apply -f ingress-resource-2.yaml
---------------------------------------------------------------------------
-kubectl delete -f ingress-resource-2.yaml
+$ kubectl apply -f ingress-resource-2.yaml
+
+now we have to add green.nginx.example.com & blue.nginx.example.com to our /etc/hosts with IP Address of our LoadBalancer which is 192.168.1.240
+```
+
+- We can achieve so with different routes
+- when we have multiple routes we need to ` metadata: annotations: nginx.ingress.kubernetes.io/rewrite-target: / `
+- writing `   ingressClassName: nginx ` is mandatory 
+```
+$ kubectl delete -f ingress-resource-2.yaml
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -2467,7 +2590,7 @@ spec:
             port:
               number: 80
 			  
-kubectl apply -f ingress-resource-3.yaml	
+$ kubectl apply -f ingress-resource-3.yaml
 ```
 
 ## Additional session: turn a docker project into k8s
