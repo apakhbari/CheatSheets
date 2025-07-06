@@ -1,6 +1,12 @@
 # IELTS (General)
 ```
-
+ ___   _______  ___      _______  _______ 
+|   | |       ||   |    |       ||       |
+|   | |    ___||   |    |_     _||  _____|
+|   | |   |___ |   |      |   |  | |_____ 
+|   | |    ___||   |___   |   |  |_____  |
+|   | |   |___ |       |  |   |   _____| |
+|___| |_______||_______|  |___|  |_______|
 ```
 
 ## Layout
@@ -34,53 +40,6 @@ secstion 4: You will hear 1 person talking about an academic subject. For ecampl
 
 - The key to getting a high mark is understanding the layout of the exam.
 
-- a hour, 9:30 AM
-- Helendale
-- central street
-- 792
-- 8:55
-
-- 1.80
-- 7:30
-- 7.15
-- commute
-- Tour
-
-- C
-- C
-- A
-- B
-
-- first year
-- balance
-- international students
-- relaxation
-- motivation
-- research
-
-- the secret garden
-- 20th century
-- walk
-- motivations
-- abstract ideas
-- roses
-- darkness to lightness
-- health
-- enviornment
-- companionship
-
-- negative
-- pleasure
-- fate
-- active
-- fate
-
-- B
-- A
-- A
-- A
-- B
-
 ## Reading
 - Academic is differnet from general
 - reading is 60 mins long
@@ -109,23 +68,57 @@ secstion 4: You will hear 1 person talking about an academic subject. For ecampl
 
 - Tip: only read the title of text so you know what the text is about, then go and read the questions + underline any key words, then scan the text for answers
 
+## Writing
+- 60 mins in total, 20 mins on task 1, 40 mins on task 2
+- There are 2 tasks
+- task 1: YOu have to respond to a situation by writing a letter to: request information or explain situation.
+- task 1 is always a letter. It may be a personal letter, a formal letter or a semi-formal letter
+- at least 150 words
+- You don't have to write any addresses on your letter
+- task 2: You have to write a response to the question giving reasons and examples to support your answer. It is an essay style question. The topics are always of general interest. This essay does not have to be as formal and can have a more personal approach.
+- at least 250 words.
+- Haardest part of IELTS
+- You will be marked on your:
+  - ability to answer the question
+  - grammer an vocabulary
+  - ability to structure your essay and use connective words (to begin with, however, for instance)
+
+- Structuring your essay means having and introduction, a body (2 paragraph) and a conclusin
+  - Introduction: **3** sentences that state some basic facts and whether you agree or disagree with the statement. The most important paragraph in your essay as it shows the examiner if you understood the question
+  - body: must consist of **2** paragraphs.
+  - conclusion: must be short and relevant in **3** sentences. You should give a conclusion phrase, give your opinion and use information from the body of your essay to support your opinion. It is important to re-word this information from the body of your essay.
+
+## Speaking
+- one-to-one conversation
+- It is basically an interview
+- takes 11-14 minutes and is recorded
+- It is 3 parts:
+part 1:
+- examiner introduces himself/herself and checks your name. The examiner asks you a series of questions about: yourself, your family, your work, what you study, your friends, your hobbies.
+- the types of questions are: where are you from - describe yourself - Tell me about your family - Why are you studiyng English
+- 4-5 minutes
+- easiest part of the test
+
+part 2:
+- Examiner will give you a written task card which will ask you to speak about a particular topic.
+- You will get 1 minute to prepare your talk befor you have to speak.
+- You will then speak for 1-2 minutes and after this your examiner will ask you 1-2 questions.
+- Part 2 is harder than part 1 as it tests your ability to talk about a particular topic, develop your ideas about this topic, use relevant grammer and vocabulary
+
+part 3:
+- Examminer will ask you questions linked to part 2
+- It is a two way discussions
+
+
+- Tips:
+
+
 # acknowledgment
 ## Contributors
 
 APA 🖖🏻
 
 ## Links
-### Initializing a k8s cluster
-- [https://https://kubernetes.io/releases/](https://https://kubernetes.io/releases/)
-- [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
-- calico: [https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart](https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart)
-
-### Proxy
-- [https://github.com/myxuchangbin/dnsmasq_sniproxy_install](https://github.com/myxuchangbin/dnsmasq_sniproxy_install)
-
-### Cool tools
-- [velero.io](https://velero.io/) --> a cool tool for backuping stuff in clusters
-- Openpolicy agent --> webhook authorization
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
