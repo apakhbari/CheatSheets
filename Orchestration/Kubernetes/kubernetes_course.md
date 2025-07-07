@@ -2226,6 +2226,9 @@ spec:
 
 
 ## Additional session: HA Master
+- [https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/)
+- [https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing](https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing)
+
 - one way of HA for masters is to have a LoadBalancer in front of master nodes. So worker nodes request LoadBalancer and then LB propagates requests. The Master nodes are also connecting to each other using LB. Since everything is passed uisng API-Server, LB needs to listen on port 6443
 - in this model we are using stacked ETCD, which means it is inside of master nodes.
 - This is good for small/medium scale workflows
@@ -2235,6 +2238,7 @@ spec:
   3. kube-vip: It is a sum of keepalived & HAProxy. So it will do both of their work. We deploy it on our nodes using Deamonset.
 
 doing first method: external LB:
+- Take note that in this approach, traffic that is related to API-server is loadbalanced but syncing data between ETCDs, port 2380 is not going to pass throgh our HAProxy
 - we need to ` --uplad-certs ` if we don't then we have to copy certificates manually to all of our master nodes
 ```
 $ sudo kubeadm init \
@@ -2287,26 +2291,33 @@ $ kubeadm join $LOADBALANCER_DNS_NAME:$PORT \
   --certificate-key $CERTIFICATE_KEY \
 ```
 
-
-video 2 --> 00:00
-slide 9  
-Add contets to k8s_course
-
+- Now let's configure our HAProxy
+- take note that we need to add ip address of our masters in ` /etc/hosts ` file such as ` ... 192.168.1.5   Master1 ... ` 
 ```
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/ha-topology/
-
-https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing
--------------------------------------------------
-Ha-Proxy:
-===========
-/etc/haproxy/haproxy.cfg
+$ vim /etc/haproxy/haproxy.cfg
 ---------------------------------------
-frontend apiserver
+defaulte
+        log   global
+        mode  http
+        option  httplog
+        option  dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+        errorfile 400 /etc/haproxy/errors/400.http
+        errorfile 403 /etc/haproxy/errors/403.http
+        errorfile 408 /etc/haproxy/errors/408.http
+        errorfile 500 /etc/haproxy/errors/500.http
+        errorfile 502 /etc/haproxy/errors/502.http
+        errorfile 503 /etc/haproxy/errors/503.http
+        errorfile 504 /etc/haproxy/errors/504.http
+
+frontend apiserver    <-- What is being exposed to outside, it listens on port 6443
         bind *:6443
         mode tcp
         option tcplog
         default_backend apiserver
-backend apiserver
+backend apiserver   <-- Where to pass traffic to
         option httpchk GET /healthz
         http-check expect status 200
         mode tcp
@@ -2315,12 +2326,12 @@ backend apiserver
             server Master1 Master1:6443 check
             server Master2 Master2:6443 check
             server Master3 Master3:6443 check
+```
+- now let's check if our config file is valid ` $ haproxy -f /etc/haproxy/haproxy.cfg -c `
+- ` $ service restart haproxy ` 
 
--------------------------------------------------------------
-haproxy -f /etc/haproxy/haproxy.cfg -c
-service haproxy restart
-==============================================================================
-
+- Now let's create our cluster config file
+```
 cluster.yaml >> Master1
 ==================================================================
 apiVersion: kubeadm.k8s.io/v1beta3
@@ -2332,22 +2343,25 @@ apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 clusterName: ha-kubernetes
 kubernetesVersion: v1.24.11
-controlPlaneEndpoint: 192.168.1.9:6443
+controlPlaneEndpoint: 192.168.1.9:6443    <-- HAProxy IP Address
 networking:
   podSubnet: 10.10.0.0/16
-------------------------------------------------------------------------------------
-Master1:
-sudo kubeadm init --config cluster.yaml --upload-certs
-
---apiserver-advertise-address <each_master_IP> >> end of master join command
-=====================================================================================
-Recreate master join command:
-1- kubeadm init phase upload-certs --upload-certs >> That will generate a new certificate key
-2- kubeadm token create --print-join-command --ttl=24h >> Print join command 
-3- $JOIN_COMMAND_FROM_STEP2 --control-plane --certificate-key $KEY_FROM_STEP1 >> Join a new control plane node 
-==========================================================================
-kubectl get pod -n kube-system 
 ```
+
+- Now it's time to init our cluster, on Master 1:
+```
+$ sudo kubeadm init --config cluster.yaml --upload-certs
+```
+
+- If we lost our node join command, how we can re-make it?
+1. ` $ kubeadm init phase upload-certs --upload-certs ` --> That will generate a new certificate key
+2. ` $ kubeadm token create --print-join-command --ttl=24h ` --> Print join command 
+3. ` $JOIN_COMMAND_FROM_STEP2 --control-plane --certificate-key $KEY_FROM_STEP1 ` --> Join a new control plane node 
+
+- After we joined all nodes, It's time to install Calico. we first install tigera-operator, then install calico by CRDs. Take note that we don't install calico CRD, we need to do some changes on it, so we wget it's CRD, then change it's CIDR to ours. It is now good to ` apply -f `
+- After installing Calico, our work is done and complete.
+
+
 
 ##  Additional session: Ingress
 - metallb can give our loadbalance services external IPs
@@ -2594,7 +2608,9 @@ $ kubectl apply -f ingress-resource-3.yaml
 ```
 
 ## Additional session: turn a docker project into k8s
-
+video 2 --> 00:00
+slide 9  
+Add contets to k8s_course
 
 # Advanced Kubernetes Course
 # Sessions
