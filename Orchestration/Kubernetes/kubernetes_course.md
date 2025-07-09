@@ -2608,6 +2608,7 @@ $ kubectl apply -f ingress-resource-3.yaml
 ```
 
 ## Additional session: turn a docker project into k8s
+
 video 2 --> 00:00
 slide 9  
 Add contets to k8s_course
