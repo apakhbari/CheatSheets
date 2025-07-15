@@ -1366,6 +1366,7 @@ add contents to zabbix_course
 - For an API health chcek, we use ` web-scenario ` , If there is an API that we want to request for some data, we need to use ` HTTP AGENT ` 
 - Zabbix Server can't have load balancing but can be fail telorant. We can have passive zabbix servers for disaster
 - For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php `
+- When using dockerized zabbix agent, instead of IP, assign name of container in ` DNS Name ` of host
 
 ## Commands
 - ` $ zabbix_serevr -R config_cache_reload ` 
