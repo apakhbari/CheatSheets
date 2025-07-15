@@ -1330,9 +1330,15 @@ $HISTORY['url'] = 'http://localhost:9200';  #line 44
 $HISTORY['types'] = ['uint', 'text', 'dbl', 'log', 'str']  #line 49
 ```
 
-- For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php ` 
+- For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php `
 
-01:00
+## Performance tuning
+- each zabbix poler is looked upon as an open file from OS narrative, so we ` $ systemctl edit zabbix-server.service ` and edit
+```
+limitNOFILE = 65536:1048576   --> default is 1024 before version 7 of zabbix
+limitNPROC = 65536:1048576
+
+``` 
 
 # Session 20 (22 on classes)
 # Session 21 (23 on classes)
@@ -1355,6 +1361,7 @@ $HISTORY['types'] = ['uint', 'text', 'dbl', 'log', 'str']  #line 49
 - use ` zabbix-java-gateway ` for monitoring java apps. You need to set config of ` javaGateWay & StartJavaPollers `  inside zabbix_servevr.conf file
 - For an API health chcek, we use ` web-scenario ` , If there is an API that we want to request for some data, we need to use ` HTTP AGENT ` 
 - Zabbix Server can't have load balancing but can be fail telorant. We can have passive zabbix servers for disaster
+- For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php `
 
 ## Commands
 - ` $ zabbix_serevr -R config_cache_reload ` 
@@ -1372,6 +1379,7 @@ APA 🖖🏻
 ## Links
 - Macro functions: https://www.zabbix.com/documentation/current/en/manual/config/macros/macro_functions
 - Functions: https://www.zabbix.com/documentation/current/en/manual/appendix/functions
+- Docker-Compose: https://github.com/zabbix/zabbix-docker
 
 ### Cool tools
 - [tools.izi-it.io](tools.izi-it.io) --> a tool for calculating zabbix's DB
