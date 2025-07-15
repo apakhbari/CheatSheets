@@ -1337,8 +1337,12 @@ $HISTORY['types'] = ['uint', 'text', 'dbl', 'log', 'str']  #line 49
 ```
 limitNOFILE = 65536:1048576   --> default is 1024 before version 7 of zabbix
 limitNPROC = 65536:1048576
+```
 
-``` 
+- Docker-Compose: https://github.com/zabbix/zabbix-docker
+
+add contents to zabbix_course
+
 
 # Session 20 (22 on classes)
 # Session 21 (23 on classes)
@@ -1351,7 +1355,7 @@ limitNPROC = 65536:1048576
 ## Components
 
 ## Files & directories
-
+ 
 ## Tips & Tricks
 - If you don't save an item via history, you can't have trigger on it.
 - For restarting userParameters in zabbix-agent, you don't need to restart zabbix-agent.service. You can use ``` $ zabbix_agent2 -R userparameter_reload ```
