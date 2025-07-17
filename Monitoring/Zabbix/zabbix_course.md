@@ -1350,6 +1350,7 @@ limitNPROC = 65536:1048576
 
 
 add contents to zabbix_course
+02:18
 
 # Session 21 (23 on classes)
 # Session 22 (24 on classes)
@@ -1374,6 +1375,7 @@ add contents to zabbix_course
 - For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php `
 - When using dockerized zabbix agent, instead of IP, assign name of container in ` DNS Name ` of host
 - All users in zabbix must be assigned to a user group, if not assigned to a user group, users can't have any access towards zabbix's data
+- In GUI menu of zabbix, for working time ` 1-3,08:00-16:00;6-7:08:00-16:00;4-4,08:00-12:00 ` for monday to tuesday + saturday to thursday, thursday from 08 to 12:00. --> This one helps us in visualizing graphs of zabbix by gray outing weekends in graphs
 
 
 ## Commands
