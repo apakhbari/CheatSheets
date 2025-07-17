@@ -1373,6 +1373,8 @@ add contents to zabbix_course
 - Zabbix Server can't have load balancing but can be fail telorant. We can have passive zabbix servers for disaster
 - For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php `
 - When using dockerized zabbix agent, instead of IP, assign name of container in ` DNS Name ` of host
+- All users in zabbix must be assigned to a user group, if not assigned to a user group, users can't have any access towards zabbix's data
+
 
 ## Commands
 - ` $ zabbix_serevr -R config_cache_reload ` 
