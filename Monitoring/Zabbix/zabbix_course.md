@@ -1341,10 +1341,16 @@ limitNPROC = 65536:1048576
 
 - Docker-Compose: https://github.com/zabbix/zabbix-docker
 
-add contents to zabbix_course
 
 
 # Session 20 (22 on classes)
+## Monitoring docker socket with zabbix
+- we need to ` $ usermod zabbix -aG docker `
+- If we are mounting docker volume inside our container, We need to monut ` /var/run/docker.sock ` inside our container
+
+
+add contents to zabbix_course
+
 # Session 21 (23 on classes)
 # Session 22 (24 on classes)
 
