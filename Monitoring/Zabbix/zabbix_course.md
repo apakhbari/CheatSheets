@@ -1347,12 +1347,70 @@ limitNPROC = 65536:1048576
 ## Monitoring docker socket with zabbix
 - we need to ` $ usermod zabbix -aG docker `
 - If we are mounting docker volume inside our container, We need to monut ` /var/run/docker.sock ` inside our container
+```
+Monitoring Docker images using zabbix agent 2 container:
 
+    # docker rm -f zabbix-agent2
+    # docker run --name zabbix-agent2 --network=zabbix-net  -e ZBX_SERVER_HOST="zabbix-server-mysql" -e ZBX_HOSTNAME="Zabbix server - with docker"  -e TZ="Asia/Tehran" -v /var/run/docker.sock:/var/run/docker.sock --privileged -d zabbix/zabbix-agent2
 
-add contents to zabbix_course
-02:18
+find its container Id with:
+
+    # docker ps
+    # docker exec --user root -ti <container_id> /bin/bash
+
+    # addgroup docker -g $(ls -lg /var/run/docker.sock | cut -d " " -f 3)
+    # addgroup zabbix docker
+
+    # docker restart zabbix-agent2
+
+on zabbix ui:
+
+    add docker template to host
+```
+
+- for checking if our proxy is working perfectly, inside adminstration we can check for  ` queue details ` which show us values that are being queued, so if it has an enourmous number, it is best practitce to tune our resources
+
+## Security
+```
+Encryptyion in zabbix:
+    
+On Zabbix Server:
+    # cd /var/lib/zabbix/
+    # sudo -u zabbix mkdir certs
+    # chmod 700 certs/
+    # cd certs/
+
+Creating CA:
+            
+    # sudo -u zabbix openssl genrsa -aes256 -out /var/lib/zabbix/certs/zabbix_ca.key 4096
+    # sudo -u zabbix openssl req -x509 -new  -key /var/lib/zabbix/certs/zabbix_ca.key -sha256 -days 3650 -out /var/lib/zabbix/certs/zabbix_ca.crt
+    
+        ****************************************************
+Creating Zabbix Agent Certificate:
+    
+    # sudo -u zabbix openssl genrsa -aes256 -out /var/lib/zabbix/certs/zabbix_agent.key 2048
+  
+   # sudo -u zabbix openssl rsa -in /var/lib/zabbix/certs/zabbix_agent.key -out /var/lib/zabbix/certs/zabbix_agent1.key   --> For remoivng its pass-phrase
+   
+   # sudo -u zabbix mv /var/lib/zabbix/certs/zabbix_agent{1,}.key
+   
+   # sudo -u zabbix openssl req -new -key /var/lib/zabbix/certs/zabbix_agent.key -out /var/lib/zabbix/certs/zabbix_agent.csr
+   
+   # sudo -u zabbix openssl x509 -req -in /var/lib/zabbix/certs/zabbix_agent.csr -CA /var/lib/zabbix/certs/zabbix_ca.crt -CAkey /var/lib/zabbix/certs/zabbix_ca.key -CAcreateserial -out /var/lib/zabbix/certs/zabbix_agent.crt -days 1460 -sha256
+```
+
+- now we need to go to ` /etc/zabbix/zabbix_agent.conf ` and add configurations for tls key and add
+```
+TLSCAFile=/var/lib/zabbix/certs/zabbix_ca.crt
+TLSCertFIle=/var/lib/zabbix/certs/zabbix_agent.crt
+TLSKeyFIle=/var/lib/zabbix/certs/zabbix_agent.key
+```
 
 # Session 21 (23 on classes)
+add contents to zabbix_course
+00:00
+
+
 # Session 22 (24 on classes)
 
 
