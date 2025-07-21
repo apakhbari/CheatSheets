@@ -1401,6 +1401,8 @@ Creating Zabbix Agent Certificate:
 
 - now we need to go to ` /etc/zabbix/zabbix_agent.conf ` and add configurations for tls key and add
 ```
+TLSAccept=cert    --> For passive
+TLSConnect=cert     --> For active
 TLSCAFile=/var/lib/zabbix/certs/zabbix_ca.crt
 TLSCertFIle=/var/lib/zabbix/certs/zabbix_agent.crt
 TLSKeyFIle=/var/lib/zabbix/certs/zabbix_agent.key
