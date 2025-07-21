@@ -1572,15 +1572,15 @@ On zabbix Proxy:
 
 - Secure Web front end
 ```    
-    # dnf install mod_ssl
-    # mkdir -p /etc/httpd/ssl/private
-    # chmod 700 /etc/httpd/ssl/private
+# dnf install mod_ssl
+# mkdir -p /etc/httpd/ssl/private
+# chmod 700 /etc/httpd/ssl/private
     
-    # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/httpd/ssl/private/apache-selfsigned.key -out /etc/httpd/ssl/apache-selfsigned.crt
+# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/httpd/ssl/private/apache-selfsigned.key -out /etc/httpd/ssl/apache-selfsigned.crt
     
     
-    # vim /etc/httpd/conf.d/ssl.conf
-    line 59: DocumentRoot "/usr/share/zabbix"
+# vim /etc/httpd/conf.d/ssl.conf
+line 59: DocumentRoot "/usr/share/zabbix"
 line 60: ServerName zabbix.anisa.local:443
 line 100: SSLCertificateFile /etc/httpd/ssl/apache-selfsigned.crt
 
