@@ -1416,6 +1416,15 @@ TLSKeyFIle=/var/lib/zabbix/certs/zabbix_server.key
 ```
 
 - In order to have our UI work, we need to go and assign ` Encryption > Connection to host ` or ` Encryption > Connection from host ` from no encryption to Certificate
+- Issuer and subject in this UI can double check our certificate, for finding this data we can
+```
+to Get Agent Issuer and Subject:   
+$ openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nostr,dump_unknown,dump_der,sep_comma_plus,dn_rev,sname -in /var/lib/zabbix/certs/zabbix_agent.crt
+    
+to Get Server Issuer and Subject:
+$ openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nostr,dump_unknown,dump_der,sep_comma_plus,dn_rev,sname -in /var/lib/zabbix/certs/zabbix_server.crt
+    
+```
 
 # Session 21 (23 on classes)
 add contents to zabbix_course
