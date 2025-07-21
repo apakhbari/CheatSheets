@@ -1589,6 +1589,9 @@ line 107: SSLCertificateKeyFile /etc/httpd/ssl/private/apache-selfsigned.key
 # firewall-cmd --reload
 ```
 
+## Network Map
+- It is possible to use macros inside maps, we also can use macros as labels in our map, so for example on our link line we can have ` server -- {?last(/Eshop - service/eshop[MellatGW,Successful])} --> MellatGW `
+
 add contents to zabbix_course
 02:00
 
