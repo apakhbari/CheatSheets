@@ -1408,6 +1408,13 @@ TLSCertFIle=/var/lib/zabbix/certs/zabbix_agent.crt
 TLSKeyFIle=/var/lib/zabbix/certs/zabbix_agent.key
 ```
 
+- now we need to go to ` /etc/zabbix/zabbix_server.conf ` and add configurations for tls key and add
+```
+TLSCAFile=/var/lib/zabbix/certs/zabbix_ca.crt
+TLSCertFIle=/var/lib/zabbix/certs/zabbix_server.crt
+TLSKeyFIle=/var/lib/zabbix/certs/zabbix_server.key
+```
+
 # Session 21 (23 on classes)
 add contents to zabbix_course
 00:00
