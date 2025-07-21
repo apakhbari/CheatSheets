@@ -1415,6 +1415,8 @@ TLSCertFIle=/var/lib/zabbix/certs/zabbix_server.crt
 TLSKeyFIle=/var/lib/zabbix/certs/zabbix_server.key
 ```
 
+- In order to have our UI work, we need to go and assign ` Encryption > Connection to host ` or ` Encryption > Connection from host ` from no encryption to Certificate
+
 # Session 21 (23 on classes)
 add contents to zabbix_course
 00:00
