@@ -1437,9 +1437,6 @@ $ openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nost
 29,768 + 38,752
 
 # Session 21 (23 on classes)
-add contents to zabbix_course
-00:00
-
 - Encryptyion in zabbix:
 ```
 On Zabbix Server:
@@ -1591,6 +1588,9 @@ line 107: SSLCertificateKeyFile /etc/httpd/ssl/private/apache-selfsigned.key
 # firewall-cmd --add-service=https --permanent
 # firewall-cmd --reload
 ```
+
+add contents to zabbix_course
+02:00
 
 # Session 22 (24 on classes)
 
