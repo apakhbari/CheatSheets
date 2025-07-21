@@ -1422,9 +1422,19 @@ to Get Agent Issuer and Subject:
 $ openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nostr,dump_unknown,dump_der,sep_comma_plus,dn_rev,sname -in /var/lib/zabbix/certs/zabbix_agent.crt
     
 to Get Server Issuer and Subject:
-$ openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nostr,dump_unknown,dump_der,sep_comma_plus,dn_rev,sname -in /var/lib/zabbix/certs/zabbix_server.crt
-    
+$ openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nostr,dump_unknown,dump_der,sep_comma_plus,dn_rev,sname -in /var/lib/zabbix/certs/zabbix_server.crt 
 ```
+
+- Now we put Issuer and subject of agent_cert inside zabbix UI, then put Issuer and subject of server_cert in agent config
+```
+# vim /etc/zabbix/zabbix_agent2.conf
+    line 399=> TLSServerCertIssuer=CN=zabbix_ca,OU=Monitoring,O=Anisa,L=Tehran,ST=Tehran,C=IR    
+    line 406 => TLSServerCertSubject=CN=zabbix_server,OU=Monitoring,O=Anisa,L=Tehran,ST=Tehran,C=IR
+    
+# systemctl restart zabbix-agent2.service
+```
+
+29,768 + 38,752
 
 # Session 21 (23 on classes)
 add contents to zabbix_course
@@ -1460,10 +1470,8 @@ Creating CA:
 $ zabbix_get -s 127.0.0.1 -k agent.ping --tls-connect cert --tls-ca-file /var/lib/zabbix/certs/zabbix_ca.crt --tls-key-file /var/lib/zabbix/certs/zabbix_server.key --tls-cert-file /var/lib/zabbix/certs/zabbix_server.crt
 ```
 
-
- ```
-Creating Zabbix Server Certificate:
-    
+- Creating Zabbix Server Certificate:
+ ```    
    # sudo -u zabbix openssl genrsa -aes256 -out /var/lib/zabbix/certs/zabbix_server.key 2048
     
     # sudo -u zabbix openssl rsa -in /var/lib/zabbix/certs/zabbix_server.key -out /var/lib/zabbix/certs/zabbix_server1.key
@@ -1472,12 +1480,10 @@ Creating Zabbix Server Certificate:
     
     # sudo -u zabbix openssl req -new -key /var/lib/zabbix/certs/zabbix_server.key -out /var/lib/zabbix/certs/zabbix_server.csr
     # sudo -u zabbix openssl x509 -req -in /var/lib/zabbix/certs/zabbix_server.csr -CA /var/lib/zabbix/certs/zabbix_ca.crt -CAkey /var/lib/zabbix/certs/zabbix_ca.key -CAcreateserial -out /var/lib/zabbix/certs/zabbix_server.crt -days 1460 -sha256   
-    
-    
-    
-===================================
-Encryption between zabbix agent and zabbix server:
-    
+```
+
+- Encryption between zabbix agent and zabbix server:
+``` 
     # vim /etc/zabbix/zabbix_agent2.conf
     line 366=> uncomment
     line 377=> TLSAccept=cert
@@ -1498,27 +1504,9 @@ Encryption between zabbix agent and zabbix server:
 # grep zabbix_t /var/log/audit/audit.log | audit2allow -M zabbix-server-custom
 
 # semodule -i zabbix-server-custom.pp
-
-
-+++++++++++++++++++++++++++++++++
-
-to Get Agent Issuer and Subject:
-    
-    # openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nostr,dump_unknown,dump_der,sep_comma_plus,dn_rev,sname -in /var/lib/zabbix/certs/zabbix_agent.crt
-    
-to Get Server Issuer and Subject:
-    
-    # openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nostr,dump_unknown,dump_der,sep_comma_plus,dn_rev,sname -in /var/lib/zabbix/certs/zabbix_server.crt
-    
-    
-    # vim /etc/zabbix/zabbix_agent2.conf
-    line 399=> TLSServerCertIssuer=CN=zabbix_ca,OU=Monitoring,O=Anisa,L=Tehran,ST=Tehran,C=IR
-    
-    line 406 => TLSServerCertSubject=CN=zabbix_server,OU=Monitoring,O=Anisa,L=Tehran,ST=Tehran,C=IR
-    
-    # systemctl restart zabbix-agent2.service
-==================================
-    Encryption using PSK:
+```
+- Encryption using PSK:
+```
         
         On target server:
             # mkdir /var/lib/zabbix
@@ -1530,9 +1518,10 @@ to Get Server Issuer and Subject:
             line 386 => TLSPSKFile=/var/lib/zabbix/psk
             
             # systemctl restart zabbix-agent.service
+```
 
-******************************************
-    
+- Encryping zabbix_proxy <--> zabbix_server
+```    
 On zabbix Proxy:
     # mkdir /var/lib/zabbix
     # chown zabbix:zabbix /var/lib/zabbix/
@@ -1579,14 +1568,10 @@ On zabbix Proxy:
     # semodule -i zabbix-proxy-custom.pp
 
     # openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nostr,dump_unknown,dump_der,sep_comma_plus,dn_rev,sname -in /var/lib/zabbix/certs/zabbix_proxy.crt
+```
 
-
-
--------------------------------------------------
-
-
-Secure Web front end:
-    
+- Secure Web front end
+```    
     # dnf install mod_ssl
     # mkdir -p /etc/httpd/ssl/private
     # chmod 700 /etc/httpd/ssl/private
