@@ -1410,37 +1410,38 @@ TLSKeyFIle=/var/lib/zabbix/certs/zabbix_agent.key
 add contents to zabbix_course
 00:00
 
+- Encryptyion in zabbix:
 ```
-#####################################
-Encryptyion in zabbix:
-    
 On Zabbix Server:
     # cd /var/lib/zabbix/
     # sudo -u zabbix mkdir certs
     # chmod 700 certs/
     # cd certs/
 
-Creating CA:
-            
+Creating CA:        
     # sudo -u zabbix openssl genrsa -aes256 -out /var/lib/zabbix/certs/zabbix_ca.key 4096
     # sudo -u zabbix openssl req -x509 -new  -key /var/lib/zabbix/certs/zabbix_ca.key -sha256 -days 3650 -out /var/lib/zabbix/certs/zabbix_ca.crt
-    
-        ****************************************************
-Creating Zabbix Agent Certificate:
-    
-    # sudo -u zabbix openssl genrsa -aes256 -out /var/lib/zabbix/certs/zabbix_agent.key 2048
+```
+
+- Creating Zabbix Agent Certificate:
+```
+# sudo -u zabbix openssl genrsa -aes256 -out /var/lib/zabbix/certs/zabbix_agent.key 2048
   
-   # sudo -u zabbix openssl rsa -in /var/lib/zabbix/certs/zabbix_agent.key -out /var/lib/zabbix/certs/zabbix_agent1.key
+# sudo -u zabbix openssl rsa -in /var/lib/zabbix/certs/zabbix_agent.key -out /var/lib/zabbix/certs/zabbix_agent1.key
    
-   # sudo -u zabbix mv /var/lib/zabbix/certs/zabbix_agent{1,}.key
+# sudo -u zabbix mv /var/lib/zabbix/certs/zabbix_agent{1,}.key
    
-   # sudo -u zabbix openssl req -new -key /var/lib/zabbix/certs/zabbix_agent.key -out /var/lib/zabbix/certs/zabbix_agent.csr
+# sudo -u zabbix openssl req -new -key /var/lib/zabbix/certs/zabbix_agent.key -out /var/lib/zabbix/certs/zabbix_agent.csr
    
-   # sudo -u zabbix openssl x509 -req -in /var/lib/zabbix/certs/zabbix_agent.csr -CA /var/lib/zabbix/certs/zabbix_ca.crt -CAkey /var/lib/zabbix/certs/zabbix_ca.key -CAcreateserial -out /var/lib/zabbix/certs/zabbix_agent.crt -days 1460 -sha256
- 
- 
- 
- *******************************************
+# sudo -u zabbix openssl x509 -req -in /var/lib/zabbix/certs/zabbix_agent.csr -CA /var/lib/zabbix/certs/zabbix_ca.crt -CAkey /var/lib/zabbix/certs/zabbix_ca.key -CAcreateserial -out /var/lib/zabbix/certs/zabbix_agent.crt -days 1460 -sha256
+ ```
+- Now for checking that everything works as expexted
+```
+$ zabbix_get -s 127.0.0.1 -k agent.ping --tls-connect cert --tls-ca-file /var/lib/zabbix/certs/zabbix_ca.crt --tls-key-file /var/lib/zabbix/certs/zabbix_server.key --tls-cert-file /var/lib/zabbix/certs/zabbix_server.crt
+```
+
+
+ ```
 Creating Zabbix Server Certificate:
     
    # sudo -u zabbix openssl genrsa -aes256 -out /var/lib/zabbix/certs/zabbix_server.key 2048
