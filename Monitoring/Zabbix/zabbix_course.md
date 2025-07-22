@@ -1594,11 +1594,59 @@ line 107: SSLCertificateKeyFile /etc/httpd/ssl/private/apache-selfsigned.key
 
 - For Description section, we can have regex for name ` {{ITEM.NAME}.regsub("Payment: (.*) -,*",/1)}  `
 
-add contents to zabbix_course
-02:00
+## Dashboards
+- in wherever we can use regex for our value, such as ` *Successful `
 
 # Session 22 (24 on classes)
 
+add contents to zabbix_course
+53:00
+
+```
+# docker run --name webdriver -d \ -p 4444:4444 \ -p 7900:7900 \ --shm-size="2g" \ --restart=always -d docker.io/selenium/standalone-chrome:latest
+
+
+var browser, result;
+browser = new Browser(Browser.chromeOptions());
+try {
+    var params = JSON.parse(value); // Parse the JSON string containing parameters passed from Zabbix.
+    browser.navigate(params.webURL);
+    browser.collectPerfEntries("open page");
+    var el = browser.findElement("xpath", "//input[@id='name']");
+    if (el === null) {
+        throw Error("cannot find name input field");
+    }
+    el.sendKeys(params.username);
+    el = browser.findElement("xpath", "//input[@id='password']");
+    if (el === null) {
+        throw Error("cannot find password input field");
+    }
+    el.sendKeys(params.password);
+    el = browser.findElement("xpath", "//button[@id='enter']");
+    if (el === null) {
+        throw Error("cannot find login button");
+    }
+    el.click();
+    browser.collectPerfEntries("login");
+    el = browser.findElement("link text", "Sign out");
+    if (el === null) {
+        throw Error("cannot find logout button");
+    }
+    el.click();
+    browser.collectPerfEntries("logout");
+    result = browser.getResult();
+}
+catch (err) {
+    if (!(err instanceof BrowserError)) {
+        browser.setError(err.message);
+    }
+    result = browser.getResult();
+    result.error.screenshot = browser.getScreenshot();
+}
+finally {
+    return JSON.stringify(result);
+}
+```
 
 # Theoretical
 
