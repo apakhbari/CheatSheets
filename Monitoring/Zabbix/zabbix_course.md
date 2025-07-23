@@ -1598,11 +1598,24 @@ line 107: SSLCertificateKeyFile /etc/httpd/ssl/private/apache-selfsigned.key
 - in wherever we can use regex for our value, such as ` *Successful `
 
 # Session 22 (24 on classes)
-- We can have alert
+- hosts --> item --> trigger --> action --> alert
+- Media types:
+  1. SMS (hardware dungle to send sms via server)
+  2. Email
+  3. Script
+  4. Webhook (using JavaScript)
+
 
 add contents to zabbix_course
-53:00
+2:03
 
+- For web monitoring we need to inside ` /etc/zabbix/zabbix_server.conf ` at the bottom of the configurations
+```
+WebDriverURL=http://localhost:4444
+BrowserPollers=1
+```
+
+- Now we need to have a JavaScript in our Item. For example this scenraio login into zabbix
 ```
 # docker run --name webdriver -d \ -p 4444:4444 \ -p 7900:7900 \ --shm-size="2g" \ --restart=always -d docker.io/selenium/standalone-chrome:latest
 
