@@ -1605,9 +1605,8 @@ line 107: SSLCertificateKeyFile /etc/httpd/ssl/private/apache-selfsigned.key
   3. Script
   4. Webhook (using JavaScript)
 
+- We can use housekeeping schedules for housekeeping purposes so that alerts are not collected the way they usually are
 
-add contents to zabbix_course
-2:03
 
 - For web monitoring we need to inside ` /etc/zabbix/zabbix_server.conf ` at the bottom of the configurations
 ```
@@ -1662,12 +1661,6 @@ finally {
 }
 ```
 
-# Theoretical
-
-
-## Components
-
-## Files & directories
  
 ## Tips & Tricks
 - If you don't save an item via history, you can't have trigger on it.
