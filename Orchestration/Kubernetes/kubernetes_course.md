@@ -177,6 +177,7 @@
 - ` $ kubectl create namespace dev `
 - ` $ kubectl config set-context kubernetes-admin@kubernetes --namespace=dev ` --> make dev namespace default namespace inside kube.config file
 
+
 ### Test & Debug
 - ` $ kubectl run nginx-pod  --image nginx:1.21 `
 - ` $ kubectl run debugger-pod  --image docker.arvancloud.ir/alpine --command -- sleep infinity `
