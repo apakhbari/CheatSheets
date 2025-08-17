@@ -2860,6 +2860,9 @@ $ etcdctl --endpoints=http://127.0.0.1:2379 get name
 ```
 
 ## Session 3 (4 on classes)
+
+Add contents to k8s_course
+
 ```
 
 https://github.com/cloudflare/cfssl/
