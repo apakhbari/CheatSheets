@@ -2617,10 +2617,56 @@ Add contets to k8s_course
 # Advanced Kubernetes Course
 # Sessions
 ## Session 1
-48:00
+- If there is an error occured, we can run our image as root like this using ` sucurityContext `
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:   
+  replicas: 6
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21
+          sucurityContext:
+            runAsUser: 0    <-- use root
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "10M"
+            limits:
+              cpu: "2"
+              memory: "512M" 
+```
 
 ## Session 2 (3 on classes)
+- Master node resources:
+  - Minimum: 8 GB Ram + 4 core CPU
+  - on average: 16 GB Ram + 12 core CPU
+
+- Worker node resources:
+  - Minimum: 16 GB Ram + 16 core CPU
+
+### LoadBalancing master nodes using HAProxy + Keepalived
+- keepalived gives us a virtual IP, if one of our loadbalancers are down, then we can use another loadbalancer 
+- we use 3 master nodes (192.168.1.5 & 192.168.1.6 & 192.168.1.7), and 2 loadbalancers (IPs: 192.168.1.50 & 192.168.1.51). note that our virtual IP is 192.168.1.20
+- first we install keepalived and HAProxy on 2 servers and config HAProxy, then add below snippaet at end of HAProxy config (On both our LB Nodes)
 ```
+$ apt install haproxy keepalived -y
+
+$ sudo  vim /etc/haproxy/haproxy.cfg
+
 frontend kubernetes-frontend
   bind *:6443
   mode tcp
@@ -2633,12 +2679,15 @@ backend kubernetes-backend
   mode tcp
   option ssl-hello-chk
   balance roundrobin
-    server kmaster1 192.168.1.5:6443 check fall 3 rise 2
+    server kmaster1 192.168.1.5:6443 check fall 3 rise 2    # If after 3 times it was unaccessible, go for next one. If after 2 times it get 200 HTTP Code, then this node is healthy now
     server kmaster2 192.168.1.6:6443 check fall 3 rise 2
     server kmaster3 192.168.1.7:6443 check fall 3 rise 2
-======
-apt install haproxy keepalived -y
-=====
+```
+
+- Now we write a script to check whether our node is working properly (On both our LB Nodes)
+```
+$ vim /etc/keepalived/check_apiserver.sh
+
 #!/bin/sh
 
 errorExit() {
@@ -2646,11 +2695,48 @@ errorExit() {
   exit 1
 }
 
-curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || errorExit "Error GET https://localhost:6443/"
+curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || errorExit "Error GET https://localhost:6443/"   # IF this fails, it means our HAProxy is down
 if ip addr | grep -q 192.168.1.20; then
-  curl --silent --max-time 2 --insecure https://192.168.1.20:6443/ -o /dev/null || errorExit "Error GET https://192.168.1.20:6443/"
+  curl --silent --max-time 2 --insecure https://192.168.1.20:6443/ -o /dev/null || errorExit "Error GET https://192.168.1.20:6443/"   # IF this fails, it means our virtual IP is down and we need to change nodes for keepalived
 fi
-====
+```
+
+- Now we nedd to configure keepalived configs on node1
+```
+$ vim /etc/keeplived/keepalived.conf
+
+vrrp_script check_apiserver {
+  script "/etc/keepalived/check_apiserver.sh"
+  interval 3    # Script get executed each 3 sec
+  timeout 10  # If after 10 sec of executing script, it is not working, it need to change node
+  fall 5  # How many times try if failed. with this config changing node takes 3*10*5 seconds
+  rise 2
+  weight 2  # weight sums with priority for choosing a node, for example here we have 100+2=102
+}
+
+vrrp_instance VI_1 {
+    state MASTER
+    interface enp0s3
+    virtual_router_id 1   # This ID has to be same with other keepalived instances
+    priority 100  # We can assign priorities for our nodes, for example if a node we have has more resources
+    advert_int 5  # Each 5 sec, keepalived nodes advertise each other that they are healthy
+    authentication {
+        auth_type PASS
+        auth_pass mysecret
+    }
+    virtual_ipaddress {
+        192.168.1.20
+    }
+    track_script {
+        check_apiserver
+    }
+}
+```
+
+- Now we nedd to configure keepalived configs on node2
+```
+$ vim /etc/keeplived/keepalived.conf
+
 vrrp_script check_apiserver {
   script "/etc/keepalived/check_apiserver.sh"
   interval 3
@@ -2661,7 +2747,7 @@ vrrp_script check_apiserver {
 }
 
 vrrp_instance VI_1 {
-    state MASTER
+    state BACKUP   # Only this changed
     interface enp0s3
     virtual_router_id 1
     priority 100
@@ -2677,9 +2763,37 @@ vrrp_instance VI_1 {
         check_apiserver
     }
 }
-====
-etcdctl version
-===
+```
+
+- now we statrt & enbale
+```
+$ systemctl enbale keepalived
+$ systemctl start keeplived
+
+$ systemctl enbale haproxy
+$ systemctl start haproxy
+```
+
+- now we init our k8s, then join other nodes
+```
+$ kubeadm init --control-plane-endpoint="192.168.1.20:6443" --apiserver-advertise-address="192.168.1.5" --pod-network-cidr="10.10.0.0/16" --upload-certs --kubernetes-version="1.28.9"
+```
+
+### External ETCD
+- We use 3 master nodes and 3 nodes for etcd
+- It is possible to make an internal ETCD (in master nodes) to an external node ETCD
+
+- now we download ETCD without TLS from its github
+```
+$ cd ~/etcd-v3.5.12-linux-amd64
+$ mv etcd* /usr/local/bin/
+$ etcdctl version
+```
+
+- now we create a service for it
+```
+$ vim /etc/systemd/system/etcd.service
+
 [Unit]
 Description=etcd
 
@@ -2688,9 +2802,34 @@ Type=exec
 ExecStart=/usr/local/bin/etcd \
   --name etcd1 \
   --initial-advertise-peer-urls http://192.168.1.10:2380 \
-  --listen-peer-urls http://192.168.1.10:2380 \
+  --listen-peer-urls http://192.168.1.10:2380 \   # On which address it listens for other ETCDs
   --advertise-client-urls http://192.168.1.10:2379 \
-  --listen-client-urls http://192.168.1.10:2379,http://127.0.0.1:2379 \
+  --listen-client-urls http://192.168.1.10:2379,http://127.0.0.1:2379 \   # On which Addresses this is listening for other components
+  --initial-cluster-token etcd-cluster-1 \    # This token must be same for all ETCDs
+  --initial-cluster etcd1=http://192.168.1.10:2380,etcd2=http://192.168.1.11:2380,etcd3=http://192.168.1.12:2380 \    # Other ETCDs
+  --initial-cluster-state new
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- For others also
+```
+$ vim /etc/systemd/system/etcd.service
+
+[Unit]
+Description=etcd
+
+[Service]
+Type=exec
+ExecStart=/usr/local/bin/etcd \
+  --name etcd2 \      # HERE CHANGES
+  --initial-advertise-peer-urls http://192.168.1.11:2380 \
+  --listen-peer-urls http://192.168.1.11:2380 \
+  --advertise-client-urls http://192.168.1.11:2379 \
+  --listen-client-urls http://192.168.1.11:2379,http://127.0.0.1:2379 \
   --initial-cluster-token etcd-cluster-1 \
   --initial-cluster etcd1=http://192.168.1.10:2380,etcd2=http://192.168.1.11:2380,etcd3=http://192.168.1.12:2380 \
   --initial-cluster-state new
@@ -2699,16 +2838,26 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-====
 ```
 
-- Master node resources:
+```
+$ systemctl start etcd.service
+$ systemctl enable etcd.service
+```
 
-  - Minimum: 8 GB Ram + 4 core CPU
-  - on average: 16 GB Ram + 12 core CPU
+- by default etcd creates its data here ` /etcd1.etcd `
 
-- Worker node resources:
-  - Minimum: 16 GB Ram + 16 core CPU
+- for checking out members of etcd
+```
+$ etcdctl --endpoints=http://127.0.0.1:2379 memebr list
+```
+
+- let's insert a test value in our etcd and check it on oother nodes
+```
+$ etcdctl --endpoints=http://127.0.0.1:2379 put name anisa
+
+$ etcdctl --endpoints=http://127.0.0.1:2379 get name
+```
 
 ## Session 3 (4 on classes)
 ```
