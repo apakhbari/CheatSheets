@@ -643,7 +643,7 @@ spec:
 - Local, Openstack, Amazon EBS, Dell EMC, GlusterFS, portworx
 
 # Kubernetes Course
-# Contents
+# Contents    
 - Install, Configure and validation
 - Core Concept (Architecture, Pods, Deployments, etc)
 - Scheduling
@@ -2617,6 +2617,7 @@ Add contets to k8s_course
 # Advanced Kubernetes Course
 # Sessions
 ## Session 1
+48:00
 
 ## Session 2 (3 on classes)
 ```
