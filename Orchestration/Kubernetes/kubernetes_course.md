@@ -162,7 +162,6 @@
 - ` $ kubectl taint node worker1 anisa=kubernetes:NoSchedule- ` --> For removing taint
 - ` $ kubectl describe node kubemaster | grep taint ` --> For seeing taints on node
 
-
 ### Executing a command inside pod
 - ` $ kubectl -n kube-system exec -it etcd-master1 -- sh ` --> connects to a pod to execute something
 - ` $ nerdctl -n k8s.io exec -it a42ffs4y sh ` --> connects to a pod to execute something
@@ -176,7 +175,6 @@
 - ` $ kubectl create -f namespace-dev.yml `
 - ` $ kubectl create namespace dev `
 - ` $ kubectl config set-context kubernetes-admin@kubernetes --namespace=dev ` --> make dev namespace default namespace inside kube.config file
-
 
 
 ### Test & Debug
@@ -232,6 +230,14 @@
 
 ### Curl Kubelet
 - ` $ curl localhost:10249/proxyMode `  --> returns iptables or ipvs
+
+### ETCD
+- ` $ etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/etcd/pki/ca.pem --cert=/etc/etcd/pki/etcd.pem --key=/etc/etcd/pki/etcd-key.pem member list `
+- ` $ etcdctl --endpoints=http://127.0.0.1:2379 put name anisa `
+- ` $ etcdctl --endpoints=http://127.0.0.1:2379 get name `
+- ` $ etcdctl --endpoints=http://127.0.0.1:2379 del  name anisa `
+- ` $ etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/ca.crt --key=/etc/kubernetes/pki/etcd/server.key `
+- ` $ etcdctl snapshot restore snapshot20240605.db --data-dir /var/lib/etcd/ --initial-cluster etcd1=https://192.168.1.10:2380 --initial-advertise-peer-urls https://192.168.1.10:2380 --name etcd1 `
 
 
 ## Components:
@@ -3039,6 +3045,11 @@ localAPIEndpoint:
 $ kubeadm init --config cluster-config.yaml --upload-certs
 ```
 
+- now let's do a scenario. backup our ETCD and then recover it.
+```
+$ etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/ca.crt --key=/etc/kubernetes/pki/etcd/server.key
+```
+
 ```
 
 ======
@@ -3052,7 +3063,7 @@ etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server
 
 Rec003
 Add contents to k8s_course
-00:00
+02:46
 
 ## Session 4 (5 on classes)
 
