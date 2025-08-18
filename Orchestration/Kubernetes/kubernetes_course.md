@@ -2616,6 +2616,7 @@ Add contets to k8s_course
 
 # Advanced Kubernetes Course
 # Sessions
+
 ## Session 1
 - If there is an error occured, we can run our image as root like this using ` sucurityContext `
 ```
@@ -2780,7 +2781,7 @@ $ kubeadm init --control-plane-endpoint="192.168.1.20:6443" --apiserver-advertis
 ```
 
 ### External ETCD
-- We use 3 master nodes and 3 nodes for etcd
+- We use 3 master nodes and 3 nodes for etcd and 1 HAProxy
 - It is possible to make an internal ETCD (in master nodes) to an external node ETCD
 
 - now we download ETCD without TLS from its github
@@ -2860,13 +2861,13 @@ $ etcdctl --endpoints=http://127.0.0.1:2379 get name
 ```
 
 ## Session 3 (4 on classes)
+### External ETCD with SSL
+- we use a HAProxy node, 3 ETCDs and 3 master nodes
+- we are goint to use cfssl for our certificates [https://github.com/cloudflare/cfssl/](https://github.com/cloudflare/cfssl/)
+- we need to download ` cfssljson_1.6.5_linux_amd64 ` and ` cfssl_1.6.5_linux_amd64 ` from its github and move it to ` /usr/local/bin/ `
 
-Add contents to k8s_course
-
+- now let's create our CA config. Take note that cfssl can have different profiles. In this case if we sign using CA we have a 10 years (87600h) timesapn but if we sign using etcd profile we have 1 year timespan
 ```
-
-https://github.com/cloudflare/cfssl/
-===
 ca-config.json:
 
 {
@@ -2882,7 +2883,10 @@ ca-config.json:
         }
     }
 }
-====
+```
+
+- now we need Cert + Key of our CA
+```
 ca-csr.json :
  
 {
@@ -2901,9 +2905,15 @@ ca-csr.json :
     }
   ]
 }
+```
 
-cfssl gencert -initca ca-csr.json | cfssljson -bare ca
-====
+- now let's create our cert and key. note that ` -bare ca ` means the word ca is going to be added at first of our cert and key
+```
+$ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+```
+
+- Now let's create our etcd cert
+```
 etcd-csr.json :
 
 {
@@ -2930,8 +2940,24 @@ etcd-csr.json :
   ]
 }
 
-cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd etcd-csr.json | cfssljson -bare etcd
-=====
+$ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd etcd-csr.json | cfssljson -bare etcd
+```
+
+- now we need to remove our previous etcd config files, because it was not usin SSL
+```
+on each node $ rm -rf /etcd1.etcd
+```
+
+- then copy our certificate in our etcd config file (on each node)
+```
+$ mkdir -p /var/lib/etcd
+
+$ mkdir /etc/etcd/pki
+mv ca-key.pem ca.pem etcd-key.pem etcd.pem /etc/etcd/pki/
+```
+
+- now we need to change our etcd.service for SSL usecase (On Each node)
+```
 /etc/systemd/system/etcd.service:
 
 [Unit]
@@ -2943,12 +2969,14 @@ ExecStart=/usr/local/bin/etcd \
   --name etcd1 \
   --cert-file=/etc/etcd/pki/etcd.pem \
   --key-file=/etc/etcd/pki/etcd-key.pem \
-  --peer-cert-file=/etc/etcd/pki/etcd.pem \
+  --peer-cert-file=/etc/etcd/pki/etcd.pem \   # It is possible to use a different Cert for inter-connection between ETCDs
   --peer-key-file=/etc/etcd/pki/etcd-key.pem \
   --trusted-ca-file=/etc/etcd/pki/ca.pem \
   --peer-trusted-ca-file=/etc/etcd/pki/ca.pem \
-  --peer-client-cert-auth \
-  --client-cert-auth \
+
+  --peer-client-cert-auth \   # not allow communication between ETCDs without SSL
+  --client-cert-auth \    # not allow communication for API-Server without SSL
+
   --initial-advertise-peer-urls https://192.168.1.10:2380 \
   --listen-peer-urls https://192.168.1.10:2380 \
   --advertise-client-urls https://192.168.1.10:2379 \
@@ -2956,24 +2984,37 @@ ExecStart=/usr/local/bin/etcd \
   --initial-cluster-token etcd-cluster-1 \
   --initial-cluster etcd1=https://192.168.1.10:2380,etcd2=https://192.168.1.11:2380,etcd3=https://192.168.1.12:2380 \
   --initial-cluster-state new \
-  --data-dir=/etc/etcd/pki
+  --data-dir=/var/lib/etcd    # Change HomeDir of our DB
 Restart=on-failure
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
+```
 
-systemctl daemon-reload
-systemctl start etcd
+```
+$ systemctl daemon-reload
+$ systemctl start etcd
+```
 
+- For testing, we should check if member directory is created in our HomeDir
+```
+$ ls /var/lib/etcd/
+```
+
+- now for working with ETCD we need to pass certs to it
+```
 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/etcd/pki/ca.pem --cert=/etc/etcd/pki/etcd.pem --key=/etc/etcd/pki/etcd-key.pem member list
-======
+```
+
+- now let's go for initializing our cluster. before that we need to copy our certs in /etc/kubernetes/etcd/
+```
 kubeadm-config.yaml:
 
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: v1.28.9
-controlPlaneEndpoint: 192.168.1.50:6443
+controlPlaneEndpoint: 192.168.1.50:6443   # Our loadbalancer
 networking:
   podSubnet: "10.10.0.0/16"
 etcd:
@@ -2991,6 +3032,15 @@ apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
 localAPIEndpoint:
   advertiseAddress: "192.168.1.5"
+```
+
+- then we init our cluster
+```
+$ kubeadm init --config cluster-config.yaml --upload-certs
+```
+
+```
+
 ======
 etcdctl get / --endpoints=https://192.168.1.10:2379 --cacert=/etc/etcd/pki/ca.pem --cert=/etc/etcd/pki/etcd.pem --key=/etc/etcd/pki/etcd-key.pem --prefix --keys-only
 ====
@@ -2999,6 +3049,10 @@ etcdctl snapshot restore snapshot20240605.db --data-dir /var/lib/etcd/ --initial
 etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/ca.crt --key=/etc/kubernetes/pki/etcd/server.key
 ====
 ```
+
+Rec003
+Add contents to k8s_course
+00:00
 
 ## Session 4 (5 on classes)
 
