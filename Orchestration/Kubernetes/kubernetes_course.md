@@ -3103,7 +3103,15 @@ WantedBy=multi-user.target
 #### Ceph Metadata Server (MDS)
 - keeps track of file hierarchy and stores metadata only for CephFS filesystem. Ceph block device and RADOS gateway do not require metadata, hence they don not need the Ceph MDS daemon.
 
-####  
+#### Ceph Manager
+- Ceph Manager daemon (ceph-mgr) was introduced in the Kraken release, and it runs alongside monitor daemons to provide additional monitoringn and interfaces to external monitoring and management systems
+- Used for external monitoring like prometeus, Zabbix
+
+#### RADOS Block Devices (RBDs)
+- RBDs, which are now know as Ceph Block Device, provide persistent block storage, which is thin-provisioned, resizable, and stores data striped over multiple OSDs. The RBD service has been built as a native interface on top of librados.
+
+#### RADOS gateway interface (RGW)
+- provides object storage service. It uses libgrw (Rados Gateway Library) and librados, allowing apps to establish connections with the Ceph Object Storage
 
 ### Ceph Storage inside k8s cluster
 - Ceph is a software defined storage
@@ -3118,11 +3126,17 @@ WantedBy=multi-user.target
 - In k8s when we create PVC, when we assign type: FS then we can't share it cross multiple nodes. Even if we are using CephRBD
 - usually Block Storage usecase is for DBs
 
-Rec004
-Add contents to k8s_course
-02:46
+## ROOK Ceph
+- Rook is an open source cloud-native storage orchestrator, providing the platform, framework, and support for Ceph storage to natively integrate with k8s
+- Rook automates deployment and management of Ceph to provide self-managing, self-scaling and self-healing storage services
+- Rook operator does this by building on k8s cluster resources to deploy, configure, provision, scale, upgrade and monitor Cephs
 
 ## Session 5 (6 on classes)
+
+## ROOK Ceph
+- Rook is an open source cloud-native storage orchestrator, providing the platform, framework, and support for Ceph storage to natively integrate with k8s
+- Rook automates deployment and management of Ceph to provide self-managing, self-scaling and self-healing storage services
+- Rook operator does this by building on k8s cluster resources to deploy, configure, provision, scale, upgrade and monitor Cephs
 
 ## Session 6 (7 on classes)
 
