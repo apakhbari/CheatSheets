@@ -237,7 +237,7 @@
 - ` $ etcdctl --endpoints=http://127.0.0.1:2379 get name `
 - ` $ etcdctl --endpoints=http://127.0.0.1:2379 del  name anisa `
 - ` $ etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/ca.crt --key=/etc/kubernetes/pki/etcd/server.key `
-- ` $ etcdctl snapshot restore snapshot20240605.db --data-dir /var/lib/etcd/ --initial-cluster etcd1=https://192.168.1.10:2380 --initial-advertise-peer-urls https://192.168.1.10:2380 --name etcd1 `
+- ` $ etcdctl snapshot restore snapshot20240605.db --data-dir /var/lib/etcd/ --initial-cluster etcd1=https://192.168.1.10:2380,etcd2=https://192.168.1.11:2380,etcd3=https://192.168.1.12:2380 --initial-advertise-peer-urls https://192.168.1.10:2380 --name etcd1 `
 
 
 ## Components:
@@ -3048,24 +3048,79 @@ $ kubeadm init --config cluster-config.yaml --upload-certs
 - now let's do a scenario. backup our ETCD and then recover it.
 ```
 $ etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/ca.crt --key=/etc/kubernetes/pki/etcd/server.key
-```
 
+$ etcdctl snapshot restore snapshot20240605.db --data-dir /var/lib/etcd/ --initial-cluster etcd1=https://192.168.1.10:2380,etcd2=https://192.168.1.11:2380,etcd3=https://192.168.1.12:2380 --initial-advertise-peer-urls https://192.168.1.10:2380 --name etcd1 
 ```
-
-======
-etcdctl get / --endpoints=https://192.168.1.10:2379 --cacert=/etc/etcd/pki/ca.pem --cert=/etc/etcd/pki/etcd.pem --key=/etc/etcd/pki/etcd-key.pem --prefix --keys-only
-====
-etcdctl snapshot restore snapshot20240605.db --data-dir /var/lib/etcd/ --initial-cluster etcd1=https://192.168.1.10:2380 --initial-advertise-peer-urls https://192.168.1.10:2380 --name etcd1
-====
-etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/ca.crt --key=/etc/kubernetes/pki/etcd/server.key
-====
-```
-
-Rec003
-Add contents to k8s_course
-02:46
 
 ## Session 4 (5 on classes)
+### Make an internal ETCD cluster to an external ETCD cluster
+- For making an internal ETCD cluster to an external ETCD cluster, we need to join our inter-k8s-cluster ETCD nodes into our external ETCD cluster, so after they sync we split them and then have an external ETCD clusetr for our k8s
+- here we have 1 master node, 3 ETCD nodes
+- first let's add that 1 external nodes to our internal ETCD
+```
+$ vim /etc/kubernetes/manifests/etcd.yaml
+find the address for initial-cluster and copy it
+
+$ vim /etc/systemd/system/etcd.service
+
+[Unit]
+Description=etcd
+
+[Service]
+Type=notify
+ExecStart=/usr/local/bin/etcd \
+  --name etcd1 \
+  --cert-file=/etc/etcd/pki/etcd.pem \
+  --key-file=/etc/etcd/pki/etcd-key.pem \
+  --peer-cert-file=/etc/etcd/pki/etcd.pem \
+  --peer-key-file=/etc/etcd/pki/etcd-key.pem \
+  --trusted-ca-file=/etc/etcd/pki/ca.pem \
+  --peer-trusted-ca-file=/etc/etcd/pki/ca.pem \
+  --peer-client-cert-auth \
+  --client-cert-auth \
+  --initial-advertise-peer-urls https://192.168.1.10:2380 \
+  --listen-peer-urls https://192.168.1.10:2380 \
+  --advertise-client-urls https://192.168.1.10:2379 \
+  --listen-client-urls https://192.168.1.10:2379,https://127.0.0.1:2379 \
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster master1=https://192.168.1.5:2380,etcd1=https://192.168.1.10:2380,etcd2=https://192.168.1.11:2380,etcd3=https://192.168.1.12:2380 \   # ADD it here
+  --initial-cluster-state existing \     # CHANGE THIS from new to existing
+  --data-dir=/var/lib/etcd
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target 
+```
+
+### Ceph Components
+#### Ceph monitors (MON)
+- track the health of the entire cluster by keeping a map of the cluster state. contains a seperate map for each component which includes an OSD map, MON map, PG map, and CRUSH map. All cluster nodes report to monitor nodes and share information about every change in their state. The monitor does not store actual data; this is the job of OSD
+
+#### Ceph Object Storage Device (OSD)
+- data saves here in the form of objects
+
+#### Ceph Metadata Server (MDS)
+- keeps track of file hierarchy and stores metadata only for CephFS filesystem. Ceph block device and RADOS gateway do not require metadata, hence they don not need the Ceph MDS daemon.
+
+####  
+
+### Ceph Storage inside k8s cluster
+- Ceph is a software defined storage
+ 
+- File storage: Is like FileSystem (Like NFS), needs formating storage before usage, needs mounting in system. For backup, archiving. Can be shared between multiple systems.
+- Block Storage: without formating disk, directly using disk from its ` /dev ` address. needs mounting. Its good for speed but hard for using. DBs usually use it. can be used in programming. Cna be used for VMs. Can not be shared among multiple systems.
+- Object Storage: is fast, is API-based, does not need mounting
+
+- CephFS = file Storage
+- CephRBD = Block Storage
+
+- In k8s when we create PVC, when we assign type: FS then we can't share it cross multiple nodes. Even if we are using CephRBD
+- usually Block Storage usecase is for DBs
+
+Rec004
+Add contents to k8s_course
+02:46
 
 ## Session 5 (6 on classes)
 
