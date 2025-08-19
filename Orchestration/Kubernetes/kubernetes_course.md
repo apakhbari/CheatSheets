@@ -61,6 +61,8 @@
 - There is no such thing as undrain. Whether you drain or cordon a node, you need to ` uncordon ` the node.
 - right after installing k8s,do ` $ apt-mark hold kubectl kubelet kubeadm ` so they are not being updated using ` apt-update `
 - when you ` $ kubectl get node ` the version that is shown is kubelet's version
+- Using Pod anti-affinity we can manage that same pods are on different nodes. For example 3 pods of same source, are deployed on 3 different nodes, not 3 pods on 1 node
+- When we ` $ kubectl get node ` in order to not have ` <none> ` in our role we need to ` $ kubectl label nodes worker2 kubernetes.io/role=worker2 `
 
 ## Directories
 ### Kube Config
@@ -3126,19 +3128,47 @@ WantedBy=multi-user.target
 - In k8s when we create PVC, when we assign type: FS then we can't share it cross multiple nodes. Even if we are using CephRBD
 - usually Block Storage usecase is for DBs
 
-## ROOK Ceph
+### ROOK Ceph
 - Rook is an open source cloud-native storage orchestrator, providing the platform, framework, and support for Ceph storage to natively integrate with k8s
 - Rook automates deployment and management of Ceph to provide self-managing, self-scaling and self-healing storage services
 - Rook operator does this by building on k8s cluster resources to deploy, configure, provision, scale, upgrade and monitor Cephs
 
 ## Session 5 (6 on classes)
+### Rook Ceph
+- For having Rook Ceph, we need at least 3 worker nodes
+- we need spare disks to use for our OSDs. we can't assign SDA1 to our OSD, it must be a whole disk, for example sdd
+- we go with Rook v 1.14
 
-## ROOK Ceph
-- Rook is an open source cloud-native storage orchestrator, providing the platform, framework, and support for Ceph storage to natively integrate with k8s
-- Rook automates deployment and management of Ceph to provide self-managing, self-scaling and self-healing storage services
-- Rook operator does this by building on k8s cluster resources to deploy, configure, provision, scale, upgrade and monitor Cephs
+```
+$ git clone --single-branch --branch v1.14.12 https://github.com/rook/rook.git
+$ cd rook/deploy/examples
+$ kubectl create -f crds.yaml -f common.yaml -f operator.yaml
+```
+
+- now we need to make some changes
+```
+$ vim cluster.yaml
+
+mon: allowMultiplePerNode --> we need to make it true       # It is because there is a canary pod creating in first, so we going to need 6 pods
+mgr: allowMultiplePerNode --> we need to make it true       # It is because there is a canary pod creating in first, so we going to need 6 pods
+
+dashboard: ssl:  --> make it false
+dashboard: # port:8443 --> uncomment it
+
+storage: you can tell which nodes or which devices Rook can use, like sda of node1 + sdb of node2
+```
+
+- now let's init our rook ceph
+```
+$ kubectl create -f cluster.yaml
+```
 
 ## Session 6 (7 on classes)
+
+
+Rec006
+Add contents to k8s_course
+00:46
 
 ## Session 7 (8 on classes)
 

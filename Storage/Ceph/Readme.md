@@ -9,9 +9,12 @@
 |_______||_______||___|    |__| |__|
 ```
 
+## Commands
+
 ## tips & Tricks
 - when we initialize our Ceph Cluster, only components that is going to exist is our MON
-- It is possible to have all of Ceph components in one node 
+- It is possible to have all of Ceph components in one node
+- By default replication is 3 in ceph, so we have data on 3 different place
 
 ## Ceph Components
 ### Ceph monitors (MON)
@@ -51,6 +54,33 @@
 - Rook automates deployment and management of Ceph to provide self-managing, self-scaling and self-healing storage services
 - Rook operator does this by building on k8s cluster resources to deploy, configure, provision, scale, upgrade and monitor Cephs
 
+- For having Rook Ceph, we need at least 3 worker nodes
+- we need spare disks to use for our OSDs. we can't assign SDA1 to our OSD, it must be a whole disk, for example sdd
+- we go with Rook v 1.14
+
+```
+$ git clone --single-branch --branch v1.14.12 https://github.com/rook/rook.git
+$ cd rook/deploy/examples
+$ kubectl create -f crds.yaml -f common.yaml -f operator.yaml
+```
+
+- now we need to make some changes
+```
+$ vim cluster.yaml
+
+mon: allowMultiplePerNode --> we need to make it true       # It is because there is a canary pod creating in first, so we going to need 6 pods
+mgr: allowMultiplePerNode --> we need to make it true       # It is because there is a canary pod creating in first, so we going to need 6 pods
+
+dashboard: ssl:  --> make it false
+dashboard: # port:8443 --> uncomment it
+
+storage: you can tell which nodes or which devices Rook can use, like sda of node1 + sdb of node2
+```
+
+- now let's init our rook ceph
+```
+$ kubectl create -f cluster.yaml
+```
 
 ## Links
 
