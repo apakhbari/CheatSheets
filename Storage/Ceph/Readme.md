@@ -10,11 +10,18 @@
 ```
 
 ## Commands
+- ` $ ceph -s ` or ` $ ceph status `    --> Shows our status and jealth
+- ` $ ceph device ls `     -->  shows oud OSDs
+- ` $  ceph osd pool ls`     -->  list our pools
+- ` $  rbd ls --pool replicapool `     -->  show all images inside this pool
+- ` $ rbd info --pool replicapool --image csi-vol-ec8adf7-asd8-e8fada-adsfhsadu87 `     --> get info of an image
+- ` $  `     --> 
 
 ## tips & Tricks
 - when we initialize our Ceph Cluster, only components that is going to exist is our MON
 - It is possible to have all of Ceph components in one node
 - By default replication is 3 in ceph, so we have data on 3 different place
+- When you request for a block, ceph create an image for you which is something that you can use of as your block
 
 ## Ceph Components
 ### Ceph monitors (MON)
@@ -81,6 +88,35 @@ storage: you can tell which nodes or which devices Rook can use, like sda of nod
 ```
 $ kubectl create -f cluster.yaml
 ```
+
+- let's create a storageClass for our ceph RBD
+```
+$ cd csi
+$ cd rbd
+$ kubectl create -f storageclass.yaml
+```
+
+- After this, it is going to create a replicapool automatically, so whatever is being craeted is here
+
+- let's create a storageClass for our ceph FS
+```
+$ $ kubectl create -f filesystem.yaml
+$ cd csi
+$ cd cephfs
+$ kubectl create -f storageclass.yaml
+```
+
+- for having Ceph dashboard
+```
+- $ cd /rook/deploy/examples/
+$ kubectl create -f dashboard-external-http.yaml
+```
+
+## Ceph Pool
+- A pool consists of disks
+- We need to craete pools in order to use ceph
+
+## Connecting External Ceph cluster to k8s
 
 ## Links
 

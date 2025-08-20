@@ -640,6 +640,37 @@ spec:
 - You can change staticPodPath via ` /var/lib/kubelet/config.yaml ` 
 - Since the component that checks for taints is kube-scheduler, then static-pods don't need a toleration for being deployed on master nodes
 
+### PersistentVolume
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-vol1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 100Mi
+  hostPath:
+    path: /var/local/aaa
+  PersistentVolumeReclaimPolicy: Retain
+```
+
+### PersistentVolumeClaim
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myclaim
+spec:
+  storageClassName: rook-ceph-block
+  VolumeMode: Filesystem  # Or Block. By default it is FS
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storageL 1Gi
+
 ## Drivers:
 ### CRI (Container Runtime Interface)
 - containerd, docker, rkt, cri-o
@@ -2618,9 +2649,6 @@ $ kubectl apply -f ingress-resource-3.yaml
 
 ## Additional session: turn a docker project into k8s
 
-video 2 --> 00:00
-slide 9  
-Add contets to k8s_course
 
 # Advanced Kubernetes Course
 # Sessions
@@ -3164,13 +3192,47 @@ $ kubectl create -f cluster.yaml
 ```
 
 ## Session 6 (7 on classes)
+### Rook Ceph
+- let's create a storageClass for our ceph RBD
+```
+$ cd csi
+$ cd rbd
+$ kubectl create -f storageclass.yaml
+```
 
+- After this, it is going to create a replicapool automatically, so whatever is being craeted is here
+
+- let's create a storageClass for our ceph FS
+```
+$ $ kubectl create -f filesystem.yaml
+$ cd csi
+$ cd cephfs
+$ kubectl create -f storageclass.yaml
+```
+
+- for having Ceph dashboard
+```
+- $ cd /rook/deploy/examples/
+$ kubectl create -f dashboard-external-http.yaml
+```
+
+### Commands
+- ` $ ceph -s ` or ` $ ceph status `    --> Shows our status and jealth
+- ` $ ceph device ls `     -->  shows oud OSDs
+- ` $  ceph osd pool ls`     -->  list our pools
+- ` $  rbd ls --pool replicapool `     -->  show all images inside this pool
+- ` $ rbd info --pool replicapool --image csi-vol-ec8adf7-asd8-e8fada-adsfhsadu87 `     --> get info of an image
+
+### Ceph Pool
+- A pool consists of disks
+- We need to craete pools in order to use ceph
+
+## Session 7 (8 on classes)
+### Connecting External Ceph cluster to k8s
 
 Rec006
 Add contents to k8s_course
 00:46
-
-## Session 7 (8 on classes)
 
 ## Session 8 (9 on classes)
 
