@@ -18,10 +18,12 @@
 - ` $  `     --> 
 
 ## tips & Tricks
+- RedHat is more compatible with ceph
 - when we initialize our Ceph Cluster, only components that is going to exist is our MON
 - It is possible to have all of Ceph components in one node
 - By default replication is 3 in ceph, so we have data on 3 different place
 - When you request for a block, ceph create an image for you which is something that you can use of as your block
+- Time is very important in ceph, all of our nodes have to have same time-date
 
 ## Ceph Components
 ### Ceph monitors (MON)
@@ -115,6 +117,14 @@ $ kubectl create -f dashboard-external-http.yaml
 ## Ceph Pool
 - A pool consists of disks
 - We need to craete pools in order to use ceph
+
+## Installing Ceph
+- we need 3 nodes for our ceph cluster
+- we need a spare disk, not formatted for all of our nodes
+- we use ` cephadm ` which is a container based solution, we can whether use docker or podman. Podman is recommended
+```
+$ apt imstall podman
+```
 
 ## Connecting External Ceph cluster to k8s
 
