@@ -63,8 +63,11 @@
 - when you ` $ kubectl get node ` the version that is shown is kubelet's version
 - Using Pod anti-affinity we can manage that same pods are on different nodes. For example 3 pods of same source, are deployed on 3 different nodes, not 3 pods on 1 node
 - When we ` $ kubectl get node ` in order to not have ` <none> ` in our role we need to ` $ kubectl label nodes worker2 kubernetes.io/role=worker2 `
+- When we mount a secret, a volume inside RAM is going to be mounted to our pod, its default address is ` /var/run/secrets `
 
 ## Directories
+- ` /var/run/secrets ` --> When we mount a secret, a volume inside RAM is going to be mounted to our pod, its default address is this
+
 ### Kube Config
 - ` $HOME/.kube `
 - ` /etc/kubernetes/admin.conf `
@@ -83,10 +86,10 @@
 - ` /etc/kubernetes/manifests/kube-controller.yaml `
 - ` /etc/kubernetes/manifests/kube-scheduler.yaml `
 
-#### ETCD stores data
+### ETCD stores data
 - ` /var/lib/etcd `
 
-#### Kubelet certificates
+### Kubelet certificates
 - ` /var/lib/kubelet/kubelet-node01.crt `
 - ` /var/lib/kubelet/kubelet-node01.key `
 
@@ -240,6 +243,10 @@
 - ` $ etcdctl --endpoints=http://127.0.0.1:2379 del  name anisa `
 - ` $ etcdctl snapshot save snapshot20240605.db --cert=/etc/kubernetes/pki/etcd/server.crt --cacert=/etc/kubernetes/pki/etcd/ca.crt --key=/etc/kubernetes/pki/etcd/server.key `
 - ` $ etcdctl snapshot restore snapshot20240605.db --data-dir /var/lib/etcd/ --initial-cluster etcd1=https://192.168.1.10:2380,etcd2=https://192.168.1.11:2380,etcd3=https://192.168.1.12:2380 --initial-advertise-peer-urls https://192.168.1.10:2380 --name etcd1 `
+
+### Servcice Account
+- ` $ kubectl get sa `
+- ` $ kubectl create serviceacount anisa-sa`
 
 
 ## Components:
@@ -670,6 +677,80 @@ spec:
   resources:
     requests:
       storageL 1Gi
+```
+
+### Kube-Config
+```
+apiVersion: v1
+kind: Config
+
+clusters:
+- name: my-kube-playground
+  cluster:
+    certificate-authority: /HOME/DATA/ca.crt
+    server: my-kube-playground:6443
+
+contexts:
+- name: my-kube-admin@my-kube-playground
+  context:
+    cluster: my-kube-playground
+    user: my-kube-admin
+
+users:
+- name: my-kube-admin
+  user:
+    client-certificate: /HOME/DATA/admin.crt
+    client-key: /HOME/DATA/admin.key
+```
+
+### Role
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer
+  namespace: dev
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - "pods"
+    verbs:
+      - "list"
+```
+
+### RoleBinding
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: anisa-developer
+  namespace: dev
+roleRef:
+  apiGroup: "rbac.authorization.k8s.io"
+  kind: "Role"
+  name: "developer"
+subjects:
+  - apiGroup: "rbac.authorization.k8s.io"
+    kind: "User"
+    name: "anisa"
+  - apiGroup: "rbac.authorization.k8s.io"
+    kind: "User"
+    name: "anisa-2"
+  - apiGroup: "rbac.authorization.k8s.io"
+    kind: "User"
+    name: "anisa-3"
+```
+
+### ServiceAccount
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: anisa-sa
+  namespace: dev
+automountServiceAccountToken: true    # With all pods in this namespace, this sa is going to be mounted
+```
 
 ## Drivers:
 ### CRI (Container Runtime Interface)
@@ -682,7 +763,7 @@ spec:
 - Local, Openstack, Amazon EBS, Dell EMC, GlusterFS, portworx
 
 # Kubernetes Course
-# Contents    
+## Contents    
 - Install, Configure and validation
 - Core Concept (Architecture, Pods, Deployments, etc)
 - Scheduling
@@ -693,7 +774,7 @@ spec:
 - Storage
 - Networking
 
-# Sessions
+## Sessions
 ## Session 1 - Core Concepts & Architecture
 
 - K8s is written in GO lang
@@ -3258,17 +3339,175 @@ $ mount -t nfs 192.168.1.5:/mnt/nfs/kubernetes  /mnt/anisa
 
 - Now let's get drivers of NFS for our k8s-cluster from below link
 - [https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
+```
+$ git clone https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner.git
+$ cd nfs-subdir-external-provisioner
+$ cd deploy
+$ kubectl apply -f rbac.yaml
 
-
-
-Rec007
-Add contents to k8s_course
-01:17
+$ vim deployment.yaml   # Change env: NFS_SERVER and env: NFS_PATH
+$ kubectl apply -f deployment.yaml
+$ kubectl apply -f storageClass.yaml
+```
 
 ## Session 9 (10 on classes)
+### Service Account
+- A service accoint is a type of non-human account which is used by app pods, system components and entities inside and outside the cluster
+- ServiceAccount is token-based for accessing API-Server
+- service account accessibilties should be minimum
+- sa is namespaces scoped
+- automountServiceAccountToken is true by default
+- when craeting a pod, default sa is going to be mounted to our pod in ` /var/run/secrets/kubernetes.io/serviceaccount `. ca.crt exists since cert is self-sign and needs to be passed for verifying
+```
+$ ls /var/run/secrets/kubernetes.io/serviceaccount
+ca.crt    namespace   token
+```
+
+- ` $ kubectl get sa `
+- ` $ kubectl create serviceacount anisa-sa`
+
+#### SA in Internal cluster Use
+
+- Now let's create a SA and mount it to a pod
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: anisa-sa
+  namespace: dev
+automountServiceAccountToken: true    # With all pods in this namespace, this sa is going to be mounted
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:   
+  replicas: 6
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      serviceAccountName: anisa-sa    # HERE. if automountServiceAccountToken = false , even with passing this, our SA won't be mounted
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21  
+```
+
+- now let's bind a role to our SA
+```
+role.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: bot-role
+  namespace: dev
+rules:
+  - apiGroups:
+      - ""
+      - "apps"    # For deployments
+    resources:
+      - "pods"
+      - "deployments"
+    verbs:
+      - "list"
+---
+role-binding.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: anisa-sa-binding
+  namespace: dev
+roleRef:
+  apiGroup: "rbac.authorization.k8s.io"
+  kind: "Role"
+  name: "bot-role"
+subjects:
+  - apiGroup: ""    # Since SA is part of core, we don't need to specify
+    kind: "ServiceAccount"
+    name: "anisa-sa"
+```
+
+- For automountServiceAccountToken: false usecase, we need to mount a volume
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: dev
+  labels:
+    app: nginx-anisa
+spec:
+  replicas: 6
+  selector: 
+    matchLabels:
+      anisa: kubernetes
+  template: 
+    metadata:
+      labels:
+        anisa: kubernetes
+    spec:
+      volumes:
+        - name: sa-token
+          projected:
+            soures:
+              - serviceAccountToken:
+                path: vault-token
+                expirationSeconds: 7200
+        - name: ca-vol
+          hostPath:
+            path: /etc/kubernetes/pki/ca.crt
+      serviceAccountName: anisa-sa
+      containers:
+        - name: nginx-container
+          image: docker.arvancloud.ir/nginx:1.21
+          volumeMounts:
+            - name: sa-token
+              mountPath: /var/run/secrets/token
+            - name: ca-vol
+              mountPath: /var/run/secrets/ca/ca.crt
+```
+
+#### SA in External cluster Use
+- we need to craete a kube-config file
+```
+apiVersion: v1
+kind: Config
+
+clusters:
+- name: kubernetes
+  cluster:
+    certificate-authority-data: <Base64 of ca.crt>
+    server: https://192.168.1.5:6443
+
+current-context: anisa-sa@kubernetes
+contexts:
+- name: anisa-sa@kubernetes
+  context:
+    cluster: kubernetes
+    user: anisa-sa
+
+users:
+- name: anisa-sa
+  user:
+    token: <SA TOKEN>
+```
+
 ### Connecting External Ceph cluster to k8s
 
 ## Session 10 (12 on classes)
+
+Rec007
+Add contents to k8s_course
+02:42
 
 ## Session 11 (13 on classes)
 ```
