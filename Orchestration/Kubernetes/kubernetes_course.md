@@ -3230,6 +3230,34 @@ $ kubectl create -f dashboard-external-http.yaml
 ## Session 7 (8 on classes)
 
 ## Session 8 (9 on classes)
+### NFS for shared storage
+- We are doing it on our master node, as server
+```
+$ apt install nfs-kernel-server
+$ systemctl enable nfs-server.service
+$ systemctl start nfs-server.service
+
+$ mkdir -p /mnt/nfs/kubernetes
+$ chwon nobody: /mnt/nfs/kubernetes
+
+$ vim /etc/exports    # Add below line
+/mnt/nfs/kubernetes   *(rw,sync,no_subtree_check,no_root_squash,no_all_squash,insecure)   # *: All IPs, rw: read + write, sync: after succefully saving a data and syncing it tell me it has saved, no_root_squash: su user with root user name on client server is not same as root user on server, no_all_squash: users are independent of each other in terms of accessibility in client and server
+
+$ systemctl restart nfs-server.service
+$ exportfs -rav
+
+$ showmount -e localhost    # shows our mountpoints
+```
+
+- let's check it by mounting it on a client
+```
+$ apt install nfs-common
+$ mkdir -p /mnt/anisa
+$ mount -t nfs 192.168.1.5:/mnt/nfs/kubernetes  /mnt/anisa
+```
+
+- Now let's get drivers of NFS for our k8s-cluster from below link
+- [https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
 
 
 
