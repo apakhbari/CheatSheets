@@ -121,9 +121,28 @@ $ kubectl create -f dashboard-external-http.yaml
 ## Installing Ceph
 - we need 3 nodes for our ceph cluster
 - we need a spare disk, not formatted for all of our nodes
-- we use ` cephadm ` which is a container based solution, we can whether use docker or podman. Podman is recommended
+- we use ` cephadm ` which is a container based solution, we can whether use docker or podman. Podman is recommended. cephadm is a python script so we also need python3
 ```
 $ apt imstall podman
+$ curl --silent --remote-name --location https://github.com/ceph/ceph/raw/quincy/src/cephadm/cephadm
+$ chmod +x cephadm
+$ ./cephadm add-repo --release quincy   # Add V17 (quincy) Repo to our sources
+$ ./cephadm install   # For installing cephadm
+$ cephadm bootstrap --mon-ip 192.168.1.15   # installing mon on this node, specify Ip of server we are installing ceph on
+```
+
+- now for doing command line
+```
+$ cephadm shell
+```
+
+- Now we need to connect other 2 nodes, first we need to copy public key of first node to other 2 nodes
+```
+$ cephadm shell
+$ ssh-copy-id -f -i /etc/ceph/ceph.pub root@ceph-node2
+$ ssh-copy-id -f -i /etc/ceph/ceph.pub root@ceph-node3
+
+$ ceph orch host add ceph-node2 192.168.1.16
 ```
 
 ## Connecting External Ceph cluster to k8s

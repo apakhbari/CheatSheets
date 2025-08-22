@@ -3230,7 +3230,7 @@ $ kubectl create -f dashboard-external-http.yaml
 ## Session 7 (8 on classes)
 
 ## Session 8 (9 on classes)
-## Connecting External Ceph cluster to k8s
+
 
 
 Rec007
@@ -3238,6 +3238,7 @@ Add contents to k8s_course
 01:17
 
 ## Session 9 (10 on classes)
+### Connecting External Ceph cluster to k8s
 
 ## Session 10 (12 on classes)
 
