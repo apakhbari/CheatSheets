@@ -15,7 +15,11 @@
 - ` $  ceph osd pool ls`     -->  list our pools
 - ` $  rbd ls --pool replicapool `     -->  show all images inside this pool
 - ` $ rbd info --pool replicapool --image csi-vol-ec8adf7-asd8-e8fada-adsfhsadu87 `     --> get info of an image
-- ` $  `     --> 
+- ` $  ceph orch ls `     --> show a status of our ceoh node orchestration, like how many mon, mgr, osd we have
+- ` $ ceph osd tree `
+
+- ` $ ceph auth ls `    --> List users
+- ` $ ceph auth get-or-create client.kubernetes mon 'allow *' osd 'allow *' mgr 'allow *' `   --> create kubernetes user
 
 ## tips & Tricks
 - RedHat is more compatible with ceph
@@ -24,6 +28,7 @@
 - By default replication is 3 in ceph, so we have data on 3 different place
 - When you request for a block, ceph create an image for you which is something that you can use of as your block
 - Time is very important in ceph, all of our nodes have to have same time-date
+- the accessibility config file is located at ` /etc/ceph/ceph.keyring `
 
 ## Ceph Components
 ### Ceph monitors (MON)
@@ -143,9 +148,63 @@ $ ssh-copy-id -f -i /etc/ceph/ceph.pub root@ceph-node2
 $ ssh-copy-id -f -i /etc/ceph/ceph.pub root@ceph-node3
 
 $ ceph orch host add ceph-node2 192.168.1.16
+$ ceph orch host add ceph-node3 192.168.1.17
+```
+
+- now let's add disks to our 3 nodes so we can use it for our OSDs
+```
+$ ceph orch apply osd --all-available-devices   # Automatically go to all nodes and find disks that can be used for OSD
+```
+
+- or we can manually addrss our disk to it
+```
+$ ceph orch daemon add osd ceph-node1:/dev/sdb
 ```
 
 ## Connecting External Ceph cluster to k8s
+- [https://github.com/ceph/ceph-csi](https://github.com/ceph/ceph-csi)
+- ceph official yaml files are vagoue and not described what needs to be passed, so we use below link
+- [https://github.com/hosein-yousefii/Ceph-Kuberentes](https://github.com/hosein-yousefii/Ceph-Kuberentes)
+
+- we need to create a pool first
+```
+$ cephadm shell
+$ ceph osd pool create k8s
+$ ceph osd pool ls
+$ rbd pool init k8s   # initialize pool for RBD
+$ 
+```
+
+- Now let's create kubernetes user
+```
+$ ceph auth get-or-create client.kubernetes mon 'allow *' osd 'allow *' mgr 'allow *'
+```
+
+- now let's edit some of our resources
+```
+$ git clone https://github.com/hosein-yousefii/Ceph-Kuberentes.git
+$ cd ceph-kubernetes
+
+$ vim csi-config-map.yaml
+Edit ceph cluster ID + monitoring nodes (with 6789 port number)
+
+$ vim csi-rbd-secret.yaml
+Edit user namd (kubernetes) + token
+
+$ vim csi-rbd-sc.yaml
+Edit ceph cluster ID + pool name
+
+$ vim csi-rbd-plugin.yaml
+Edit port 80080 to 8080
+
+$ vim csi-rbdplugin-provisioner.yaml
+remove antiaffinity section in our deployment
+```
+
+- It is time for applying (Order is important)
+```
+$ kubectl apply -f csi-config-map.yaml csi-kms-config-map.yaml ceph-config-map.yaml csi-rbd-secret.yaml csi-provisioner-rbac.yaml csi-nodeplugin-rbac.yaml cs-rbd-plugin-provisioner.yaml csi-rbdsc.yaml
+```
 
 ## Links
 

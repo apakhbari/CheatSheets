@@ -3501,11 +3501,10 @@ users:
     token: <SA TOKEN>
 ```
 
+## Session 10 (12 on classes)
 ### Connecting External Ceph cluster to k8s
 
-## Session 10 (12 on classes)
-
-Rec007
+Rec010
 Add contents to k8s_course
 02:42
 
