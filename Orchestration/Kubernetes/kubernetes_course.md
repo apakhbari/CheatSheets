@@ -3503,6 +3503,51 @@ users:
 
 ## Session 10 (12 on classes)
 ### Connecting External Ceph cluster to k8s
+- [https://github.com/ceph/ceph-csi](https://github.com/ceph/ceph-csi)
+- ceph official yaml files are vagoue and not described what needs to be passed, so we use below link
+- [https://github.com/hosein-yousefii/Ceph-Kuberentes](https://github.com/hosein-yousefii/Ceph-Kuberentes)
+
+- we need to create a pool first
+```
+$ cephadm shell
+$ ceph osd pool create k8s
+$ ceph osd pool ls
+$ rbd pool init k8s   # initialize pool for RBD
+$ 
+```
+
+- Now let's create kubernetes user
+```
+$ ceph auth get-or-create client.kubernetes mon 'allow *' osd 'allow *' mgr 'allow *'
+```
+
+- now let's edit some of our resources
+```
+$ git clone https://github.com/hosein-yousefii/Ceph-Kuberentes.git
+$ cd ceph-kubernetes
+
+$ vim csi-config-map.yaml
+Edit ceph cluster ID + monitoring nodes (with 6789 port number)
+
+$ vim csi-rbd-secret.yaml
+Edit user namd (kubernetes) + token
+
+$ vim csi-rbd-sc.yaml
+Edit ceph cluster ID + pool name
+
+$ vim csi-rbd-plugin.yaml
+Edit port 80080 to 8080
+
+$ vim csi-rbdplugin-provisioner.yaml
+remove antiaffinity section in our deployment
+```
+
+- It is time for applying (Order is important)
+```
+$ kubectl apply -f csi-config-map.yaml csi-kms-config-map.yaml ceph-config-map.yaml csi-rbd-secret.yaml csi-provisioner-rbac.yaml csi-nodeplugin-rbac.yaml cs-rbd-plugin-provisioner.yaml csi-rbdsc.yaml
+```
+
+### CI/CD
 
 Rec010
 Add contents to k8s_course
