@@ -3550,28 +3550,67 @@ $ kubectl apply -f csi-config-map.yaml csi-kms-config-map.yaml ceph-config-map.y
 ## Session 11 (13 on classes)
 
 ### CI/CD
-- for our build server, we need ` nerdctl + buildkit ` on our worker node
+- for our manual build server, we need ` nerdctl + buildkit ` on our worker node
 - then we need to create a unit service for buildkitd and make it start
 - now let's build our image
 ```
 $ nerdctl -n k8s.io build -t nginx:1.2 .
 ```
 
-Rec011
-Add contents to k8s_course
-01:00
+- For our automatic build, we need a node for our gitlab runner + docker
+- we register our gitlab runner to our gitlab instance
+- add user of gitlab runner to docker group
+- give config file of docker + registry + cluster kubernetes
+- we need to give permission of docker hub to our k8s cluster
+```
+$ kubectl create secret docker-registry anisa-registry --docker-username=burux --docker-password=@nis@12345678 [--docker-server=<Address of our internal registry server>]
+
+$ vim deployment.yaml
+  spec:
+    imagepullsecret:
+      - name: anisa-registry
+```
 
 ```
-tar Cxzvvf /usr/local nerdctl-full-1.7.6-linux-amd64.tar.gz
-====
-/etc/gitlab-runner/config.toml
-====
-kubectl create secret docker-registry anisa-registry --docker-username=burux --docker-password=@nis@12345678
-====
-image: docker:latestservices:  - docker:dindstages:  - build  - deployvariables:  COMMIT: $CI_COMMIT_SHORT_SHA  IMAGE_TAG1: burux/nginx:$COMMITBUILD:  stage: build  only:    - main    script:    - docker build -t $IMAGE_TAG1 .    - docker push $IMAGE_TAG1    - echo "push on docker hub"DEPLOY:  stage: deploy  only:    - main      script:    - kubectl set image deployment/anisa-web nginx-container=$IMAGE_TAG1    - echo "deploy done"
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+    - deploy
+
+variables:
+  COMMIT: $CI_COMMIT_SHORT_SHA
+  IMAGE_TAG1: burux/nginx:$COMMIT
+
+BUILD:
+  stage: build
+  only:
+    - main
+      
+  script:
+    - docker build -t $IMAGE_TAG1 .
+    - docker push $IMAGE_TAG1
+    - echo "push on docker hub"
+    
+DEPLOY:
+  stage: deploy
+  only:
+    - main
+  
+  script:
+    - kubectl set image deployment/anisa-web -n default nginx-container=$IMAGE_TAG1    # With this command we set image of anisa-web deployment with container name nginx-container to $IMAGE_TAG1 
+    - echo "deploy done"
 ```
 
 ## Session 12 (14 on classes)
+
+
+Rec012
+Add contents to k8s_course
+01:00
 
 ## Session 13 (15 on classes)
 
