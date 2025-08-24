@@ -248,6 +248,15 @@
 - ` $ kubectl get sa `
 - ` $ kubectl create serviceacount anisa-sa`
 
+### Helm
+- ` $ helm repo list `    --> list all repo
+- ` $ helm search repo bitnami/redis `
+- ` $ helm install anisa-nginx bitnami/nginx `
+- ` $ helm uninstall anisa-nginx `
+- ` $ helm list `   --> list all things installed using helm
+- ` $ helm pull bitnami/nginx `   --> get repo of nginx for making changes
+- ` $ helm get valuses anisa-web --all `    --> show all values of an app
+
 
 ## Components:
 ### Master Nodes
@@ -3548,7 +3557,6 @@ $ kubectl apply -f csi-config-map.yaml csi-kms-config-map.yaml ceph-config-map.y
 ```
 
 ## Session 11 (13 on classes)
-
 ### CI/CD
 - for our manual build server, we need ` nerdctl + buildkit ` on our worker node
 - then we need to create a unit service for buildkitd and make it start
@@ -3572,6 +3580,8 @@ $ vim deployment.yaml
 ```
 
 ```
+.gitlab-ci.yaml
+
 image: docker:latest
 
 services:
@@ -3606,13 +3616,62 @@ DEPLOY:
 ```
 
 ## Session 12 (14 on classes)
+### CI
+- let's create our SA for gitlab
 
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: anisa-sa
+  namespace: dev
+automountServiceAccountToken: true    # With all pods in this namespace, this sa is going to be mounted
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gitlab-role
+  namespace: dev
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - "pods"
+      - "deployments"
+      - "replicaset"
+    verbs:
+      - "get"
+      - "describe"
+      - "update"
+      - "watch"
+      - "patch"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gitlab-binding
+  namespace: dev
+roleRef:
+  apiGroup: "rbac.authorization.k8s.io"
+  kind: "Role"
+  name: "gitlab-role"
+subjects:
+  - apiGroup: ""
+    kind: "ServiceAccount"
+    name: "anisa-sa"
+    namespace: dev
+```
 
-Rec012
-Add contents to k8s_course
-01:00
+- now create kube-config file of related SA
 
 ## Session 13 (15 on classes)
+### Helm Chart
+- helm is a package manager for k8s
+
+Rec013
+Add contents to k8s_course
+01:00
 
 ## Session 14 (16 on classes)
 ```
