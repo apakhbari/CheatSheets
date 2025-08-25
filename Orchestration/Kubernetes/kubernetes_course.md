@@ -254,8 +254,14 @@
 - ` $ helm install anisa-nginx bitnami/nginx `
 - ` $ helm uninstall anisa-nginx `
 - ` $ helm list `   --> list all things installed using helm
-- ` $ helm pull bitnami/nginx `   --> get repo of nginx for making changes
+- ` $ helm pull bitnami/nginx --untar`   --> get repo of nginx for making changes
 - ` $ helm get valuses anisa-web --all `    --> show all values of an app
+
+- ` $ helm install --generate-name . ` or ` $ helm install anisa . `
+- ` $ helm upgrade anisa `
+- ` $ helm rollback anisa 1 `   --> we can rollback our helm chart, take note that using this our revision is going up +1 
+- ` $ helm package . `  --> make a web-server-1.0.2.tgz file, ready to be pushed to our page
+- ` $ helm repo index . `
 
 
 ## Components:
@@ -759,6 +765,24 @@ metadata:
   name: anisa-sa
   namespace: dev
 automountServiceAccountToken: true    # With all pods in this namespace, this sa is going to be mounted
+```
+
+### Job
+```
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  ttlSecondsAfterFinished: 20   # keep container 20 seconds after it is completed
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl1:5.34.0
+        command: ["perl", "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never
+  backoggLimit: 4
 ```
 
 ## Drivers:
@@ -3741,13 +3765,45 @@ spec:
 - we can rollback our helm chart, take note that using this our revision is going up +1 ` $ helm rollback anisa 1 `
 
 - let's create a repo on github so we have access it anywhere. we create a repo, then add a helm branch to it. Then we need a token.
+- ` $ helm package . `  --> make a web-server-1.0.2.tgz file, ready to be pushed to our page
+- ` $ helm repo index . `   --> to create an index.yaml
 - now we go to Settings > Pages > Branch: helm 
+- our staatic page has been created
+- ` helm repo add anisa https://shobeyr.github.io/helm/my-nginx/ `
+- now we can install it from anywhere using ` $ helm install remote-helm-nginx anisa/web-server `
 
-Rec013
-Add contents to k8s_course
-01:00
 
 ## Session 14 (16 on classes)
+### Prometheus + Grafana
+- first we need to create a seperate NS
+- Add repo of prometheus to our helm
+- install it via helm
+
+### Job & CronJob
+- After completing the job, container gets deleted but there is a pod with 0/1 status. Pod remains so you can see results/logs
+
+- a job that calculates Pi to 2000 letters
+```
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  ttlSecondsAfterFinished: 20   # keep container 20 seconds after it is completed
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl1:5.34.0
+        command: ["perl", "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never
+  backoggLimit: 4
+```
+
+Rec015
+Add contents to k8s_course
+02:04
+
 ```
 apiVersion: batch/v1
 kind: Job
