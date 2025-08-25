@@ -3668,6 +3668,80 @@ subjects:
 ## Session 13 (15 on classes)
 ### Helm Chart
 - helm is a package manager for k8s
+- a helm chart directory looks like this
+```
+charts.yaml
+Values.yaml
+template/deployment.yaml
+template/svc.yaml
+```
+
+
+```
+Chart.yaml
+
+apiVersion: v2
+name: my-nginx
+version: 1.0.0    # We can use this for automatic versioning in CICD
+appVersion: 1.0.0
+description: my nginx chart
+---
+Values.yaml
+
+deployment:
+  replicas: 3
+  image: nginx:1.21
+service:
+  type: NodePort
+  port: 80
+  targetport: 80
+  nodeport: 31714
+---
+deployment.yaml
+
+apiversion: apps/v1
+kind: Deployment
+metadata:
+  naem: nginx-deployment
+  namespace: dev
+spec:
+  template:
+    metadata:
+      labels:
+        apps: nginx
+    spec:
+      containers:
+        - name: nginx-container
+        image: {{ .Values.deployment.image }}
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: {{ .Values.deployment.replicas }}
+---
+svc.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+  namespace: dev
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+    nodePort: {{ .Values.service.nodePort }}
+  selector:
+    app: nginx
+```
+
+- now to install this helm chart we can ` $ helm install --generate-name . ` or ` $ helm install anisa . `
+- we can assure installation of our helm chart using ` $ helm list `
+- we can upgrade our helm suing ` $ helm upgrade anisa `
+- we can rollback our helm chart, take note that using this our revision is going up +1 ` $ helm rollback anisa 1 `
+
+- let's create a repo on github so we have access it anywhere. we create a repo, then add a helm branch to it. Then we need a token.
+- now we go to Settings > Pages > Branch: helm 
 
 Rec013
 Add contents to k8s_course
