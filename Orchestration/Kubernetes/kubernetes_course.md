@@ -768,6 +768,7 @@ automountServiceAccountToken: true    # With all pods in this namespace, this sa
 ```
 
 ### Job
+- a job for calculating Pi number up to 2000 times
 ```
 apiVersion: batch/v1
 kind: Job
@@ -775,6 +776,10 @@ metadata:
   name: pi
 spec:
   ttlSecondsAfterFinished: 20   # keep container 20 seconds after it is completed
+  completions: 2    # It is being executed 2 times
+  parallelism: 2    # 2 threads are being executed
+  backoffLimit: 10   # By default it is 7, the number of tries if there is an error
+  activeDeadLineSeconds: 100   # after 100 times, pod exists
   template:
     spec:
       containers:
@@ -784,6 +789,8 @@ spec:
       restartPolicy: Never
   backoggLimit: 4
 ```
+
+### Cronjob
 
 ## Drivers:
 ### CRI (Container Runtime Interface)
@@ -3779,8 +3786,9 @@ spec:
 - Add repo of prometheus to our helm
 - install it via helm
 
-### Job & CronJob
+### Job
 - After completing the job, container gets deleted but there is a pod with 0/1 status. Pod remains so you can see results/logs
+- by default if it face an error, it try 7 times
 
 - a job that calculates Pi to 2000 letters
 ```
@@ -3790,6 +3798,10 @@ metadata:
   name: pi
 spec:
   ttlSecondsAfterFinished: 20   # keep container 20 seconds after it is completed
+  completions: 2    # It is being executed 2 times
+  parallelism: 2    # 2 threads are being executed
+  backoffLimit: 10   # By default it is 7, the number of tries if there is an error
+  activeDeadLineSeconds: 100   # after 100 times, pod exists
   template:
     spec:
       containers:
@@ -3800,178 +3812,38 @@ spec:
   backoggLimit: 4
 ```
 
+### CronJob
+- cronjob is a layer above job, so it creates a job
+```
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: helloworld-cron
+spec:
+  schedule: "* * * * *"
+  successfulJobslHistoryLimit: 0    # After a successfull job, do not keep any history
+  failedJobsHistoryLimit: 0    # After a failed job, do not keep any history
+  suspend: true   # suspend your cronjob, you can make it false to get executed as scheduled
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox
+            command: ["echo", "Hello Kubernetes!!!"]
+          restartPolicy: OnFailure
+```
+
+## Session 15 (17 on classes)
+
+
 Rec015
 Add contents to k8s_course
 02:04
 
-```
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: helloworld
-spec:
-  template:
-    spec:
-      containers:
-      - name: busybox
-        image: busybox
-        command: ["echo", "Hello Kubernetes!!!"]
-      restartPolicy: Never
-=====
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: helloworld
-spec:
-  ttlSecondsAfterFinished: 20
-  template:
-    spec:
-      containers:
-        - name: busybox
-          image: busybox
-          command: ["echo", "hello Kubernetes!!!"]
-      restartPolicy: Never
-====
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: helloworld
-spec:
-  template:
-    spec:
-      containers:
-      - name: busybox
-        image: busybox
-        command: ["sleep", "60"]
-      restartPolicy: Never
-      ===
-      apiVersion: batch/v1
-kind: Job
-metadata:
-  name: helloworld
-spec:
-  completions: 2
-  template:
-    spec:
-      containers:
-      - name: busybox
-        image: busybox
-        command: ["echo", "Hello Kubernetes!!!"]
-      restartPolicy: Never
-      ====
-      apiVersion: batch/v1
-kind: Job
-metadata:
-  name: helloworld
-spec:
-  completions: 2
-  parallelism: 2
-  template:
-    spec:
-      containers:
-      - name: busybox
-        image: busybox
-        command: ["echo", "Hello Kubernetes!!!"]
-      restartPolicy: Never
-===
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: helloworld
-spec:
-  template:
-    spec:
-      containers:
-      - name: busybox
-        image: busybox
-        command: ["ls", "/anisa"]
-      restartPolicy: Never
-===
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: helloworld
-spec:
-  backoffLimit: 2
-  template:
-    spec:
-      containers:
-      - name: busybox
-        image: busybox
-        command: ["ls", "/anisa"]
-      restartPolicy: Never
-    ====
-    kubectl apply -f jobs.yaml
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: helloworld-cron
-spec:
-  schedule: "* * * * *"
-  suspend: true
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: busybox
-            image: busybox
-            command: ["echo", "Hello Kubernetes!!!"]
-          restartPolicy: Never
-   
-   ======
-   apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: helloworld-cron
-spec:
-  schedule: "* * * * *"
-  successfulJobsHistoryLimit: 0
-  failedJobsHistoryLimit: 0 
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: busybox
-            image: busybox
-            command: ["echo", "Hello Kubernetes!!!"]
-          restartPolicy: Never 
-          =====
-          apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: helloworld-cron
-spec:
-  schedule: "* * * * *"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: busybox
-            image: busybox
-            command: ["echo", "Hello Kubernetes!!!"]
-          restartPolicy: Never
-          ====
-          apiVersion: batch/v1
-kind: Job
-metadata:
-  name: helloworld
-spec:
-  activeDeadlineSeconds: 10
-  template:
-    spec:
-      containers:
-      - name: busybox
-        image: busybox
-        command: ["sleep", "60"]
-      restartPolicy: Never 
-```
 
-## Session 15 (17 on classes)
 ```
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
