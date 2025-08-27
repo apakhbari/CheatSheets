@@ -426,6 +426,7 @@ of the application
 1. NodePort
 2. ClusterIP
 3. LoadBalancer
+4.bHeadless: is a service which does not load balance between all of our pods, it just points to one pode. in yaml file we need to write ` ClusterIP: None `
 
 #### NodePort Service
 - Is a layer above ClusterIP, So you can use it for both external and inter-cluster connections
@@ -4165,21 +4166,27 @@ spec:
               cpu: 100m
 ```
 
-Rec015
-Add contents to k8s_course
-02:04
-
 ## Session 16 (18 on classes)
+### StatefulSet
+- Headless service is a service which does not load balance between all of our pods, it just points to one pode. in yaml file we need to write ` ClusterIP: None `
+- StatefulSet names are not random like deployments, it is assigned like 0-1-2-3-4 in order
+- StatefulSet use clusterIP service for reading, and Headless service for write
+- for writing StatefulSet we use already-written configs
+- primary DB is named like ` mysql-0.mysql (second mysql is name of our headless service) ` this one only writes, but others are read only ` mysql-1.mysql, mysql-2.mysql, mysql-3.mysql, ... `
+- It is best practice to have number of replicas as number of our worker nodes, since sharing same volume on a worker for more than one instance of DB can cause conflict.  (If we are not using shared storage)
+
 
 ## Session 17 (19 on classes)
-```
 
+Rec018
+Add contents to k8s_course
+00:00
+
+```
 echo "Password: $(kubectl -n argocd get secret argocd-secret -o jsonpath="{.data.clearPassword}" | base64 -d)"
 ====
 $(Build.Repository.Name):$(Build.BuildId)
 Copy Files to: $(Build.ArtifactStagingDirectory)
-
-
 ```
 
 # acknowledgment
