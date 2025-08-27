@@ -64,6 +64,9 @@
 - Using Pod anti-affinity we can manage that same pods are on different nodes. For example 3 pods of same source, are deployed on 3 different nodes, not 3 pods on 1 node
 - When we ` $ kubectl get node ` in order to not have ` <none> ` in our role we need to ` $ kubectl label nodes worker2 kubernetes.io/role=worker2 `
 - When we mount a secret, a volume inside RAM is going to be mounted to our pod, its default address is ` /var/run/secrets `
+- We need MetricServer installed on our cluster for HPA/VPA to work
+- for installing metric server, we need to edit metric-server/deployment.yaml, and add ` --kubelet-insecure-tls ` this paramether, since our certs are self-signed
+- inside container: resources: limits does not care about how much actuall resource we have on our node, we can assign it whatever
 
 ## Directories
 - ` /var/run/secrets ` --> When we mount a secret, a volume inside RAM is going to be mounted to our pod, its default address is this
@@ -791,6 +794,152 @@ spec:
 ```
 
 ### Cronjob
+```
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: helloworld-cron
+spec:
+  schedule: "* * * * *"
+  successfulJobslHistoryLimit: 0    # After a successfull job, do not keep any history
+  failedJobsHistoryLimit: 0    # After a failed job, do not keep any history
+  suspend: true   # suspend your cronjob, you can make it false to get executed as scheduled
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox
+            command: ["echo", "Hello Kubernetes!!!"]
+          restartPolicy: OnFailure
+```
+
+### HPA
+```
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web-server-hpa
+  namespace: dev
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: php-apache
+    apiVersion: apps/v1
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: AverageValue
+          averageValue: 200Mi
+  behavior:
+    scaleUp:
+      policies:
+        - type: Pods
+          value: 5    # scale up 5 pods 5 pods
+          periodSeconds: 30   # Every 30 seconds go and check whether it needs to be scaled up
+        - type: percent
+          value: 100    # Scale up with amount of 100% of pods
+          periodSeconds: 30   # Every 30 seconds go and check whether it needs to be scaled up
+      selectPolicy: Max   # Among all of our policies, choose the one which is fastest (first one here)
+      stabilizationWindowSeconds: 5   # Scale up after 5 seconds (default is 300 sec)
+    scaleDown:
+      policies:
+        - type: Pods
+          value: 5
+          periodSeconds: 30
+        - type: percent
+          value: 100
+          periodSeconds: 30
+      selectPolicy: Min
+      stabilizationWindowSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+  namespace: dev
+spec: 
+  selector: 
+    matchLabels:
+      run: apache
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: apache
+    spec:
+      containers:
+        - name: php-apache-container
+          image: registry.k8s.io/hpa-example
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 100m
+```
+
+### VPA
+```
+apiVersion: autoscaling/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: web-server-hpa
+  namespace: dev
+spec:
+  TargetRef:
+    kind: Deployment
+    name: php-apache
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicy:
+      - containerName: '*'
+        mode: "Auto"
+        controledValues: "RequestsAndLimits"
+        minAllowed:
+          cpu: 10m
+          memory: 5Mi
+        maxAllowed:
+          cpu: 200m
+          memory: 500Mi
+        controlledResources: ["cpu", "memory"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+  namespace: dev
+spec: 
+  selector: 
+    matchLabels:
+      run: apache
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: apache
+    spec:
+      containers:
+        - name: php-apache-container
+          image: registry.k8s.io/hpa-example
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 100m
+```
 
 ## Drivers:
 ### CRI (Container Runtime Interface)
@@ -3835,12 +3984,55 @@ spec:
           restartPolicy: OnFailure
 ```
 
+- let's have backup ETCD using cronjob
+```
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: helloworld-cron
+spec:
+  schedule: "* * * * *"
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeName: master1   # For Access to ETCD certs
+          volumes:
+            - name: cert
+              hostPath:
+                path: /etc/kubernetes/pki/etcd
+            - name: etcd-backup
+              hostPath:
+                path: /mnt/etcd-backup
+          containers:
+          - name: etcd-backup-container
+            image: registry.k8s.io/etcd:3.5.12-0
+            command:
+              - /bin/sh
+              - -c
+              - |
+                cd /home/backup
+                etcdctl --endpoints=https://192.168.1.5:2379 --cacert=/home/certs/ca.crt --cert=/home/certs/server.crt --key=/home/certs/server.key snapshot save etcd-snapshot-$date.db
+            volumeMounts:
+              - name: cert
+                mountPath: /home/certs
+              - name: etcd-backuo
+                mountPath: /home/backup
+          tolerations:
+              - key: "node-role.kubernetes.io/control-plane"
+                operator: "Exists"
+                effect: "NoSchedule"
+          restartPolicy: Never
+```
+
 ## Session 15 (17 on classes)
-
-
-Rec015
-Add contents to k8s_course
-02:04
+### HPA (Horizontal Pod Autoscaler)
+- HPA can be used on deploymen and StatefulSet
+- We need MetricServer installed on our cluster for this to work
+- for installing metric server, we need to edit metric-server/deployment.yaml, and add ` --kubelet-insecure-tls ` this paramether, since our certs are self-signed
+- scale down happens after 5 mins
+- HPA is pre-isntalled on k8s, we don't need to install it (VPA is not like this)
 
 
 ```
@@ -3869,7 +4061,28 @@ spec:
         target:
           type: AverageValue
           averageValue: 200Mi
-====
+  behavior:
+    scaleUp:
+      policies:
+        - type: Pods
+          value: 5    # scale up 5 pods 5 pods
+          periodSeconds: 30   # Every 30 seconds go and check whether it needs to be scaled up
+        - type: percent
+          value: 100    # Scale up with amount of 100% of pods
+          periodSeconds: 30   # Every 30 seconds go and check whether it needs to be scaled up
+      selectPolicy: Max   # Among all of our policies, choose the one which is fastest (first one here)
+      stabilizationWindowSeconds: 5   # Scale up after 5 seconds (default is 300 sec)
+    scaleDown:
+      policies:
+        - type: Pods
+          value: 5
+          periodSeconds: 30
+        - type: percent
+          value: 100
+          periodSeconds: 30
+      selectPolicy: Min
+      stabilizationWindowSeconds: 5
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -3893,8 +4106,68 @@ spec:
               cpu: 500m
             requests:
               cpu: 100m
-====
 ```
+
+### VPA (Vertical Pod Autoscaler)
+- VPA has a restart in its nature most of the time, since it has to find another node to deploy on, so HPA is better
+- VPA increases the request of container, not limit of it
+- VPA gives us a recommended value for our Pods to set
+- VPA is not pre-isntalled on k8s, we need to install it
+
+```
+apiVersion: autoscaling/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: web-server-hpa
+  namespace: dev
+spec:
+  TargetRef:
+    kind: Deployment
+    name: php-apache
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicy:
+      - containerName: '*'
+        mode: "Auto"
+        controledValues: "RequestsAndLimits"
+        minAllowed:
+          cpu: 10m
+          memory: 5Mi
+        maxAllowed:
+          cpu: 200m
+          memory: 500Mi
+        controlledResources: ["cpu", "memory"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+  namespace: dev
+spec: 
+  selector: 
+    matchLabels:
+      run: apache
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: apache
+    spec:
+      containers:
+        - name: php-apache-container
+          image: registry.k8s.io/hpa-example
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 100m
+```
+
+Rec015
+Add contents to k8s_course
+02:04
 
 ## Session 16 (18 on classes)
 
