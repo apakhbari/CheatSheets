@@ -4206,6 +4206,7 @@ APA 🖖🏻
 ### Cool tools
 - [velero.io](https://velero.io/) --> a cool tool for backuping stuff in clusters
 - Openpolicy agent --> webhook authorization
+- [https://velero.io/](https://velero.io/)    --> Backup ETCD
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
