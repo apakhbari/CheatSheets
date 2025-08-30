@@ -4177,14 +4177,18 @@ spec:
 
 
 ## Session 17 (19 on classes)
+### ArgoCD
+- ArgoCD watch git repo of project by default each 3 mins for changes
+
+- for getting argoCD password
+```
+$ echo "Password: $(kubectl -n argocd get secret argocd-secret -o jsonpath="{.data.clearPassword}" | base64 -d)"
+```
 
 Rec018
-Add contents to k8s_course
 00:00
 
 ```
-echo "Password: $(kubectl -n argocd get secret argocd-secret -o jsonpath="{.data.clearPassword}" | base64 -d)"
-====
 $(Build.Repository.Name):$(Build.BuildId)
 Copy Files to: $(Build.ArtifactStagingDirectory)
 ```
