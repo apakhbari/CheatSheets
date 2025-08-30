@@ -4185,14 +4185,6 @@ spec:
 $ echo "Password: $(kubectl -n argocd get secret argocd-secret -o jsonpath="{.data.clearPassword}" | base64 -d)"
 ```
 
-Rec018
-00:00
-
-```
-$(Build.Repository.Name):$(Build.BuildId)
-Copy Files to: $(Build.ArtifactStagingDirectory)
-```
-
 # acknowledgment
 ## Contributors
 
