@@ -178,6 +178,12 @@ $ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/test1/_doc
 ```
 
 ## Session 4 (6 on classes)
+- Logstash understands syslog from one point and can forward them using API to elasticsearch
+- Logstash: Data Gathering + Data pre-processing + Data Transmission
+
+Add contents to ELK_course
+Vid 004
+2:33
 
 ```
 r1
