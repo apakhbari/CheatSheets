@@ -15,6 +15,8 @@
 - PKCS: Cert + PrivateKey
 
 ## Sample config.csr.conf
+- SAN is important, CommonName is not
+
 ```
 [ req ]
 default_bits       = 2048

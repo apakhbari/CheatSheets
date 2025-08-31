@@ -49,8 +49,83 @@ $ ./bin/elasticsearch-users useradd farhad -p 123456 -r superuser
 ```
 
 ## Session 2 (2 on classes)
+### ElasticSearch
 - by default shards = 1 and replicas = 1 , never ever primary and replicas are same nodes
 - After starting ElasticSearch using ` $ ./bin/elasticsearch ` some new configurations are going to be added to ` config/elasticsearch.yaml `
+
+- our certificate needs to be inside ` ./config/certs ` directory, if not it's not going to work
+- When we add a p12 cert to our elastic, we need to use  ` ./bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password` to enter our password of certificate of our http endpoint in order to be https. Now it is saved encrypted
+
+- change disk usage watermark: (when 90% of disk is occupied, it automatically stop node as primary and make it read only and transform data to other shards)
+```
+$ vim ./config/elasticsearch.yaml
+
+cluster.routing.allocation.disk.watermark.low: 95%  # Default 90%
+cluster.routing.allocation.disk.watermark.high: 97%   # start transfer to other shards
+cluster.routing.allocation.disk.watermark.flood_stage: 98%    # stop writing 
+```
+
+- Engine of ElasticSearch is Apache Lucene, which make our logfiles binary, so everything is faster
+
+### Kibana
+- now we need to extract Kibana
+- we create a certificate for it
+```
+[req]
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+
+[req_distinguished_name]
+countryName                     = Country Name (2 letter code)
+stateOrProvinceName             = State or Province Name (full name)
+localityName                    = Locality Name (eg, city)
+organizationalUnitName          = Organizational Unit Name (eg, section)
+commonName                      = Common Name (eg, your name or your server\'s hostname)
+emailAddress                    = Email Address
+
+[req_ext]
+subjectAltName = @alt_names
+
+[alt_names]
+IP.1 = 172.16.100.1
+IP.2 = 10.10.10.200
+#IP.3 = 10.10.10.200
+#IP.4 = 79.127.7.119
+#IP.5 = 194.5.192.250
+DNS.1 = kibana1.fartakec.local
+DNS.2 = kibana.fartakec.local
+#DNS.3 = kibana.fartakec.ir
+#DNS.4 = auto.fartakec.local
+#DNS.5 = auto.fartakec.com
+#DNS.6 = auto.fartakec.ir
+#DNS.7 = kibana2.fartakec.com
+#DNS.8 = kibana2.fartakec.local
+#DNS.9 = kibana2.fartakec.com
+```
+
+- we need to make some changes in config file
+```
+$ vim ./config/kibana.yaml
+
+Edit server.host: give IP
+Edit server.name: kibana1
+
+Edit server.ssl.enabled: to true
+Edit server.ssl.certificate
+Edit server.ssl.key
+
+Edit elasticsearch.ssl.verificationMode: none   (Since our cert is self-signed)
+```
+
+- to start it
+```
+$ ./bin/kibana
+```
+- now we need to eneter addres of elasticsearch on our dashboard
+- now we need to get password of user ` kibana_system ` , we need to ` ./elasticsearch/bin/elasticsearch-reset-password -u kibana_system `
+- now we need to wait untill setup is compeleted
+- after setup completion, now we can enter Kibana using our previously generated password (not kibana_system)
 
 Rec002
 Add contents to ELK_course
