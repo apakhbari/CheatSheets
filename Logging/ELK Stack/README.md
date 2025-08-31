@@ -17,7 +17,7 @@
 ## Components
 
 ## Tips & Tricks
-- ElasticSearch keeps logs in Json format (because of its key-value nature and searchability) then make it binary
+- ElasticSearch keeps logs in Json format (because of its key-value nature and searchability) then make it binary. COre of ElasticSearch is Apache Lucene
 
 ## Hands On
 
@@ -127,11 +127,56 @@ $ ./bin/kibana
 - now we need to wait untill setup is compeleted
 - after setup completion, now we can enter Kibana using our previously generated password (not kibana_system)
 
-Rec002
-Add contents to ELK_course
-02:58
-
 ## Session 3 (5 on classes)
+- We communicate with ES using API, Logstash, Agents, Kibana, and Beats are all API based too
+- API Method:
+1. GET: Retrieve Data, Default of API if  not assigned
+2. POST: Send Data
+3. PUT: Update index
+4. DELETE
+
+- Overall API Syntax:
+
+```
+$ curl [-k] [--cacert /path/to/ca] [--user <user:pass>] [-H <header>] [-d <data>] -X <method> url:port 
+
+API in Elastic Search:
+
+Get overall status:
+$ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/
+
+make output human readable:
+$ curl -k https://els1.fartakec.local:9200/?pretty
+$ curl -k https://els1.fartakec.local:9200 | jq
+
+Get Nodes in cluster:
+$ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/_cat/nodes?v
+
+Get cluster health:
+$ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/_cluster/health | jq
+
+Get list of indices (and its properties):
+$ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/_cat/indices?v
+
+Create an index (here "test-api"):
+$ curl -k -X PUT --user anisa:123456 https://els1.fartakec.local:9200/test-api | jq
+
+Get an index details (here "test-api"):
+$ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/test-api | jq
+
+Delete an index (here "test-api"):
+$ curl -k -X DELETE --user anisa:123456 https://els1.fartakec.local:9200/test-api | jq
+
+Create a Document inside an index(here 1):
+$ curl -k -X POST --user anisa:123456 https://els1.fartakec.local:9200/test1/_doc/1 -d '{"name": "farhad", "age": 20, "profession": "Network Engineer"}' -H 'Content-Type: application/json'
+
+Retrieve a document(here 1):
+$ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/test1/_doc/1 | jq
+
+Delete a document:
+$ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/test1/_doc/1 | jq
+```
+
 ## Session 4 (6 on classes)
 
 ```
