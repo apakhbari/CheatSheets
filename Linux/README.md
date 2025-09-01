@@ -442,6 +442,8 @@ Most Linux distributions use only one of these three:
 
 # Ports
 
+- Linux does not allow non-root users to listen on port numbers below ` < 1024 `
+
 - **`5900+n TCP`**:  
   The **VNC server** offers a GUI service at TCP port `5900+n`, where `n` equals the display number, usually `1` (port `5901`).
 
@@ -479,8 +481,9 @@ Most Linux distributions use only one of these three:
 | 2049 | TCP      | NFS |
 
 ---
-## Tips & Tricks:
+# Tips & Tricks:
 
+- Linux does not allow non-root users to listen on port numbers below ` < 1024 `
 - keyring is a kernel component, it caches encrypted keys which are kernel level on user space
 - for deleting important data:  
   ```sh
