@@ -178,8 +178,40 @@ $ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/test1/_doc
 ```
 
 ## Session 4 (6 on classes)
+### Logstash
 - Logstash understands syslog from one point and can forward them using API to elasticsearch
 - Logstash: Data Gathering + Data pre-processing + Data Transmission
+
+- we need to have a pipeline in ` ./config/pipelines.yml `
+- a pipeline consisted of:
+1. Input
+2. Filter (can be removed)
+3. Output
+
+- Let's have a simple pipeline
+```
+input {
+  udp {
+    port => 5140
+    codec => plain
+  }
+}
+
+filter {
+
+}
+
+output {
+  stdout {
+    codec => rubydebug
+   }
+}
+```
+
+- for running. logstash it's the same, but we need to pass pipeline to it
+```
+$ ./bin/logstash -f config/confs/simple.yml
+```
 
 Add contents to ELK_course
 Vid 004
