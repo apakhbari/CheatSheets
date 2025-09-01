@@ -188,7 +188,7 @@ $ curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/test1/_doc
 2. Filter (can be removed)
 3. Output
 
-- Let's have a simple pipeline
+- Let's have a simple pipeline that prints every input inside stdout, and also send logs to elasticsearch
 ```
 input {
   udp {
@@ -202,6 +202,15 @@ filter {
 }
 
 output {
+  elasticsearch {
+    hosts => ["https://els1.fartakec.local:9200"]
+    index => "router-logs-%{+YYYY.MM.dd}"
+    user => "anisa"
+    password => "123456"
+    ssl_enabled => true
+    ssl_verification_mode => "none"
+    ssl_certificate_authorities => "/home/farhad/ca/cacert.pem"
+  }
   stdout {
     codec => rubydebug
    }
@@ -213,10 +222,7 @@ output {
 $ ./bin/logstash -f config/confs/simple.yml
 ```
 
-Add contents to ELK_course
-Vid 004
-2:33
-
+- For configuring Routers to send syslog to Logstash
 ```
 r1
 ==============
@@ -495,6 +501,45 @@ end
 ```
 
 ## Session 5 (7 on classes)
+- Logstash Input
+  - File (text)
+  - CSV
+  - STDIN
+
+  - Network Input:
+    - Beat(s)
+    - TCP
+    - UDP
+    - HTTP(S)
+    - Syslog
+
+  - Message Queues:
+    - Kafka
+    - RabbitMQ
+    - JMS
+
+  - DataBase
+  - Cloud Service
+  - Plugin
+
+- Logstash Filter
+  - Grok
+  - Mutate
+  - Date
+  - GeoIP
+  - CSV
+  - JSON
+  - Split
+  - XML
+  - Drop
+  - Clone     
+
+- Grok make unstructured data of logs into a structured field-value data
+
+Add contents to ELK_course
+Vid 005
+2:48
+
 ## Session 6 (8 on classes)
 ## Session 7 (9 on classes)
 ## Session 8 (10 on classes)
