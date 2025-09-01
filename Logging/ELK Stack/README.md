@@ -535,10 +535,57 @@ end
   - Clone     
 
 - Grok make unstructured data of logs into a structured field-value data
+- ` GREEDYDATE ` means match all data till end of line
+```
+input {
+file {
+  path => "/var/log/apache2/access.log"
+  discover_interval => 1
+  stat_interval => 1
+}
+file {
+  path => "/var/log/auth.log"
+  discover_interval => 1
+  stat_interval => 1
+}
+}
+
+filter {
+  if [path] == "/var/log/apache2/access.log"
+    grok {
+      match => {"message" => "%{IP:client_ip} %{DATA:identity} %{DATA:authentication} \[%{DATA:time}\] \"%{WORD:http_method}" }
+    }
+  if [path] == "/var/log/auth.log"
+    grok {
+      match => {"message" => "%{TIMESTAMOISO8601:time}" }
+    }
+  else {      # We write this for all logs that are not going to match with above groks
+    grok {
+      match => {"message" => "%{GREEDYDATE:message}"}
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["https://els1.fartakec.local:9200"]
+    index => "router-logs-%{+YYYY.MM.dd}"
+    user => "anisa"
+    password => "123456"
+    ssl_enabled => true
+    ssl_verification_mode => "none"
+    ssl_certificate_authorities => "/home/farhad/ca/cacert.pem"
+  }
+  stdout {
+    codec => rubydebug
+   }
+}
+```
+
 
 Add contents to ELK_course
 Vid 005
-2:48
+0:33
 
 ## Session 6 (8 on classes)
 ## Session 7 (9 on classes)
