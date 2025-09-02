@@ -646,9 +646,17 @@ output {
 ## Session 7 (9 on classes)
 - when insatlling ElasticSearch using apt/rpm its bin file is located at ` /usr/share/elasticsearch/bin `
 
+### Beats
+- AuditBeat
+- FileBeat
+- HeartBeat
+- MetricBeat
+- PacketBeat
+- WinLogBeat
+
 Add contents to ELK_course
 Vid 007
-0:33
+2:56
 
 ## Session 8 (10 on classes)
 
