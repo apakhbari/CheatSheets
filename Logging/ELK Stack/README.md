@@ -646,6 +646,8 @@ output {
 ## Session 7 (9 on classes)
 - when insatlling ElasticSearch using apt/rpm its bin file is located at ` /usr/share/elasticsearch/bin `
 
+- DataStream is a layer above index, so when we want to search in it, it is easier
+
 ### Beats
 - AuditBeat
 - FileBeat
@@ -654,13 +656,13 @@ output {
 - PacketBeat
 - WinLogBeat
 
-Add contents to ELK_course
-Vid 007
-2:56
-
 ## Session 8 (10 on classes)
 
 ## Session 9 (11 on classes)
+
+Add contents to ELK_course
+Vid 009
+00:00
 
 ## Session 10 (13 on classes)
 
