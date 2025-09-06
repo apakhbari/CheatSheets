@@ -22,6 +22,26 @@
   - Contributors
   - Links
   
+## Tips & Tricks
+- If you don't save an item via history, you can't have trigger on it.
+- For restarting userParameters in zabbix-agent, you don't need to restart zabbix-agent.service. You can use ``` $ zabbix_agent2 -R userparameter_reload ```
+- Preprocessing in Items happens before saving in DB
+- In a host, all Item's keys should be unique
+- Zabbix Host is more of a namespace so it does not have to be assigned to a VM/Server with actual IP
+- use ` zabbix-java-gateway ` for monitoring java apps. You need to set config of ` javaGateWay & StartJavaPollers `  inside zabbix_servevr.conf file
+- For an API health chcek, we use ` web-scenario ` , If there is an API that we want to request for some data, we need to use ` HTTP AGENT ` 
+- Zabbix Server can't have load balancing but can be fail telorant. We can have passive zabbix servers for disaster
+- For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php `
+- When using dockerized zabbix agent, instead of IP, assign name of container in ` DNS Name ` of host
+- All users in zabbix must be assigned to a user group, if not assigned to a user group, users can't have any access towards zabbix's data
+- In GUI menu of zabbix, for working time ` 1-3,08:00-16:00;6-7:08:00-16:00;4-4,08:00-12:00 ` for monday to tuesday + saturday to thursday, thursday from 08 to 12:00. --> This one helps us in visualizing graphs of zabbix by gray outing weekends in graphs
+- hosts --> item --> trigger --> alert
+
+
+## Commands
+- ` $ zabbix_serevr -R config_cache_reload ` 
+- ` $ zabbix_serevr -R ha_status ` --> shows which passive cluster server is now online
+
 
 # Session 1
 - Monitoring consists of: Data collection - Problem detection - alerting
@@ -1075,7 +1095,6 @@ Host > Discovery Rules
 - Pollers: Processes for answering Syncron requests
 
 # Session 18 (20 on classes)
-- 02:00
 - Some importnat Tables of zabbix in DB:
   - history: numeric (float)
   - history_bin: binary
@@ -1434,8 +1453,6 @@ $ openssl x509 -noout -issuer -subject -nameopt esc_2253,esc_ctrl,utf8,dump_nost
 # systemctl restart zabbix-agent2.service
 ```
 
-29,768 + 38,752
-
 # Session 21 (23 on classes)
 - Encryptyion in zabbix:
 ```
@@ -1660,30 +1677,6 @@ finally {
     return JSON.stringify(result);
 }
 ```
-
- 
-## Tips & Tricks
-- If you don't save an item via history, you can't have trigger on it.
-- For restarting userParameters in zabbix-agent, you don't need to restart zabbix-agent.service. You can use ``` $ zabbix_agent2 -R userparameter_reload ```
-- Preprocessing in Items happens before saving in DB
-- In a host, all Item's keys should be unique
-- Zabbix Host is more of a namespace so it does not have to be assigned to a VM/Server with actual IP
-- use ` zabbix-java-gateway ` for monitoring java apps. You need to set config of ` javaGateWay & StartJavaPollers `  inside zabbix_servevr.conf file
-- For an API health chcek, we use ` web-scenario ` , If there is an API that we want to request for some data, we need to use ` HTTP AGENT ` 
-- Zabbix Server can't have load balancing but can be fail telorant. We can have passive zabbix servers for disaster
-- For configuring SAML authentication based SSO we need to go to ` /etc/zabbix/web/zabbix.conf.php `
-- When using dockerized zabbix agent, instead of IP, assign name of container in ` DNS Name ` of host
-- All users in zabbix must be assigned to a user group, if not assigned to a user group, users can't have any access towards zabbix's data
-- In GUI menu of zabbix, for working time ` 1-3,08:00-16:00;6-7:08:00-16:00;4-4,08:00-12:00 ` for monday to tuesday + saturday to thursday, thursday from 08 to 12:00. --> This one helps us in visualizing graphs of zabbix by gray outing weekends in graphs
-- hosts --> item --> trigger --> alert
-
-
-## Commands
-- ` $ zabbix_serevr -R config_cache_reload ` 
-- ` $ zabbix_serevr -R ha_status ` --> shows which passive cluster server is now online
-
-
-# Hands On
 
 
 # acknowledgment
