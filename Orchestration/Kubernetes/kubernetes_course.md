@@ -426,7 +426,7 @@ of the application
 1. NodePort
 2. ClusterIP
 3. LoadBalancer
-4.bHeadless: is a service which does not load balance between all of our pods, it just points to one pode. in yaml file we need to write ` ClusterIP: None `
+4. Headless: is a service which does not load balance between all of our pods, it just points to one pode. in yaml file we need to write ` ClusterIP: None `
 
 #### NodePort Service
 - Is a layer above ClusterIP, So you can use it for both external and inter-cluster connections
@@ -1835,7 +1835,6 @@ spec:
         - name: app-config-volume
           mountPath: /mnt/config
 ```
-- Create a tattoo design for me. I want it on my chest (on my heart). my desing have 2 parts, a pentagon and O+ (my blood typ). I want O+ to be inside and in center of pentagone. For pentagone i am looking for a tribal vibe. For O+ I want a classic sci-fi font + I want O+ lines to be filled so it is easy to realise from distance
 
 #### 3. Secrets
 - It is exactly like CM but it is base-64 encoded
