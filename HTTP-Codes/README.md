@@ -203,8 +203,9 @@ If you want great results with your SEO, it's essential to handle response codes
 - **410 Gone**: Best used when content is intentionally removed and you want to ensure crawlers know it is gone forever.
 
 - **5xx Server Errors**: Indicates a server-side problem; these should be addressed immediately to ensure your site remains accessible.
-# acknowledgment
 
+
+# acknowledgment
 ## Contributors
 
 APA 🖖🏻
