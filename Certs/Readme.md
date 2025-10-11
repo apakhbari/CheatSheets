@@ -58,6 +58,7 @@ $ openssl pkcs12 -export -in cert.pem -inkey private.key -out cert.p12
 - for most of Java apps we need a passphrase of 6 characters for our cert to work
 
 
+
 # acknowledgment
 ## Contributors
 
