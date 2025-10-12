@@ -656,12 +656,18 @@ output {
 - PacketBeat
 - WinLogBeat
 
+- Beats are lightweight data shipping tools
+
 ## Session 8 (10 on classes)
 
 ## Session 9 (11 on classes)
 ### AuditBeat
 - AuditBeat has a file integrity check
 - AuditBeat has two sections for multiple time fetching, for example there is a 12 h check and a 5 m check
+
+### PacketBeat
+- You choose a network interface, then it trace all packets that are sent/recieved
+- PacketBeat creates lots of data
 
 Add contents to ELK_course
 Vid 009
