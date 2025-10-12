@@ -18,6 +18,7 @@
 
 ## Tips & Tricks
 - ElasticSearch keeps logs in Json format (because of its key-value nature and searchability) then make it binary. COre of ElasticSearch is Apache Lucene
+- Elk is a SIEM system
 
 ## Hands On
 
@@ -673,17 +674,26 @@ output {
 
 - packetBeat can't capture network packets, it needs sudo access and then when we are running it, we need to pass ` --strict-perms=false ` flag to it so it can be executed
 
+### MetricBeat
+- MetricBeat has a module directory, which are a lots of things that you can collect metrics from, all of them have a ` .disabled ` file extension, for enabling any of them, remove this file extension
+- MetricBeat have some pre-enabled modules, located in ` module ` directory
+
+## Session 10 (13 on classes)
+
+
 Add contents to ELK_course
 Vid 009
 00:00
-
-## Session 10 (13 on classes)
 
 ## Session 11 (14 on classes)
 
 ## Session 12 (15 on classes)
 
 ## Session 13 (16 on classes)
+
+## Session 14 (17 on classes)
+
+## Session 15 (18 on classes)
 
 # acknowledgment
 ## Contributors
