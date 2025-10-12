@@ -661,6 +661,8 @@ output {
 ## Session 8 (10 on classes)
 
 ## Session 9 (11 on classes)
+- All beats can be configured to send data to Kibana directly, these have 
+
 ### AuditBeat
 - AuditBeat has a file integrity check
 - AuditBeat has two sections for multiple time fetching, for example there is a 12 h check and a 5 m check
@@ -668,6 +670,8 @@ output {
 ### PacketBeat
 - You choose a network interface, then it trace all packets that are sent/recieved
 - PacketBeat creates lots of data
+
+- packetBeat can't capture network packets, it needs sudo access and then when we are running it, we need to pass ` strict-perms=false ` flag to it so it can be executed
 
 Add contents to ELK_course
 Vid 009
