@@ -19,6 +19,9 @@
 ## Tips & Tricks
 - ElasticSearch keeps logs in Json format (because of its key-value nature and searchability) then make it binary. COre of ElasticSearch is Apache Lucene
 - Elk is a SIEM system
+- What happens if volume of Input data (IOPS) is more than what is being processed by ElasticSearch, data is lost. If we don't have a cluster, then for buffering stuff we can use a cache/buffer server in front of Elastic. In this case we need a fast disk
+- defaul behaviour of elsatic cluster, for each index we have 1 primary shard and 1 replica shard
+- never ever primary and replica are not in same node
 
 ## Hands On
 
@@ -679,11 +682,74 @@ output {
 - MetricBeat have some pre-enabled modules, located in ` module ` directory
 
 ## Session 10 (13 on classes)
+- User Management in ELK:
+1. Scripts
+2. API
+3. Kibana (Still API)
 
+- User Rolls are the way elastic handles users
+- For craeting a roll we need to ` curl `
+
+```
+create a role:
+curl -k -X POST "https://els1.fartakec.local:9200/_security/role/test1" -u anisa:123456 -H "Content-Type: application/json"  -d '    
+    {
+      "cluster": ["all"],
+      "indices": [
+        {
+          "names": ["index1", "index2"],
+          "privileges": ["read", "write"] 
+        }
+      ],
+      "run_as": ["other_user"]
+    }'
+======================================================================================
+Create a user:
+curl -k  -X POST "https://els1.fartakec.local:9200/_security/user/test-api" -u anisa:123456 -H "Content-Type: application/json"  -d '
+{
+  "password" : "123456",
+  "roles" : ["test1", "superuser"],
+  "full_name" : "user userpour",
+  "email" : "user@fartakec.local",
+  "metadata" : { "department" : "engineering" }
+}'
+======================================================================================
+Modify a user role:
+ curl -k  -X POST "https://els1.fartakec.local:9200/_security/user/test-api" -u anisa:123456 -H "Content-Type: application/json"  -d '
+{
+  "roles" : ["superuser","superuser"]
+}'
+
+Note: after this API call, always {"created":false} is appeared. this is not error and changes has been applied.
+======================================================================================
+Change password of a user:
+curl -k  -X POST "https://els1.fartakec.local:9200/_security/user/test-api/_password" -u anisa:123456 -H "Content-Type: application/json"  -d '
+{                      
+  "password" : "654321"
+}'
+======================================================================================
+Delete a user:
+curl -k  -X DELETE "https://els1.fartakec.local:9200/_security/user/test-api" -u anisa:123456
+======================================================================================
+```
+
+### Cluster
+
+- What happens if volume of Input data (IOPS) is more than what is being processed by ElasticSearch, data is lost. If we don't have a cluster, then for buffering stuff we can use a cache/buffer server in front of Elastic. In this case we need a fast disk
+- Health:
+1. Green: All shards (primary + replica)
+2. Yellow: only primary shards
+3. Red: No shard
+
+- Elastic's cluster is like a RAID 1
+- Shards allow horizontal scaling, it can be primary or replicate
+- shards are partly indexes that are stored on nodes
+- defaul behaviour of elsatic cluster, for each index we have 1 primary shard and 1 replica shard
+- never ever primary and replica are not in same node
 
 Add contents to ELK_course
-Vid 009
-00:00
+Vid 00
+02:34
 
 ## Session 11 (14 on classes)
 
