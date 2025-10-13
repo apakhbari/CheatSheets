@@ -746,12 +746,15 @@ curl -k  -X DELETE "https://els1.fartakec.local:9200/_security/user/test-api" -u
 - shards are partly indexes that are stored on nodes
 - defaul behaviour of elsatic cluster, for each index we have 1 primary shard and 1 replica shard
 - never ever primary and replica are not in same node
+- based on how many nodes we have (n), search ability is n time faster
+
+## Session 11 (14 on classes)
+
 
 Add contents to ELK_course
 Vid 00
-02:34
+00:00
 
-## Session 11 (14 on classes)
 
 ## Session 12 (15 on classes)
 
