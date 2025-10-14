@@ -750,7 +750,6 @@ curl -k  -X DELETE "https://els1.fartakec.local:9200/_security/user/test-api" -u
 
 ## Session 11 (14 on classes)
 
-
 Add contents to ELK_course
 Vid 00
 00:00
