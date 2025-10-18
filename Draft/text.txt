@@ -1,0 +1,65 @@
+sudo tee /etc/containers/containers.conf << 'EOF'
+[containers]
+# Use crun for better security features
+runtime = "crun"
+
+# Default capabilities (minimal set)
+default_capabilities = [
+  "CHOWN",
+  "DAC_OVERRIDE",
+  "FOWNER",
+  "FSETID",
+  "KILL",
+  "NET_BIND_SERVICE",
+  "SETFCAP",
+  "SETGID",
+  "SETPCAP",
+  "SETUID"
+]
+
+# Security options
+no_new_privileges = true
+seccomp_profile = "/usr/share/containers/seccomp.json"
+
+# Default ulimits
+default_ulimits = [
+  "nofile=1024:1024",
+  "nproc=1024:1024"
+]
+
+[engine]
+# Runtime security
+runtime_supports_nocgroups = ["crun"]
+runtime_supports_json = ["crun", "runc"]
+
+# Image security
+pull_policy = "always"
+EOF
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+# Configure audit rules for container activities
+sudo tee /etc/audit/rules.d/containers.rules << 'EOF'
+# Monitor container runtime
+-w /usr/bin/podman -p x -k container_runtime
+-w /usr/bin/runc -p x -k container_runtime
+-w /usr/bin/crun -p x -k container_runtime
+
+# Monitor container storage
+-w /var/lib/containers/ -p wa -k container_storage
+-w /etc/containers/ -p wa -k container_config
+
+# Monitor container processes
+-a always,exit -F arch=b64 -S clone -F a0&0x7C020000 -k container_create
+-a always,exit -F arch=b64 -S unshare -k container_unshare
+
+# Monitor capability changes
+-a always,exit -F arch=b64 -S capset -k container_capabilities
+EOF
+
+# Reload audit rules
+sudo augenrules --load
+sudo systemctl restart auditd
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
