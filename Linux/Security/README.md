@@ -1180,7 +1180,6 @@ also watch `/etc/sudoers` file
 
 # acknowledgment
 ## Contributors
-
 APA 🖖🏻
 
 ## Links
