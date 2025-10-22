@@ -1184,7 +1184,6 @@ APA 🖖🏻
 
 ## Links
 
-
 ## APA, Live long & prosper
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa
