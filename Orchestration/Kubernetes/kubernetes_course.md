@@ -4186,7 +4186,6 @@ $ echo "Password: $(kubectl -n argocd get secret argocd-secret -o jsonpath="{.da
 
 # acknowledgment
 ## Contributors
-
 APA 🖖🏻
 
 ## Links
