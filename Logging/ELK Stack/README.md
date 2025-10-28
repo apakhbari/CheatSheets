@@ -749,9 +749,12 @@ curl -k  -X DELETE "https://els1.fartakec.local:9200/_security/user/test-api" -u
 
 ## Session 11 (14 on classes)
 
+- In order to have a certificate between our Elastic componenets, in order to them verify each other and a man in the middle attack cab't happen, we use to create certificate for servers.
+/usr/share/local/elasticsearch/elasticsearch-certutil ca
+
 Add contents to ELK_course
 Vid 00
-00:00
+01:21
 
 
 ## Session 12 (15 on classes)
