@@ -100,7 +100,7 @@ $ kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || \
 ```
 
 ## Final Overview: Traffic Flow with Istio
-![traffic_flow.png](https://github.com/apakhbari/Istio/blob/main/etc/traffic_flow.png)
+![traffic_flow.png](./etc/traffic_flow.png)
 
 # acknowledgment 
 ## Contributors
