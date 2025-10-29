@@ -757,6 +757,7 @@ Vid 00
 01:21
 
 
+
 ## Session 12 (15 on classes)
 
 ## Session 13 (16 on classes)
