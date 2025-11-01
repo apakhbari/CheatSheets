@@ -49,7 +49,6 @@ G --> |YES| H(Index Defined in Stream)
 ## Starting Up
 
 
-
 # acknowledgment
 ## Contributors
 
