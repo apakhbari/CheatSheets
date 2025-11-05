@@ -5,10 +5,10 @@
 
 set -euo pipefail
 
-DRYRUN=true   # Set true for testing (no deletion)
-CODE_VERSION="1.4"
+DRYRUN=false   # Set true for testing (no deletion)
+CODE_VERSION="1.3"
 
-CUTOFF_DATE="2025-10-16"      # Files created after this time are not being processed
+CUTOFF_DATE="2025-10-15"      # Files created after this time are not being processed
 CURRENTSEC=$(date +%s)
 TIMESTAMP=$(date +%y%m%d_%H%M)
 
