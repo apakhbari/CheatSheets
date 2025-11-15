@@ -22,6 +22,7 @@
   - Links
 
 
+
 # Theoretical
 ## Introduction
 - Free & Open-source centralized logging platform, can create co-relations queries and alerts
