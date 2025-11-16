@@ -206,30 +206,47 @@ kubectl apply -f fluent-bit-daemonset.yaml
     1. Reads cluster and kubernetes.namespace_name fields.
     2. Creates (or routes to) a stream dynamically based on cluster|namespace.
     3. Optionally falls back to a catch-all stream if needed.
-
-- Flow
 ```
 Fluent Bit --> Graylog catch-all stream --> pipeline routes to pre-created stream --> daily index
 ```
 
-Create a pipeline:
-1. Extract `cluster` and `namespace`
-2. Build stream name dynamically
-3. Route to that stream
-
-Example pipeline snippet:
+##### Create a pipeline:
+1. Go to System → Pipelines → Create Pipeline
+2. Create a rule with the snippet above
+3. Connect pipeline to your catch-all stream
+4. Start pipeline processing
+> Important: You need pre-created streams with names matching cluster|namespace.
+You can script stream creation using Graylog REST API if you have many clusters/namespaces.
 ```
 rule "route_by_cluster_namespace"
 when
-  has_field("cluster") && has_field("kubernetes")
+    has_field("cluster") && has_field("kubernetes.namespace_name")
 then
-  let cluster_name = to_string($message.cluster);
-  let ns = to_string($message.kubernetes.namespace_name);
-  route_to_stream(concat(cluster_name,"|",ns));
+    let cluster_name = to_string($message.cluster);
+    let ns = to_string($message.kubernetes.namespace_name);
+    
+    # Combine to form stream name
+    let stream_name = concat(cluster_name, "|", ns);
+
+    # Route to existing stream with that name
+    route_to_stream(stream_name);
 end
 ```
-> This requires you to pre-create streams with names like cluster-A|payments or use a single “catch-all” stream and use cluster+namespace fields for filtering.
 
+##### (Optional): Automating Stream Creation using REST API
+```bash
+curl -u admin:password -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "title": "cluster-A|payments",
+        "description": "Logs from cluster-A, namespace payments",
+        "index_set_id": "YOUR_INDEX_SET_ID",
+        "matching_type": "AND"
+      }' \
+  http://<graylog-host>:9000/api/streams
+```
+- Replace cluster-A and payments dynamically in a script
+- Can be automated via a cronjob or CI pipeline
 
 ##### Design decision:
 - If you have a small and stable number of namespaces (projects), create one stream per namespace (each stream can be attached to its own index set if you want different retention).
