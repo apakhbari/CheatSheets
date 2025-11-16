@@ -51,6 +51,28 @@ Run a node-level log collector (DaemonSet — e.g. Fluent Bit) on the source clu
 3. DaemonSet (main Fluent Bit pod)
 4. (Optional) TLS secret example. Only if using TLS for GELF input:
 
+##### What This Setup Achieves
+- ✔ Collects logs from all pods on every node: (via DaemonSet + hostPath to /var/log/containers)
+
+- ✔ Enriches logs with Kubernetes metadata: (namespace, pod, container, labels)
+
+- ✔ Sends logs to Graylog using GELF: (the native format Graylog loves)
+
+- ✔ Fully production-ready: RBAC, TLS placeholder, resource limits, state DB, skip long lines, etc.
+
+#####  Your logs will now arrive in Graylog like this:
+Fields you can filter/stream on:
+- `kubernetes.namespace_name`
+- `kubernetes.pod_name`
+- `kubernetes.container_name`
+- `kubernetes.labels.app`
+- `kubernetes.docker_id`
+- `stream (stdout/stderr)`
+- `log`
+- `timestamp`
+
+This is perfect for creating Streams per project (namespace) and daily index rotation.
+
 #### Minimal
 - a minimal example (ConfigMap + DaemonSet). You’ll adapt image versions, resources, securityContext, and TLS to your environment.
 
