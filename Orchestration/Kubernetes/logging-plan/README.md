@@ -64,7 +64,24 @@ kubectl apply -f fluent-bit-daemonset.yaml
 
 
 ### D) Graylog: Streams and Indexing — how to split by project & day
+#### 1) Use Streams to separate projects (namespaces)
+- Create a Stream per project/namespace (or create a small number of streams grouped by project type).
+    - ` System → Streams → Create stream `
+    - Add a stream rule: field `kubernetes.namespace_name` (or `kube_namespace`) `match exactly` → `your-namespace`. Start the stream.
+- Streams let you route only matching messages to that stream. You may attach pipelines to further enrich/transform messages.
 
+##### Design decision:
+- If you have a small and stable number of namespaces (projects), create one stream per namespace (each stream can be attached to its own index set if you want different retention).
+
+- If you have many dynamic namespaces, create streams for the important projects and use tags/fields for others; you can also use pipelines + lookup tables to map namespaces to higher-level project buckets.
+
+##### 2) Index sets & daily separation (per-day indices)
+- Graylog stores messages into index sets. Each index set has a rotation strategy (time-based, size-based, or the new data-tiering optimizing strategy). You can configure rotation to rotate every day (ISO8601 P1D) so new indices are created per day. That achieves your “divide logs by day” requirement. Then retention policy deletes old indices after your retention window. 
+
+How to set daily rotation:
+- `System → Indices` → edit your index set (or create a new index set) → Rotation & Retention → choose rotation strategy Index Time (or Data Tiering with a daily period) and set rotation period to P1D. Set retention strategy to Delete and max number of indices to keep N days. Example: keep 30 daily indices → keeps ~30 days. 
+Graylog Community
++1
 
 
 
