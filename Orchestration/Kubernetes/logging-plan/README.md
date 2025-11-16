@@ -79,15 +79,42 @@ kubectl apply -f fluent-bit-daemonset.yaml
 - Graylog stores messages into index sets. Each index set has a rotation strategy (time-based, size-based, or the new data-tiering optimizing strategy). You can configure rotation to rotate every day (ISO8601 P1D) so new indices are created per day. That achieves your “divide logs by day” requirement. Then retention policy deletes old indices after your retention window. 
 
 How to set daily rotation:
-- `System → Indices` → edit your index set (or create a new index set) → Rotation & Retention → choose rotation strategy Index Time (or Data Tiering with a daily period) and set rotation period to P1D. Set retention strategy to Delete and max number of indices to keep N days. Example: keep 30 daily indices → keeps ~30 days. 
-Graylog Community
-+1
+- `System → Indices` → edit your index set (or create a new index set) → Rotation & Retention → choose rotation strategy Index Time (or Data Tiering with a daily period) and set rotation period to `P1D`. Set retention strategy to `Delete` and `max number of indices` to keep N days. Example: keep 30 daily indices → keeps ~30 days.
+
+### E) Enrichment & routing (pipelines)
+- Use pipeline rules to normalize fields (e.g., rename `_kubernetes_namespace_name` to `namespace`) or to `route_to_stream("project-foo")` by logic. Graylog docs recommend pipelines for richer transformations (and will deprecate some stream rule patterns in future). Use pipelines for complex routing/enrichment. 
+
+- Example pipeline snippet to route on `kubernetes.namespace_name`:
+```
+rule "route_by_namespace"
+when
+  has_field("kubernetes") && to_string($message.kubernetes.namespace_name) == "payments"
+then
+  route_to_stream("Payments Stream ID");
+end
+```
+
+## Practical checklist (copy/paste to run)
+1. On Graylog:
+    - Create GELF TCP (port 12201) or GELF HTTP. Ensure reachable. 
+    - Create index set: configure rotation P1D and retention (keep N indices/days). 
+    - Create Streams for the namespaces you care about; use the exact k8s field name you see in messages. Start streams. 
+2. On source K8s cluster:
+    - Deploy Fluent Bit DaemonSet + ConfigMap (example above) with GELF output to Graylog host:12201. Verify logs appear in Graylog “All messages”. 
+    - If you need TLS, configure Fluent Bit TLS settings and Graylog’s input for TLS.
+3. Verify:
+- In Graylog, open “All messages”, run a search for a recent pod log, check fields (namespace/pod). Use those exact field names to create stream rules.
+- Check stream counts and that messages appear in the intended stream.
+- Check System → Indices to see daily indices being created per rotation.
 
 
-
-
-
-
+## Notes, pitfalls & suggestions
+- Field names matter. Different collectors may send slightly different field names (kubernetes.namespace_name, kube_namespace, _kubernetes_namespace_name). Inspect incoming messages before building stream rules. 
+Stackademic
+- Volume & indices count. If you create one index set per namespace and you have many namespaces, you’ll create many indices — that can stress Elasticsearch/OpenSearch. Prefer grouping low-importance namespaces into shared index sets with a common retention policy. 
+- Performance / TLS. For production, use TCP+TLS + authentication and monitor Graylog/ES cluster health.
+- Testing tip: start by sending a few test logs via curl to your GELF HTTP input (Graylog docs show examples) to confirm input configuration before deploying the DaemonSet. 
+go2docs.graylog.org
 
 # acknowledgment
 ## Contributors
