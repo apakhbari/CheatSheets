@@ -48,9 +48,8 @@ Run a node-level log collector (DaemonSet — e.g. Fluent Bit) on the source clu
 1. Service Account + RBAC
 2. ConfigMap (Main Fluent Bit Config + Parsers)
     - Update the `Host` value inside `[OUTPUT]` to your Graylog hostname or IP.
-3. 
-4. 
-5. 
+3. DaemonSet (main Fluent Bit pod)
+4. (Optional) TLS secret example. Only if using TLS for GELF input:
 
 #### Minimal
 - a minimal example (ConfigMap + DaemonSet). You’ll adapt image versions, resources, securityContext, and TLS to your environment.
@@ -109,7 +108,7 @@ then
 end
 ```
 
-## Practical checklist (copy/paste to run)
+## Practical checklist
 1. On Graylog:
     - Create GELF TCP (port 12201) or GELF HTTP. Ensure reachable. 
     - Create index set: configure rotation P1D and retention (keep N indices/days). 
