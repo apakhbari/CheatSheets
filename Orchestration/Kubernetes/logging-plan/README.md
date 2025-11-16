@@ -44,6 +44,13 @@ Run a node-level log collector (DaemonSet — e.g. Fluent Bit) on the source clu
     - Enrich logs with Kubernetes metadata (namespace, pod, container, labels)
     - Forward logs to Graylog via GELF TCP
     - Includes RBAC, ServiceAccount, ConfigMap, DaemonSet, and TLS placeholders
+    
+1. Service Account + RBAC
+2. ConfigMap (Main Fluent Bit Config + Parsers)
+    - Update the `Host` value inside `[OUTPUT]` to your Graylog hostname or IP.
+3. 
+4. 
+5. 
 
 #### Minimal
 - a minimal example (ConfigMap + DaemonSet). You’ll adapt image versions, resources, securityContext, and TLS to your environment.
