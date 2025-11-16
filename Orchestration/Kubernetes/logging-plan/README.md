@@ -38,6 +38,14 @@ Run a node-level log collector (DaemonSet — e.g. Fluent Bit) on the source clu
 3. Ensure Graylog is reachable from your source Kubernetes cluster (network, DNS, TLS). If production, enable TLS on the input (use TLS termination or put Graylog behind a TLS LB).
 
 ### B) Deploy Fluent Bit as a DaemonSet (collector)
+#### Production-Ready
+- **a full production-ready Fluent Bit DaemonSet** for Kubernetes, specifically tuned
+    - Collect pod logs from /var/log/containers/*.log
+    - Enrich logs with Kubernetes metadata (namespace, pod, container, labels)
+    - Forward logs to Graylog via GELF TCP
+    - Includes RBAC, ServiceAccount, ConfigMap, DaemonSet, and TLS placeholders
+
+#### Minimal
 - a minimal example (ConfigMap + DaemonSet). You’ll adapt image versions, resources, securityContext, and TLS to your environment.
 
 1. ConfigMap (fluent-bit config) — key ideas:
