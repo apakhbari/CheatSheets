@@ -8,8 +8,37 @@
 |    _  ||  |_|  | _____| |      |       ||       ||   |_| ||   |_| ||   | | | |   ||   |_| |
 |___| |_||_______||_______|      |_______||_______||_______||_______||___| |_|  |__||_______|
 ```
-## Table of contents
 
+## Table of Contents
+
+1. [Overview](#overview)  
+    - [Mermaid Flowchart](#mermaid-flowchart)  
+    - [Flow Explanation](#flow-explanation)  
+2. [TL;DR (one-line plan)](#tldr-one-line-plan)  
+3. [Why DaemonSet (recommended) vs sidecar per-pod](#why-daemonset-recommended-vs-sidecar-per-pod)  
+4. [What to run on the collector](#what-to-run-on-the-collector)  
+5. [Step-by-step Hands-on](#step-by-step-hands-on)  
+    - [A) Prepare Graylog (first)](#a-prepare-graylog-first)  
+        - [Create Input](#create-input)  
+        - [Create NodePort Service](#create-nodeport-service)  
+    - [B) Deploy Fluent Bit as a DaemonSet (collector)](#b-deploy-fluent-bit-as-a-daemonset-collector)  
+        - [Production-Ready](#production-ready)  
+        - [Minimal (For Test)](#minimal-for-test)  
+    - [C) What fields to expect in Graylog](#c-what-fields-to-expect-in-graylog)  
+    - [D) Graylog: Streams and Indexing — how to split by cluster, project & day](#d-graylog-streams-and-indexing--how-to-split-by-cluster-project--day)  
+        - [Option 1: One stream per namespace per cluster (explicit streams)](#option-1-one-stream-per-namespace-per-cluster-explicit-streams)  
+        - [Option 2: Use pipeline rules for automatic streams](#option-2-use-pipeline-rules-for-automatic-streams)  
+        - [Automating Stream Creation using REST API](#automating-stream-creation-using-rest-api)  
+        - [Index sets & daily separation (per-day indices)](#index-sets--daily-separation-per-day-indices)  
+    - [E) Enrichment & routing (pipelines)](#e-enrichment--routing-pipelines)  
+    - [F) Optional: Graylog Dashboards / Alerts](#f-optional-graylog-dashboards--alerts)  
+6. [Practical checklist](#practical-checklist)  
+7. [Notes, pitfalls & suggestions](#notes-pitfalls--suggestions)  
+8. [Acknowledgment](#acknowledgment)  
+    - [Contributors](#contributors)  
+    - [Links](#links)  
+
+---
 
 ## Overview
 
@@ -50,59 +79,84 @@ flowchart LR
         NewClusterNS[New cluster/namespace detected] -->|REST API| StreamCreation["Pre-create stream"]
         StreamCreation --> Pipeline
     end
-```
+````
+
+### Flow Explanation
+
 1. **Multiple clusters → Graylog NodePort**
-   * Each cluster runs Fluent Bit DaemonSet
-   * Logs forwarded to **Graylog NodePort** (`31220`) using GELF TCP
-   * Each cluster adds its `cluster` field for identification
+
+   * Each cluster runs Fluent Bit DaemonSet.
+   * Logs are forwarded to **Graylog NodePort** (`31220`) using GELF TCP.
+   * Each cluster adds its `cluster` field for identification.
 
 2. **Catch-All Stream**
-   * All logs initially land here
+
+   * All logs initially land here.
 
 3. **Pipeline**
-   * Reads `cluster` + `namespace` fields
-   * Routes logs to the correct **pre-created stream**
+
+   * Reads `cluster` + `namespace` fields.
+   * Routes logs to the correct **pre-created stream**.
 
 4. **Streams per cluster + namespace**
-   * Logical separation for each project / environment
+
+   * Logical separation for each project/environment.
 
 5. **Daily Index Set**
-   * Each stream writes to a **daily rotated index**
+
+   * Each stream writes to a **daily rotated index**.
 
 6. **Optional Automation**
-   * Automatically create streams for new cluster+namespace combinations via REST API
 
+   * Automatically creates streams for new cluster/namespace combinations via REST API.
+
+---
 
 ## TL;DR (one-line plan)
-- Fluent Bit DaemonSets on each cluster forward pod logs (excluding system namespaces) with cluster metadata via GELF TCP NodePort to Graylog, where a catch-all stream and pipeline automatically route logs into per-cluster+namespace streams stored in daily-rotated indices.
 
-### Why DaemonSet (recommended) vs sidecar per-pod
+* Fluent Bit DaemonSets on each cluster forward pod logs (excluding system namespaces) with cluster metadata via GELF TCP NodePort to Graylog, where a catch-all stream and pipeline automatically route logs into per-cluster+namespace streams stored in daily-rotated indices.
 
-- DaemonSet collector (one pod per node) reads container logs from the node (e.g. /var/log/containers/*.log), enriches them with k8s metadata and ships them centrally. This is lightweight, simpler to manage, and scales automatically with nodes. Many production setups use Fluent Bit/Fluentd as DaemonSets to centralize K8s logs. 
+---
 
-- Sidecar per-pod forwards only that pod’s logs. Pros: isolation per-app; cons: huge operational overhead (every pod spec must include the sidecar), higher resource usage, complexity when pods are many/short-lived. Use sidecars only for very special per-pod transformations or security/isolation requirements.
+## Why DaemonSet (recommended) vs sidecar per-pod
 
-### What to run on the collector
-- Fluent Bit (lightweight, great for k8s) — it has a GELF output plugin to send to Graylog. 
+* **DaemonSet collector** (one pod per node) reads container logs from the node (e.g., `/var/log/containers/*.log`), enriches them with Kubernetes metadata, and ships them centrally. This is lightweight, simple to manage, and scales automatically with nodes. Most production setups use Fluent Bit/Fluentd as DaemonSets to centralize Kubernetes logs.
 
-- Alternatives: Fluentd, Filebeat, or Vector — all workable; Graylog accepts GELF/Beats/HTTP. Graylog supports Beats input and GELF HTTP/TCP/UDP inputs. 
+* **Sidecar per-pod** forwards only that pod’s logs.
+  *Pros:* isolation per application.
+  *Cons:* operational overhead (every pod spec must include the sidecar), higher resource usage, complexity when pods are many or short-lived.
+
+  * Use sidecars only for very special per-pod transformations or security/isolation requirements.
+
+---
+
+## What to run on the collector
+
+* **Fluent Bit** (lightweight, ideal for Kubernetes) — has a GELF output plugin to send logs to Graylog.
+* **Alternatives:** Fluentd, Filebeat, or Vector — all workable. Graylog accepts GELF/Beats/HTTP. Graylog supports Beats input and GELF HTTP/TCP/UDP inputs.
+
+---
 
 ## Step-by-step Hands-on
+
 ### A) Prepare Graylog (first)
-#### Craete Input
-1. Go to System → Inputs → Launch new input
-2. Select GELF TCP
-3. Bind it to port 12201
-4. Give it a meaningful name (e.g., k8s-log-input)
-5. Start the input
 
-- Optionally create a Beats input if you plan to use Filebeat/Winlogbeat. Graylog’s Beats input expects Beats/Logstash protocol (TCP). 
+#### Create Input
 
-- Ensure Graylog is reachable from your source Kubernetes cluster (network, DNS, TLS). If production, enable TLS on the input (use TLS termination or put Graylog behind a TLS LB).
+1. Go to **System → Inputs → Launch new input**.
+2. Select **GELF TCP**.
+3. Bind it to port **12201**.
+4. Give it a meaningful name (e.g., `k8s-log-input`).
+5. Start the input.
 
-#### Craete NodePort Service
-- You want external clusters to send logs to your Graylog GELF input (port 12201).
-```
+* Optionally create a **Beats input** if I plan to use Filebeat/Winlogbeat. Graylog’s Beats input expects the Beats/Logstash protocol (TCP).
+* Ensure Graylog is reachable from my source Kubernetes cluster (network, DNS, TLS). For production, enable TLS on the input (use TLS termination or place Graylog behind a TLS load balancer).
+
+#### Create NodePort Service
+
+I want external clusters to send logs to my Graylog GELF input (port 12201).
+
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -116,115 +170,123 @@ spec:
     - protocol: TCP
       port: 12201      # GELF TCP port inside Graylog
       targetPort: 12201
-      nodePort: 31220  # NodePort you expose externally
+      nodePort: 31220  # NodePort I expose externally
 ```
-- `port` = port inside the pod
-- `targetPort` = port Graylog input is listening on
-- `nodePort` = external port on all cluster nodes
 
-> You can now send logs from other clusters to http://<any-node-ip>:31220
+* `port` = port inside the pod.
+* `targetPort` = port Graylog input is listening on.
+* `nodePort` = external port on all cluster nodes.
+
+> I can now send logs from other clusters to `http://<any-node-ip>:31220`.
+
+---
 
 ### B) Deploy Fluent Bit as a DaemonSet (collector)
+
 #### Production-Ready
-- **a full production-ready Fluent Bit DaemonSet** for Kubernetes, specifically tuned
-    - Collect pod logs from /var/log/containers/*.log
-    - Enrich logs with Kubernetes metadata (its cluster name, namespace, pod, container, labels)
-    - Forward logs to Graylog via GELF TCP
-    - Includes RBAC, ServiceAccount, ConfigMap, DaemonSet, and TLS placeholders
-    
-1. Service Account + RBAC
+
+* A **full production-ready Fluent Bit DaemonSet** for Kubernetes, specifically tuned:
+
+  * Collects pod logs from `/var/log/containers/*.log`.
+  * Enriches logs with Kubernetes metadata (cluster name, namespace, pod, container, labels).
+  * Forwards logs to Graylog via GELF TCP.
+  * Includes RBAC, ServiceAccount, ConfigMap, DaemonSet, and TLS placeholders.
+
+1. Service Account + RBAC.
 2. ConfigMap (Main Fluent Bit Config + Parsers)
-    - Update the `Host` value inside `[OUTPUT]` to your Graylog hostname or IP.
-3. DaemonSet (main Fluent Bit pod)
-4. (Optional) TLS secret example. Only if using TLS for GELF input:
+
+   * Update the `Host` value inside `[OUTPUT]` to my Graylog hostname or IP.
+3. DaemonSet (main Fluent Bit pod).
+4. (Optional) TLS secret example — only if using TLS for GELF input.
 
 ##### What This Setup Achieves
-- ✔ Collects logs from all pods on every node: (via DaemonSet + hostPath to /var/log/containers)
 
-- ✔ Enriches logs with Kubernetes metadata: (namespace, pod, container, labels)
+* ✔ Collects logs from all pods on every node.
+* ✔ Enriches logs with Kubernetes metadata (namespace, pod, container, labels).
+* ✔ Sends logs to Graylog using GELF format.
+* ✔ Fully production-ready: RBAC, TLS placeholder, resource limits, state DB, skip long lines, etc.
 
-- ✔ Sends logs to Graylog using GELF: (the native format Graylog loves)
+#### Minimal (For Test)
 
-- ✔ Fully production-ready: RBAC, TLS placeholder, resource limits, state DB, skip long lines, etc.
-
-#####  Your logs will now arrive in Graylog like this:
-Fields you can filter/stream on:
-- `cluster name`
-- `kubernetes.namespace_name`
-- `kubernetes.pod_name`
-- `kubernetes.container_name`
-- `kubernetes.labels.app`
-- `kubernetes.docker_id`
-- `stream (stdout/stderr)`
-- `log`
-- `timestamp`
-
-This is perfect for creating Streams per project (namespace) and daily index rotation.
-
-#### Minimal
-- a minimal example (ConfigMap + DaemonSet). You’ll adapt image versions, resources, securityContext, and TLS to your environment.
+* A minimal example (ConfigMap + DaemonSet). I’ll adapt image versions, resources, securityContext, and TLS to my environment.
 
 1. ConfigMap (fluent-bit config) — key ideas:
-- Tail container logs (/var/log/containers/*.log)
-- Add Kubernetes metadata (kubernetes filter)
-- Output using the gelf plugin to Graylog host:port
+
+   * Tail container logs (`/var/log/containers/*.log`)
+   * Add Kubernetes metadata (kubernetes filter)
+   * Output using the GELF plugin to Graylog host:port
 
 2. DaemonSet (mount container logs + config) — simplified:
 
-- Apply
-```
+```bash
 kubectl apply -f fluent-bit-configmap.yaml
 kubectl apply -f fluent-bit-daemonset.yaml
 ```
 
-- Notes: The kubernetes filter will attach kubernetes.namespace_name, kubernetes.pod_name, kubernetes.labels, etc, to each record. Use those fields in Graylog streams.
+* The Kubernetes filter will attach `kubernetes.namespace_name`, `kubernetes.pod_name`, `kubernetes.labels`, etc., to each record. I can use those fields in Graylog streams.
+
+---
 
 ### C) What fields to expect in Graylog
-- When Fluent Bit/Fluentd sends GELF, it typically includes fields like:
+* `cluster name`
+* `kubernetes.namespace_name`
+* `kubernetes.pod_name`
+* `kubernetes.container_name`
+* `kubernetes.labels.app`
+* `kubernetes.docker_id`
+* `stream (stdout/stderr)`
+* `log`
+* `timestamp`
 
-- `message` (the log line)
-- `timestamp` (event time)
-- `_kubernetes_namespace_name` or `kubernetes['namespace_name']` — how fields are named depends on the collector; commonly you get kubernetes.namespace_name or kube_namespace. Check a sample message in Graylog’s “All messages” to see field names. Use those exact field names when creating stream rules.
-
+---
 
 ### D) Graylog: Streams and Indexing — how to split by cluster, project & day
-#### 1) Use Streams to separate projects (cluster +namespaces)
+
+#### 1) Use Streams to separate projects (cluster + namespaces)
+
 ##### Option 1: One stream per namespace per cluster (explicit streams)
-1. Go to Streams → Create Stream
-2. Name: `cluster-A | payments` (or whatever cluster+namespace)
+
+1. Go to **Streams → Create Stream**.
+2. Name: `cluster-A | payments` (or whichever cluster+namespace).
 3. Stream rules:
-    - Field: `cluster` → match exactly → `cluster-A`
-    - Field: `kubernetes.namespace_name` → match exactly → `payments`
-4. Start stream
 
-- Repeat for each namespace and cluster you care about.
+   * Field: `cluster` → match exactly → `cluster-A`
+   * Field: `kubernetes.namespace_name` → match exactly → `payments`
+4. Start stream.
 
+* Repeat for each namespace and cluster I care about.
 
-##### Option 2: Use pipeline rules for Automatic Graylog streams for cluster + namespace
-- Since you have many clusters and namespaces, manually creating streams for each is not practical.
-- We can solve this with a Graylog pipeline that:
-    1. Reads cluster and kubernetes.namespace_name fields.
-    2. Creates (or routes to) a stream dynamically based on cluster|namespace.
-    3. Optionally falls back to a catch-all stream if needed.
+##### Option 2: Use pipeline rules for automatic Graylog streams
+
+* Since I have many clusters and namespaces, manually creating streams is impractical.
+* Use a Graylog pipeline that:
+
+  1. Reads `cluster` and `kubernetes.namespace_name` fields.
+  2. Routes logs to a stream dynamically based on `cluster|namespace`.
+  3. Falls back to a catch-all stream if needed.
+
 ```
 Fluent Bit --> Graylog catch-all stream --> pipeline routes to pre-created stream --> daily index
 ```
 
-##### Create a pipeline:
-1. Go to System → Pipelines → Create Pipeline
-2. Create a rule with the snippet above
-3. Connect pipeline to your catch-all stream
-4. Start pipeline processing
-> Important: You need pre-created streams with names matching cluster|namespace.
-You can script stream creation using Graylog REST API if you have many clusters/namespaces.
-```
+##### Create a pipeline
+
+1. Go to **System → Pipelines → Create Pipeline**.
+2. Create a rule with the snippet below.
+3. Connect pipeline to the catch-all stream.
+4. Start pipeline processing.
+
+> Important: I need pre-created streams with names matching `cluster|namespace`.
+> I can script stream creation using the Graylog REST API if I have many clusters/namespaces.
+
+```text
 rule "route_by_cluster_namespace"
 when
     has_field("cluster") && has_field("kubernetes.namespace_name")
 then
     let cluster_name = to_string($message.cluster);
     let ns = to_string($message.kubernetes.namespace_name);
-    
+
     # Combine to form stream name
     let stream_name = concat(cluster_name, "|", ns);
 
@@ -234,6 +296,7 @@ end
 ```
 
 ##### (Optional): Automating Stream Creation using REST API
+
 ```bash
 curl -u admin:password -X POST \
   -H 'Content-Type: application/json' \
@@ -245,31 +308,40 @@ curl -u admin:password -X POST \
       }' \
   http://<graylog-host>:9000/api/streams
 ```
-- Replace cluster-A and payments dynamically in a script
-- Can be automated via a cronjob or CI pipeline
 
-##### Design decision:
-- If you have a small and stable number of namespaces (projects), create one stream per namespace (each stream can be attached to its own index set if you want different retention).
+* Replace `cluster-A` and `payments` dynamically in a script.
+* Can be automated via a cronjob or CI pipeline.
 
-- If you have many dynamic namespaces, create streams for the important projects and use tags/fields for others; you can also use pipelines + lookup tables to map namespaces to higher-level project buckets.
+##### Design decision
+
+* For a small/stable number of namespaces (projects), I can create one stream per namespace (each stream can have its own index set if I want different retention).
+* For many dynamic namespaces, I can create streams for important projects and use tags/fields for others. Pipelines + lookup tables can map namespaces to higher-level project buckets.
+
+---
 
 ##### 2) Index sets & daily separation (per-day indices)
-- Graylog stores messages into index sets. Each index set has a rotation strategy (time-based, size-based, or the new data-tiering optimizing strategy). You can configure rotation to rotate every day (ISO8601 P1D) so new indices are created per day. That achieves your “divide logs by day” requirement. Then retention policy deletes old indices after your retention window. 
 
-1. Go to System → Indices → Create index set
-2. Name it k8s-logs-daily
-3. Rotation strategy: Index Time
-4. Rotation period: P1D (daily)
-5. Retention: delete after N indices/days (example: keep 30 daily indices)
-6. Assign Streams to this index set
-7. This ensures logs are split per day, per cluster/namespace stream
-> You can also attach multiple streams to the same index set if retention is identical.
+* Graylog stores messages in index sets. Each index set has a rotation strategy (time-based, size-based, or the new data-tiering optimizing strategy).
+* Configure rotation to **daily** (`P1D`) so new indices are created per day.
+* Retention policy deletes old indices after my desired window.
+
+1. Go to **System → Indices → Create index set**.
+2. Name it `k8s-logs-daily`.
+3. Rotation strategy: **Index Time**.
+4. Rotation period: `P1D` (daily).
+5. Retention: delete after N indices/days (e.g., keep 30).
+6. Assign streams to this index set.
+
+> I can attach multiple streams to the same index set if retention is identical.
+
+---
 
 ### E) Enrichment & routing (pipelines)
-- Use pipeline rules to normalize fields (e.g., rename `_kubernetes_namespace_name` to `namespace`) or to `route_to_stream("project-foo")` by logic. Graylog docs recommend pipelines for richer transformations (and will deprecate some stream rule patterns in future). Use pipelines for complex routing/enrichment. 
 
-- Example pipeline snippet to route on `kubernetes.namespace_name`:
-```
+* Use pipeline rules to normalize fields (e.g., rename `_kubernetes_namespace_name` to `namespace`) or `route_to_stream("project-foo")` by logic.
+* Graylog recommends pipelines for richer transformations and will deprecate some stream rule patterns in the future.
+
+```text
 rule "route_by_namespace"
 when
   has_field("kubernetes") && to_string($message.kubernetes.namespace_name) == "payments"
@@ -278,45 +350,61 @@ then
 end
 ```
 
+---
+
 ### F) Optional: Graylog Dashboards / Alerts
-- Use `cluster` + `namespace` fields as filters
-- Build dashboards per project
-- Alert per project or cluster if needed
+
+* Use `cluster` + `namespace` fields as filters.
+* Build dashboards per project.
+* Alert per project or cluster if needed.
+
+---
 
 ## Practical checklist
+
 1. On each Kubernetes cluster:
-    - Deploy Fluent Bit DaemonSet
-    - ConfigMap includes:
-        - Kubernetes metadata filter
-        - `grep` filter for system namespaces
-        - `modify` filter to add `cluster` field
-        - GELF output to Graylog
+
+   * Deploy Fluent Bit DaemonSet.
+   * ConfigMap includes:
+
+     * Kubernetes metadata filter.
+     * `grep` filter for system namespaces.
+     * `modify` filter to add `cluster` field.
+     * GELF output to Graylog.
 
 2. On Graylog:
-    - Create GELF TCP input
-    - Create streams for cluster+namespace combinations (or pipeline dynamic routing)
-    - Configure index set(s) with daily rotation and retention
+
+   * Create GELF TCP input.
+   * Create streams for cluster+namespace combinations (or pipeline dynamic routing).
+   * Configure index set(s) with daily rotation and retention.
 
 3. Verify flow:
-    - Send test pod logs
-    - Check Graylog’s “All messages”
-    - Confirm fields: `cluster`, `kubernetes.namespace_name`, `message`, `timestamp`
-    - Confirm logs appear in the right stream and index
 
+   * Send test pod logs.
+   * Check Graylog’s “All messages.”
+   * Confirm fields: `cluster`, `kubernetes.namespace_name`, `message`, `timestamp`.
+   * Confirm logs appear in the correct stream and index.
+
+---
 
 ## Notes, pitfalls & suggestions
-- Field names matter. Different collectors may send slightly different field names (kubernetes.namespace_name, kube_namespace, _kubernetes_namespace_name). Inspect incoming messages before building stream rules. 
-Stackademic
-- Volume & indices count. If you create one index set per namespace and you have many namespaces, you’ll create many indices — that can stress Elasticsearch/OpenSearch. Prefer grouping low-importance namespaces into shared index sets with a common retention policy. 
-- Performance / TLS. For production, use TCP+TLS + authentication and monitor Graylog/ES cluster health.
-- Testing tip: start by sending a few test logs via curl to your GELF HTTP input (Graylog docs show examples) to confirm input configuration before deploying the DaemonSet. 
-go2docs.graylog.org
 
-# acknowledgment
-## Contributors
-- APA 🖖🏻
+* Field names matter. Different collectors may send slightly different field names (`kubernetes.namespace_name`, `kube_namespace`, `_kubernetes_namespace_name`). Inspect incoming messages before building stream rules.
+* Volume & index count. If I create one index set per namespace and have many namespaces, I’ll create many indices — this can stress Elasticsearch/OpenSearch. Prefer grouping low-importance namespaces into shared index sets with a common retention policy.
+* Performance / TLS. For production, use TCP+TLS + authentication and monitor Graylog/ES cluster health.
+* Testing tip: start by sending a few test logs via curl to my GELF HTTP input (Graylog docs show examples) to confirm input configuration before deploying the DaemonSet.
 
-## Links
+---
+
+## Acknowledgment
+
+### Contributors
+
+* APA 🖖🏻
+
+### Links
+- [go2docs.graylog.org](go2docs.graylog.org)
+
 
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
