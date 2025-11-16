@@ -45,7 +45,7 @@
 ```mermaid
 flowchart LR
     %% External Kubernetes clusters
-    subgraph ClusterA[Kubernetes Cluster A]
+    subgraph ClusterA[Kubernetes Cluster Graylog]
         NodeA[K8s Node] --> FB_A[Fluent Bit DaemonSet]
         FB_A --> GELF_NodePort
     end
@@ -55,11 +55,16 @@ flowchart LR
         FB_B --> GELF_NodePort
     end
 
+    subgraph ClusterC[Kubernetes Cluster C]
+        NodeC[K8s Node] --> FB_C[Fluent Bit DaemonSet]
+        FB_C --> GELF_NodePort
+    end
+
     %% Graylog NodePort Input
     subgraph Graylog[Graylog Cluster]
         GELF_NodePort[Graylog GELF TCP NodePort: 31220]
         GELF_NodePort --> CatchAll["Catch-All Stream (All K8s Logs)"]
-        CatchAll --> Pipeline[Pipeline: route_by_cluster_namespace]
+        CatchAll --> Pipeline[Pipeline: route by cluster name + namespace]
 
         %% Streams per cluster+namespace
         Pipeline --> StreamA1["Stream: ClusterA | Namespace1"]
@@ -68,10 +73,10 @@ flowchart LR
         Pipeline --> StreamBN["...other streams..."]
 
         %% Daily Index Sets
-        StreamA1 --> DailyIndex["Daily Index Set"]
-        StreamA2 --> DailyIndex
-        StreamB1 --> DailyIndex
-        StreamBN --> DailyIndex
+        StreamA1 --> DailyIndex1["Daily Index Set"]
+        StreamA2 --> DailyIndex2["Daily Index Set"]
+        StreamB1 --> DailyIndex3["Daily Index Set"]
+        StreamBN --> DailyIndex4["Daily Index Set"]
     end
 
     %% Optional automation for new streams
