@@ -6,7 +6,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: graylog
+    app.kubernetes.io/name: graylog
   ports:
     - protocol: TCP
       port: 12201      # GELF TCP port inside Graylog
