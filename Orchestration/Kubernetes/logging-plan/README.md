@@ -12,21 +12,69 @@
 
 
 ## Overview
+
+```mermaid
+flowchart LR
+    %% External Kubernetes clusters
+    subgraph ClusterA[Kubernetes Cluster A]
+        NodeA[K8s Node] --> FB_A[Fluent Bit DaemonSet]
+        FB_A --> GELF_NodePort
+    end
+
+    subgraph ClusterB[Kubernetes Cluster B]
+        NodeB[K8s Node] --> FB_B[Fluent Bit DaemonSet]
+        FB_B --> GELF_NodePort
+    end
+
+    %% Graylog NodePort Input
+    subgraph Graylog[Graylog Cluster]
+        GELF_NodePort[Graylog GELF TCP NodePort: 31220]
+        GELF_NodePort --> CatchAll["Catch-All Stream (All K8s Logs)"]
+        CatchAll --> Pipeline[Pipeline: route_by_cluster_namespace]
+
+        %% Streams per cluster+namespace
+        Pipeline --> StreamA1["Stream: ClusterA | Namespace1"]
+        Pipeline --> StreamA2["Stream: ClusterA | Namespace2"]
+        Pipeline --> StreamB1["Stream: ClusterB | Namespace1"]
+        Pipeline --> StreamBN["...other streams..."]
+
+        %% Daily Index Sets
+        StreamA1 --> DailyIndex["Daily Index Set"]
+        StreamA2 --> DailyIndex
+        StreamB1 --> DailyIndex
+        StreamBN --> DailyIndex
+    end
+
+    %% Optional automation for new streams
+    subgraph Optional
+        NewClusterNS[New cluster/namespace detected] -->|REST API| StreamCreation["Pre-create stream"]
+        StreamCreation --> Pipeline
+    end
 ```
-[K8s Node] ---> Fluent Bit DaemonSet ---> Graylog GELF Input ---> Streams per cluster+namespace ---> Daily Index Sets
-```
-- Fluent Bit collects all pods per node
-- Excludes system namespaces
-- Adds cluster name
-- Graylog streams split by cluster+namespace
-- Indices rotated daily
+1. **Multiple clusters → Graylog NodePort**
+   * Each cluster runs Fluent Bit DaemonSet
+   * Logs forwarded to **Graylog NodePort** (`31220`) using GELF TCP
+   * Each cluster adds its `cluster` field for identification
+
+2. **Catch-All Stream**
+   * All logs initially land here
+
+3. **Pipeline**
+   * Reads `cluster` + `namespace` fields
+   * Routes logs to the correct **pre-created stream**
+
+4. **Streams per cluster + namespace**
+   * Logical separation for each project / environment
+
+5. **Daily Index Set**
+   * Each stream writes to a **daily rotated index**
+
+6. **Optional Automation**
+   * Automatically create streams for new cluster+namespace combinations via REST API
 
 
 ## TL;DR (one-line plan)
-- You have one Graylog instance running in cluster A.
-- You have multiple Kubernetes clusters (including cluster B) whose pod logs you want to collect.
-- Run a node-level log collector (`DaemonSet` — e.g. `Fluent Bit`) on the source cluster that enriches logs with Kubernetes metadata and ships them to a single `Graylog GELF input`. In Graylog use `streams` (or `pipelines routing`) keyed on the Kubernetes `Cluster name + namespace` field to separate projects, and set your `index set rotation to daily` to keep per-day indices. Also Possibly keep different retention per project
-
+- Fluent Bit DaemonSets on each cluster forward pod logs (excluding system namespaces) with cluster metadata via GELF TCP NodePort to Graylog, where a catch-all stream and pipeline automatically route logs into per-cluster+namespace streams stored in daily-rotated indices.
 
 ### Why DaemonSet (recommended) vs sidecar per-pod
 
@@ -152,7 +200,18 @@ kubectl apply -f fluent-bit-daemonset.yaml
 - Repeat for each namespace and cluster you care about.
 
 
-##### Option 2: Use pipeline rules for dynamic routing (recommended if clusters/namespaces are many)
+##### Option 2: Use pipeline rules for Automatic Graylog streams for cluster + namespace
+- Since you have many clusters and namespaces, manually creating streams for each is not practical.
+- We can solve this with a Graylog pipeline that:
+    1. Reads cluster and kubernetes.namespace_name fields.
+    2. Creates (or routes to) a stream dynamically based on cluster|namespace.
+    3. Optionally falls back to a catch-all stream if needed.
+
+- Flow
+```
+Fluent Bit --> Graylog catch-all stream --> pipeline routes to pre-created stream --> daily index
+```
+
 Create a pipeline:
 1. Extract `cluster` and `namespace`
 2. Build stream name dynamically
