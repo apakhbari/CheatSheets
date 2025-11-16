@@ -21,6 +21,7 @@ data:
         Skip_Long_Lines   On
         Refresh_Interval  5
 
+    # Add Kubernetes metadata
     [FILTER]
         Name                kubernetes
         Match               kube.*
@@ -29,22 +30,35 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude On
 
-    # Add hostname or extra metadata if needed
-    #[FILTER]
-    #    Name modify
-    #    Match *
-    #    Add cluster my-cluster-name
+    # EXCLUDE system namespaces (important)
+    [FILTER]
+        Name       grep
+        Match      kube.*
+        Exclude    kubernetes.namespace_name kube-system
+        Exclude    kubernetes.namespace_name kube-public
+        Exclude    kubernetes.namespace_name kube-node-lease
 
+        # Add more if needed:
+        #Exclude    kubernetes.namespace_name istio-system
+        #Exclude    kubernetes.namespace_name monitoring
+        #Exclude    kubernetes.namespace_name cert-manager
+
+    [FILTER]
+        Name modify
+        Match kube.*
+        Add cluster your-cluster-name     #CHANGE THIS
+
+    # Output to Graylog via GELF
     [OUTPUT]
         Name              gelf
         Match             kube.*
-        Host              graylog.example.com  # <--------- CHANGE THIS
-        Port              12201
+        Host              graylog.example.com     #CHANGE THIS
+        Port              12201     #CHANGE THIS
         Mode              tcp
 
-        # TLS (optional but recommended in production)
-        tls               On
-        tls.verify        Off               # Set "On" when using proper CA
+        # TLS (optional but recommended)
+        tls               Off
+        tls.verify        Off
         tls.debug         0
         #tls.ca_file      /fluent-bit/tls/ca.pem
         #tls.crt_file     /fluent-bit/tls/tls.crt

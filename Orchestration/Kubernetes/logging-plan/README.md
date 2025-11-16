@@ -13,8 +13,9 @@
 
 ## Overview
 ## TL;DR (one-line plan)
-
-Run a node-level log collector (DaemonSet — e.g. Fluent Bit) on the source cluster that enriches logs with Kubernetes metadata and ships them to a single Graylog GELF input. In Graylog use streams (or pipelines routing) keyed on the Kubernetes namespace field to separate projects, and set your index set rotation to daily to keep per-day indices.
+- You have one Graylog instance running in cluster A.
+- You have multiple Kubernetes clusters (including cluster B) whose pod logs you want to collect.
+- Run a node-level log collector (`DaemonSet` — e.g. `Fluent Bit`) on the source cluster that enriches logs with Kubernetes metadata and ships them to a single `Graylog GELF input`. In Graylog use `streams` (or `pipelines routing`) keyed on the Kubernetes `Cluster name + namespace` field to separate projects, and set your `index set rotation to daily` to keep per-day indices. Also Possibly keep different retention per project
 
 
 ### Why DaemonSet (recommended) vs sidecar per-pod
@@ -41,7 +42,7 @@ Run a node-level log collector (DaemonSet — e.g. Fluent Bit) on the source clu
 #### Production-Ready
 - **a full production-ready Fluent Bit DaemonSet** for Kubernetes, specifically tuned
     - Collect pod logs from /var/log/containers/*.log
-    - Enrich logs with Kubernetes metadata (namespace, pod, container, labels)
+    - Enrich logs with Kubernetes metadata (its cluster name, namespace, pod, container, labels)
     - Forward logs to Graylog via GELF TCP
     - Includes RBAC, ServiceAccount, ConfigMap, DaemonSet, and TLS placeholders
     
@@ -62,6 +63,7 @@ Run a node-level log collector (DaemonSet — e.g. Fluent Bit) on the source clu
 
 #####  Your logs will now arrive in Graylog like this:
 Fields you can filter/stream on:
+- `cluster name`
 - `kubernetes.namespace_name`
 - `kubernetes.pod_name`
 - `kubernetes.container_name`
