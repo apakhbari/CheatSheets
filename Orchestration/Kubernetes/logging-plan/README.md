@@ -70,7 +70,11 @@ spec:
       targetPort: 12201
       nodePort: 31220  # NodePort you expose externally
 ```
+- `port` = port inside the pod
+- `targetPort` = port Graylog input is listening on
+- `nodePort` = external port on all cluster nodes
 
+> You can now send logs from other clusters to http://<any-node-ip>:31220
 
 ### B) Deploy Fluent Bit as a DaemonSet (collector)
 #### Production-Ready
