@@ -47,6 +47,31 @@ Run a node-level log collector (DaemonSet — e.g. Fluent Bit) on the source clu
 
 2. DaemonSet (mount container logs + config) — simplified:
 
+- Apply
+```
+kubectl apply -f fluent-bit-configmap.yaml
+kubectl apply -f fluent-bit-daemonset.yaml
+```
+
+- Notes: The kubernetes filter will attach kubernetes.namespace_name, kubernetes.pod_name, kubernetes.labels, etc, to each record. Use those fields in Graylog streams.
+
+### C) What fields to expect in Graylog
+- When Fluent Bit/Fluentd sends GELF, it typically includes fields like:
+
+- `message` (the log line)
+- `timestamp` (event time)
+- `_kubernetes_namespace_name` or `kubernetes['namespace_name']` — how fields are named depends on the collector; commonly you get kubernetes.namespace_name or kube_namespace. Check a sample message in Graylog’s “All messages” to see field names. Use those exact field names when creating stream rules.
+
+
+### D) Graylog: Streams and Indexing — how to split by project & day
+
+
+
+
+
+
+
+
 # acknowledgment
 ## Contributors
 - APA 🖖🏻
