@@ -46,14 +46,14 @@ data:
     [FILTER]
         Name modify
         Match kube.*
-        Add cluster your-cluster-name     #CHANGE THIS
+        Add cluster your-cluster-name
 
     # Output to Graylog via GELF
     [OUTPUT]
         Name              gelf
         Match             kube.*
-        Host              graylog.example.com     #CHANGE THIS
-        Port              12201     #CHANGE THIS
+        Host              graylog.example.com
+        Port              12201
         Mode              tcp
 
         # TLS (optional but recommended)
