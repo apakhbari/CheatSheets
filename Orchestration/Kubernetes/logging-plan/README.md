@@ -22,9 +22,7 @@
         - [Create Input](#create-input)  
         - [Create NodePort Service](#create-nodeport-service)  
     - [B) Deploy Fluent Bit as a DaemonSet (collector)](#b-deploy-fluent-bit-as-a-daemonset-collector)  
-        - [Production-Ready](#production-ready)  
-        - [Minimal (For Test)](#minimal-for-test)  
-    - [C) What fields to expect in Graylog](#c-what-fields-to-expect-in-graylog)  
+      - [What fields to expect in Graylog](#what-fields-to-expect-in-graylog)  
     - [D) Graylog: Streams and Indexing — how to split by cluster, project & day](#d-graylog-streams-and-indexing--how-to-split-by-cluster-project--day)  
         - [Option 1: One stream per namespace per cluster (explicit streams)](#option-1-one-stream-per-namespace-per-cluster-explicit-streams)  
         - [Option 2: Use pipeline rules for automatic streams](#option-2-use-pipeline-rules-for-automatic-streams)  
@@ -187,9 +185,6 @@ spec:
 ---
 
 ### B) Deploy Fluent Bit as a DaemonSet (collector)
-
-#### Production-Ready
-
 * A **full production-ready Fluent Bit DaemonSet** for Kubernetes, specifically tuned:
 
   * Collects pod logs from `/var/log/containers/*.log`.
@@ -211,28 +206,8 @@ spec:
 * ✔ Sends logs to Graylog using GELF format.
 * ✔ Fully production-ready: RBAC, TLS placeholder, resource limits, state DB, skip long lines, etc.
 
-#### Minimal (For Test)
 
-* A minimal example (ConfigMap + DaemonSet). I’ll adapt image versions, resources, securityContext, and TLS to my environment.
-
-1. ConfigMap (fluent-bit config) — key ideas:
-
-   * Tail container logs (`/var/log/containers/*.log`)
-   * Add Kubernetes metadata (kubernetes filter)
-   * Output using the GELF plugin to Graylog host:port
-
-2. DaemonSet (mount container logs + config) — simplified:
-
-```bash
-kubectl apply -f fluent-bit-configmap.yaml
-kubectl apply -f fluent-bit-daemonset.yaml
-```
-
-* The Kubernetes filter will attach `kubernetes.namespace_name`, `kubernetes.pod_name`, `kubernetes.labels`, etc., to each record. I can use those fields in Graylog streams.
-
----
-
-### C) What fields to expect in Graylog
+####  What fields to expect in Graylog
 * `cluster name`
 * `kubernetes.namespace_name`
 * `kubernetes.pod_name`
@@ -253,10 +228,9 @@ kubectl apply -f fluent-bit-daemonset.yaml
 
 1. Go to **Streams → Create Stream**.
 2. Name: `cluster-A | payments` (or whichever cluster+namespace).
+  - [x] Remove matches from ‘Default Stream’. Don't assign messages that match this stream to the ‘Default Stream’.
 3. Stream rules:
-
-   * Field: `cluster` → match exactly → `cluster-A`
-   * Field: `kubernetes.namespace_name` → match exactly → `payments`
+   * Field: `dividing_name` → match exactly → `CLUSTERNAME:NAMESPACE`
 4. Start stream.
 
 * Repeat for each namespace and cluster I care about.
@@ -281,37 +255,55 @@ Fluent Bit --> Graylog catch-all stream --> pipeline routes to pre-created strea
 3. Connect pipeline to the catch-all stream.
 4. Start pipeline processing.
 
-> Important: I need pre-created streams with names matching `cluster|namespace`.
-> I can script stream creation using the Graylog REST API if I have many clusters/namespaces.
+> Important: I need pre-created streams with names matching `cluster:namespace`.
 
-```text
-rule "route_by_cluster_namespace"
+Name: assigning_pipeline 
+Description: assign each stream its logs based on dividing_name field of logs
+```
+rule "assign_dividing_name_stream"
 when
-    has_field("cluster") && has_field("kubernetes.namespace_name")
+    has_field("dividing_name")
 then
-    let cluster_name = to_string($message.cluster);
-    let ns = to_string($message.kubernetes.namespace_name);
+    // Get the value of dividing_name
+    let target_stream = to_string($message.dividing_name);
 
-    # Combine to form stream name
-    let stream_name = concat(cluster_name, "|", ns);
+    // Check if the stream exists
+    let streams = list_streams();
+    let stream_exists = false;
 
-    # Route to existing stream with that name
-    route_to_stream(stream_name);
+    foreach(stream in streams) {
+        if (stream.title == target_stream) {
+            stream_exists = true;
+        }
+    }
+
+    // If stream exists, assign the message
+    if (stream_exists) {
+        route_to_stream(target_stream);
+        remove_from_default_stream();
+    }
 end
 ```
 
 ##### (Optional): Automating Stream Creation using REST API
 
 ```bash
-curl -u admin:password -X POST \
-  -H 'Content-Type: application/json' \
-  -d '{
-        "title": "cluster-A|payments",
-        "description": "Logs from cluster-A, namespace payments",
-        "index_set_id": "YOUR_INDEX_SET_ID",
-        "matching_type": "AND"
-      }' \
-  http://<graylog-host>:9000/api/streams
+curl -u admin:password -X POST "http://GRAYLOG_HOST:9000/api/streams" \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "cluster_prod_34:kube-system",
+  "description": "Stream for cluster_prod_34:kube-system",
+  "rules": [
+    {
+      "field": "dividing_name",
+      "type": 1,
+      "value": "cluster_prod_34:kube-system",
+      "inverted": false
+    }
+  ],
+  "index_set_id": "YOUR_INDEX_SET_ID",
+  "remove_matches_from_default_stream": true
+}'
 ```
 
 * Replace `cluster-A` and `payments` dynamically in a script.
@@ -400,6 +392,14 @@ end
 * Testing tip: start by sending a few test logs via curl to my GELF HTTP input (Graylog docs show examples) to confirm input configuration before deploying the DaemonSet.
 
 ---
+
+## TODO
+- Add Nginx + Cert
+- Change dividing_name to identifier
+- inside fluenbit: remove unnecassary fields
+- inside fluenbit: remove kube system logs
+- policy for indexes
+- naming of clusters for identifier
 
 ## Acknowledgment
 

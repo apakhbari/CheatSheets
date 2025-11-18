@@ -75,7 +75,7 @@ data:
         Remove       stream
         Remove       kubernetes.container_hash
 
-# ---- LUA FILTER (add dividing_name field) ----
+    # LUA FILTER (add dividing_name field)
     [FILTER]
         Name   lua
         Match  kube.*
@@ -97,8 +97,6 @@ data:
         gelf_timestamp_key       timestamp
         gelf_host_key            host
         gelf_level_key           level
-        # Optional: remove logs that can break GELF
-        Gelf_Include_Tag  On
 
 
   ###########################
