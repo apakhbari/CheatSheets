@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-lua-scripts
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: fluent-bit
+data:
+  combine_fields.lua: |
+    function add_dividing_name(tag, timestamp, record)
+        local ns = record["kubernetes"]["namespace_name"] or "unknown"
+        record["dividing_name"] = "cluster_prod_34:" .. ns
+        return 1, timestamp, record
+    end
