@@ -31,16 +31,26 @@ spec:
           mountPath: /var/log
         - name: config
           mountPath: /fluent-bit/etc/
+        - name: fluentbit-storage
+          mountPath: /var/fluent-bit/storage
       #  - name: tls
       #    mountPath: /fluent-bit/tls
       #    readOnly: true
+
       volumes:
       - name: varlog
         hostPath:
           path: /var/log
+
       - name: config
         configMap:
           name: fluent-bit-config
+
+      - name: fluentbit-storage
+        hostPath:
+          path: /var/lib/fluent-bit
+          type: DirectoryOrCreate
+          
       #- name: tls
       #  secret:
       #    secretName: fluent-bit-tls # optional (create if TLS needed)
