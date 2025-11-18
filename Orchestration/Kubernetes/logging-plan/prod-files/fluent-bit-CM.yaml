@@ -62,6 +62,12 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
 
+    # Add static cluster_name for filtering in Graylog
+    [FILTER]
+        Name         modify
+        Match        *
+        Add          cluster_name cluster_prod_34
+
     # Optional: Clean noisy fields
     [FILTER]
         Name         modify
