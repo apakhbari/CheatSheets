@@ -75,6 +75,12 @@ data:
         Remove       stream
         Remove       kubernetes.container_hash
 
+# ---- LUA FILTER (add dividing_name field) ----
+    [FILTER]
+        Name   lua
+        Match  kube.*
+        script /fluent-bit/scripts/combine_fields.lua
+        call   add_dividing_name
 
   ###########################
   # GELF OUTPUT SECTION     #
