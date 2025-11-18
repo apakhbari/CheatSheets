@@ -80,10 +80,11 @@ data:
         Host          graylog.default.svc.cluster.local
         Port          12201
         Mode          tcp
-        Short_Message_Key log
-        Full_Message_Key  message
-        Gelf_Short_Message_Key log
-        Gelf_Host_Key   host
+        gelf_short_message_key   log
+        gelf_full_message_key    log
+        gelf_timestamp_key       timestamp
+        gelf_host_key            host
+        gelf_level_key           level
         # Optional: remove logs that can break GELF
         Gelf_Include_Tag  On
 
