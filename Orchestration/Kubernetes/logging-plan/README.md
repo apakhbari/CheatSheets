@@ -42,47 +42,107 @@
 
 ```mermaid
 flowchart LR
-    %% External Kubernetes clusters
-    subgraph ClusterA[Kubernetes Cluster Graylog]
-        NodeA[K8s Node] --> FB_A[Fluent Bit DaemonSet]
-        FB_A --> GELF_NodePort
-    end
 
-    subgraph ClusterB[Kubernetes Cluster B]
-        NodeB[K8s Node] --> FB_B[Fluent Bit DaemonSet]
-        FB_B --> GELF_NodePort
-    end
+ %% External Kubernetes clusters
+ subgraph ClusterA["Kubernetes Cluster Graylog"]
+        FB_A["Fluent Bit DaemonSet"]
+        NodeA["K8s Node"]
+        GELF_NodePort["Graylog GELF TCP NodePort: 31220"]
+  end
+ subgraph ClusterB["Kubernetes Cluster B"]
+        FB_B["Fluent Bit DaemonSet"]
+        NodeB["K8s Node"]
+  end
+ subgraph ClusterC["Kubernetes Cluster C"]
+        FB_C["Fluent Bit DaemonSet"]
+        NodeC["K8s Node"]
+  end
 
-    subgraph ClusterC[Kubernetes Cluster C]
-        NodeC[K8s Node] --> FB_C[Fluent Bit DaemonSet]
-        FB_C --> GELF_NodePort
-    end
-
-    %% Graylog NodePort Input
-    subgraph Graylog[Graylog Cluster]
-        GELF_NodePort[Graylog GELF TCP NodePort: 31220]
-        GELF_NodePort --> CatchAll["Catch-All Stream (All K8s Logs)"]
-        CatchAll --> Pipeline[Pipeline: route by cluster name + namespace]
+  %% Graylog NodePort Input
+ subgraph Graylog["Graylog Cluster"]
+        CatchAll["Catch-All Stream (All K8s Logs)"]
 
         %% Streams per cluster+namespace
-        Pipeline --> StreamA1["Stream: ClusterA | Namespace1"]
-        Pipeline --> StreamA2["Stream: ClusterA | Namespace2"]
-        Pipeline --> StreamB1["Stream: ClusterB | Namespace1"]
-        Pipeline --> StreamBN["...other streams..."]
-
+        Pipeline["Pipeline: route by Identifier: cluster name + namespace"]
+        StreamA1["Stream: ClusterA:Namespace1"]
+        StreamA2["Stream: ClusterA:Namespace2"]
+        StreamB1["Stream: ClusterB:Namespace1"]
+        StreamBN["...other streams..."]
+        
         %% Daily Index Sets
-        StreamA1 --> DailyIndex1["Daily Index Set"]
-        StreamA2 --> DailyIndex2["Daily Index Set"]
-        StreamB1 --> DailyIndex3["Daily Index Set"]
-        StreamBN --> DailyIndex4["Daily Index Set"]
+        DailyIndex1["Daily Index Set"]
+        DailyIndex2["Daily Index Set"]
+        DailyIndex3["Daily Index Set"]
+        DailyIndex4["Daily Index Set"]
+  end
+ subgraph Optional["Optional"]
+        StreamCreation["Pre-create stream"]
+        NewClusterNS["New cluster/namespace detected"]
+  end
+    NodeA --> FB_A
+    FB_A -- Add identifier to logs --> GELF_NodePort
+    NodeB --> FB_B
+    NodeC --> FB_C
+    GELF_NodePort --> CatchAll
+    CatchAll --> Pipeline
+    Pipeline --> StreamA1 & StreamA2 & StreamB1 & StreamBN
+    StreamA1 --> DailyIndex1
+    StreamA2 --> DailyIndex2
+    StreamB1 --> DailyIndex3
+    StreamBN --> DailyIndex4
+    NewClusterNS -- REST API --> StreamCreation
+    StreamCreation --> Pipeline
+    FB_C -- Add identifier to logs --> n1["Nginx"]
+    n1 -- TLS --> GELF_NodePort
+    FB_B -- Add identifier to logs --> n1
+```
+
+---
+---
+---
+
+```mermaid
+flowchart TD
+
+    subgraph A[Fluent Bit Kubernetes Nodes]
+        A1[Read logs from Pods]
+        A2[Lua script adds field: dividing_name = cluster:namespace]
+        A3[Send logs to GELF TCP Input]
+        A1 --> A2 --> A3
     end
 
-    %% Optional automation for new streams
-    subgraph Optional
-        NewClusterNS[New cluster/namespace detected] -->|REST API| StreamCreation["Pre-create stream"]
-        StreamCreation --> Pipeline
+    subgraph B[Graylog Server]
+        direction TB
+
+        B1[Input: all_k8s_logs GELF TCP]
+        B2[Message arrives in Default Stream]
+
+        subgraph C[Pipeline: route_by_dividing_name]
+            direction TB
+            C1[Extract dividing_name field]
+            C2[Lookup table query dividing_name → stream_id]
+            C3{Lookup found?}
+            C4[Route to Stream set_field gl2_stream_id = stream_id]
+            C5[Drop from Default Stream]
+        end
+
+        B1 --> B2 --> C1 --> C2 --> C3
+        C3 -- Yes --> C4 --> C5
+        C3 -- No --> C6[Stay in Default Stream]
     end
-````
+
+    subgraph D[Graylog Streams]
+        D1[Stream: clusterA:ns1]
+        D2[Stream: clusterA:ns2]
+        D3[Stream: clusterB:ns4]
+        Dn[... up to 90 streams]
+    end
+
+    C4 --> D1
+    C4 --> D2
+    C4 --> D3
+    C4 --> Dn
+```
 
 ### Flow Explanation
 
