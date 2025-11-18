@@ -77,8 +77,8 @@ data:
     [OUTPUT]
         Name          gelf
         Match         *
-        Host          graylog.default.svc.cluster.local
-        Port          12201
+        Host          10.10.21.151
+        Port          31220
         Mode          tcp
         gelf_short_message_key   log
         gelf_full_message_key    log
