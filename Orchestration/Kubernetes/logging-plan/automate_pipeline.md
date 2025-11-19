@@ -14,10 +14,25 @@ echo "id,name,value
 kubectl create configmap graylog-lookup-table --from-file=lookup-table.csv=./lookup-table.csv -n graylog
 ```
 
-### Step 3: Update Graylog Deployment
+or 
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graylog-lookup-table
+  namespace: graylog
+data:
+  lookup-table.csv: |
+    uster_prod_34:kube-system,691c45d75c03777e128ef457
+    cluster_prod_34:argocd,691c45e25c03777e128ef4ae
+    cluster_prod_34:acs-prod,691c42cc5c03777e128edf1d
+```
+
+### Step 3: Update Graylog StatefulSet
 ```yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: graylog
   namespace: graylog
@@ -51,22 +66,33 @@ spec:
           defaultMode: 0644
 ```
 
-### Step 4: Apply the changes
+- then Apply the changes
 ```bash
-kubectl apply -f graylog-deployment.yaml
+kubectl apply -f graylog-StatefulSet.yaml
 ```
 
-### Step 5: Verify the file is mounted
-```bash
-kubectl exec -it deployment/graylog -n graylog -- ls -la /etc/graylog/lookup-table.csv
-kubectl exec -it deployment/graylog -n graylog -- cat /etc/graylog/lookup-table.csv
+or
+
+```
+kubectl edit statefulset  graylog -n graylog
+
+# Under spec.template.spec.containers[0]:
+volumeMounts:
+- name: lookup-table-volume
+  mountPath: /etc/graylog/lookup-table.csv
+  subPath: lookup-table.csv
+  readOnly: true
+
+# Under spec.template.spec:
+volumes:
+- name: lookup-table-volume
+  configMap:
+    name: graylog-lookup-table
+    defaultMode: 0644
 ```
 
-## Recommendations:
-
-- **Use ConfigMap** for static configuration files that don't change often
-- **Use Secret** for files containing sensitive information
-- **Use PersistentVolume** for large files or files that need to be updated frequently
-- **Use initContainer** for files that need to be downloaded or generated at startup
-
-Choose the method that best fits your use case!
+### Step 4: Verify the file is mounted
+```bash
+kubectl exec -it statefulset/graylog -n graylog -- ls -la /etc/graylog/lookup-table.csv
+kubectl exec -it statefulset/graylog -n graylog -- cat /etc/graylog/lookup-table.csv
+```
