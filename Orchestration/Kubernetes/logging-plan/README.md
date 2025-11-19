@@ -247,6 +247,12 @@ spec:
 
 ### D) Graylog: Streams and Indexing — how to split by cluster, project & day
 
+
+
+HERE
+
+
+
 #### 1) Use Streams to separate projects (cluster + namespaces)
 
 ##### Option 1: One stream per namespace per cluster (explicit streams)
