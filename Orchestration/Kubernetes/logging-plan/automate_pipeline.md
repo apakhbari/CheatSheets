@@ -175,12 +175,17 @@ I recommend using a CSV lookup adapter because it’s easy to update (upload new
    * Type: **CSV** (or Key-Value file)
    * Name: `dividing_name_csv_adapter`
    * Upload CSV format: 2 columns: `key, value` where key=`dividing_name`, value=`<stream_id>`
-   * Example CSV content:
+   dividing_name_csv_adapter (CSV File)
+   * Description: dividing_name_csv_adapter
+   * File path: /etc/graylog/lookup-table.csv
+   * Separator: ,
+   * Quote character: "
+   * Key column: stream
+   * Value column: stream_id
+   * Check interval: 60 seconds
+   * Case-insensitive lookup: yes
+   * CIDR lookup: no
 
-     ```
-     cluster_prod_34:kube-system,00000000-0000-0000-0000-000000000001
-     cluster_prod_34:argocd,00000000-0000-0000-0000-000000000002
-     ```
 3. Then **create a Lookup Table**:
 
    * Graylog → System → Lookup Tables → Create Lookup Table
