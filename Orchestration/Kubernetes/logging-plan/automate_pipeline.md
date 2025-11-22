@@ -186,6 +186,8 @@ I recommend using a CSV lookup adapter because it’s easy to update (upload new
    * Case-insensitive lookup: yes
    * CIDR lookup: no
 
+3. Create a **Cache**
+
 3. Then **create a Lookup Table**:
 
    * Graylog → System → Lookup Tables → Create Lookup Table

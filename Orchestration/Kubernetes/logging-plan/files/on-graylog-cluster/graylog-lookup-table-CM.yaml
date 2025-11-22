@@ -5,6 +5,7 @@ metadata:
   namespace: graylog
 data:
   lookup-table.csv: |
-    uster_prod_34:kube-system,691c45d75c03777e128ef457
-    cluster_prod_34:argocd,691c45e25c03777e128ef4ae
-    cluster_prod_34:acs-prod,691c42cc5c03777e128edf1d
+    "identifier","stream_id"
+    "cluster_prod_34:kube-system","691c45d75c03777e128ef457"
+    "cluster_prod_34:argocd","691c45e25c03777e128ef4ae"
+    "cluster_prod_34:acs-prod","691c42cc5c03777e128edf1d"
