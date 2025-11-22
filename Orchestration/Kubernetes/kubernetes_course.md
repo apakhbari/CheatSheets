@@ -11,6 +11,7 @@
 
 # Table of contents
 - [Architecture](#architecture)
+- [Cases](#cases)
 - [Tips & Tricks](#tips--tricks)
 - [Directories](#directories)
 - [Ports](#ports)
@@ -36,6 +37,15 @@
 - Kubelet
 - Kube Proxy
 - CRD
+
+## Cases
+- for when you need to edit ConfigMap of a StatefuleSet/Deployment: 
+```
+$ kubectl edit cm graylog-lookup-table -n graylog
+$ kubectl rollout restart statefulset graylog -n graylog
+$ kubectl rollout status statefulset/graylog -n graylog
+$ kubectl exec -it graylog-0 -n graylog -- cat /etc/graylog/lookup-table.csv    --> Just for verifying
+```
 
 ## Tips & Tricks
 - It is possible to have a k8s cluster using linux services not containers, but it is very difficult & unconvenient.
