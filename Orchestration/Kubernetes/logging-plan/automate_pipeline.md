@@ -7,21 +7,21 @@ I assume:
 * Graylog web UI is at `http://GRAYLOG_HOST:9000`
 * I have admin API credentials `ADMIN:ADMINPASS` (replace where needed)
 * Catch-all stream name (that receives all logs) is `all_k8s_logs`
-* Fluent Bit is already adding `dividing_name` to every message (e.g. `cluster_prod_34:kube-system`)
+* Fluent Bit is already adding `identifier` to every message (e.g. `cluster_prod_34:kube-system`)
 
 ---
 
 # OVERVIEW (one-liner)
 
-Create a lookup table that maps `dividing_name` → `stream_id`, create streams for each value, then add a single pipeline rule that looks up the target stream id and calls `route_to_stream_id(...)` + `remove_from_default_stream()` — one fast lookup per message, O(1) routing.
+Create a lookup table that maps `identifier` → `stream_id`, create streams for each value, then add a single pipeline rule that looks up the target stream id and calls `route_to_stream_id(...)` + `remove_from_default_stream()` — one fast lookup per message, O(1) routing.
 
 ---
 
 # STEP 0 — plan & prerequisites
 
 * Ensure I have admin access to Graylog UI and API.
-* Decide on naming convention for streams (use the exact `dividing_name` as stream title, or a normalized version).
-* Prepare a CSV (or generate via script) mapping `dividing_name` → `stream_title` (or generate stream + capture its `stream_id` via API).
+* Decide on naming convention for streams (use the exact `identifier` as stream title, or a normalized version).
+* Prepare a CSV (or generate via script) mapping `identifier` → `stream_title` (or generate stream + capture its `stream_id` via API).
 
 ---
 
@@ -32,7 +32,7 @@ Each stream must exist before the pipeline can route messages by `stream_id`. I 
 ### UI (quick, manual)
 
 1. Graylog → **Streams → Create Stream**.
-2. Title = exact `dividing_name` value (e.g. `cluster_prod_34:kube-system`) — or use friendly names.
+2. Title = exact `identifier` value (e.g. `cluster_prod_34:kube-system`) — or use friendly names.
 3. Leave stream rules empty (the pipeline will assign messages), or add a stream rule as fallback.
 4. Start the stream.
 
@@ -173,10 +173,10 @@ I recommend using a CSV lookup adapter because it’s easy to update (upload new
 2. Create Data Adapter:
 
    * Type: **CSV** (or Key-Value file)
-   * Name: `dividing_name_csv_adapter`
-   * Upload CSV format: 2 columns: `key, value` where key=`dividing_name`, value=`<stream_id>`
-   dividing_name_csv_adapter (CSV File)
-   * Description: dividing_name_csv_adapter
+   * Name: `identifier_csv_adapter`
+   * Upload CSV format: 2 columns: `key, value` where key=`identifier`, value=`<stream_id>`
+   identifier_csv_adapter (CSV File)
+   * Description: identifier_csv_adapter
    * File path: /etc/graylog/lookup-table.csv
    * Separator: ,
    * Quote character: "
@@ -190,7 +190,7 @@ I recommend using a CSV lookup adapter because it’s easy to update (upload new
 
    * Graylog → System → Lookup Tables → Create Lookup Table
    * Name: `stream_lookup`
-   * Data adapter: select `dividing_name_csv_adapter`
+   * Data adapter: select `identifier_csv_adapter`
    * Clear cache TTL as desired.
 
 ### Option B — API (automatable)
@@ -203,16 +203,16 @@ Create a CSV data adapter and lookup table via API. This is more involved; examp
    * Endpoint: `POST /api/lookup/datamap`? (Graylog API names vary slightly; UI is easiest)
 3. Upload CSV file — for many entries script a CSV then configure adapter to point to it (or use other adapter types like MongoDB if many records).
 
-> **Important:** The lookup must map `dividing_name` → `stream_id` (not stream title). The pipeline will `lookup_value("stream_lookup", dividing_name)` and receive a stream id string.
+> **Important:** The lookup must map `identifier` → `stream_id` (not stream title). The pipeline will `lookup_value("stream_lookup", identifier)` and receive a stream id string.
 
 ---
 
-# STEP 4 — populate lookup with mapping dividing_name → stream_id
+# STEP 4 — populate lookup with mapping identifier → stream_id
 
 If I created streams via API in Step 1, I have their `id`s. Build a CSV like:
 
 ```
-dividing_name,stream_id
+identifier,stream_id
 cluster_prod_34:kube-system,00000000-0000-0000-0000-000000000001
 cluster_prod_34:argocd,00000000-0000-0000-0000-000000000002
 cluster_prod_34:acs-prod,00000000-0000-0000-0000-000000000003
@@ -230,12 +230,12 @@ If you prefer a dynamic script to create streams and build CSV: I can supply one
 Go to **System → Pipelines → Manage Rules → Create Rule**. Use this rule (exact PipeScript syntax):
 
 ```pseudocode
-rule "route_by_dividing_name_lookup"
+rule "route_by_identifier_lookup"
 when
-  has_field("dividing_name")
+  has_field("identifier")
 then
   // Lookup returns stream_id (string) or null if not found
-  let target_id = lookup_value("stream_lookup", to_string($message.dividing_name));
+  let target_id = lookup_value("stream_lookup", to_string($message.identifier));
 
   // If lookup returned a valid stream id, route and remove from Default stream
   // Note: route_to_stream_id expects a string id literal; using variable is allowed in Graylog's lookup/route model
@@ -257,11 +257,11 @@ end
 
 # STEP 6 — create the pipeline and connect to the catch-all stream
 
-1. Graylog → **System → Pipelines → Create Pipeline**; name it e.g. `route_by_dividing_name`.
-2. Add the rule `route_by_dividing_name_lookup` to the pipeline and set it at stage 0 (or stage 1).
+1. Graylog → **System → Pipelines → Create Pipeline**; name it e.g. `route_by_identifier`.
+2. Add the rule `route_by_identifier_lookup` to the pipeline and set it at stage 0 (or stage 1).
 3. Connect the pipeline to the catch-all stream `all_k8s_logs`:
 
-   * In Pipeline Connections, add attachment: Stream = `all_k8s_logs`, Pipeline = `route_by_dividing_name`, Stage = 0.
+   * In Pipeline Connections, add attachment: Stream = `all_k8s_logs`, Pipeline = `route_by_identifier`, Stage = 0.
 
 Now every message entering `all_k8s_logs` will be processed by the pipeline rule.
 
@@ -271,12 +271,12 @@ Now every message entering `all_k8s_logs` will be processed by the pipeline rule
 
 ### 7.1. Quick live test via Graylog web UI
 
-* Send a test message with dividing_name via `nc` or curl (GELF TCP) or generate via Fluent Bit:
+* Send a test message with identifier via `nc` or curl (GELF TCP) or generate via Fluent Bit:
 
   ```
-  echo -ne '{"version":"1.1","host":"test","short_message":"hello","dividing_name":"cluster_prod_34:kube-system"}\0' | nc <GRAYLOG_NODE_IP> 31220
+  echo -ne '{"version":"1.1","host":"test","short_message":"hello","identifier":"cluster_prod_34:kube-system"}\0' | nc <GRAYLOG_NODE_IP> 31220
   ```
-* In Graylog → **Search** → set query `dividing_name:cluster_prod_34:kube-system` → check messages.
+* In Graylog → **Search** → set query `identifier:cluster_prod_34:kube-system` → check messages.
 * Check `Streams` → open stream `cluster_prod_34:kube-system` → verify messages arrive.
 * Confirm message is **removed from Default stream** (Default Stream search should not include it).
 
@@ -293,7 +293,7 @@ Now every message entering `all_k8s_logs` will be processed by the pipeline rule
 
 # STEP 8 — automation & maintenance tips
 
-* **Automate stream creation**: script to read unique `dividing_name` values from existing logs (via search API), create streams via API, capture IDs, and update CSV lookup.
+* **Automate stream creation**: script to read unique `identifier` values from existing logs (via search API), create streams via API, capture IDs, and update CSV lookup.
 * **Hot update lookup**: for CSV adapter, upload a new CSV file and reload adapter (or use a DB-backed adapter for dynamic updates).
 * **Index sets & retention**: attach streams to appropriate index sets or assign the streams to index sets via their `index_set_id` if different retention is needed.
 * **Cache TTL**: configure lookup table caching (short TTL) if the lookup source changes often.
@@ -312,12 +312,12 @@ Now every message entering `all_k8s_logs` will be processed by the pipeline rule
 
 (High-level idea — I can produce a full script if needed)
 
-1. Query Graylog for unique dividing_name values (via API search).
-2. For each dividing_name:
+1. Query Graylog for unique identifier values (via API search).
+2. For each identifier:
 
-   * Create stream via `POST /api/streams` (title = dividing_name).
+   * Create stream via `POST /api/streams` (title = identifier).
    * Capture returned `id`.
-   * Append `dividing_name,stream_id` to CSV.
+   * Append `identifier,stream_id` to CSV.
 3. Upload CSV to Graylog CSV adapter (or put file on disk if using adapter file).
 4. Update lookup table to use new adapter (if needed).
 
@@ -349,7 +349,7 @@ curl -u admin:ADMINPASS -X POST 'http://GRAYLOG_HOST:9000/api/streams' \
 
 # Final checklist before enabling in production
 
-* [ ] Streams created & `stream_id` recorded for all dividing_name values (or at least the important ones)
+* [ ] Streams created & `stream_id` recorded for all identifier values (or at least the important ones)
 * [ ] Lookup table present and returns correct stream IDs
 * [ ] Pipeline rule deployed and attached to `all_k8s_logs`
 * [ ] `remove_from_default_stream()` works as expected (no duplicate messages)
