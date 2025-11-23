@@ -337,6 +337,7 @@ curl -u admin:password -X POST "http://GRAYLOG_HOST:9000/api/streams" \
 }'
 ```
 
+
 * Replace `cluster-A` and `payments` dynamically in a script.
 * Can be automated via a cronjob or CI pipeline.
 
