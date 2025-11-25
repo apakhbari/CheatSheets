@@ -164,7 +164,12 @@ kubectl exec -it statefulset/graylog -n graylog -- cat /etc/graylog/lookup-table
 
 # STEP 3 — create a CSV lookup data adapter and a lookup table (UI or API)
 
-I recommend using a CSV lookup adapter because it’s easy to update (upload new CSV).
+- I recommend using a CSV lookup adapter because it’s easy to update (upload new CSV).
+- Since I only use this lookup table for stream routing, and lookups happen extremely frequently (every message), I want:
+  - Fast responses
+  - Low overhead
+  - No unnecessary refresh cycles
+  - Predictable behavior
 
 
 ### Option A — UI (easiest)
@@ -174,6 +179,7 @@ I recommend using a CSV lookup adapter because it’s easy to update (upload new
 
    * Type: **CSV** (or Key-Value file)
    * Name: `identifier_csv_adapter`
+   * Custom Error TTL: 1 s - TTL = "Time to live" - Error TTL controls how long Graylog should cache failed lookups. Minimum allowed. Prevents spam lookups for invalid keys. Still refreshes fast
    * Upload CSV format: 2 columns: `key, value` where key=`identifier`, value=`<stream_id>`
    identifier_csv_adapter (CSV File)
    * Description: identifier_csv_adapter
@@ -182,18 +188,30 @@ I recommend using a CSV lookup adapter because it’s easy to update (upload new
    * Quote character: "
    * Key column: stream
    * Value column: stream_id
-   * Check interval: 60 seconds
-   * Case-insensitive lookup: yes
+   * Check interval: 60 - Defines how often Graylog re-checks the CSV source file. You have a static CSV defining identifier → stream_id. You do manual updates, not automatic.
+   * Case-insensitive lookup: false - Your field dividing_name is case sensitive (e.g. cluster_prod_34:kube-system). You do not want accidental matches due to lowercase/uppercase mismatch. Leave this disabled for safety. If you ever want to normalize the string, you do it in the pipeline rule, not here.
    * CIDR lookup: no
 
-3. Create a **Cache**
-
-3. Then **create a Lookup Table**:
-
+3. Create a **Cache**:
+   * **System → Lookup Tables → Caches → Create Cache**
+   * **Cache type:** `Node cache`
+   * **Name:** `stream_lookup_cache`
+   * **Description:** `Cache for identifier → stream_id`
+   * **Maximum entries**: ` 1000 ` - more than enough for 90 streams.
+   * **Expire after access**: ` 3600 ` (seconds → 1 hour)
+   * **Expire after write**: ` 3600 ` (seconds → 1 hour)
+   
+   
+4. Then **create a Lookup Table**:
    * Graylog → System → Lookup Tables → Create Lookup Table
-   * Name: `stream_lookup`
-   * Data adapter: select `identifier_csv_adapter`
-   * Clear cache TTL as desired.
+   * **Name:** `stream_lookup`
+   * **Description:** `Map identifier → stream_id`
+   * **Data Adapter:** `identifier_csv_adapter`
+   * **Cache:** `stream_lookup_cache`
+   * **Default single value:** leave empty - You are using a CSV Data Adapter for routing logs based on keys (like terminal codes). If the key is not found in the CSV, you want Graylog to return an error so your pipeline can detect it and handle it (e.g., set a tag “unknown”, drop, route differently, etc.). When should someone enable them? You always want a fallback answer. Missing keys should silently map to a default value (example: unknown country → "N/A")
+   * **Default single value type:** “String”
+   * **Default multi value:** leave empty - Same logic, but for adapters returning multiple values.
+
 
 ### Option B — API (automatable)
 
@@ -207,25 +225,6 @@ Create a CSV data adapter and lookup table via API. This is more involved; examp
 
 > **Important:** The lookup must map `identifier` → `stream_id` (not stream title). The pipeline will `lookup_value("stream_lookup", identifier)` and receive a stream id string.
 
----
-
-# STEP 4 — populate lookup with mapping identifier → stream_id
-
-If I created streams via API in Step 1, I have their `id`s. Build a CSV like:
-
-```
-identifier,stream_id
-cluster_prod_34:kube-system,00000000-0000-0000-0000-000000000001
-cluster_prod_34:argocd,00000000-0000-0000-0000-000000000002
-cluster_prod_34:acs-prod,00000000-0000-0000-0000-000000000003
-...
-```
-
-Upload this CSV to the CSV adapter in Graylog (UI) or point the adapter at the file.
-
-If you prefer a dynamic script to create streams and build CSV: I can supply one.
-
----
 
 # STEP 5 — create the pipeline rule (only one rule)
 
