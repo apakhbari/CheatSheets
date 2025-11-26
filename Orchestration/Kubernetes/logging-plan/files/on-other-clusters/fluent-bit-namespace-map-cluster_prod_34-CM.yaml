@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-namespace-map
+  namespace: kube-system
+data:
+  namespace_stream_map.txt: |
+    kube-system=691c45d75c03777e128ef457
+    argocd=691c45e25c03777e128ef4ae
+    acs-prod=691c42cc5c03777e128edf1d

@@ -348,6 +348,28 @@ curl -u admin:password -X POST "http://GRAYLOG_HOST:9000/api/streams" \
 
 ---
 
+
+
+##### DK
+
+🚀 How updating works now
+
+To update stream assignments:
+
+Edit only ConfigMap 2:
+
+kubectl edit configmap fluent-bit-namespace-map -n kube-system
+
+
+Restart Fluent Bit pods:
+
+kubectl rollout restart ds/fluent-bit -n kube-system
+
+
+Done.
+
+No Lua edits. No Graylog edits.
+
 ##### 2) Index sets & daily separation (per-day indices)
 
 * Graylog stores messages in index sets. Each index set has a rotation strategy (time-based, size-based, or the new data-tiering optimizing strategy).

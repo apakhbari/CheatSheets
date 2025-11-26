@@ -34,7 +34,10 @@ spec:
         - name: fluentbit-storage
           mountPath: /var/fluent-bit/storage
         - name: lua-scripts
-          mountPath: /fluent-bit/scripts/   # <- Mount Lua ConfigMap here
+          mountPath: /fluent-bit/scripts/
+        - name: fluent-bit-namespace-map
+          mountPath: /fluent-bit/etc/namespace_stream_map.txt
+          subPath: namespace_stream_map.txt
       #  - name: tls
       #    mountPath: /fluent-bit/tls
       #    readOnly: true
@@ -56,6 +59,9 @@ spec:
           items:
             - key: combine_fields.lua
               path: combine_fields.lua
+      - name: fluent-bit-namespace-map
+        configMap:
+          name: fluent-bit-namespace-map
       #- name: tls
       #  secret:
       #    secretName: fluent-bit-tls # optional (create if TLS needed)
