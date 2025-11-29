@@ -5,6 +5,6 @@ metadata:
   namespace: kube-system
 data:
   namespace_stream_map.txt: |
-    happyapp-prod=6926b411cbd41d6f3541da9d
-    happyapp-scheduler=6926b444cbd41d6f3541db33
-    happyapp-stage=6926b455cbd41d6f3541db73
+    happyapp-prod=789
+    happyapp-scheduler=456
+    happyapp-stage=123
