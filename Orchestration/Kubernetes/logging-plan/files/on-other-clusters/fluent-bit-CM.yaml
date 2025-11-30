@@ -14,43 +14,36 @@ data:
     [SERVICE]
         Flush        5
         Daemon       Off
-        Log_Level    info
+        Log_Level    debug
         Parsers_File parsers.conf
-        storage.path /var/fluent-bit/storage
 
-    # ---- INPUT ----
     @INCLUDE input-kubernetes.conf
-
-    # ---- FILTERS ----
     @INCLUDE filters.conf
-
-    # ---- OUTPUT ----
     @INCLUDE output-gelf.conf
 
 
   ###########################
   # INPUT: KUBERNETES LOGS  #
-  # Read directly from /var/log/pods - no symlinks!
   ###########################
   input-kubernetes.conf: |
     [INPUT]
         Name              tail
         Path              /var/log/pods/*/*/*.log
-        Exclude_Path      /var/log/pods/kube-system_*/*/*.log,/var/log/pods/kube-public_*/*/*.log,/var/log/pods/kube-node-lease_*/*/*.log
+        Exclude_Path      /var/log/pods/kube-system_*/*/*.log,/var/log/pods/kube-public_*/*/*.log
         Parser            docker
         Tag               kube.*
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
-        Refresh_Interval  5
-        storage.type      filesystem
-        DB                /var/fluent-bit/storage/tail-pods.db
-        Path_Key          filepath
+        Refresh_Interval  10
+        Rotate_Wait       30
+        Read_from_Head    False
+        Inotify_Watcher   false
+        DB                /var/fluent-bit/state/tail-kube.db
 
   ###########################
   # FILTERS (METADATA, ETC) #
   ###########################
   filters.conf: |
-    # Add Kubernetes metadata
     [FILTER]
         Name                kubernetes
         Match               kube.*
@@ -61,26 +54,21 @@ data:
         Merge_Log           On
         Keep_Log            On
         K8S-Logging.Parser  On
-        K8S-Logging.Exclude On
+        K8S-Logging.Exclude Off
         Labels              On
         Annotations         Off
-        Use_Kubelet         Off
 
-    # Add static cluster_name for filtering in Graylog
     [FILTER]
         Name         modify
         Match        *
         Add          cluster_name cluster_prod_50
 
-    # Optional: Clean noisy fields
     [FILTER]
         Name         modify
         Match        *
         Remove       stream
         Remove       kubernetes.container_hash
-        Remove       filepath
 
-    # LUA FILTER (add dividing_name field)
     [FILTER]
         Name   lua
         Match  kube.*
@@ -97,10 +85,9 @@ data:
         Host          10.10.21.151
         Port          31220
         Mode          tcp
-        gelf_short_message_key   log
-        gelf_timestamp_key       @timestamp
-        gelf_host_key            host
-        gelf_level_key           level
+        Gelf_Short_Message_Key   log
+        Gelf_Timestamp_Key       @timestamp
+        Gelf_Host_Key            host
 
 
   ###########################
@@ -111,7 +98,5 @@ data:
         Name        docker
         Format      json
         Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%LZ
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
         Time_Keep   On
-        Decode_Field_As escaped_utf8 log do_next
-        Decode_Field_As escaped log do_next
