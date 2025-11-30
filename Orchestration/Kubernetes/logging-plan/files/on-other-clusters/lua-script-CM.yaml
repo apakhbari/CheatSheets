@@ -8,7 +8,15 @@ metadata:
 data:
   combine_fields.lua: |
     function add_dividing_name(tag, timestamp, record)
-        local ns = record["kubernetes"]["namespace_name"] or "unknown"
+        -- Safely get namespace, fall back to "unknown" if kubernetes filter failed
+        local k8s = record["kubernetes"]
+        local ns = "unknown"
+        if k8s and k8s["namespace_name"] then
+            ns = k8s["namespace_name"]
+        elseif record["kubernetes.namespace_name"] then
+            ns = record["kubernetes.namespace_name"]
+        end
+
         record["dividing_name"] = "k8s_prod_50:" .. ns
         return 1, timestamp, record
     end

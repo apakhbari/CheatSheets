@@ -19,7 +19,7 @@ spec:
       - operator: Exists
       containers:
       - name: fluent-bit
-        image: fluent/fluent-bit:2.2
+        image: fluent/fluent-bit:3.2.10
         resources:
           limits:
             memory: 200Mi
@@ -35,6 +35,13 @@ spec:
           mountPath: /var/fluent-bit/storage
         - name: lua-scripts
           mountPath: /fluent-bit/scripts/
+        - name: docker-logs  # ← NEW: Direct access to real logs
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: fluentbit-storage
+          mountPath: /var/fluent-bit/storage
+        - name: fluentbit-state
+          mountPath: /var/fluent-bit/state
 
       volumes:
       - name: varlog
@@ -53,3 +60,15 @@ spec:
           items:
             - key: combine_fields.lua
               path: combine_fields.lua
+      - name: docker-logs  # ← NEW: Mounts real Docker JSON files
+        hostPath:
+          path: /var/lib/docker/containers
+          type: Directory
+      - name: fluentbit-storage
+        hostPath:
+          path: /var/lib/fluent-bit
+          type: DirectoryOrCreate
+      - name: fluentbit-state
+        hostPath:
+          path: /var/lib/fluent-bit/state
+          type: DirectoryOrCreate

@@ -6,10 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/name: fluent-bit
 data:
-
-  ###########################
-  # Fluent Bit MAIN CONFIG  #
-  ###########################
   fluent-bit.conf: |
     [SERVICE]
         Flush        5
@@ -21,42 +17,44 @@ data:
     @INCLUDE filters.conf
     @INCLUDE output-gelf.conf
 
-
-  ###########################
-  # INPUT: KUBERNETES LOGS  #
-  ###########################
   input-kubernetes.conf: |
     [INPUT]
         Name              tail
-        Path              /var/log/pods/*/*/*.log
-        Exclude_Path      /var/log/pods/kube-system_*/*/*.log,/var/log/pods/kube-public_*/*/*.log
+        Path              /var/lib/docker/containers/*/*-json.log
         Parser            docker
         Tag               kube.*
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
         Refresh_Interval  10
         Rotate_Wait       30
-        Read_from_Head    False
-        Inotify_Watcher   false
-        DB                /var/fluent-bit/state/tail-kube.db
+        Read_From_Head    False
+        DB                /var/fluent-bit/state/tail-docker.db
+        DB.Sync           full
+        Ignore_Older      1d
 
-  ###########################
-  # FILTERS (METADATA, ETC) #
-  ###########################
   filters.conf: |
+    [FILTER]
+        Name    grep
+        Match   kube.*
+        Exclude kubernetes.namespace_name kube-system kube-public
+
     [FILTER]
         Name                kubernetes
         Match               kube.*
         Kube_URL            https://kubernetes.default.svc:443
         Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-        Kube_Tag_Prefix     kube.var.log.pods.
+        Kube_Tag_Prefix     kube.var.lib.docker.containers.
+        kube_meta_cache_ttl                 300    # 5 min TTL for pod metadata
+        kube_meta_namespace_cache_ttl       900    # 15 min for namespace (default)
         Merge_Log           On
         Keep_Log            On
         K8S-Logging.Parser  On
-        K8S-Logging.Exclude Off
         Labels              On
         Annotations         Off
+        use_kubelet         On
+        cache_use_docker_id    On
+        dummy_meta          Off
 
     [FILTER]
         Name         modify
@@ -75,9 +73,6 @@ data:
         script /fluent-bit/scripts/combine_fields.lua
         call   add_dividing_name
 
-  ###########################
-  # GELF OUTPUT SECTION     #
-  ###########################
   output-gelf.conf: |
     [OUTPUT]
         Name          gelf
@@ -89,10 +84,6 @@ data:
         Gelf_Timestamp_Key       @timestamp
         Gelf_Host_Key            host
 
-
-  ###########################
-  # PARSERS                 #
-  ###########################
   parsers.conf: |
     [PARSER]
         Name        docker
