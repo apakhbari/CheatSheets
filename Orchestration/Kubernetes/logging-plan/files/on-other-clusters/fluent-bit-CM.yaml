@@ -3,8 +3,6 @@ kind: ConfigMap
 metadata:
   name: fluent-bit-config
   namespace: kube-system
-  labels:
-    app.kubernetes.io/name: fluent-bit
 data:
   fluent-bit.conf: |
     [SERVICE]
@@ -12,64 +10,52 @@ data:
         Log_Level     info
         Parsers_File  parsers.conf
 
-    @INCLUDE input-kubernetes.conf
+    @INCLUDE input-containers.conf
     @INCLUDE filters.conf
     @INCLUDE output-gelf.conf
 
-  input-kubernetes.conf: |
+  input-containers.conf: |
     [INPUT]
         Name              tail
-        Path              /var/lib/docker/containers/*/*-json.log
-        Parser            docker
+        Path              /var/log/containers/*.log          # ← THIS PATH WINS
         Tag               kube.*
+        Parser            docker
+        DB                /var/fluent-bit/state/tail-containers.db
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
         Refresh_Interval  10
         Rotate_Wait       30
-        Read_From_Head    False
-        DB                /var/fluent-bit/state/tail-docker.db
-        DB.Sync full
-        Ignore_Older      1d
 
   filters.conf: |
+    # Drop kube-system early
     [FILTER]
-        Name    grep
-        Match   kube.*
-        Exclude kubernetes.namespace_name kube-system kube-public
+        Name   grep
+        Match  kube.*
+        Exclude $kubernetes['namespace_name'] '^kube-system$'
+
+    # Standard kubernetes filter – works perfectly with /var/log/containers/*.log
+    [FILTER]
+        Name               kubernetes
+        Match              kube.*
+        Kube_URL           https://kubernetes.default.svc:443
+        Kube_CA_File       /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File    /var/run/secrets/kubernetes.io/serviceaccount/token
+        Merge_Log          On
+        Keep_Log           Off
+        K8S-Logging.Parser On
+        Labels             On
+        Annotations        On
 
     [FILTER]
-        Name                kubernetes
-        Match               kube.*
-        Kube_URL            https://kubernetes.default.svc:443
-        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-        Merge_Log           On
-        Keep_Log            On
-        K8S-Logging.Parser  On
-        Labels              On
-        Annotations         Off
-
-        # ← ONLY THESE THREE LINES — THIS IS THE WINNING COMBINATION
-        use_kubelet         On
-        cache_use_docker_id On
-        dummy_meta          Off
-
-    [FILTER]
-        Name   modify
-        Match  *
-        Add    Add cluster_name cluster_prod_50
-
-    [FILTER]
-        Name   modify
-        Match  *
-        Remove stream
-        Remove kubernetes.container_hash
+        Name  modify
+        Match *
+        Add   cluster_name cluster_prod_50
 
     [FILTER]
         Name   lua
         Match  kube.*
         script /fluent-bit/scripts/combine_fields.lua
-        call   add_dividing_name
+        call   add_diviving_name
 
   output-gelf.conf: |
     [OUTPUT]
@@ -78,9 +64,6 @@ data:
         Host   10.10.21.151
         Port   31220
         Mode   tcp
-        Gelf_Short_Message_Key log
-        Gelf_Timestamp_Key     @timestamp
-        Gelf_Host_Key          host
 
   parsers.conf: |
     [PARSER]
