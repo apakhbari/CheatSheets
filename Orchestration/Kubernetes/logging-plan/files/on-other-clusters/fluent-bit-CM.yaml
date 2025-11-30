@@ -30,18 +30,21 @@ data:
 
   ###########################
   # INPUT: KUBERNETES LOGS  #
+  # Read directly from /var/log/pods - no symlinks!
   ###########################
   input-kubernetes.conf: |
     [INPUT]
         Name              tail
-        Path              /var/log/containers/*.log
+        Path              /var/log/pods/*/*/*.log
+        Exclude_Path      /var/log/pods/kube-system_*/*/*.log,/var/log/pods/kube-public_*/*/*.log,/var/log/pods/kube-node-lease_*/*/*.log
         Parser            docker
         Tag               kube.*
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
         Refresh_Interval  5
         storage.type      filesystem
-        DB                /var/fluent-bit/storage/tail-containers.db
+        DB                /var/fluent-bit/storage/tail-pods.db
+        Path_Key          filepath
 
   ###########################
   # FILTERS (METADATA, ETC) #
@@ -54,13 +57,14 @@ data:
         Kube_URL            https://kubernetes.default.svc:443
         Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-        Kube_Tag_Prefix     kube.var.log.containers.
+        Kube_Tag_Prefix     kube.var.log.pods.
         Merge_Log           On
         Keep_Log            On
         K8S-Logging.Parser  On
         K8S-Logging.Exclude On
         Labels              On
         Annotations         Off
+        Use_Kubelet         Off
 
     # Add static cluster_name for filtering in Graylog
     [FILTER]
@@ -74,6 +78,7 @@ data:
         Match        *
         Remove       stream
         Remove       kubernetes.container_hash
+        Remove       filepath
 
     # LUA FILTER (add dividing_name field)
     [FILTER]
