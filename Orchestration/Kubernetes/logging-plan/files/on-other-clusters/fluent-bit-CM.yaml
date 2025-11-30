@@ -34,11 +34,17 @@ data:
     [INPUT]
         Name              tail
         Path              /var/log/containers/*.log
+        Exclude_Path      /var/log/containers/*_kube-system_*.log,/var/log/containers/*_kube-public_*.log,/var/log/containers/*_kube-node-lease_*.log
         Parser            docker
         Tag               kube.*
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
+        Refresh_Interval  10
+        Read_from_Head    False
+        Skip_Empty_Lines  On
         storage.type      filesystem
+        DB                /var/fluent-bit/storage/tail-containers.db
+        DB.locking        true
 
   ###########################
   # FILTERS (METADATA, ETC) #
@@ -54,7 +60,7 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
 
-    # Add static cluster_name for filtering in Graylog
+    # Add static env_name for filtering in Graylog
     [FILTER]
         Name         modify
         Match        *
