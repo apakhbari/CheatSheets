@@ -7,53 +7,8 @@ metadata:
     app.kubernetes.io/name: fluent-bit
 data:
   combine_fields.lua: |
-    -----------------------------------------------------------
-    -- Configurable cluster name (change this when needed)
-    -----------------------------------------------------------
-    local cluster_name = "cluster_prod_34"
-
-    -----------------------------------------------------------
-    -- Load namespace -> stream_id mapping from external file
-    -----------------------------------------------------------
-    local map_file_path = "/fluent-bit/etc/namespace_stream_map.txt"
-    local stream_map = {}
-
-    -- Read mapping file once
-    local f = io.open(map_file_path, "r")
-    if f then
-        for line in f:lines() do
-            if line:match("%S") and not line:match("^#") then
-                local ns, id = line:match("([^=]+)=([^=]+)")
-                if ns and id then
-                    stream_map[ns] = id
-                end
-            end
-        end
-        f:close()
-    end
-
-    -----------------------------------------------------------
-    -- Main Filter Function
-    -----------------------------------------------------------
-    function add_identifier(tag, timestamp, record)
-        local ns = "unknown"
-
-        if record["kubernetes"] and record["kubernetes"]["namespace_name"] then
-            ns = record["kubernetes"]["namespace_name"]
-        end
-
-        -------------------------------------------------------
-        -- Create new identifier field: cluster_name:namespace
-        -------------------------------------------------------
-        record["identifier"] = cluster_name .. ":" .. ns
-
-        -------------------------------------------------------
-        -- Optional: Add gl2_stream_id if namespace matches map
-        -------------------------------------------------------
-        local stream_id = stream_map[ns]
-        if stream_id ~= nil then
-            record["gl2_stream_id"] = stream_id
-        end
-
+    function add_dividing_name(tag, timestamp, record)
+        local ns = record["kubernetes"]["namespace_name"] or "unknown"
+        record["dividing_name"] = "k8s_prod_50:" .. ns
         return 1, timestamp, record
     end
