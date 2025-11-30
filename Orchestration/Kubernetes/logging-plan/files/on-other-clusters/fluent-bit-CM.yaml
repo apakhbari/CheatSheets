@@ -8,10 +8,9 @@ metadata:
 data:
   fluent-bit.conf: |
     [SERVICE]
-        Flush        5
-        Daemon       Off
-        Log_Level    info        # ← can be debug 
-        Parsers_File parsers.conf
+        Flush         5
+        Log_Level     info
+        Parsers_File  parsers.conf
 
     @INCLUDE input-kubernetes.conf
     @INCLUDE filters.conf
@@ -29,7 +28,7 @@ data:
         Rotate_Wait       30
         Read_From_Head    False
         DB                /var/fluent-bit/state/tail-docker.db
-        DB.Sync           full
+        DB.Sync full
         Ignore_Older      1d
 
   filters.conf: |
@@ -39,32 +38,32 @@ data:
         Exclude kubernetes.namespace_name kube-system kube-public
 
     [FILTER]
-      Name                kubernetes
-      Match               kube.*
-      Kube_URL            https://kubernetes.default.svc:443
-      Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-      Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Name                kubernetes
+        Match               kube.*
+        Kube_URL            https://kubernetes.default.svc:443
+        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Merge_Log           On
+        Keep_Log            On
+        K8S-Logging.Parser  On
+        Labels              On
+        Annotations         Off
 
-      Merge_Log           On
-      Keep_Log            On
-      K8S-Logging.Parser  On
-      Labels              On
-      Annotations         Off
-
-      use_kubelet         On
-      cache_use_docker_id On
-      dummy_meta          Off
-
-    [FILTER]
-        Name         modify
-        Match        *
-        Add          cluster_name cluster_prod_50
+        # ← ONLY THESE THREE LINES — THIS IS THE WINNING COMBINATION
+        use_kubelet         On
+        cache_use_docker_id On
+        dummy_meta          Off
 
     [FILTER]
-        Name         modify
-        Match        *
-        Remove       stream
-        Remove       kubernetes.container_hash
+        Name   modify
+        Match  *
+        Add    Add cluster_name cluster_prod_50
+
+    [FILTER]
+        Name   modify
+        Match  *
+        Remove stream
+        Remove kubernetes.container_hash
 
     [FILTER]
         Name   lua
@@ -74,19 +73,19 @@ data:
 
   output-gelf.conf: |
     [OUTPUT]
-        Name          gelf
-        Match         *
-        Host          10.10.21.151
-        Port          31220
-        Mode          tcp
-        Gelf_Short_Message_Key   log
-        Gelf_Timestamp_Key       @timestamp
-        Gelf_Host_Key            host
+        Name   gelf
+        Match  *
+        Host   10.10.21.151
+        Port   31220
+        Mode   tcp
+        Gelf_Short_Message_Key log
+        Gelf_Timestamp_Key     @timestamp
+        Gelf_Host_Key          host
 
   parsers.conf: |
     [PARSER]
-        Name        docker
-        Format      json
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-        Time_Keep   On
+        Name         docker
+        Format       json
+        Time_Key     time
+        Time_Format  %Y-%m-%dT%H:%M:%S.%L%z
+        Time_Keep    On
