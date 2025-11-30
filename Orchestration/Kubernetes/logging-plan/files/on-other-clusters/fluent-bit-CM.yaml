@@ -27,6 +27,7 @@ data:
     # ---- OUTPUT ----
     @INCLUDE output-gelf.conf
 
+
   ###########################
   # INPUT: KUBERNETES LOGS  #
   ###########################
@@ -35,7 +36,7 @@ data:
         Name              tail
         Path              /var/log/containers/*.log
         Exclude_Path      /var/log/containers/*_kube-system_*.log,/var/log/containers/*_kube-public_*.log,/var/log/containers/*_kube-node-lease_*.log
-        Parser            docker
+        Parser            cri
         Tag               kube.*
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
@@ -60,11 +61,11 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
 
-    # Add static env_name for filtering in Graylog
+    # Add static cluster_name for filtering in Graylog
     [FILTER]
         Name         modify
         Match        *
-        Add          env_name k8s_prod_50
+        Add          cluster_name cluster_prod_50
 
     # Optional: Clean noisy fields
     [FILTER]
@@ -96,6 +97,7 @@ data:
         gelf_host_key            host
         gelf_level_key           level
 
+
   ###########################
   # PARSERS                 #
   ###########################
@@ -105,4 +107,12 @@ data:
         Format      json
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%LZ
+        Time_Keep   On
+
+    [PARSER]
+        Name        cri
+        Format      regex
+        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
         Time_Keep   On

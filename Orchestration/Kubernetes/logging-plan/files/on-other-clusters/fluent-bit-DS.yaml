@@ -27,10 +27,13 @@ spec:
             cpu: 50m
             memory: 100Mi
         volumeMounts:
+        # Mount entire /var/log to access all symlinks
         - name: varlog
           mountPath: /var/log
-        - name: varlibpods
-          mountPath: /var/log/pods
+          readOnly: true
+        # Mount the container runtime directory (containerd/docker)
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
           readOnly: true
         - name: config
           mountPath: /fluent-bit/etc/
@@ -43,12 +46,15 @@ spec:
       #    readOnly: true
 
       volumes:
+      # Mount /var/log - contains symlinks in /var/log/containers
       - name: varlog
         hostPath:
           path: /var/log
-      - name: varlibpods
+      # Mount container runtime directory to follow symlinks
+      # This path varies by runtime - adjust if needed
+      - name: varlibcontainers
         hostPath:
-          path: /var/log/pods
+          path: /var/lib/containers
       - name: config
         configMap:
           name: fluent-bit-config
