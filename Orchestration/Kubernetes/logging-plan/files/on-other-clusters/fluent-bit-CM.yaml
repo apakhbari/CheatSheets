@@ -17,8 +17,10 @@ data:
   input-containers.conf: |
     [INPUT]
         Name              tail
-        Path              /var/log/containers/*.log          # ← THIS PATH WINS
-        Tag               kube.*
+        Path              /var/log/containers/*.log
+        # We keep the Underscore separator (Correct from previous step)
+        Tag               kube.<namespace_name>_<pod_name>_<container_name>
+        Tag_Regex         (?<pod_name>[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<docker_id>[a-z0-9]{64})\.log$
         Parser            docker
         DB                /var/fluent-bit/state/tail-containers.db
         Mem_Buf_Limit     50MB
@@ -27,13 +29,11 @@ data:
         Rotate_Wait       30
 
   filters.conf: |
-    # Drop kube-system early
     [FILTER]
         Name   grep
         Match  kube.*
         Exclude $kubernetes['namespace_name'] '^kube-system$'
 
-    # Standard kubernetes filter – works perfectly with /var/log/containers/*.log
     [FILTER]
         Name               kubernetes
         Match              kube.*
@@ -41,10 +41,13 @@ data:
         Kube_CA_File       /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         Kube_Token_File    /var/run/secrets/kubernetes.io/serviceaccount/token
         Merge_Log          On
-        Keep_Log           Off
+        # 1. CHANGE: Set this to On. Ensures the 'log' key is never deleted.
+        Keep_Log           On
         K8S-Logging.Parser On
         Labels             On
         Annotations        On
+        Kube_Tag_Prefix    kube.
+        Regex_Parser       kube-custom-tag-parser
 
     [FILTER]
         Name  modify
@@ -55,7 +58,7 @@ data:
         Name   lua
         Match  kube.*
         script /fluent-bit/scripts/combine_fields.lua
-        call   add_diviving_name
+        call   add_dividing_name
 
   output-gelf.conf: |
     [OUTPUT]
@@ -64,6 +67,8 @@ data:
         Host   10.10.21.151
         Port   31220
         Mode   tcp
+        # 2. NEW: Map the docker 'log' field to GELF 'short_message'
+        Gelf_Short_Message_Key log
 
   parsers.conf: |
     [PARSER]
@@ -72,3 +77,8 @@ data:
         Time_Key     time
         Time_Format  %Y-%m-%dT%H:%M:%S.%L%z
         Time_Keep    On
+
+    [PARSER]
+        Name         kube-custom-tag-parser
+        Format       regex
+        Regex        ^(?<namespace_name>[^_]+)_(?<pod_name>[^_]+)_(?<container_name>.+)$
