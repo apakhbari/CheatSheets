@@ -19,7 +19,7 @@ spec:
       - operator: Exists
       containers:
       - name: fluent-bit
-        image: fluent/fluent-bit:3.2.10
+        image: fluent/fluent-bit:2.2
         resources:
           limits:
             memory: 200Mi
@@ -35,13 +35,6 @@ spec:
           mountPath: /var/fluent-bit/storage
         - name: lua-scripts
           mountPath: /fluent-bit/scripts/
-        - name: docker-logs
-          mountPath: /var/lib/docker/containers
-          readOnly: true
-        - name: fluentbit-storage
-          mountPath: /var/fluent-bit/storage
-        - name: fluentbit-state
-          mountPath: /var/fluent-bit/state
       #  - name: tls
       #    mountPath: /fluent-bit/tls
       #    readOnly: true
@@ -63,18 +56,6 @@ spec:
           items:
             - key: combine_fields.lua
               path: combine_fields.lua
-      - name: docker-logs
-        hostPath:
-          path: /var/lib/docker/containers
-          type: Directory
-      - name: fluentbit-storage
-        hostPath:
-          path: /var/lib/fluent-bit
-          type: DirectoryOrCreate
-      - name: fluentbit-state
-        hostPath:
-          path: /var/lib/fluent-bit/state
-          type: DirectoryOrCreate
       #- name: tls
       #  secret:
       #    secretName: fluent-bit-tls # optional (create if TLS needed)
