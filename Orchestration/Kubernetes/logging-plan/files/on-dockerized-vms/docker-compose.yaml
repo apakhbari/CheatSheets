@@ -1,0 +1,11 @@
+services:
+  fluent-bit:
+    image: fluent/fluent-bit:3.2.10
+    container_name: fluent-bit-logger
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./functions.lua:/fluent-bit/etc/functions.lua
+    restart: always
