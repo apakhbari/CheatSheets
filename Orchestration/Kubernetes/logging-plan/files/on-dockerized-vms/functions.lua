@@ -1,4 +1,4 @@
-function add_dividing_name(tag, timestamp, record)
+function add_identifier(tag, timestamp, record)
     -- Expecting tag format: docker.container_name
     -- We split the tag to get the container name
     local container_name = "unknown"
