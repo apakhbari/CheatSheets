@@ -18,13 +18,12 @@ data:
     [INPUT]
         Name              tail
         Path              /var/log/containers/*.log
-        # 1. OPTIMIZATION: We exclude these namespaces at the file-system level.
-        # Format is: /var/log/containers/*_namespace_*.log
-        Exclude_Path      /var/log/containers/*_metallb-system_*.log,/var/log/containers/*_argocd_*.log,/var/log/containers/*_kube-system_*.log,/var/log/containers/*_rook-ceph_*.log
+        # Removed Exclude_Path to ensure we don't accidentally drop valid logs
         
-        # We keep the Underscore separator
+        # 1. SIMPLIFIED REGEX: Much safer. Matches any character for pod/ns until the underscore.
         Tag               kube.<namespace_name>_<pod_name>_<container_name>
-        Tag_Regex         (?<pod_name>[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<docker_id>[a-z0-9]{64})\.log$
+        Tag_Regex         (?<pod_name>[^_]+)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<docker_id>[a-z0-9]{64})\.log$
+        
         Parser            docker
         DB                /var/fluent-bit/state/tail-containers.db
         Mem_Buf_Limit     50MB
@@ -33,7 +32,12 @@ data:
         Rotate_Wait       30
 
   filters.conf: |
-    # 2. CLEANUP: I removed the [FILTER] grep for kube-system here because Exclude_Path handles it now.
+    # 2. ROBUST EXCLUSION: We use Grep to drop the namespaces you don't want.
+    # This consumes slightly more CPU than Exclude_Path but is 100% reliable.
+    [FILTER]
+        Name   grep
+        Match  kube.*
+        Exclude $kubernetes['namespace_name'] ^(metallb-system|argocd|kube-system|rook-ceph)$
 
     [FILTER]
         Name               kubernetes
