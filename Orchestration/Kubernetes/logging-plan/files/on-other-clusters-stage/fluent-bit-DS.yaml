@@ -20,6 +20,37 @@ spec:
       containers:
       - name: fluent-bit
         image: fluent/fluent-bit:3.2.10
+        env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: log_level
+        - name: CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: cluster_name
+        - name: CLUSTER_IDENTIFIER
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: cluster_identifier
+        - name: GRAYLOG_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: graylog_host
+        - name: GRAYLOG_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: graylog_port
+        - name: GRAYLOG_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: graylog_mode
         resources:
           limits:
             memory: 200Mi
@@ -38,13 +69,8 @@ spec:
         - name: docker-logs
           mountPath: /var/lib/docker/containers
           readOnly: true
-        - name: fluentbit-storage
-          mountPath: /var/fluent-bit/storage
         - name: fluentbit-state
           mountPath: /var/fluent-bit/state
-      #  - name: tls
-      #    mountPath: /fluent-bit/tls
-      #    readOnly: true
 
       volumes:
       - name: varlog
@@ -67,14 +93,7 @@ spec:
         hostPath:
           path: /var/lib/docker/containers
           type: Directory
-      - name: fluentbit-storage
-        hostPath:
-          path: /var/lib/fluent-bit
-          type: DirectoryOrCreate
       - name: fluentbit-state
         hostPath:
           path: /var/lib/fluent-bit/state
           type: DirectoryOrCreate
-      #- name: tls
-      #  secret:
-      #    secretName: fluent-bit-tls # optional (create if TLS needed)

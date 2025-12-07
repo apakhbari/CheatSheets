@@ -299,15 +299,57 @@ kubectl get svc -n graylog | grep gelf
 
 Deploy Fluent Bit on **each Kubernetes cluster** you want to collect logs from.
 
+> 💡 **New**: We now use a centralized variables ConfigMap to manage all configuration values. This makes multi-cluster deployment much easier!
+
 #### File Structure
 ```
 on-other-clusters/
+├── fluent-bit-variables-CM.yaml    # ← START HERE: Configure all variables
 ├── fluent-bit-SA-RBAC.yaml
-├── fluent-bit-CM.yaml
-├── lua-script-CM.yaml
-├── fluent-bit-DS.yaml
-└── fluent-bit-TLS-Secret.yaml (optional)
+├── fluent-bit-CM.yaml               # (uses variables)
+├── lua-script-CM.yaml               # (uses variables)
+├── fluent-bit-DS.yaml               # (injects variables)
+└── fluent-bit-TLS-Secret.yaml       # (optional)
 ```
+
+#### 2.0 Configure Variables (First!)
+
+**File: `fluent-bit-variables-CM.yaml`**
+
+This ConfigMap centralizes all configuration values. Edit this file **before deploying anything else**.
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-variables
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: fluent-bit
+data:
+  # Fluent Bit Service Configuration
+  log_level: "info"                    # Options: info, debug, warn, error
+  
+  # Cluster Identification
+  cluster_name: "cluster_prod_50"      # Change to your cluster name
+  cluster_identifier: "k8s_prod_50"    # Change to your identifier prefix
+  
+  # Graylog Output Configuration
+  graylog_host: "10.10.21.151"         # Change to your Graylog IP/hostname
+  graylog_port: "31220"                # Kubernetes input port
+  graylog_mode: "tcp"                  # Options: tcp, tls
+```
+
+**What each variable does:**
+
+| Variable | Purpose | Example Values |
+|----------|---------|----------------|
+| `log_level` | Fluent Bit logging verbosity | `info`, `debug`, `warn`, `error` |
+| `cluster_name` | Metadata field added to all logs | `cluster_prod_50`, `k8s_staging_01` |
+| `cluster_identifier` | First part of `identifier` field | `k8s_prod_50`, `k8s_dev_34` |
+| `graylog_host` | Graylog server address | `10.10.21.151`, `graylog.company.com` |
+| `graylog_port` | Graylog GELF input NodePort | `31220` (for K8s logs) |
+| `graylog_mode` | Connection protocol | `tcp` (or `tls` for encrypted) |
 
 #### 2.1 Deploy ServiceAccount and RBAC
 
@@ -362,6 +404,9 @@ metadata:
 data:
   combine_fields.lua: |
     function add_identifier(tag, timestamp, record)
+        -- Get cluster identifier from environment variable
+        local cluster_id = os.getenv("CLUSTER_IDENTIFIER") or "unknown"
+        
         -- Safely get namespace, fall back to "unknown" if kubernetes filter failed
         local k8s = record["kubernetes"]
         local ns = "unknown"
@@ -371,12 +416,12 @@ data:
             ns = record["kubernetes.namespace_name"]
         end
 
-        record["identifier"] = "k8s_prod_50:" .. ns
+        record["identifier"] = cluster_id .. ":" .. ns
         return 1, timestamp, record
     end
 ```
 
-> **Important:** Change `k8s_prod_50` to match your cluster name!
+> ✨ **Note**: The Lua script now reads `CLUSTER_IDENTIFIER` from environment variables, so you don't need to edit this file!
 
 #### 2.3 Deploy Fluent Bit ConfigMap
 
@@ -391,7 +436,7 @@ data:
   fluent-bit.conf: |
     [SERVICE]
         Flush         5
-        Log_Level     info
+        Log_Level     ${LOG_LEVEL}
         Parsers_File  parsers.conf
 
     @INCLUDE input-containers.conf
@@ -434,7 +479,7 @@ data:
     [FILTER]
         Name  modify
         Match *
-        Add   cluster_name cluster_prod_50
+        Add   cluster_name ${CLUSTER_NAME}
 
     [FILTER]
         Name   lua
@@ -446,9 +491,9 @@ data:
     [OUTPUT]
         Name   gelf
         Match  *
-        Host   10.10.21.151
-        Port   31220
-        Mode   tcp
+        Host   ${GRAYLOG_HOST}
+        Port   ${GRAYLOG_PORT}
+        Mode   ${GRAYLOG_MODE}
         Gelf_Short_Message_Key log
 
   parsers.conf: |
@@ -465,10 +510,7 @@ data:
         Regex        ^(?<namespace_name>[^_]+)_(?<pod_name>[^_]+)_(?<container_name>.+)$
 ```
 
-> **Important:** Update these values:
-> - `Host` in OUTPUT section → your Graylog IP
-> - `cluster_name` in modify filter → your cluster name
-> - Grep filter namespaces → add/remove as needed
+> ✨ **Note**: This config uses `${VARIABLE}` placeholders that are automatically replaced by environment variables from the variables ConfigMap!
 
 #### 2.4 Deploy Fluent Bit DaemonSet
 
@@ -496,6 +538,38 @@ spec:
       containers:
       - name: fluent-bit
         image: fluent/fluent-bit:3.2.10
+        env:
+        # Inject variables from fluent-bit-variables ConfigMap
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: log_level
+        - name: CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: cluster_name
+        - name: CLUSTER_IDENTIFIER
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: cluster_identifier
+        - name: GRAYLOG_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: graylog_host
+        - name: GRAYLOG_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: graylog_port
+        - name: GRAYLOG_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-variables
+              key: graylog_mode
         resources:
           limits:
             memory: 200Mi
@@ -544,33 +618,127 @@ spec:
           type: DirectoryOrCreate
 ```
 
+> ✨ **Note**: The DaemonSet automatically injects environment variables from the `fluent-bit-variables` ConfigMap into the Fluent Bit container.
+
 #### Deploy to Cluster
 
 ```bash
-# Deploy in order
+# 1. Deploy variables ConfigMap FIRST
+kubectl apply -f fluent-bit-variables-CM.yaml
+
+# 2. Deploy RBAC
 kubectl apply -f fluent-bit-SA-RBAC.yaml
+
+# 3. Deploy Lua script ConfigMap
 kubectl apply -f lua-script-CM.yaml
+
+# 4. Deploy main ConfigMap
 kubectl apply -f fluent-bit-CM.yaml
+
+# 5. Deploy DaemonSet
 kubectl apply -f fluent-bit-DS.yaml
 
 # Verify deployment
 kubectl get ds fluent-bit -n kube-system
 kubectl get pods -n kube-system -l k8s-app=fluent-bit
+
+# Check environment variables are injected
+kubectl describe pod -n kube-system -l k8s-app=fluent-bit | grep -A 15 "Environment:"
+
+# Check logs
 kubectl logs -n kube-system -l k8s-app=fluent-bit --tail=50
 ```
 
-#### Update for New Clusters
+#### Update Configuration
 
-To update the `identifier` for a new cluster:
-
-1. Edit `lua-script-CM.yaml` and change `k8s_prod_50` to your cluster name
-2. Edit `fluent-bit-CM.yaml` and change `cluster_name` value
-3. Apply and restart:
+**To change any configuration value:**
 
 ```bash
-kubectl apply -f lua-script-CM.yaml
-kubectl apply -f fluent-bit-CM.yaml
+# Edit the variables ConfigMap
+kubectl edit cm fluent-bit-variables -n kube-system
+
+# OR apply updated file
+kubectl apply -f fluent-bit-variables-CM.yaml
+
+# Restart Fluent Bit to pick up changes
 kubectl rollout restart ds/fluent-bit -n kube-system
+
+# Watch rollout
+kubectl rollout status ds/fluent-bit -n kube-system
+```
+
+**Quick updates:**
+
+```bash
+# Change log level to debug
+kubectl patch cm fluent-bit-variables -n kube-system \
+  --type merge \
+  -p '{"data":{"log_level":"debug"}}'
+
+# Change Graylog host
+kubectl patch cm fluent-bit-variables -n kube-system \
+  --type merge \
+  -p '{"data":{"graylog_host":"new-graylog-ip"}}'
+
+# Always restart after changes
+kubectl rollout restart ds/fluent-bit -n kube-system
+```
+
+#### Multi-Cluster Deployment
+
+**For each cluster, only edit the variables ConfigMap:**
+
+**Cluster 1 (Production):**
+```yaml
+data:
+  cluster_name: "cluster_prod_50"
+  cluster_identifier: "k8s_prod_50"
+  graylog_host: "10.10.21.151"
+  # ... other variables same ...
+```
+
+**Cluster 2 (Staging):**
+```yaml
+data:
+  cluster_name: "cluster_staging_34"
+  cluster_identifier: "k8s_staging_34"
+  graylog_host: "10.10.21.151"
+  # ... other variables same ...
+```
+
+**Cluster 3 (Development):**
+```yaml
+data:
+  cluster_name: "cluster_dev_12"
+  cluster_identifier: "k8s_dev_12"
+  graylog_host: "10.10.21.151"
+  # ... other variables same ...
+```
+
+All other YAML files remain **identical** across clusters! Just apply them after updating the variables ConfigMap.
+
+#### Verification
+
+**Check variables are loaded:**
+```bash
+# View environment variables in pod
+kubectl exec -n kube-system <fluent-bit-pod> -- env | grep -E "(CLUSTER|GRAYLOG|LOG_LEVEL)"
+
+# Expected output:
+# LOG_LEVEL=info
+# CLUSTER_NAME=cluster_prod_50
+# CLUSTER_IDENTIFIER=k8s_prod_50
+# GRAYLOG_HOST=10.10.21.151
+# GRAYLOG_PORT=31220
+# GRAYLOG_MODE=tcp
+```
+
+**Check config expansion:**
+```bash
+# View expanded config (variables should be replaced)
+kubectl exec -n kube-system <fluent-bit-pod> -- cat /fluent-bit/etc/output-gelf.conf
+
+# Should show actual values, not ${VARIABLES}
 ```
 
 ---

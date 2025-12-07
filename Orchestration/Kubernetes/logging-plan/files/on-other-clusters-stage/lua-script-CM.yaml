@@ -7,7 +7,10 @@ metadata:
     app.kubernetes.io/name: fluent-bit
 data:
   combine_fields.lua: |
-    function add_dividing_name(tag, timestamp, record)
+    function add_identifier(tag, timestamp, record)
+        -- Get cluster identifier from environment variable
+        local cluster_id = os.getenv("CLUSTER_IDENTIFIER") or "unknown"
+        
         -- Safely get namespace, fall back to "unknown" if kubernetes filter failed
         local k8s = record["kubernetes"]
         local ns = "unknown"
@@ -17,6 +20,6 @@ data:
             ns = record["kubernetes.namespace_name"]
         end
 
-        record["dividing_name"] = "k8s_prod_50:" .. ns
+        record["identifier"] = cluster_id .. ":" .. ns
         return 1, timestamp, record
     end

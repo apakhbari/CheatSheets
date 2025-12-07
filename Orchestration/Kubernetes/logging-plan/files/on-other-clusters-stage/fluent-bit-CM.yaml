@@ -7,7 +7,7 @@ data:
   fluent-bit.conf: |
     [SERVICE]
         Flush         5
-        Log_Level     info
+        Log_Level     ${LOG_LEVEL}
         Parsers_File  parsers.conf
 
     @INCLUDE input-containers.conf
@@ -18,12 +18,8 @@ data:
     [INPUT]
         Name              tail
         Path              /var/log/containers/*.log
-        # Removed Exclude_Path to ensure we don't accidentally drop valid logs
-        
-        # 1. SIMPLIFIED REGEX: Much safer. Matches any character for pod/ns until the underscore.
         Tag               kube.<namespace_name>_<pod_name>_<container_name>
         Tag_Regex         (?<pod_name>[^_]+)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<docker_id>[a-z0-9]{64})\.log$
-        
         Parser            docker
         DB                /var/fluent-bit/state/tail-containers.db
         Mem_Buf_Limit     50MB
@@ -32,8 +28,6 @@ data:
         Rotate_Wait       30
 
   filters.conf: |
-    # 2. ROBUST EXCLUSION: We use Grep to drop the namespaces you don't want.
-    # This consumes slightly more CPU than Exclude_Path but is 100% reliable.
     [FILTER]
         Name   grep
         Match  kube.*
@@ -56,21 +50,21 @@ data:
     [FILTER]
         Name  modify
         Match *
-        Add   cluster_name cluster_prod_50
+        Add   env_name ${CLUSTER_NAME}
 
     [FILTER]
         Name   lua
         Match  kube.*
         script /fluent-bit/scripts/combine_fields.lua
-        call   add_dividing_name
+        call   add_identifier
 
   output-gelf.conf: |
     [OUTPUT]
         Name   gelf
         Match  *
-        Host   10.10.21.151
-        Port   31220
-        Mode   tcp
+        Host   ${GRAYLOG_HOST}
+        Port   ${GRAYLOG_PORT}
+        Mode   ${GRAYLOG_MODE}
         Gelf_Short_Message_Key log
 
   parsers.conf: |
