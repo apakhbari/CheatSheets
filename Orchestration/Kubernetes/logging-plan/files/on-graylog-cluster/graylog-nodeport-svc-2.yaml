@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: graylog-gelf
+  name: graylog-gelf-docker-input
   namespace: graylog
 spec:
   type: NodePort
