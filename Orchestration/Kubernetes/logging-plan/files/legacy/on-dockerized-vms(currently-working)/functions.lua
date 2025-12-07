@@ -1,7 +1,4 @@
 function add_identifier(tag, timestamp, record)
-    -- Get server identifier from environment variable
-    local server_id = os.getenv("SERVER_IDENTIFIER") or "unknown"
-    
     -- Expecting tag format: docker.container_name
     -- We split the tag to get the container name
     local container_name = "unknown"
@@ -12,15 +9,11 @@ function add_identifier(tag, timestamp, record)
         container_name = p2
     end
 
-    -- Docker's fluentd driver automatically adds these fields to the log record.
-    -- Setting them to 'nil' removes them before the record is sent to GELF.
-    record["container_id"] = nil
-
-
-    -- Create the custom field using environment variable
-    record["identifier"] = server_id .. ":" .. container_name
+    -- Create the custom field: "ubuntu_server_01:container_name"
+    -- You can change "ubuntu_prod" to whatever your server name is
+    record["dividing_name"] = "ubuntu_prod:" .. container_name
     
-    -- Ensure the 'log' key exists for GELF
+    -- Ensure the 'log' key exists for GELF (Docker forward usually sends 'log' or 'message')
     if record["log"] == nil and record["message"] ~= nil then
         record["log"] = record["message"]
     end

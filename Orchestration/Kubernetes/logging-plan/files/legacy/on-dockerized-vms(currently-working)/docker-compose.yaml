@@ -2,8 +2,6 @@ services:
   fluent-bit:
     image: fluent/fluent-bit:3.2.10
     container_name: fluent-bit-logger
-    env_file:
-      - variables.env
     ports:
       - "24224:24224"
       - "24224:24224/udp"

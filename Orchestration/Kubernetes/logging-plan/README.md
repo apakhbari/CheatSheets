@@ -299,8 +299,6 @@ kubectl get svc -n graylog | grep gelf
 
 Deploy Fluent Bit on **each Kubernetes cluster** you want to collect logs from.
 
-> 💡 **New**: We now use a centralized variables ConfigMap to manage all configuration values. This makes multi-cluster deployment much easier!
-
 #### File Structure
 ```
 on-other-clusters/
@@ -750,9 +748,10 @@ Deploy Fluent Bit as a standalone container on each Ubuntu/Linux server running 
 #### File Structure
 ```
 on-dockerized-vms/
-├── docker-compose.yaml
-├── fluent-bit.conf
-└── functions.lua
+├── variables.env           # ← START HERE: Configure all variables
+├── docker-compose.yaml     # (uses variables)
+├── fluent-bit.conf         # (uses variables)
+└── functions.lua           # (uses variables)
 ```
 
 #### 3.1 Create Directory Structure
@@ -763,7 +762,37 @@ sudo mkdir -p /opt/fluent-bit
 cd /opt/fluent-bit
 ```
 
-#### 3.2 Create Fluent Bit Configuration
+#### 3.2 Configure Variables (First!)
+
+**File: `/opt/fluent-bit/variables.env`**
+
+This file centralizes all configuration values. Edit this file **before creating other files**.
+
+```bash
+# Fluent Bit Variables for Docker Deployment
+# Edit these values before deploying
+
+# Server Identification
+SERVER_IDENTIFIER=ubuntu_prod
+
+# Graylog Output Configuration
+GRAYLOG_HOST=10.10.21.151
+GRAYLOG_PORT=31221
+GRAYLOG_MODE=tcp
+```
+
+**What each variable does:**
+
+| Variable | Purpose | Example Values |
+|----------|---------|----------------|
+| `SERVER_IDENTIFIER` | First part of `identifier` field | `ubuntu_prod`, `web-server-01`, `db-server-prod` |
+| `GRAYLOG_HOST` | Graylog server address | `10.10.21.151`, `graylog.company.com` |
+| `GRAYLOG_PORT` | Graylog GELF input NodePort | `31221` (for Docker logs) |
+| `GRAYLOG_MODE` | Connection protocol | `tcp` (or `tls` for encrypted) |
+
+> ⚠️ **Important:** Note that `GRAYLOG_PORT` is **31221** for Docker (not 31220 which is for Kubernetes)
+
+#### 3.3 Create Fluent Bit Configuration
 
 **File: `/opt/fluent-bit/fluent-bit.conf`**
 ```ini
@@ -786,19 +815,22 @@ cd /opt/fluent-bit
 [OUTPUT]
     Name                    gelf
     Match                   *
-    Host                    10.10.21.151
-    Port                    31221
-    Mode                    tcp
+    Host                    ${GRAYLOG_HOST}
+    Port                    ${GRAYLOG_PORT}
+    Mode                    ${GRAYLOG_MODE}
     Gelf_Short_Message_Key  log
 ```
 
-> **Important:** Update `Host` to your Graylog IP and confirm `Port` is 31221 (Docker input)
+> ✨ **Note**: This config uses `${VARIABLE}` placeholders that are automatically replaced by environment variables from `variables.env`!
 
-#### 3.3 Create Lua Script
+#### 3.4 Create Lua Script
 
 **File: `/opt/fluent-bit/functions.lua`**
 ```lua
 function add_identifier(tag, timestamp, record)
+    -- Get server identifier from environment variable
+    local server_id = os.getenv("SERVER_IDENTIFIER") or "unknown"
+    
     -- Expecting tag format: docker.container_name
     -- We split the tag to get the container name
     local container_name = "unknown"
@@ -809,9 +841,8 @@ function add_identifier(tag, timestamp, record)
         container_name = p2
     end
 
-    -- Create the custom field: "ubuntu_server_01:container_name"
-    -- Change "ubuntu_prod" to your server's hostname or identifier
-    record["identifier"] = "ubuntu_prod:" .. container_name
+    -- Create the custom field using environment variable
+    record["identifier"] = server_id .. ":" .. container_name
     
     -- Ensure the 'log' key exists for GELF
     if record["log"] == nil and record["message"] ~= nil then
@@ -822,9 +853,7 @@ function add_identifier(tag, timestamp, record)
 end
 ```
 
-> **Important:** Change `ubuntu_prod` to match your server name (e.g., `web-server-01`, `db-server-prod`)
-
-#### 3.4 Create Docker Compose File
+#### 3.5 Create Docker Compose File
 
 **File: `/opt/fluent-bit/docker-compose.yaml`**
 ```yaml
@@ -832,6 +861,8 @@ services:
   fluent-bit:
     image: fluent/fluent-bit:3.2.10
     container_name: fluent-bit-logger
+    env_file:
+      - variables.env
     ports:
       - "24224:24224"
       - "24224:24224/udp"
@@ -841,18 +872,33 @@ services:
     restart: always
 ```
 
-#### 3.5 Start Fluent Bit
+> ✨ **Note**: The `env_file` directive automatically loads all variables from `variables.env` into the container!
+
+#### 3.6 Start Fluent Bit
 
 ```bash
 cd /opt/fluent-bit
+
+# Start Fluent Bit
 docker-compose up -d
 
 # Verify it's running
 docker ps | grep fluent-bit
 docker logs fluent-bit-logger
+
+# Check environment variables are loaded
+docker exec fluent-bit-logger env | grep -E "(SERVER|GRAYLOG)"
 ```
 
-#### 3.6 Configure Your Applications
+**Expected output:**
+```
+SERVER_IDENTIFIER=ubuntu_prod
+GRAYLOG_HOST=10.10.21.151
+GRAYLOG_PORT=31221
+GRAYLOG_MODE=tcp
+```
+
+#### 3.7 Configure Your Applications
 
 For **each application** you want to log, modify its `docker-compose.yml` to use the fluentd logging driver:
 
@@ -886,13 +932,95 @@ docker-compose down
 docker-compose up -d
 ```
 
+#### Update Configuration
+
+**To change any configuration value:**
+
+```bash
+# Edit the variables file
+nano /opt/fluent-bit/variables.env
+
+# Restart Fluent Bit to pick up changes
+cd /opt/fluent-bit
+docker-compose restart
+
+# Or fully recreate the container
+docker-compose down
+docker-compose up -d
+```
+
+**Quick updates:**
+
+```bash
+# Change server identifier
+sed -i 's/SERVER_IDENTIFIER=.*/SERVER_IDENTIFIER=web-server-02/' /opt/fluent-bit/variables.env
+
+# Change Graylog host
+sed -i 's/GRAYLOG_HOST=.*/GRAYLOG_HOST=new-graylog-ip/' /opt/fluent-bit/variables.env
+
+# Always restart after changes
+cd /opt/fluent-bit
+docker-compose restart
+```
+
+#### Multi-Server Deployment
+
+**For each server, only edit the variables.env file:**
+
+**Server 1 (Web Server):**
+```bash
+SERVER_IDENTIFIER=web-server-01
+GRAYLOG_HOST=10.10.21.151
+GRAYLOG_PORT=31221
+GRAYLOG_MODE=tcp
+```
+
+**Server 2 (Database Server):**
+```bash
+SERVER_IDENTIFIER=db-server-prod
+GRAYLOG_HOST=10.10.21.151
+GRAYLOG_PORT=31221
+GRAYLOG_MODE=tcp
+```
+
+**Server 3 (Application Server):**
+```bash
+SERVER_IDENTIFIER=app-server-staging
+GRAYLOG_HOST=10.10.21.151
+GRAYLOG_PORT=31221
+GRAYLOG_MODE=tcp
+```
+
+All other files (`docker-compose.yaml`, `fluent-bit.conf`, `functions.lua`) remain **identical** across servers!
+
+#### Verification
+
+**Check variables are loaded:**
+```bash
+# View environment variables in container
+docker exec fluent-bit-logger env | grep -E "(SERVER|GRAYLOG)"
+
+# View expanded config (variables should be replaced)
+docker exec fluent-bit-logger cat /fluent-bit/etc/fluent-bit.conf | grep -A 5 OUTPUT
+```
+
+**Should show actual values, not ${VARIABLES}:**
+```ini
+[OUTPUT]
+    Name                    gelf
+    Match                   *
+    Host                    10.10.21.151
+    Port                    31221
+    Mode                    tcp
+```
+
 #### How It Works
 
 1. **Docker Daemon** intercepts logs from containers using the fluentd driver
 2. **Tag format** `docker.{{.Name}}` sends container name (e.g., `docker.my-web-app`)
 3. **Fluent Bit** receives logs on port 24224 via Forward protocol
-4. **Lua script** extracts container name and creates `identifier: ubuntu_prod:my-web-app`
-5. **GELF output** forwards to Graylog on port 31221
+4. **Lua script** reads `SERVER_IDENTIFIER` from env and extracts container name → creates `identifier: ubuntu_prod:my-web-app`
+5. **GELF output** uses `GRAYLOG_HOST`, `GRAYLOG_PORT`, `GRAYLOG_MODE` from env to forward to Graylog
 6. **Graylog** receives logs in the Docker input, routes via pipeline to appropriate stream
 
 ---
