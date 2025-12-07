@@ -18,12 +18,9 @@ data:
     [INPUT]
         Name              tail
         Path              /var/log/containers/*.log
-        # Removed Exclude_Path to ensure we don't accidentally drop valid logs
-        
-        # 1. SIMPLIFIED REGEX: Much safer. Matches any character for pod/ns until the underscore.
+        # We keep the Underscore separator (Correct from previous step)
         Tag               kube.<namespace_name>_<pod_name>_<container_name>
-        Tag_Regex         (?<pod_name>[^_]+)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<docker_id>[a-z0-9]{64})\.log$
-        
+        Tag_Regex         (?<pod_name>[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<docker_id>[a-z0-9]{64})\.log$
         Parser            docker
         DB                /var/fluent-bit/state/tail-containers.db
         Mem_Buf_Limit     50MB
@@ -32,12 +29,10 @@ data:
         Rotate_Wait       30
 
   filters.conf: |
-    # 2. ROBUST EXCLUSION: We use Grep to drop the namespaces you don't want.
-    # This consumes slightly more CPU than Exclude_Path but is 100% reliable.
     [FILTER]
         Name   grep
         Match  kube.*
-        Exclude $kubernetes['namespace_name'] ^(metallb-system|argocd|kube-system|rook-ceph)$
+        Exclude $kubernetes['namespace_name'] '^kube-system$'
 
     [FILTER]
         Name               kubernetes
@@ -46,6 +41,7 @@ data:
         Kube_CA_File       /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         Kube_Token_File    /var/run/secrets/kubernetes.io/serviceaccount/token
         Merge_Log          On
+        # 1. CHANGE: Set this to On. Ensures the 'log' key is never deleted.
         Keep_Log           On
         K8S-Logging.Parser On
         Labels             On
@@ -71,6 +67,7 @@ data:
         Host   10.10.21.151
         Port   31220
         Mode   tcp
+        # 2. NEW: Map the docker 'log' field to GELF 'short_message'
         Gelf_Short_Message_Key log
 
   parsers.conf: |
