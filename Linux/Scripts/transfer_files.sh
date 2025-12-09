@@ -16,7 +16,7 @@ CODE_VERSION="2.0"
 CUTOFF_JALALI="040317"
 
 SOURCE_BASE="/export/archive_s3/cashless"
-DEST_BASE="/mnt/external-hdd/"
+DEST_BASE="/mnt/external-hdd//before_cutoff"
 
 LOG_DIR="./logs/"
 LOCKFILE="/var/run/archive_cashless.lock"
