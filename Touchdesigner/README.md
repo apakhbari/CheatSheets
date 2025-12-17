@@ -30,7 +30,7 @@
 - ` null ` operators are for when you need an endpoint, whether for connecting something to other families, whether to export it
 
 Add contents to touchdesigner.md
-https://www.youtube.com/watch?v=OJl6n9an8hA&list=PLFrhecWXVn5862cxJgysq9PYSjLdfNiHz&index=6
+https://www.youtube.com/watch?v=DzD2ilLO-9Q&list=PLFrhecWXVn5862cxJgysq9PYSjLdfNiHz&index=10
 00:00
 
 # acknowledgment
