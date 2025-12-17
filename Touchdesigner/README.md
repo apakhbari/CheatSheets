@@ -9,7 +9,10 @@
 
 ## Shortcuts
 - opening operator tab: double click anywhere on pane OR TAB
-- openning parameters of an operator: P
+- openning parameters of an operator: ` P `
+- When you have toggled ` viewer active ` : 
+  - If you press ` H ` you go back to its initial position
+  - If you press ` W ` you see its wireframe version
 
 ## Operators
 - COMP: components - can hold other compenets
@@ -21,6 +24,10 @@
 
 - You can't connect different families of operators to eachother
 - The flow of operators is from left to right
+
+## TOP
+- For adding/differentiating and lots of other processes, ` composite ` is a pretty good operator
+- ` null ` operators are for when you need an endpoint, whether for connecting something to other families, whether to export it
 
 Add contents to touchdesigner.md
 https://www.youtube.com/watch?v=OJl6n9an8hA&list=PLFrhecWXVn5862cxJgysq9PYSjLdfNiHz&index=6
