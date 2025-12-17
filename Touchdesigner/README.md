@@ -9,6 +9,7 @@
 
 ## Shortcuts
 - opening operator tab: double click anywhere on pane OR TAB
+- openning parameters of an operator: P
 
 ## Operators
 - COMP: components - can hold other compenets
@@ -19,6 +20,7 @@
 - DAT: Data family - plain text - input a csv file - scripts
 
 - You can't connect different families of operators to eachother
+- The flow of operators is from left to right
 
 Add contents to touchdesigner.md
 https://www.youtube.com/watch?v=OJl6n9an8hA&list=PLFrhecWXVn5862cxJgysq9PYSjLdfNiHz&index=6
