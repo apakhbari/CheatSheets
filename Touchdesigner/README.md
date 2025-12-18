@@ -18,7 +18,7 @@
 - COMP: components - can hold other compenets
 - TOP: Texture Operators - deal with 2d imagary and pixels - video and image based - craete 2d shapes - text - render a 3d object to 2d image - works directly on GPU (so it's fast)
 - CHOP: Channel Operators - data and signal - audio channels - creating random number - MIDI controller - microsoft kinect
-- SOP: Surface Operators - 3d geometry
+- SOP: Surface Operators - 3d geometry - processed on CPU (not that fast) - don't do too many of this family at once 
 - MAT: materials - color and image on objects
 - DAT: Data family - plain text - input a csv file - scripts
 
@@ -30,7 +30,7 @@
 - ` null ` operators are for when you need an endpoint, whether for connecting something to other families, whether to export it
 
 Add contents to touchdesigner.md
-https://www.youtube.com/watch?v=DzD2ilLO-9Q&list=PLFrhecWXVn5862cxJgysq9PYSjLdfNiHz&index=10
+https://www.youtube.com/watch?v=JfBNyy47YU8&list=PLFrhecWXVn5862cxJgysq9PYSjLdfNiHz&index=13
 00:00
 
 # acknowledgment
