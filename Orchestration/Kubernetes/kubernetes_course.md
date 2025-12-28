@@ -956,10 +956,10 @@ spec:
 ### CRI (Container Runtime Interface)
 - containerd, docker, rkt, cri-o
 
-### CSI (Container Network Interface)
+### CNI (Container Network Interface)
 - Calico, fFlannel, Cilium, Weaveworks
 
-### CNI (Container Storage Interface)
+### CSI (Container Storage Interface)
 - Local, Openstack, Amazon EBS, Dell EMC, GlusterFS, portworx
 
 # Kubernetes Course
