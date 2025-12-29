@@ -23,6 +23,8 @@
 - [Kubernetes Course](#kubernetes-course)
 - [Advanced Kubernetes Course](#advanced-kubernetes-course)
 
+- [acknowledgment](#acknowledgment)
+
 ## Architecture
 ### Master Node
 - Kubelet
