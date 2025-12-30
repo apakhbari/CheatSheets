@@ -18,21 +18,18 @@ data:
     [INPUT]
         Name              tail
         Path              /var/log/containers/*.log
-        Tag               kube.<namespace_name>_<pod_name>_<container_name>
-        Tag_Regex         (?<pod_name>[^_]+)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<docker_id>[a-z0-9]{64})\.log$
+        Tag_Regex         (?<filename>[^/]+)$
+        Tag               kube.<filename>
         Parser            docker
         DB                /var/fluent-bit/state/tail-containers.db
+        Skip_Long_Lines   Off
+        Buffer_Chunk_Size 512k
+        Buffer_Max_Size   512k
         Mem_Buf_Limit     50MB
-        Skip_Long_Lines   On
         Refresh_Interval  10
         Rotate_Wait       30
 
   filters.conf: |
-    [FILTER]
-        Name   grep
-        Match  kube.*
-        Exclude $kubernetes['namespace_name'] ^(metallb-system|argocd|kube-system|rook-ceph)$
-
     [FILTER]
         Name               kubernetes
         Match              kube.*
@@ -48,6 +45,11 @@ data:
         Regex_Parser       kube-custom-tag-parser
 
     [FILTER]
+        Name   grep
+        Match  kube.*
+        Exclude $kubernetes['namespace_name'] ^(metallb-system|argocd|kube-system|rook-ceph)$
+
+    [FILTER]
         Name  modify
         Match *
         Add   env_name ${CLUSTER_NAME}
@@ -57,7 +59,6 @@ data:
         Match  kube.*
         script /fluent-bit/scripts/combine_fields.lua
         call   add_identifier
-
   output-gelf.conf: |
     [OUTPUT]
         Name   gelf
@@ -78,4 +79,4 @@ data:
     [PARSER]
         Name         kube-custom-tag-parser
         Format       regex
-        Regex        ^(?<namespace_name>[^_]+)_(?<pod_name>[^_]+)_(?<container_name>.+)$
+        Regex        ^(?<pod_name>[^_]+)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<docker_id>[a-z0-9]{64})\.log$

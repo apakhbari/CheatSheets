@@ -10,7 +10,7 @@ data:
   log_level: "info"
   
   # Cluster Identification
-  cluster_name: "cluster_prod_50"
+  cluster_name: "k8s_prod_50"
   cluster_identifier: "k8s_prod_50"
   
   # Graylog Output Configuration
