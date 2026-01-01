@@ -20,7 +20,7 @@
 - CHOP: Channel Operators - data and signal - audio channels - creating random number - MIDI controller - microsoft kinect
 - SOP: Surface Operators - 3d geometry - processed on CPU (not that fast) - don't do too many of this family at once 
 - MAT: materials - color and image on objects - works on GPU
-- DAT: Data family - plain text - input a csv file - scripts
+- DAT: Data family - plain text - input a csv file - scripts. If you want to do some python scripts, Use this operator
 
 - You can't connect different families of operators to eachother
 - The flow of operators is from left to right
