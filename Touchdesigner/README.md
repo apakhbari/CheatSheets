@@ -35,8 +35,8 @@
   
 
 Add contents to touchdesigner.md
-https://youtu.be/49-Yjic3xsI?si=O7nrPL5fTi-KMWzh
-14 Palette - 00:00
+https://www.youtube.com/watch?v=_W_qOMhEnfI&list=PLFrhecWXVn5862cxJgysq9PYSjLdfNiHz&index=18
+15 audio overview - 00:00
 
 # acknowledgment
 ## Contributors
