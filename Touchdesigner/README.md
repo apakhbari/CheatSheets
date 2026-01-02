@@ -29,9 +29,14 @@
 - For adding/differentiating and lots of other processes, ` composite ` is a pretty good operator
 - ` null ` operators are for when you need an endpoint, whether for connecting something to other families, whether to export it
 
+## COMP
+- base: is a container for our things, used to structure our networks
+- container: is also a container but for outputing. It is good for creating UI
+  
+
 Add contents to touchdesigner.md
 https://youtu.be/49-Yjic3xsI?si=O7nrPL5fTi-KMWzh
-12DAT - 00:00
+14 Palette - 00:00
 
 # acknowledgment
 ## Contributors
