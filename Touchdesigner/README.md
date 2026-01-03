@@ -13,6 +13,10 @@
 - When you have toggled ` viewer active ` : 
   - If you press ` H ` you go back to its initial position
   - If you press ` W ` you see its wireframe version
+- To open OP Create Dialog: Press ' TAB '
+- color your component using ' C '
+- Pressing ' D ' enters you to display mode
+- Pressing ' A ' make something active, for DATs and SOPs
 
 ## Operators
 - COMP: components - can hold other compenets
