@@ -29,10 +29,17 @@
 - For adding/differentiating and lots of other processes, ` composite ` is a pretty good operator
 - ` null ` operators are for when you need an endpoint, whether for connecting something to other families, whether to export it
 
+## CHOP
+- When we are working on audio in TD, we are in CHOP world
+
+
 ## COMP
 - base: is a container for our things, used to structure our networks
 - container: is also a container but for outputing. It is good for creating UI
   
+
+## Tips & Tricks
+- Instancing happens on GPU
 
 Add contents to touchdesigner.md
 https://www.youtube.com/watch?v=_W_qOMhEnfI&list=PLFrhecWXVn5862cxJgysq9PYSjLdfNiHz&index=18
