@@ -43,209 +43,222 @@ graylog_67  9634847  8.6gb 1 0
 ## What I want
 - give me step-by-step thourough instruction on how to make my Rook-Ceph cluster up and running + deploy Rook-ceph's UI Dashboard without using SSL (http) +  define Default storage class for my Graylog setup + Enable Prometheus in Rook
 
-## Prerqusisits
-- If integrating Rook Ceph (as mentioned in your prior query), ensure nodes have raw SSDs, RBD module loaded, and lvm2 installed for advanced features. Test in staging before production. For custom setups, consult RKE2 config reference.
+### Step-by-Step Instructions for Setting Up Rook-Ceph on Your RKE2 Cluster
 
-### Overview of Recommendations
-Your 4-node RKE2 cluster (3 control-plane/master/etcd nodes and 1 worker) is well-suited for a dedicated logging setup with Graylog and OpenSearch, given its HA configuration and Ubuntu base. With 20 GB of daily logs and a 1-year retention goal, focus on efficient storage, high availability, and automated retention policies to manage costs and performance. This is a relatively low ingest rate (roughly 200-500 events per second, assuming average log sizes of 500-1KB), so you don't need massive scaling—aim for simplicity and reliability.
+I'll provide a thorough, step-by-step guide based on your requirements. We're using Rook v1.18.7 (the latest stable patch release as of late 2025) with Ceph v19.2.3 (Squid, the default and compatible Ceph version for this Rook release, ensuring stability and integration without misbehavior). This is compatible with your Kubernetes v1.33.2. The setup uses raw devices (/dev/sdd), tolerates master node taints, enables the Ceph dashboard over HTTP (no SSL), sets up a default storage class for your Graylog + OpenSearch + MongoDB setup, and enables Prometheus monitoring. The design is expandable: you can add nodes or devices later by updating the CephCluster CRD, and the cluster will rebalance data automatically without downtime or data loss (Ceph handles replication and healing).
 
-Key assumptions:
-- Your nodes have sufficient CPU/RAM (recommend at least 8-16 cores and 32-64 GB RAM per node for production; verify with `kubectl top nodes` or `htop` on hosts).
-- Extra disks are available for storage (e.g., SSDs for performance); use the earlier script's `lsblk` output to confirm raw devices.
-- Logs compress well (common in OpenSearch), but plan conservatively for indexing overhead.
+Since your cluster is air-gapped, all steps assume you perform downloads/pulls on a machine with internet access, then transfer files/images to your air-gapped environment and push to your local registry (https://registry.eniac-tech.com/). Use `docker` (or `podman` if preferred) for image handling. I've listed all required images upfront.
 
-I'll break down storage sizing, cluster configuration, deployment steps, and best practices.
+#### Prerequisites
+- Ensure LVM is installed on all nodes (since you're using raw devices and may expand later): `sudo apt install -y lvm2` (Ubuntu).
+- Your raw devices (/dev/sdd) must be unmounted, unformatted, and available on at least 3 nodes (for Ceph quorum and replication). Assume they're present on all 4 nodes.
+- Kernel supports RBD (test with `sudo modprobe rbd` on nodes).
+- Your cluster has no existing Rook-Ceph (if it does, uninstall first).
+- For expansion: Ceph supports adding devices/nodes dynamically. Set replication to 3 for fault tolerance (data survives 2 node failures).
+- Resources: Start minimal (e.g., 1-2GB RAM per OSD/Mon), but monitor and scale as needed for your Graylog logs (~100GB+ indices).
 
-### Storage Sizing and Requirements
-For 20 GB/day over 1 year:
-- **Raw data estimate**: 20 GB × 365 days = 7.3 TB.
-- **OpenSearch overhead**: Indexing adds 20-50% more space due to metadata and analysis. Compression (built-in) can reduce this by 30-70%, but net size is often 1-2× raw. Conservative planning: 10-15 TB for primary data.
-- **Replication**: For HA, use 1 replica (2 copies total), doubling to 20-30 TB.
-- **Additional buffers**: 10% for overhead (e.g., snapshots, logs), plus 20% free space for OpenSearch to avoid write blocks. Total recommended: 25-40 TB across the cluster.
-- **Shard sizing**: Aim for 20-50 GB per shard (Graylog/OpenSearch sweet spot for performance). With daily indices, this means rolling over indices every 1-2 days.
-- **Disk types**: Use SSDs for OpenSearch data paths (low latency, high IOPS). Avoid HDDs for hot data. If using Rook Ceph, dedicate raw disks (no filesystem) for OSDs.
+#### Step 1: Prepare Images and Manifests for Air-Gapped Environment
+On a **connected machine**:
+1. Git clone the Rook repository:
+   ```
+   git clone --single-branch --branch v1.18.7 https://github.com/rook/rook.git
+   cd rook
+   ```
+2. Pull all required images (these are all the containers used by Rook-Ceph, CSI, and toolbox):
+   ```
+   docker pull rook/ceph:v1.18.7
+   docker pull quay.io/ceph/ceph:v19.2.3
+   docker pull quay.io/cephcsi/cephcsi:v3.15.0
+   docker pull registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
+   docker pull registry.k8s.io/sig-storage/csi-resizer:v1.13.2
+   docker pull registry.k8s.io/sig-storage/csi-provisioner:v5.2.0
+   docker pull registry.k8s.io/sig-storage/csi-snapshotter:v8.2.1
+   docker pull registry.k8s.io/sig-storage/csi-attacher:v4.8.1
+   docker pull quay.io/csiaddons/k8s-sidecar:v0.13.0
+   ```
+3. Tag and push to your local registry (replace `registry.eniac-tech.com` if needed; use a prefix like `rook/` for organization):
+   ```
+   docker tag rook/ceph:v1.18.7 registry.eniac-tech.com/rook/ceph:v1.18.7
+   docker push registry.eniac-tech.com/rook/ceph:v1.18.7
+   # Repeat for all images, e.g.:
+   docker tag quay.io/ceph/ceph:v19.2.3 registry.eniac-tech.com/ceph/ceph:v19.2.3
+   docker push registry.eniac-tech.com/ceph/ceph:v19.2.3
+   # And so on for cephcsi, sig-storage/*, csiaddons.
+   ```
+4. Download Prometheus-related manifests (for monitoring):
+   ```
+   wget https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.82.0/bundle.yaml
+   ```
+   - Extract images from `bundle.yaml` (e.g., quay.io/prometheus-operator/prometheus-operator:v0.82.0, quay.io/prometheus/prometheus:v2.59.0 – check the file), pull/tag/push them similarly.
+5. Transfer the `rook/` directory, `bundle.yaml`, and any other downloaded files to your air-gapped machine (e.g., via USB/SCP).
+6. On the air-gapped machine, ensure your cluster pulls from the local registry by configuring RKE2's containerd mirrors if not already (edit `/etc/rancher/rke2/config.yaml` and restart agents).
 
-If your logs are highly compressible (e.g., text-heavy), you might get away with 15-20 TB total. Test with a sample ingest. For cost savings, tier storage: hot (recent logs) on fast SSDs, warm/cold (older) on cheaper HDDs via OpenSearch's Index State Management (ISM).
+#### Step 2: Install the Rook Operator
+On your air-gapped cluster master:
+1. Create the Rook namespace and common resources:
+   ```
+   cd rook/deploy/examples
+   kubectl create -f common.yaml
+   kubectl create -f common-cluster.yaml  # If using a custom namespace, adjust.
+   ```
+2. Edit `operator.yaml` to use your local registry:
+   - Replace all image references (e.g., `image: rook/ceph:v1.18.7` → `image: registry.eniac-tech.com/rook/ceph:v1.18.7`).
+   - Add tolerations if needed here, but main tolerations go in the cluster CR.
+3. Apply the operator:
+   ```
+   kubectl create -f operator.yaml
+   ```
+4. Verify the operator is running (pods in `rook-ceph` namespace):
+   ```
+   kubectl -n rook-ceph get pods
+   ```
+   - Wait for `rook-ceph-operator-*` and `rook-discover-*` to be Ready.
 
-### Recommended Storage Solution: Rook Ceph Integration
-Since you mentioned Rook Ceph, it's ideal for this setup—provides distributed block storage for OpenSearch PVs, with built-in replication and snapshots. It fits RKE2 well and handles your scale without external dependencies.
-
-- **Why Rook Ceph?** Self-healing, scales with nodes, supports replication for HA. For logging, use block devices (RBD) for OpenSearch data volumes. Avoid local storage to prevent data loss on node failures.
-- **Configuration Suggestions**:
-  - **CephCluster CR**: Deploy a single Ceph cluster across all 4 nodes. Set replication factor to 3 (min for HA; needs at least 3 nodes). Example YAML snippet (apply after installing Rook operator):
-    ```yaml
-    apiVersion: ceph.rook.io/v1
-    kind: CephCluster
-    metadata:
-      name: rook-ceph
-      namespace: rook-ceph
-    spec:
-      cephVersion:
-        image: quay.io/ceph/ceph:v18.2.2  # Latest stable
-      mon:
-        count: 3  # On your 3 control-plane nodes
-      storage:
-        useAllNodes: true
-        useAllDevices: false  # Select specific devices
-        deviceFilter: ^sd[b-z]  # e.g., use /dev/sdb, etc.; check lsblk
-      network:
-        provider: host  # Use host networking for performance
-      healthCheck:
-        daemonHealth:
-          mon:
-            interval: 10s
-      ```
-    Tune via Ceph CLI from Rook toolbox pod (e.g., `ceph config set global osd_pool_default_size 3`).
-  - **Block Pool and StorageClass**: Create a replicated pool for OpenSearch PVs.
-    ```yaml
-    apiVersion: ceph.rook.io/v1
-    kind: CephBlockPool
-    metadata:
-      name: logging-pool
-      namespace: rook-ceph
-    spec:
-      failureDomain: host
-      replicated:
-        size: 3
-    ---
-    apiVersion: storage.k8s.io/v1
-    kind: StorageClass
-    metadata:
-      name: ceph-rbd
-    provisioner: rook-ceph.rbd.csi.ceph.com
-    parameters:
-      pool: logging-pool
-      csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
-      csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-    reclaimPolicy: Retain
-    ```
-  - **Raw Capacity Needed**: For 25-40 TB usable, provide 75-120 TB raw disks (with replication 3). Spread across nodes (e.g., 20-30 TB per node). Monitor with Ceph Dashboard.
-- **Installation Steps**:
-  1. Install Rook operator: `helm install rook-ceph rook-release/rook-ceph -n rook-ceph --create-namespace`.
-  2. Apply CephCluster CR.
-  3. Verify: `kubectl get cephcluster -n rook-ceph`.
-  4. Enable RBD kernel module if needed (check with script).
-
-### Graylog + OpenSearch Deployment
-Deploy as StatefulSets for persistence. Use operators for ease.
-
-- **OpenSearch Cluster**:
-  - **Nodes**: 3 data nodes (on graylog02-04) for HA; use graylog05 as coordinating/ingest node. Set master-eligible on 3 nodes.
-  - **Resources**: 4-8 vCPU, 16-32 GB RAM per data node (heap: 8-16 GB). PV size: 8-15 TB per node (using ceph-rbd StorageClass).
-  - **Install**: Use OpenSearch Kubernetes Operator (helm: `opensearch-operator`). Example StatefulSet config: Set `OPENSEARCH_JAVA_OPTS="-Xms8g -Xmx8g"`.
-  - **Retention**: Use ISM policies to rollover indices daily (e.g., after 20 GB), transition to warm after 30 days, delete after 365 days. Example policy:
-    ```json
-    {
-      "policy_id": "log_retention",
-      "description": "1-year log retention",
-      "states": [
-        {"name": "hot", "actions": [{"rollover": {"min_size": "20gb"}}]},
-        {"name": "delete", "actions": [{"delete": {}}], "transitions": [{"min_index_age": "365d"}]}
-      ]
-    }
-    ```
-- **Graylog**:
-  - **Nodes**: 2-3 replicas for HA (stateless-ish, but use MongoDB for config). Resources: 4 vCPU, 16 GB RAM per pod.
-  - **Install**: Helm chart or Deployment. Connect to OpenSearch via env var `GRAYLOG_ELASTICSEARCH_HOSTS`. Use MongoDB (single pod or replicaSet) with small PV (1-5 GB).
-  - **Inputs**: Configure for your log sources (e.g., Fluent Bit from other clusters).
-- **RKE2-Specific Tweaks**: Ensure Canal CNI allows Ceph traffic (default OK). Use hostPath or extra mounts if needed, but prefer Ceph PVs.
-
-### Best Practices and Monitoring
-- **HA and Scaling**: Label nodes (e.g., `kubectl label node graylog05 role=ingest`). Start small, scale OpenSearch replicas if ingest grows.
-- **Backups**: Enable OpenSearch snapshots to S3-compatible (or Ceph Object Gateway). Daily backups with 7-day retention.
-- **Monitoring**: Install Prometheus + Grafana; monitor Ceph with Rook's exporter, OpenSearch metrics (heap, shards). Alerts for >80% disk usage.
-- **Testing**: Ingest sample logs, verify retention with ISM. Upgrade RKE2 carefully (sequential nodes).
-- **Alternatives if Ceph Overkill**: Use Longhorn for simpler distributed storage, or NFS if no HA needed.
-
-This setup should handle your needs reliably. If you share node hardware specs or `lsblk` output, I can refine further.
-
-
-### Rook Ceph Extensibility for Storage Expansion
-
-Yes, Rook Ceph is highly extendable for future growth, which aligns well with your situation of limited current resources but plans to add more later. Ceph (the underlying storage system) is designed for scalability, allowing both horizontal expansion (adding more nodes, devices, or OSDs) and, to a degree, vertical expansion (resizing existing devices). Since your setup appears to involve raw devices (e.g., /dev/sdd as a 1 TB SSD, likely a virtual disk in vCenter), resizing an existing disk is possible, but it requires specific steps to ensure the change is recognized without data loss. The cluster can remain operational during this process if you have sufficient redundancy (e.g., replication factor of 3 across your 4 nodes), though the affected OSD will temporarily go offline.
-
-I'll break this down based on reliable sources from Rook's documentation, community discussions, and practical guides. Note that while "online" expansion is supported with minimal downtime, it's not fully zero-downtime for the resized OSD—expect a brief outage for that component while the rest of the cluster handles traffic.
-
-#### Key Concepts for Expansion in Rook Ceph
-- **Horizontal Scaling (Easiest and Recommended for Future Growth)**: This is the primary way to extend storage without touching existing devices. You can:
-  - Add new raw devices (e.g., attach another SSD via vCenter) to existing nodes and let Rook automatically provision new OSDs (Object Storage Daemons).
-  - Add more nodes to the cluster and include their storage devices in the CephCluster CR (Custom Resource).
-  - Increase OSD count in your CephCluster spec (e.g., add more `deviceSets` or set `useAllDevices: true` with filters).
-  This is non-disruptive and can be done while the cluster is running, as Ceph rebalances data automatically.
-
-- **Vertical Scaling (Resizing Existing Devices like Your 1 TB /dev/sdd)**: This is feasible for raw devices in a vCenter/VMware environment, but it's more involved than horizontal scaling. Ceph uses BlueStore (default backend) for OSDs, which supports device expansion. However, the OSD won't automatically detect the change without intervention. If your OSDs are on PVCs (e.g., if using vSphere CSI), it's even simpler with auto-grow scripts, but based on your description ("sdd storage under rookCeph provisioning"), I'll assume raw devices.
-
-#### Steps to Resize an Existing Disk (e.g., from 1 TB to 2 TB) While the Cluster is Running
-The process involves extending the virtual disk in vCenter, rescanning in the VM, and then making Rook/Ceph recognize the new size. There are two main approaches: a simple restart-based method (faster but may not always fully reclaim space) or a full remove/re-add method (more reliable for raw devices, with temporary OSD outage). Do this one node/OSD at a time to maintain cluster availability.
-
-1. **Extend the Virtual Disk in vCenter**:
-   - Edit the VM settings for the node (e.g., graylog02).
-   - Increase the size of the hard disk corresponding to /dev/sdd (from 1 TB to 2 TB). This can often be done hot (online) for SCSI disks in VMware, without powering off the VM.
-   - Save changes.
-
-2. **Rescan the Device in the VM**:
-   - SSH into the node or use `kubectl debug` (as in your earlier script).
-   - Rescan the block device to make the OS see the new size:
+#### Step 3: Create the CephCluster
+1. Edit `cluster.yaml` (in `deploy/examples`):
+   - Set `cephVersion.image: registry.eniac-tech.com/ceph/ceph:v19.2.3`
+   - Under `storage`:
      ```
-     echo 1 > /sys/class/block/sdd/device/rescan
+     useAllNodes: false  # Selective to avoid accidental use
+     nodes:
+       - name: "graylog02.eniac-tech.com"
+         devices:
+           - name: "sdd"
+       - name: "graylog03.eniac-tech.com"
+         devices:
+           - name: "sdd"
+       - name: "graylog04.eniac-tech.com"
+         devices:
+           - name: "sdd"
+       # Optionally add the worker: graylog05.eniac-tech.com for 4 OSDs
      ```
-   - Verify with `lsblk` or `fdisk -l /dev/sdd`—the size should now show 2 TB.
+     - This uses /dev/sdd on 3 masters (minimum for quorum). For expansion, add more nodes/devices here later and apply.
+   - Under `placement.all` (to tolerate master taints):
+     ```
+     tolerations:
+       - key: node-role.kubernetes.io/master
+         operator: Exists
+         effect: NoSchedule
+       - key: node-role.kubernetes.io/control-plane
+         operator: Exists
+         effect: NoSchedule
+     ```
+     - Repeat under `placement.mgr`, `placement.mon`, `placement.osd` if needed for specific services.
+   - Set `dashboard.enabled: true`
+   - Set `dashboard.ssl: false` (for HTTP)
+   - Set `monitoring.enabled: true` (prepares for Prometheus)
+   - Set `network.provider: host` (default for RKE2).
+   - For expandability: Set `removeOSDsIfOutAndSafeToRemove: true` (allows safe removal later).
+2. Apply:
+   ```
+   kubectl create -f cluster.yaml
+   ```
+3. Verify (may take 10-20 min):
+   ```
+   kubectl -n rook-ceph get pods
+   ceph -s  # From toolbox, see Step 7
+   ```
+   - Ensure HEALTH_OK, 3 mons, OSDs up (at least 3).
 
-3. **Make Rook Ceph Recognize the New Size**:
-   - **Option 1: Simple Pod Restart (Lower Downtime, for Raw Devices)**:
-     - The OSD pod includes an init container that runs `ceph-bluestore-tool bluefs-bdev-expand` to expand BlueStore.
-     - Delete the OSD pod to force a restart (replace `osd-id` with your actual OSD number, e.g., from `ceph osd ls`):
-       ```
-       kubectl -n rook-ceph delete pod rook-ceph-osd-<osd-id>
-       ```
-     - Rook will recreate the pod, detect the larger device, and update the capacity. Monitor with `ceph osd df` or `ceph -s`.
-     - Downtime: ~1-5 minutes per OSD for rebalancing; cluster stays up if you have replicas.
-     - Caveat: In some cases, the "used" space may increase instead of "available," requiring further troubleshooting (e.g., manual BlueStore repair).
+#### Step 4: Deploy the Ceph Dashboard (HTTP)
+The dashboard is enabled in the cluster CR (Step 3).
+1. The service `rook-ceph-mgr-dashboard` will use port 7000 for HTTP (since ssl: false).
+2. Expose it (e.g., NodePort for access):
+   Create `dashboard-service.yaml`:
+   ```
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: rook-ceph-dashboard-external
+     namespace: rook-ceph
+   spec:
+     type: NodePort
+     ports:
+       - port: 7000
+         targetPort: 7000
+         nodePort: 30000  # Choose an available port
+     selector:
+       app: rook-ceph-mgr
+       rook_cluster: rook-ceph
+   ```
+   Apply: `kubectl apply -f dashboard-service.yaml`
+3. Access: `http://<node-ip>:30000` (username: admin, password from `kubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath="{['data']['password']}" | base64 -d`).
+   - Overview shows cluster health, OSDs, etc. Use for monitoring/expansion.
 
-   - **Option 2: Full OSD Remove and Re-Add (More Reliable, Higher Temporary Impact)**:
-     - This ensures a clean expansion, especially if the simple restart doesn't fully work.
-     - Scale down the Rook operator temporarily:
-       ```
-       kubectl -n rook-ceph scale deployment rook-ceph-operator --replicas=0
-       ```
-     - Delete the OSD deployment(s) for the affected disk(s):
-       ```
-       kubectl -n rook-ceph delete deployment rook-ceph-osd-<osd-id>
-       ```
-     - Mark the OSD out and remove it from Ceph (run from Rook toolbox pod, e.g., `kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- bash`):
-       ```
-       ceph osd out <osd-id>
-       ceph osd crush remove osd.<osd-id>
-       ceph auth del osd.<osd-id>
-       ceph osd down osd.<osd-id>
-       ceph osd rm osd.<osd-id>
-       ```
-     - Wait for rebalancing (`ceph -w` until PGs are `active+clean`).
-     - Wipe the extended device (to clear old data):
-       ```
-       sgdisk --zap-all /dev/sdd
-       dd if=/dev/zero of=/dev/sdd bs=1M count=100 oflag=direct,dsync
-       partprobe /dev/sdd
-       ```
-     - Scale up the operator:
-       ```
-       kubectl -n rook-ceph scale deployment rook-ceph-operator --replicas=1
-       ```
-     - Rook will auto-provision a new OSD on the larger device. Verify with `ceph osd df tree`.
-     - Downtime: 10-30+ minutes per OSD (depending on data size and rebalancing); do one at a time.
+#### Step 5: Create Default Storage Class for Graylog
+1. Create CephBlockPool (replicated for your logs):
+   Create `pool.yaml`:
+   ```
+   apiVersion: ceph.rook.io/v1
+   kind: CephBlockPool
+   metadata:
+     name: replicapool
+     namespace: rook-ceph
+   spec:
+     failureDomain: host
+     replicated:
+       size: 3  # Replicas for durability
+   ```
+   Apply: `kubectl apply -f pool.yaml`
+2. Create StorageClass:
+   Create `storageclass.yaml`:
+   ```
+   apiVersion: storage.k8s.io/v1
+   kind: StorageClass
+   metadata:
+     name: rook-ceph-block
+     annotations:
+       storageclass.kubernetes.io/is-default-class: "true"  # Makes it default
+   provisioner: rook-ceph.rbd.csi.ceph.com
+   parameters:
+     clusterID: rook-ceph
+     pool: replicapool
+     imageFormat: "2"
+     imageFeatures: layering,deep-flatten,exclusive-lock,object-map,fast-diff  # For modern kernels
+     csi.storage.k8s.io/fstype: ext4
+     csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+     csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+     csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+     csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+     csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+     csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+   reclaimPolicy: Delete
+   allowVolumeExpansion: true
+   ```
+   - Edit images in related CSI manifests if needed (from rook/deploy/examples/csi/rbd/), push to local reg, apply `csi-rbdplugin-provisioner.yaml` and `csi-rbdplugin.yaml` after editing for local images.
+   Apply: `kubectl apply -f storageclass.yaml`
+3. Verify: `kubectl get sc` (should show rook-ceph-block as default).
 
-4. **Post-Expansion Verification**:
-   - Check cluster health: `ceph -s` (should return `HEALTH_OK`).
-   - Monitor storage: `ceph df` or Ceph Dashboard.
-   - If using PVC-based OSDs (not raw), Rook provides an auto-grow script for easier handling—edit your CephCluster to enable it if applicable.
+#### Step 6: Enable Prometheus Monitoring
+1. Install Prometheus Operator:
+   - Edit `bundle.yaml` for local images (replace quay.io/prometheus-operator/* etc.).
+   - Apply: `kubectl create -f bundle.yaml`
+   - Verify pod: `kubectl get pods -n default` (prometheus-operator).
+2. Apply Rook monitoring manifests (from rook/deploy/examples/monitoring/):
+   ```
+   kubectl create -f rbac.yaml
+   kubectl create -f service-monitor.yaml
+   kubectl create -f exporter-service-monitor.yaml
+   kubectl create -f prometheus.yaml
+   kubectl create -f prometheus-service.yaml
+   kubectl create -f localrules.yaml  # For alerts
+   ```
+3. Access Prometheus: Port-forward `kubectl -n rook-ceph port-forward svc/prometheus-rook-prometheus 9090:9090`, browse `http://localhost:9090`.
+   - Ceph metrics (e.g., OSD usage) will appear. For Grafana, import dashboards from rook/deploy/examples/monitoring/grafana/.
 
-#### Considerations and Best Practices
-- **Downtime and Risks**: The cluster remains "up and running" overall, but expect temporary reduced capacity during rebalancing. With your 4-node setup and replication=3, it should handle one OSD offline without issues. Test in a non-prod environment first.
-- **If Using LVM**: Extra steps like `lvextend` may be needed before rescanning; avoid if possible, as raw mode is simpler for expansion.
-- **Alternatives if Resizing is Too Risky**: Prioritize adding new disks/nodes for growth—it's less disruptive. If your logs grow beyond current capacity, consider offloading cold data to cheaper external storage (e.g., S3 via Ceph Object Gateway).
-- **Resources**: Your current 4-node RKE2 cluster is sufficient for starting small. Monitor disk usage with Prometheus and plan expansions proactively.
+#### Step 7: Deploy Rook Toolbox and Test
+1. Edit `toolbox.yaml` for local image (`rook/ceph:v1.18.7`).
+2. Apply: `kubectl apply -f toolbox.yaml`
+3. Exec in: `kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- bash`
+4. Run `ceph status`, `ceph osd status` to confirm.
 
-If you share more details (e.g., `lsblk` output from nodes or your CephCluster YAML), I can refine this further. Always back up critical data before changes!
+#### Step 8: Integrate with Graylog + OpenSearch + MongoDB
+1. Update your deployments/PVCs to use `storageClassName: rook-ceph-block` (or omit for default).
+2. For migration from NFS: Create new PVCs on Rook, copy data (e.g., via rsync in a temp pod), then switch.
+3. Redeploy Graylog stack. Your index strategy (P1D rotation, 1-year prod retention) is handled in Graylog config, not Rook—Rook provides expandable storage.
+4. Monitor resources; expand by adding /dev/sdd to more nodes in cluster.yaml and reapplying (Ceph rebalances online).
+
+If issues, check logs: `kubectl -n rook-ceph logs <pod>`. For future expansion, add HDDs as new devices in cluster.yaml—no data loss.
 
 # acknowledgment
 ## Contributors
@@ -253,7 +266,7 @@ APA 🖖🏻
 
 ## Links
 
-
+## APA, Live long & prosper 🖖
 ```
   aaaaaaaaaaaaa  ppppp   ppppppppp     aaaaaaaaaaaaa   
   a::::::::::::a p::::ppp:::::::::p    a::::::::::::a  
