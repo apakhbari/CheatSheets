@@ -127,6 +127,8 @@ A standard format has been defined for the Linux virtual directory called the Li
   - `/usr/lib/systemd/system/`
   - `/lib/systemd/system` —> where all units are
 
+- when we want to create a unit service, it is best practice to create it in ` /usr/lib/systemd/system ` since making services inside ` /etc/systemd/system/ ` might create some problems regarding of masking/unmasking it
+
 ## SysVinit
 
 - `/etc/inittab` : SysVinit systems employ a configuration file that sets the default runlevel.
@@ -361,6 +363,7 @@ Most Linux distributions use only one of these three:
     - **TLS 1.1** (deprecated 2020)  
     - **TLS 1.2** (2008-2020)  
     - **TLS 1.3** (2018-Present)  
+- Is it possible to have two services bind to same port? Yes if we have 2 different IPs bind to our network card
 
 ---
 
@@ -622,6 +625,9 @@ Most Linux distributions use only one of these three:
   - **Minute** is the smallest unit.
 
 - Default ubuntu source list ` https://gist.github.com/ishad0w/788555191c7037e249a439542c53e170#file-sources-list `
+
+- If we want our Kibana instance to use port 443 and this port is elevated port, we need to ` setcap ` to executable file of Kibana ` $ sudo setcap 'cap_net_bind_service=+ep' /usr/share/kibana/bin/kibana `  ep stands for execute permission. then we can view capabilities of a file using ` $ getcap /usr/share/kibana/bin/kibana `
+- make your backups read-only, so malwares can't interact with it
 
 ---
 ## When you go to a system for the first time:

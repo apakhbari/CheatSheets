@@ -16,11 +16,28 @@
 ## Components
 
 ## Tips & Tricks
+- In Elastic world, data shipping tools stands for Beats and logstash and fleet client
 - ElasticSearch keeps logs in Json format (because of its key-value nature and searchability) then make it binary. COre of ElasticSearch is Apache Lucene
 - Elk is a SIEM system
 - What happens if volume of Input data (IOPS) is more than what is being processed by ElasticSearch, data is lost. If we don't have a cluster, then for buffering stuff we can use a cache/buffer server in front of Elastic. In this case we need a fast disk
 - defaul behaviour of elsatic cluster, for each index we have 1 primary shard and 1 replica shard
+- in elasticsearch default size of JVM heap size is half of ram on each node
 - never ever primary and replica are not in same node
+- A p12 file is CERT + Private_key
+- For getting more complete stuff on requested API calls from our elasticsearch, we need to add ` ?v ` (verbose) to end of our API call, for example ` curl -k -X GET --user anisa:123456 https://els1.fartakec.local:9200/_cat/nodes?v ` so we have headers of what metrics we have 
+- Elastic reads 50% of an index's data from its primary shard and 50% of its data from replica shard so it is faster than a 100% read on a sigle node
+- in a 3 nodes cluster, if we lose 2 nodes then first of all some of our data is lost, but not all of it, then elastic make that 1 healthy node to read-only untill other nodes are back again
+- As long as cluster is up and we have a master node, no matter what node is down, whatever index we want, we can retrieve its data. By the time our cluster is not healthy and we don't have a master node, we can stll retrieve some data using API-calling our healthy nodes directly (not with cluster-scoped API-calls)
+- After failing a node, there is a time window that elastic needs to copy its replicated data on other nodes
+- Each shard is bind on a cpu core, so we have parallel querying
+- Monitoing disks I/O is important, since after a while disks are going to be slower, so when it hits a threshhold, we need to replace it with a new disk
+- In elasticsearch, a document never strips, so for example if we have more than 1 primary shards, then it is NOT acting like RAID0, like 1/3 of data being written on a shard and 1/3 of it on another shard and so on. more than one shard is good for loadbalancing documents between nodes, so if we have 3 primary shards our data is being loadbalanced on 3 different nodes and we don't have all of our indices on a single node. In this use case if we have 1 replica, then it means we have 1 replica for each primary shard, 6 shards in total
+- instead of using data shipping tools like Beats and logstash, we can use Fleet Server + fleet client (elastic agent on each machine) to collect metrics and logs. Kibana collect logs from fleet server.
+- If we create a user on an elasticsearhc node, we need to create it on other nodes, but we can use ` kibana_system ` user which has lots of permissions and will be synced across our elastic clusters and can be used for many workflows and we can ` /bin/reset_password ` to get its password
+
+## API Calls
+- ` es2.fartakec.local:9200/_cat/nodes?v `
+- ` es2.fartakec.local:9200/_cat/shards?v `
 
 ## Hands On
 
@@ -747,24 +764,146 @@ curl -k  -X DELETE "https://els1.fartakec.local:9200/_security/user/test-api" -u
 - never ever primary and replica are not in same node
 - based on how many nodes we have (n), search ability is n time faster
 
-## Session 11 (14 on classes)
+## Session 11 (14 on classes) - Clusterning ElasticSearch with certificates, Clustering kibana
 
 - In order to have a certificate between our Elastic componenets, in order to them verify each other and a man in the middle attack cab't happen, we use to create certificate for servers.
 /usr/share/local/elasticsearch/elasticsearch-certutil ca
 
-Add contents to ELK_course
-Vid 00
-01:21
+- Create user for kibana integration with elasticsearch (with special permission)
+```
+curl -k -u elastic:PASSWORD -X PUT "https://els1.frtakec.local:9200/_security/user/kibana_user" -H "Content-Type: application/json" -d '{"role": ["superuser", "kibana_system_custom"]}'
+{
+  "indices": [
+    {
+      "names" : [
+        ".kibana*",
+        ".kibana_alerting_*",
+        ".kibana_security_solution*",
+        ".kibana_alerting_cases_*",
+      ],
+      "privileges": [
+        "read",
+        "write",
+        "create_index",
+        "manage",
+        "view_index_metadata"
+      ],
+      "allow_restricted_indices": true
+    }
+  ]
+}
+```
 
+- Create user for Kibana
+```
+curl -k -u elastic:PASSWORD -X PUT "https://els1.frtakec.local:9200/_security/user/{username}" -d elastic:PASSWORD -H "Content-Type: application/json" -d '
+{
+  "password" : "user_password",
+  "roles" : ["superuser", "kibana_system_custom"],
+  "full_name" : "User Full Name"
+  "email" : "user@example.com",
+  "metadata" " { "department" : "engineering" }
+}'
+```
+
+- Add created role to this user:
+```
+curl -k -u elastic:PASSWORD -X PUT "https://els1.fartakec.local:9200/_security/user/kibana-user" -d elastic:PASSWORD -H "Content-Type: application/json" -d '
+{
+  "roles" : ["superuser", "kibana_system_custom"]
+}'
+```
 
 
 ## Session 12 (15 on classes)
 
+- For connecting Our kibana to elasticsearch cluster, we need to conenct it to multiple node of our elastic. Take note that we need a user that was created using API to work on all of our elasticsearch, since users that are created using ` /bin ` scripts, are only working on a single node that was created on it
+```
+/etc/kibana.yml
+...
+elasticsearch.hosts: ["https://es1.fartakec.local:9200", "https://es2.fartakec.local:9200", "https://es3.fartakec.local:9200"]
+```
+
 ## Session 13 (16 on classes)
 
-## Session 14 (17 on classes)
+- Increasing number of primary shards --> increasing write speed
+- Increasing number of replica shards --> increasing read speed
+- In elasticsearch, a document never strips, so for example if we have more than 1 primary shards, then it is NOT acting like RAID0, like 1/3 of data being written on a shard and 1/3 of it on another shard and so on. more than one shard is good for loadbalancing documents between nodes, so if we have 3 primary shards our data is being loadbalanced on 3 different nodes and we don't have all of our indices on a single node. In this use case if we have 1 replica, then it means we have 1 replica for each primary shard, 6 shards in total
+- Cons of increasing number of primary shards, since each shard has its iwn architecture, then JVM heap size is going to increase and we have less RAM available. Also tracking shards on different nodes have overhead for cluster + we can't change number of primary shards after creation
+- max number of replicas: Nodes - 1 --> since primary and replica are not on same node
+
+### Alerting
+- Rule --> Alert --> Connector
+- For using alerting we need to add encription key to kibana
+```
+$ ./usr/share/kibana/bin/kibana-encription-keys generate
+```
+- then it is going to output 3 lines of settings, add it inside ` /etc/kibana/kibana.yml `
+
+- Kibana has three different forms for querying:
+1. KQL (or Lucene): is deprecateed
+2. Query DSL: json-based, what is currently being used 
+3. ES|QL: looks liks SQL queries
+
+- In free version of Elastic + Kibana, we only have writing to log file action. So we can't send Email or SMS ot this kind of things
+- We use ` Index Connector ` as a turn-around for licensed connectors
+- for installing python's library for elasticsearch:
+```
+$ sudo apt install python3-elasticsearch
+$ pyenv/bin/python3.12 -m pip install elasticsearch
+```
+
+- now we write a script for alerting
+```
+
+```
+
+
+
+## Session 14 (17 on classes) - Keepalived + Kibana
+- When we use kibana + keepalived, we need to set ` publicBaseURL ` to our keepalived URL so it is working fine. Since its default port is ` 5601 ` if we are using ` 443 ` port, we need to define it in our URL
 
 ## Session 15 (18 on classes)
+- Since we want our Kibana instance to use port 443 and this port is elevated port, we need to ` setcap ` to executable file of Kibana ` $ sudo setcap 'cap_net_bind_service=+ep' /usr/share/kibana/bin/kibana `  ep stands for execute permission. then we can view capabilities of a file using ` $ getcap /usr/share/kibana/bin/kibana `
+
+### Fleet
+- instead of using data shipping tools like Beats and logstash, we can use Fleet Server + fleet client (elastic agent on each machine) to collect metrics and logs. Kibana collect logs from fleet server.
+- fleet policy is used for fleet server and fleet client, so it is how elastic understands which one is a server and which one is client
+- If we use command that is inside Kibana UI for importing fleet server we are going to face a problem, we need to add ` --fleet-server-es-ca=<ADDRESS OF PEM FILE OF CA> --insecure ` to its command
+- fleet agent is smae file, the key factor that indicate if it is going to be a fleet-server or fleet-clinet, is its agent-policy
+- It is not possible to process fleet using logstash
+
+### Backup + snapshots
+- after version 8-9 of elastic, you can't create an instant snapshot/backup. What is possible is to create a repository for snapshot, then setting a policy for time of snapshot
+- For restoring indices, what we need is a closed index, since if index is open, it means it is open to getting new data and when we close it, then we can restore data from snapshot on it
+
+### Index Template
+- when we create an index template, we are creating a template for our indices to be created.
+- Index mode:
+  - Standard: what we usually use
+  - Time series: for metrics data
+  - LogsDB: for storing logs data
+  - Lookup: optimized for ESQL
+- Rule of thumb: do not delete/edit any of default index templates unless you really know what you are doing
+
+### Index Lifecycle Management
+- Hot (active data) --> Warm --> Cold --> Delete
+- In hot phase we have rede + write but in other phases we don't have such thing
+- We can assign data to which sort of disks we have + number of shards it have based on time
+- by default Elastic's default is 50 G or 30 days for retention
+- then we assign an ILM to an index template
+
+### Node Roles
+- we can have roles for our nodes in ` elasticsearch.yml `
+  - data
+  - master
+  - data_hot
+  - data_warm
+  - data_cold
+  - ingest
+  - ml
+  - ...
+
 
 # acknowledgment
 ## Contributors
