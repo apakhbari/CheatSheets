@@ -3,6 +3,10 @@
 
 ## Tips & Tricks
 - Prometheus is pull based, prometheus has a push gateway add-on which can be used
+- we have 2 different rules: record rule + alert rule. record rule is like a cache and alert rule is for alerting
+- P8s use HTTP GET for scraping data
+
+
 
 # Classes
 ## Session 1
@@ -143,7 +147,20 @@ WantedBy=multi-user.target
 - the last downside to mention is that the resulting quantiles are not aggregabel and thus of limited usefulness
 - One benefit of summaries is that, without quantiles, they are quite cheap to generate, collect and store
 
-02:06
+#### Longitudinal and cross-sectional aggregations
+- one of core strengths of p8s is that it makes the manipulation of time series data easy, and this slicing and dicing of data usually boils down to two kinds of aggregations, which are often used together: Longitudinal and cross-sectional aggregations
+- Some of the most common aggregation functions in time series databases are minimum, maximum, average, count and sum
+
+### Config file
+- p8s configuration file can be split into following sections:
+  - global
+  - scrape_configs
+  - alerting
+  - rule files
+  - remote read
+  - remote write
+
+- there is a rule that define:  ` scrape interval = max(half(lookback delta)) ` so if we lost 1 scrape, we still have 1 other scrape from before to show for our metric 
 
 ### Installing & Configuring node exporter 
 - after downloading and unarchiving node_exporter.tar.gz from its site, now we
@@ -179,11 +196,23 @@ ExecReload=/usr/bin/kill -HUP $MAINPID
 WantedBy=multi-user.target
 ```
 
-S3
-53:00
+## Session 4
+- A node_exporter has multiple collectors, which give them a modular architecture, some of them are enabled by default, but can be customized. for enabling it ` --collector.<name> ` and for disabling it ` --no-collector.<name> ` 
+
+### Blackbox exporter
+1. HTTP request with parameters like target address and probe type
+2. Probe is launched against target
+3. Probe returns data to be processed
+4. HTTP response with promethes format metrics from the probe data
+
+```
+Prometheus <==> blackbox_exporter <==> target
+```
+
+S4 
+01:48
 Add contents to prometheus.md
 
-## Session 4
 ## Session 5
 ## Session 6
 ## Session 7
