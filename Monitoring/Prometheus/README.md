@@ -269,8 +269,40 @@ scrape_configs:
 
 
 ## Session 5
+### Labels
+- Labels are a key part of p8s
+- Labels are key-value pairs associated with time series that, in addition to the metric name, uniquely identify them
+- If you had a metric for HTTP requests that was broken out by path, you might try putting the path in the metric name: ` http_requests_login_total , http_requests_logout_total ` but it would be hard to work in PromQL. In order to calculate the total requests you would need to know every possible HTTP path.
+- Instead, to handle this common use case, p8s has labels.
+  - ` http_requests_total(path="/login") `
+  - `  http_requests_total(path="/logout")  `
 
-S5_1
+- We have two kinds of labels:
+  - Instrumentation Label: Deafult labels of metrics 
+  - Target Label: Based on target we have, Which job, instance it is
+
+- p8s only supports 64-bit floating numbers as time series values, not any other data types such as strings
+- But label valuesa re strings, and there are ceratin limited use cases where it is okay to (ab)use them without getting too far into log based monitoring
+
+### PromQL
+- PromQL is p8s query language. while it ends in QL, you will find that it is not SQL-like.
+- Labels are a key part of PromQL, and you can use them not only to do arbitrary aggregataion but also to join different metrics together for arithmetic operations
+
+### Aggregation
+- Gauges are a snapshot of state, and usually when aggregating them you want to take a sum, average, min and max.
+- calculate total filesystem size on each machine with
+```
+sum without (device, fstype, mountpoint)(node_filesystem_size_bytes)
+```
+- It is better to do this form of prompt ` sum without(mode)(rate(node_cpu_seconds_total[1m])) `
+- A summary metric will usually contain both a _sum and _count and sometimes a time series with no suffix with quantile lebel
+
+- getting avereage of http_request_duration_seconds
+```
+sum(rate(prometheus_http_request_duration_seconds_sum[1m])) / sum(rate(prometheus_http_request_duration_seconds_count[1m]))
+```
+
+S5_2
 00:46
 Add contents to prometheus.md
 
