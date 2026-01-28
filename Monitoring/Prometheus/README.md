@@ -209,11 +209,71 @@ WantedBy=multi-user.target
 Prometheus <==> blackbox_exporter <==> target
 ```
 
-S4 
-01:48
-Add contents to prometheus.md
+- probe-based monitoring for http, tcp, icmp, port connectivity, SNMP and this kind of network connections are with Blackbox_exporter
+- blackbox_exporter is powerful in ways that can send requests, then set what expects to recieve, then send an other request based on what it gets
+- We can monitor what is needed using ` /etc/prometheus/prometheus.yml ` it is like ` curl -s "https://127.0.0.1:9115/probe?module=http_2xx&target=www.anisa.co.ir" `
+```
+$ vim /etc/prometheus/prometheus.yml
+
+global:
+  scrape_interval: 10s
+scrape_configs:
+  - job_name: Prometheus Server
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: Node Exporter
+    static_configs:
+      - targets:
+        - localhost:9100
+        - 192.168.1.201:9100
+  - job_name: Blackbox Exporter - Web Monitoring
+    metrics_path: /probe
+    params:
+      module: ['http_2xx']
+      target: ['www.anisa.co.ir']
+    static_configs:
+      - targets: ['localhost:9115']
+```
+
+- And if we want to monitor multiple targets:
+```
+$ vim /etc/prometheus/prometheus.yml
+
+global:
+  scrape_interval: 10s
+scrape_configs:
+  - job_name: Prometheus Server
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: Node Exporter
+    static_configs:
+      - targets:
+        - localhost:9100
+        - 192.168.1.201:9100
+  - job_name: Blackbox Exporter - Web Monitoring
+    metrics_path: /probe
+    params:
+      module: ['http_2xx']
+      targets: 
+        - 'www.anisa.co.ir'
+        - 'www.google.com'
+        - 'www.prometheus.io'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+```
+
 
 ## Session 5
+
+S5_1
+00:46
+Add contents to prometheus.md
+
 ## Session 6
 ## Session 7
 ## Session 8

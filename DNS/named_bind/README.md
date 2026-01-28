@@ -10,6 +10,11 @@
 
 ```
 
+## Tips & Tricks
+- DNS is UDP but recursor/cache-only DNS are TCP
+
+## Hands-on
+
 Run the following command to check the syntax of the `named.conf*` files:
 
 ```
