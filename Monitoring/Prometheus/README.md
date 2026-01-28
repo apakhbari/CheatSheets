@@ -303,7 +303,7 @@ sum(rate(prometheus_http_request_duration_seconds_sum[1m])) / sum(rate(prometheu
 ```
 
 S5_2
-00:46
+00:12
 Add contents to prometheus.md
 
 ## Session 6
