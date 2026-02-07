@@ -322,14 +322,15 @@ histogram(quantile(0.9,rate(score_bucket[1m])))  => It is a estimation for 90% o
 ```
 
 - Matchers in Promql
-  - "=" --> used for
-
-
-S5_2
-00:12
-Add contents to prometheus.md
+  - "=" --> used for exactly. we can also do {foo=""}, {foo!=""}, {foo=~".*"}
 
 ## Session 6
+
+
+S6
+00:23
+Add contents to prometheus.md
+
 ## Session 7
 ## Session 8
 ## Session 9
