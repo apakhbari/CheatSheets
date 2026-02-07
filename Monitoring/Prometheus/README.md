@@ -302,6 +302,29 @@ sum without (device, fstype, mountpoint)(node_filesystem_size_bytes)
 sum(rate(prometheus_http_request_duration_seconds_sum[1m])) / sum(rate(prometheus_http_request_duration_seconds_count[1m]))
 ```
 
+- An example. We have a number of a 20 persons class's grades. lets have some calculations
+```
+10-12   4   <=12:   4
+12-14   2   <=14:   6
+14-16   5   <=16:   11
+16-18   4   <=18:   15
+18-20   5   <=20:   20
+
+score_sum=315
+score_count=20
+score_bucket{le="12"} 4   #le = less equal
+score_bucket{le="14"} 6
+score_bucket{le="16"} 11
+score_bucket{le="18"} 15
+score_bucket{le="+inf"}  20   #+inf = to infinity
+
+histogram(quantile(0.9,rate(score_bucket[1m])))  => It is a estimation for 90% of grades. a number that only 10% of grades are above it
+```
+
+- Matchers in Promql
+  - "=" --> used for
+
+
 S5_2
 00:12
 Add contents to prometheus.md
