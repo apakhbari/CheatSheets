@@ -325,6 +325,31 @@ histogram(quantile(0.9,rate(score_bucket[1m])))  => It is a estimation for 90% o
   - "=" --> used for exactly. we can also do {foo=""}, {foo!=""}, {foo=~".*"}
 
 ## Session 6
+### Aggregation Operators
+- we have 11 operators
+- we have 2 optional clauses: without & by
+
+- a data set for example
+```
+process_cpu_seconds_total{cpu="0", instance="localhost:9090", job="prometheus", mode="idle"}	134752.1
+process_cpu_seconds_total{cpu="1", instance="api.eniac-tech.com", job="cashless-prod", mode="user"}	4167.92
+process_cpu_seconds_total{cpu="0", instance="vms.kishcharge.ir", job="vms-prod", mode="irq"}	6575.362494
+process_cpu_seconds_total{cpu="2", instance="192.168.34.101:32063", job="vms", mode="idle"}	6539.28341
+process_cpu_seconds_total{cpu="2", instance="192.168.51.34:2411", job="switch-stage", mode="steal"}	393.84999999999997
+process_cpu_seconds_total{cpu="1", instance="192.168.33.34:2411", job="switch-prod", mode="idle"} 2115.61
+```
+
+- when we use ` without clause ` for ` job ` it means just ignore job completly, like it does not exists
+```
+sum without(mode) (rate(process_cpu_seconds_total{mode!="idle"}[1m]))  --> first this executes (rate(process_cpu_seconds_total{mode!="idle"}[1m]) then sum without(mode)
+```
+
+- when we use ` by clause ` it means like a ` group by `  in SQL
+```
+sum by(cpu,instance) (rate(process_cpu_seconds_total{mode!="idle"}[1m]))
+```
+
+- ` rate ` is like ` divide by time /T `
 
 
 S6
