@@ -5,6 +5,7 @@
 - Prometheus is pull based, prometheus has a push gateway add-on which can be used
 - we have 2 different rules: record rule + alert rule. record rule is like a cache and alert rule is for alerting
 - P8s use HTTP GET for scraping data
+- an intuitive guide for querying: You need to be able to tell it using laguage before writing it
 
 
 
@@ -128,10 +129,12 @@ WantedBy=multi-user.target
 - this is strictly *cumulative* metric whose value can only increase. the only exception for this rule is when the metric is reset, which brings it back to zero
 - THis is one of the most useful metric types because even if a scrape fails, you won't lose the cumulative increase in the data, which will be availale on the next scrape
 - To be clear, in the case of a failed scarpe, granularity would be lost as fewer points will be saved
+- counter need dividing by time ( /T )
 
 #### Gague
 - A gauge is a metric that snapshots a given measurment at the time of collection, which can increase or decrease (such as temrature, disk space and memory usage)
 - If a scrape failes, you will lose that sample, as the next scrape might encounter the metric on a different value
+- gague does not need dividing by time ( /T )
 
 #### Histogram
  recording numerical data that's inherent to each event in a system can be expensive, so some sort of pre-aggregation is usually needed tp conserver at least partial information about what happened
@@ -326,7 +329,6 @@ histogram(quantile(0.9,rate(score_bucket[1m])))  => It is a estimation for 90% o
 
 ## Session 6
 ### Aggregation Operators
-- we have 11 operators
 - we have 2 optional clauses: without & by
 
 - a data set for example
@@ -352,8 +354,15 @@ sum by(cpu,instance) (rate(process_cpu_seconds_total{mode!="idle"}[1m]))
 - ` rate ` is like ` divide by time /T `
 
 
+- we have 11 operators
+  - sum
+  - count
+  - avg
+  - stddev: انحراف از معیار
+  - stdvar: variance
+
 S6
-00:23
+01:23
 Add contents to prometheus.md
 
 ## Session 7
@@ -363,9 +372,7 @@ Add contents to prometheus.md
 ## Session 11
 ## Session 12
 ## Session 13
-## Session 14
-## Session 15
-## Session 16
+
 
 
 # acknowledgment
