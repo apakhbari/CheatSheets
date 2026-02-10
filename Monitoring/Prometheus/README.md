@@ -360,6 +360,57 @@ sum by(cpu,instance) (rate(process_cpu_seconds_total{mode!="idle"}[1m]))
   - avg
   - stddev: انحراف از معیار
   - stdvar: variance
+  - min
+  - max
+  - topk
+  - bottomk
+  - quantile
+
+- min and max only show you the value of min & max, it might not be most practical since you won't understand which instance has the min/max value
+- For seeing which instance has the top/below k values, it is convenient to use tokk & bottomk. It is also going to show you all of lables
+```
+topk by(instance) (1, rate(node_network_recieve_bytes_total[1m]))   --> k=1 here
+```
+
+- **A GOOD QUERY**: you could find all instances that were at least two standard deviations above/below the average:
+```
+some_gauge > ignoring(instance) group_left() (avg without(instance)(some_gauge))
++
+2 * stddev without(instance) (some_gauge)
+OR
+some_gauge < ignoring(instance) group_left() (avg without(instance)(some_gauge))
+-
+2 * stddev without(instance) (some_gauge)
+```
+
+- To see all metric names with their counts
+```
+count by(__name__)({__name__=~".+ "})
+```
+- To see top 5 repeated metrics 
+```
+topk (5,count by(__name__)({__name__=~".+ "}))
+```
+
+- 90% of value of node_cpu_seconds_total are below the value of this query
+```
+quantile by(instance)(0.9,rate(node_cpu_seconds_total{mode!="idle"}[1m]))
+```
+
+- چارک اول، میانه، میانگین، چارک سوم
+```
+# average, arithmatic mean - میانگین
+avg without(instance) (rate(process_cpu_seconds_total[5m]))
+
+# 0.25 quantile, 25th percentile, 1st or lower quartile - چارک اول
+quantile without(instance) (0.25, rate(process_cpu_seconds_total[5m]))
+
+# 0.5 quantile, 50th percentile, 2nd or lower quartile - میانه
+quantile without(instance) (0.5, rate(process_cpu_seconds_total[5m]))
+
+# 0.75 quantile, 75th percentile, 3rd or lower quartile - چارک سوم
+quantile without(instance) (0.75, rate(process_cpu_seconds_total[5m]))
+```
 
 S6
 01:23
