@@ -365,6 +365,9 @@ sum by(cpu,instance) (rate(process_cpu_seconds_total{mode!="idle"}[1m]))
   - topk
   - bottomk
   - quantile
+  - quantile_over_time --> for counter and gauge
+  - histogram_quantile --> for histogram
+  - count_values
 
 - min and max only show you the value of min & max, it might not be most practical since you won't understand which instance has the min/max value
 - For seeing which instance has the top/below k values, it is convenient to use tokk & bottomk. It is also going to show you all of lables
@@ -412,8 +415,44 @@ quantile without(instance) (0.5, rate(process_cpu_seconds_total[5m]))
 quantile without(instance) (0.75, rate(process_cpu_seconds_total[5m]))
 ```
 
+- Let's have an example for count_values
+```
+# Our dataset. each one is version of our software on an instance
+software_version(instance="a") --> 7
+software_version(instance="b") --> 4
+software_version(instance="c") --> 8
+software_version(instance="d") --> 4
+software_version(instance="e") --> 7
+software_version(instance="f") --> 4
+
+# now our query
+count_values without(instance)("version", software_version)
+
+# Result
+{version="7"} --> 2
+{version="8"} --> 1
+{version="4"} --> 3
+
+# To see how many versions we have on our all instances
+count without(version)(count_values without(instance)("version", software_version))
+```
+
+- To see how many of our instances have how many cpus
+```
+count_values("cpus", count by(instance)(count without(mode)(node_cpu_seconds_total)))
+
+# result
+{cpus="3"} --> 1  # 1 server with 3 cpus
+{cpus="2"} --> 1  # 1 server with 2 cpus
+```
+
+
+### Binary Operators
+- we have another type of value known as a scalar. scalars are single numbers with no dimensionality
+- for example. 0 is a scalar with the value zero, while {} 0 is an instant vector containing a single sample with no labels and the value zero
+
 S6
-01:23
+02:40
 Add contents to prometheus.md
 
 ## Session 7
