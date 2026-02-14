@@ -451,11 +451,14 @@ count_values("cpus", count by(instance)(count without(mode)(node_cpu_seconds_tot
 - we have another type of value known as a scalar. scalars are single numbers with no dimensionality
 - for example. 0 is a scalar with the value zero, while {} 0 is an instant vector containing a single sample with no labels and the value zero
 
-S6
-02:40
-Add contents to prometheus.md
 
 ## Session 7
+
+
+S7_1 
+02 :40
+Add contents to prometheus.md
+
 ## Session 8
 ## Session 9
 ## Session 10
