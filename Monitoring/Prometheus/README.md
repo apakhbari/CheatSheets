@@ -478,8 +478,7 @@ sum without(cpu) (rate(node_cpu_seconds_total[1m])) / ignoring(mode) group_left 
 
 S7_2
 14:24
-Add contents to prometheus.md
-
+ 
 ## Session 8
 ## Session 9
 ## Session 10
