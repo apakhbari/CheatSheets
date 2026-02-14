@@ -6,6 +6,8 @@
 - we have 2 different rules: record rule + alert rule. record rule is like a cache and alert rule is for alerting
 - P8s use HTTP GET for scraping data
 - an intuitive guide for querying: You need to be able to tell it using laguage before writing it
+- You can use ` on ` and ` ignoring ` with the and operator, as you can with the other binary operators. In particular, ` on() ` can be used to have a condition that has no common labe4ls at all between the two operands
+- Almost all promQL functions return instant vectors, and the two that don't ` time & scalar ` return scalars
 
 
 
@@ -446,17 +448,36 @@ count_values("cpus", count by(instance)(count without(mode)(node_cpu_seconds_tot
 {cpus="2"} --> 1  # 1 server with 2 cpus
 ```
 
-
 ### Binary Operators
 - we have another type of value known as a scalar. scalars are single numbers with no dimensionality
 - for example. 0 is a scalar with the value zero, while {} 0 is an instant vector containing a single sample with no labels and the value zero
 
-
 ## Session 7
+### Binary Operators
+- There is a time when we have many to one prompt. below prompt returns 8 outputs, when we want to calculate a proportion, then we have problem, for solving that we use ` ignoring `
+```
+sum without(cpu) (rate(node_cpu_seconds_total[1m]))
+
+OUTPUT:
+{instance="192.168.1.201", job="Node Exporter", mode="idle"}
+{instance="192.168.1.201", job="Node Exporter", mode="iowant"}
+{instance="192.168.1.201", job="Node Exporter", mode="irq"}
+{instance="192.168.1.201", job="Node Exporter", mode="softirq"}
+{instance="192.168.1.201", job="Node Exporter", mode="steal"}
+{instance="192.168.1.201", job="Node Exporter", mode="system"}
+{instance="192.168.1.201", job="Node Exporter", mode="user"}
+
+sum without(cpu,mode)(rate(node_cpu_seconds_total[1m]))
+OUTPUT:
+{instance="192.168.1.201", job="Node Exporter"}
+
+# FOR SOLVING THIS PROBLEM
+sum without(cpu) (rate(node_cpu_seconds_total[1m])) / ignoring(mode) group_left sum without(cpu,mode)(rate(node_cpu_seconds_total[1m]))
+```
 
 
-S7_1 
-02 :40
+S7_2
+14:24
 Add contents to prometheus.md
 
 ## Session 8
