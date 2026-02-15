@@ -486,10 +486,19 @@ sum without(instance)(rate(requests_total[1h]))
 # If above equation gives 3, then it means our service had 99.9% uptime in last 1h
 ```
 
+- Count how many processes were started this year
+```
+sum((year(process_start_time_seconds) == bool scalar(year())))
+*
+(month(process_start_time_seconds) == bool scalar(month()))
+```
 
-S7_2
+- increase() function only shows you how much the metric is increased/changed  
+
+
+S8
 Add contents to prometheus.md
-14:24
+00:00
  
 ## Session 8
 ## Session 9
