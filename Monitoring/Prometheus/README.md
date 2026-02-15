@@ -475,8 +475,20 @@ OUTPUT:
 sum without(cpu) (rate(node_cpu_seconds_total[1m])) / ignoring(mode) group_left sum without(cpu,mode)(rate(node_cpu_seconds_total[1m]))
 ```
 
+- For getting number of 9s of successful API endpoints
+```
+log10(
+sum without(instance)(rate(requests_failed_total[1h]))
+/
+sum without(instance)(rate(requests_total[1h]))
+) * -1
+
+# If above equation gives 3, then it means our service had 99.9% uptime in last 1h
+```
+
 
 S7_2
+Add contents to prometheus.md
 14:24
  
 ## Session 8
