@@ -495,12 +495,14 @@ sum((year(process_start_time_seconds) == bool scalar(year())))
 
 - increase() function only shows you how much the metric is increased/changed  
 
+ 
+## Session 8
 
 S8
 Add contents to prometheus.md
-00:00
- 
-## Session 8
+00:17
+
+
 ## Session 9
 ## Session 10
 ## Session 11
