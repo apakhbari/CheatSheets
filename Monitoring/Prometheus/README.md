@@ -8,7 +8,7 @@
 - an intuitive guide for querying: You need to be able to tell it using laguage before writing it
 - You can use ` on ` and ` ignoring ` with the and operator, as you can with the other binary operators. In particular, ` on() ` can be used to have a condition that has no common labe4ls at all between the two operands
 - Almost all promQL functions return instant vectors, and the two that don't ` time & scalar ` return scalars
-
+- rate: سرعت رشد
 
 
 # Classes
@@ -497,14 +497,17 @@ sum((year(process_start_time_seconds) == bool scalar(year())))
 
  
 ## Session 8
-
-S8
-Add contents to prometheus.md
-00:17
+### Grafana
+- grafana does not collect datas
 
 
 ## Session 9
 ## Session 10
+
+S10
+Add contents to prometheus.md
+00:00
+
 ## Session 11
 ## Session 12
 ## Session 13
