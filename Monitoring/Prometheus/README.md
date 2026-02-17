@@ -501,7 +501,6 @@ sum((year(process_start_time_seconds) == bool scalar(year())))
 - grafana does not collect datas
 
 
-## Session 9
 ## Session 10
 
 S10
