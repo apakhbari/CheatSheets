@@ -502,10 +502,12 @@ sum((year(process_start_time_seconds) == bool scalar(year())))
 
 
 ## Session 10
+### Service Discovery
+- Top-down vs Bottom-up
 
 S10
 Add contents to prometheus.md
-00:00
+01:56
 
 ## Session 11
 ## Session 12
