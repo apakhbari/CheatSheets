@@ -505,11 +505,16 @@ sum((year(process_start_time_seconds) == bool scalar(year())))
 ### Service Discovery
 - Top-down vs Bottom-up
 
-S10
-Add contents to prometheus.md
-01:56
+### Monitoring Docker containers
+- cAdvisor has an exporter for prometheus metrics, just by importing it you are going to monitor all of your containers data
 
 ## Session 11
+- Using service discovery + Targets in Web UI of Prometheus, we can find what is being monitored and what not using auto discovery.
+
+Add contents to prometheus.md
+S11_1
+02:02
+
 ## Session 12
 ## Session 13
 
