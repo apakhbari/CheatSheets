@@ -9,6 +9,7 @@
 - You can use ` on ` and ` ignoring ` with the and operator, as you can with the other binary operators. In particular, ` on() ` can be used to have a condition that has no common labe4ls at all between the two operands
 - Almost all promQL functions return instant vectors, and the two that don't ` time & scalar ` return scalars
 - rate: سرعت رشد
+- For writing alerts, you need to write them inside ` prometheus.yml ` file, It's in Promql format
 
 
 # Classes
@@ -526,9 +527,11 @@ $ curl -f 'http://192.168.1.202:9090/federate?match[]={__name__=~".*"}'
 ```
 - We need to add a ` job_name ` and assign ` metric_path: /federate ` to it so we monitor another p8s
 
+- For writing alerts, you need to write them inside ` prometheus.yml ` file, It's in Promql format
+
 Add contents to prometheus.md
 S12_1
-00:00
+00:38
 
 ## Session 13
 
