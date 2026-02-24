@@ -511,11 +511,25 @@ sum((year(process_start_time_seconds) == bool scalar(year())))
 ## Session 11
 - Using service discovery + Targets in Web UI of Prometheus, we can find what is being monitored and what not using auto discovery.
 
-Add contents to prometheus.md
-S11_1
-02:02
+### P8S client
+- P8S has client libraries for each of programming languages
+
 
 ## Session 12
+### Push Gateway
+- When we want to use push gateway, we need to write a ` job_name ` inside our p8s config, so that it is knows its address so can pull metrics from it
+
+### Federate
+- using this command we can get all of values inside TSDB of another p8s
+```
+$ curl -f 'http://192.168.1.202:9090/federate?match[]={__name__=~".*"}'
+```
+- We need to add a ` job_name ` and assign ` metric_path: /federate ` to it so we monitor another p8s
+
+Add contents to prometheus.md
+S12_1
+00:00
+
 ## Session 13
 
 
