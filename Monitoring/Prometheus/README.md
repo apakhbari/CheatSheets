@@ -530,7 +530,7 @@ $ curl -f 'http://192.168.1.202:9090/federate?match[]={__name__=~".*"}'
 - For writing alerts, you need to write them inside ` prometheus.yml ` file, It's in Promql format
 
 Add contents to prometheus.md
-S12_1
+S12_2
 00:38
 
 ## Session 13
