@@ -10,6 +10,7 @@
 - Almost all promQL functions return instant vectors, and the two that don't ` time & scalar ` return scalars
 - rate: سرعت رشد
 - For writing alerts, you need to write them inside ` prometheus.yml ` file, It's in Promql format
+- Everything in p8s is inside .yml config files, whther alerts, etc
 
 
 # Classes
@@ -534,7 +535,7 @@ S12_2
 00:38
 
 ## Session 13
-
+- Alerting in p8s: rules --> Alert manager routes --> channel --> reciever
 
 
 # acknowledgment
