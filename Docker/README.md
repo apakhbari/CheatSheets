@@ -45,6 +45,18 @@
 - `docker-compose down`
 - `docker-compose down -v`  --> Frees up all mount points
 
+### Run
+- ` docker run -d --name my_container -p 8080:5144 -p 4430:7101 05612cc75e23 `
+
+### TAGE
+- ` docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]`   --> retag
+
+### Overrides CMD & Entrypoint
+```
+docker run -it --entrypoint bash identity-openid-eniac:latest -c "bash"
+# or simply
+docker run -it --entrypoint bash identity-openid-eniac:latest
+```
 ---
 
 ## Tips & Tricks

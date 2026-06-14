@@ -1,3 +1,5 @@
+
+# NTP
 Here are the ways to force your Ubuntu server to sync time immediately:
 
 ## 1. Force Sync with `ntpd` (if using classic NTP)
@@ -91,7 +93,7 @@ The `iburst` option speeds up initial synchronization significantly. After any c
 
 
 
-## TIMEZONE
+# TIMEZONE
 
 Your current timezone is `Asia/Tehran` which is correct for Iran, but the `+0430` offset means **Iran Daylight Saving Time (IRST+DST)** is currently active. Iran observes DST, shifting from +0330 to +0430 in summer.
 
@@ -174,3 +176,134 @@ date
 ## Important Note
 
 Since today is **April 5, 2026**, and Iran's DST typically starts in **late March**, the `+0430` you're seeing is expected system behavior for `Asia/Tehran`. If your use case is a **server that needs a consistent fixed offset** (e.g., for logging, databases, or applications), Option 3 with a POSIX TZ string is the most reliable approach.
+
+
+
+
+
+# QUICK FIX FOR tzdata
+**The issue is with your system's timezone rules (tzdata database), not NTP.**  
+
+Your server’s UTC time is correct (from the NTP/org server — `System clock synchronized: yes`), but the **local time offset is wrong**: it’s using `+04:30` (the old Iran Daylight Time / IRDT that used to apply in April).  
+
+Iran **permanently abolished DST in September 2022** and now stays on **Iran Standard Time (IRST = UTC+03:30) year-round**. Your Ubuntu’s tzdata is outdated (or the timezone config is still applying the pre-2022 rules), so in April it still thinks DST is active and adds the extra hour → your clock is **1 hour fast**.
+
+That matches what you’re seeing (13:18 local vs. what should be ~12:18).
+
+### Quick fix (run these commands)
+
+```bash
+# 1. Update and reinstall the latest timezone database
+sudo apt update
+sudo apt install --reinstall tzdata
+
+# 2. Set the correct timezone (this is the proper name)
+sudo timedatectl set-timezone Asia/Tehran
+
+# 3. Verify
+timedatectl status
+date
+```
+
+After step 2 you should immediately see:
+- Time zone: Asia/Tehran (+0330, +0330)  ← note the 0330
+- Local time ≈ 1 hour earlier than before
+
+### Optional extra steps (if it doesn’t update immediately)
+
+```bash
+sudo dpkg-reconfigure tzdata
+# → Choose "Asia" → "Tehran"
+
+# Or force a reload
+sudo systemctl restart systemd-timesyncd   # if you are using it
+```
+
+### About NTP you installed
+
+`NTP service: n/a` just means you installed the classic `ntp`/`ntpd` package instead of letting systemd handle it. Since `System clock synchronized: yes`, your time is already being kept in sync via NTP (probably systemd-timesyncd or your org server). You don’t need to do anything unless you want to clean it up.
+
+That’s it — after the commands above your server time should match real Iran time perfectly. Let me know what `timedatectl status` shows after you run them if it’s still off!
+
+
+
+
+# Set DTS
+The `IranFixed` name failed because `timedatectl` only recognizes timezones that are properly installed in the standard zoneinfo directory structure (or listed via `timedatectl list-timezones`). A custom-compiled file in `/usr/share/zoneinfo.custom` isn't automatically picked up unless we place it correctly.
+
+Here is the **most reliable offline method** that works on many older Ubuntu systems with outdated tzdata (including appliances and air-gapped servers):
+
+### Step-by-step (run exactly in order)
+
+```bash
+# 1. Create a minimal fixed +03:30 zone source (no DST rules)
+sudo nano /tmp/iran-fixed
+```
+
+**Paste exactly these two lines** (use Tab or spaces consistently):
+
+```
+# Permanent Iran Standard Time +03:30, no DST
+Zone    IranFixed       3:30:00 -       IRST
+```
+
+Save & exit (Ctrl+O → Enter → Ctrl+X).
+
+```bash
+# 2. Compile it directly into the main zoneinfo directory (this is the key)
+sudo zic -d /usr/share/zoneinfo /tmp/iran-fixed
+```
+
+```bash
+# 3. Link it as the active localtime and update the text file
+sudo ln -sf /usr/share/zoneinfo/IranFixed /etc/localtime
+echo "IranFixed" | sudo tee /etc/timezone
+```
+
+```bash
+# 4. Refresh the system view
+sudo timedatectl set-timezone UTC
+sudo timedatectl set-timezone IranFixed
+```
+
+### 5. Verify the fix
+
+```bash
+timedatectl status
+date
+```
+
+You should now see:
+
+- **Time zone: IranFixed (+0330, +0330)**
+- Local time ≈ 1 hour **earlier** than the previous 13:xx reading (correct for April 2026 in Iran)
+
+If it still shows +0430, run these and paste the full output:
+
+```bash
+ls -l /etc/localtime
+file /usr/share/zoneinfo/IranFixed
+zdump IranFixed
+```
+
+### Even simpler alternative (no zic at all – try this if the above fails)
+
+Use one of the built-in fixed-offset zones that already exists in every tzdata installation:
+
+```bash
+sudo ln -sf /usr/share/zoneinfo/Etc/GMT-3:30 /etc/localtime
+echo "Etc/GMT-3:30" | sudo tee /etc/timezone
+
+sudo timedatectl set-timezone UTC
+sudo timedatectl set-timezone Etc/GMT-3:30
+```
+
+(Note: The name `GMT-3:30` means **+03:30** local time — the sign is reversed in POSIX naming.)
+
+Then check again with `timedatectl status` and `date`.
+
+This `Etc/GMT-3:30` method often succeeds immediately because the file already exists on your system.
+
+Your **Universal time (UTC)** is still correct thanks to your organization's NTP server, so only the displayed local time will shift back by 1 hour once the offset becomes +0330.
+
+Try the first method (with `zic -d /usr/share/zoneinfo`). If you get any error during `zic`, paste the exact error message. We'll get it fixed.

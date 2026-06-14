@@ -1,3 +1,111 @@
+Here is how to check your swap status and re-enable it on your Ubuntu server.
+
+### 1. Verify Current Swap Status
+
+First, confirm that swap is indeed off. Run either of these commands:
+
+```bash
+sudo swapon --show
+```
+
+If this returns nothing, no swap is active. You can also check the memory summary:
+
+```bash
+free -h
+```
+
+Look at the "Swap" line. If it shows `0` for total, swap is disabled.
+
+### 2. Check if a Swap File or Partition Exists
+
+Before creating new swap, check if you already have a swap file configured (e.g., `/swapfile`):
+
+```bash
+ls -lh /swapfile
+```
+
+Also check your system's file system table:
+
+```bash
+cat /etc/fstab | grep swap
+```
+
+This will show if there's a line referencing swap that just isn't active.
+
+### 3. Re-Enable Existing Swap
+
+If you found an existing swap entry in `/etc/fstab`, you can turn it back on easily:
+
+```bash
+sudo swapon -a
+```
+
+The `-a` flag enables all swap devices listed in `/etc/fstab`. Verify it worked:
+
+```bash
+sudo swapon --show
+free -h
+```
+
+### 4. Create New Swap File (If No Existing Swap)
+
+If no swap file exists, create a new one. Here are the standard steps:
+
+**A. Create the swap file (example: 2GB):**
+```bash
+sudo fallocate -l 2G /swapfile
+```
+> If `fallocate` fails, use `sudo dd if=/dev/zero of=/swapfile bs=1G count=2` instead.
+
+**B. Set correct permissions:**
+```bash
+sudo chmod 600 /swapfile
+```
+
+**C. Format as swap:**
+```bash
+sudo mkswap /swapfile
+```
+
+**D. Enable the swap file:**
+```bash
+sudo swapon /swapfile
+```
+
+**E. Make it permanent (so it survives reboot):**
+```bash
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+### 5. Verify Swap is Working
+
+After following the steps, run these checks:
+
+```bash
+# Show active swap devices
+sudo swapon --show
+
+# Check memory usage
+free -h
+
+# Alternative method
+cat /proc/swaps
+```
+
+You should now see your swap space listed.
+
+### Important Considerations
+
+- **Swap size**: For a server, a good starting point is 2-4GB of swap, but this depends on your workload.
+- **Performance**: Swap on an SSD is much faster than on an HDD.
+- **Swappiness**: The default `vm.swappiness=60` is usually fine, but you can adjust it later if needed.
+
+If you run into any errors during this process, just let me know what they say
+
+
+
+# Some other settings
+
 Step 1: Check Current Swap Usage
 
 First, verify your swap usage to confirm the problem:
