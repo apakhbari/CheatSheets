@@ -1,0 +1,1 @@
+kubectl config view --raw --minify --flatten | sed "s|127.0.0.1|$(hostname -I | awk '{print $1}')|g" | sed '/certificate-authority-data:/d' | sed '/server:/a\    insecure-skip-tls-verify: true' | tee ~/lens-config.yaml && echo -e "\n=== Config saved to ~/lens-config.yaml ==="
