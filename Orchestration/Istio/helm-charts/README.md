@@ -25,6 +25,13 @@ helm pull kiali/kiali-server --untar
 
 ```
 
+#### Images
+```
+quay.io/kiali/kiali:v2.27.0
+istio/proxyv2:1.30.1
+istio/pilot:1.30.1
+```
+
 **2. Extract and Sync Container Images**
 Identify the images used across these charts. For standard Istio + Kiali deployments, you will need to pull, retag, and push these core images to `registry.eniac-tech.com`:
 
