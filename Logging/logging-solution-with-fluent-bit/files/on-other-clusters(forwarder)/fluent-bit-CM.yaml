@@ -47,7 +47,7 @@ data:
     [FILTER]
         Name   grep
         Match  kube.*
-        Exclude $kubernetes['namespace_name'] ^(metallb-system|argocd|kube-system|rook-ceph)$
+        Exclude $kubernetes['namespace_name'] ^(metallb-system|argocd|kube-system|rook-ceph|istio-system|monitoring)$
 
     [FILTER]
         Name  modify
