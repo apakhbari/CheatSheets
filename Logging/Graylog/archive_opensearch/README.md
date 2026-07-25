@@ -19,7 +19,7 @@
 9. [Restore Verification Attempt](#9-restore-verification-attempt)
 10. [Production Incident: Disk Full / Graylog Down](#10-production-incident-disk-full--graylog-down)
 11. [Post-Incident Cleanup](#11-post-incident-cleanup)
-12. [Future Automation Plan](#12-future-automation-plan)
+12. [Automation — Implemented Scripts](#12-automation--implemented-scripts)
 13. [Lessons Learned / Recommendations](#13-lessons-learned--recommendations)
 14. [Command Reference Appendix](#14-command-reference-appendix)
 
@@ -229,19 +229,41 @@ System → Indices → TOPUP index set → **Recalculate index ranges**, to resy
 
 ---
 
-## 12. Future Automation Plan
+## 12. Automation — Implemented Scripts
 
-A cron/systemd-based script (`archive_topup.sh`) was drafted to automate this process going forward, on a **15-day** cadence:
+Two scripts were built to automate this process going forward, split across the two machines involved:
 
-- Auto-detects the active write index (via Graylog API, with a fallback to the highest `topup_N`) so it's never included in the snapshot/delete cycle.
-- Selects indices older than `RETAIN_DAYS` (15) by actual `creation_date`, not by index number.
-- Names each snapshot using the real creation-date range it covers (e.g. `topup-YYYYMMDD_to_YYYYMMDD-run<timestamp>`).
-- Verifies snapshot state == `SUCCESS` before proceeding.
-- tar.gz's the snapshot repository onto the NFS `sdb` disk as an additional standalone backup copy.
-- Deletes archived indices via the **Graylog API** (not raw OpenSearch `DELETE`) specifically to keep `index_ranges` metadata in sync — the exact problem hit manually in [Section 11](#11-post-incident-cleanup).
-- Scheduled via a `systemd` timer (`OnUnitActiveSec=15d`) rather than cron, for an exact rolling interval independent of calendar month boundaries.
+### 12.1 `archive_topup_k8s.sh` (runs on a Kubernetes node, e.g. `graylog02`)
 
-Deployment of this automation is a follow-up task, pending: filling in Graylog API token / index-set ID, and a first supervised manual run with the delete step disabled.
+- Retention: **30 days** — archives any `topup_N` index whose actual `creation_date` is older than 30 days.
+- Auto-detects the active write index (via Graylog API, falling back to the highest `topup_N` if that fails) so it's never snapshotted or deleted.
+- Names each snapshot with the real creation-date range it covers, e.g. `topup-YYYYMMDD_to_YYYYMMDD-run<timestamp>`.
+- Verifies `state == SUCCESS` and `failed shards == 0` before proceeding to delete anything.
+- Captures each archived index's `uuid` (via `_settings`) **before** deletion, and writes a manifest file (`index_name uuid snapshot_name`) into a `_manifests/` folder inside the snapshot repository itself — this file lands on the same NFS share the OpenMediaVault box already serves, so no extra transfer step is needed.
+- Deletes archived indices via the **Graylog API** (not raw OpenSearch `DELETE`), to keep `index_ranges` metadata in sync — directly addressing the metadata drift hit manually in [Section 11](#11-post-incident-cleanup).
+- Logs to a **date-stamped file per run day**, e.g. `/var/log/graylog-topup-archive-2026-07-25.log`, so it's straightforward to see exactly what was archived on any given day without grepping one giant log.
+- Scheduled to run **daily** via a `systemd` timer, so indices are archived promptly as soon as they cross 30 days rather than in periodic batches.
+
+### 12.2 `tar_snapshot_indices_omv.sh` (runs on the OpenMediaVault box, against the local disk)
+
+- Reads the manifest files written by the k8s script directly off local disk (not over the NFS client mount, for speed and to avoid NFS-locking edge cases).
+- For each `index_name`/`uuid` pair, compresses the snapshot repository's `indices/<uuid>/` directory into `compressed_indices/<index_name>_<uuid>.tar.gz`.
+- Verifies each tarball's integrity (`tar -tzf`) before removing the original directory, to guarantee the compressed copy is genuinely readable before anything is deleted.
+- Skips manifests younger than 30 minutes, in case a snapshot is still finalizing writes to disk.
+- Moves fully-processed manifests into a `_manifests/done/` folder so they're never reprocessed.
+- Logs to a **date-stamped file per run day**, e.g. `/var/log/topup-tar-archive-2026-07-25.log`.
+- Scheduled via cron (or OMV's own "Scheduled Jobs" UI), offset a few hours after the k8s script's daily run so manifests have time to land.
+
+### Important tradeoff — read before enabling on a schedule
+
+Once `tar_snapshot_indices_omv.sh` compresses and removes an index's original data directory, that index is **no longer instantly restorable** via OpenSearch's `_restore` API — the raw shard/segment files it needs are inside the `.tar.gz`, not on disk. Restoring an archived index later requires manually extracting the relevant tarball back into `indices/<uuid>/` first, then calling `_restore` as normal. This was an accepted tradeoff to reduce disk footprint on the 500G `sdb` volume; the alternative (commenting out the deletion step in the script) keeps everything instantly restorable at the cost of using roughly double the space per archived index until compression is added on top.
+
+### Rollout checklist (not yet executed as of this writing)
+
+1. Fill in placeholders in both scripts (`GRAYLOG_URL`, `GRAYLOG_AUTH`, `GRAYLOG_INDEX_SET_ID` in the k8s script; the real local `REPO_ROOT` path in the OMV script).
+2. Run the k8s script manually once, confirm the manifest appears in `_manifests/` on the OMV box.
+3. Run the OMV script manually once, confirm the `.tar.gz` appears in `compressed_indices/` and the manifest moves to `_manifests/done/`.
+4. Only then enable the systemd timer (k8s side) and cron entry (OMV side) for unattended daily runs.
 
 ---
 
@@ -285,4 +307,10 @@ curl -X PUT "http://localhost:9200/_all/_settings" -H 'Content-Type: application
 curl "http://localhost:9200/_cluster/health?pretty"
 curl "http://localhost:9200/_cat/allocation?v"
 curl "http://localhost:9200/_cluster/allocation/explain?pretty"
+
+# Get an index's on-disk uuid (used by the automation to map index name -> repo folder)
+curl "http://localhost:9200/<index_name>/_settings" | jq -r '.[\"<index_name>\"].settings.index.uuid'
+
+# Extract an archived index back out of cold storage before restoring (OMV side)
+tar -xzf compressed_indices/<index_name>_<uuid>.tar.gz -C indices/
 ```
