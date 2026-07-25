@@ -1,5 +1,36 @@
 # Nexus Repo
 
+## Table of contents
+- Different Repos
+- Initializing
+
+## Different Repos
+1. Hosted
+- Hosted repos are isolated among themselves
+- what is built inside organization
+- Intrenal artifact of organization
+
+2. Proxy
+- Caching
+- A middle-ware between organization and external repos
+
+3. Group 
+- Aggregated Hosted + Proxy repos in a single address
+
+- Each Repo has a format, for example APT, Npm, Maven, Docker, ...
+
+## Initializing
+- For Nexus repo you need to have a grasp of some metrics, requests/hour requests/day DB
+- Questions to ask for reference architecture:
+    - whether nexus is only proxy or not?
+    - How many CI/CD we have?
+    - How many active developers we have?
+    - Do we have Anonymous access?
+- Nexus has 4 different architectures, 2 of them are community editions and 2 are ernterprise. visit their site for more info
+
+- Dedicated service install or container-based
+
+
 # acknowledgment
 ## Contributors
 
