@@ -1,0 +1,16 @@
+# graylog-metrics-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: graylog-metrics
+  namespace: graylog
+  labels:
+    app.kubernetes.io/name: graylog
+spec:
+  selector:
+    app.kubernetes.io/name: graylog
+    app.kubernetes.io/instance: graylog
+  ports:
+    - name: metrics
+      port: 9833
+      targetPort: 9833
