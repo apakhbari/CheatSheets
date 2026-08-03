@@ -43,22 +43,25 @@ data:
         Annotations        On
         Kube_Tag_Prefix    kube.
         Regex_Parser       kube-custom-tag-parser
-
+    [FILTER]
+        Name   lua
+        Match  kube.*
+        script /fluent-bit/scripts/combine_fields.lua
+        call   remove_unwanted_fields
     [FILTER]
         Name   grep
         Match  kube.*
-        Exclude $kubernetes['namespace_name'] ^(metallb-system|argocd|kube-system|rook-ceph|istio-system|monitoring)$
-
+        Exclude $kubernetes['namespace_name'] ^(metallb-system|argocd|kube-system|rook-ceph|logging|istio-system|monitoring)$
     [FILTER]
         Name  modify
         Match *
         Add   env_name ${CLUSTER_NAME}
-
     [FILTER]
         Name   lua
         Match  kube.*
         script /fluent-bit/scripts/combine_fields.lua
         call   add_identifier
+
   output-gelf.conf: |
     [OUTPUT]
         Name   gelf

@@ -19,7 +19,51 @@ data:
         elseif record["kubernetes.namespace_name"] then
             ns = record["kubernetes.namespace_name"]
         end
-
         record["identifier"] = cluster_id .. ":" .. ns
+        return 1, timestamp, record
+    end
+
+    -- Set of flattened field names to drop (matches how the GELF output
+    -- flattens nested keys: "." and "/" become "_", "-" is left alone)
+    local remove_keys = {
+        ["kubernetes_annotations_cni_projectcalico_org_containerID"] = true,
+        ["kubernetes_annotations_cni_projectcalico_org_podIP"]       = true,
+        ["kubernetes_annotations_cni_projectcalico_org_podIPs"]      = true,
+        ["kubernetes_annotations_prometheus_io_path"]                = true,
+        ["kubernetes_annotations_prometheus_io_port"]                = true,
+        ["kubernetes_annotations_prometheus_io_scrape"]              = true,
+        ["kubernetes_container_hash"]                                = true,
+        ["kubernetes_container_image"]                               = true,
+        ["kubernetes_docker_id"]                                     = true,
+        ["kubernetes_container_name"]                                = true,
+        ["kubernetes_labels_app_kubernetes_io_name"]                 = true,
+        ["kubernetes_labels_pod-template-hash"]                      = true,
+        ["kubernetes_pod_id"]                                        = true,
+        ["source"]                                                   = true,
+    }
+
+    local function sanitize(k)
+        -- mirror gelf flattening: dots/slashes -> underscore, hyphens kept
+        return tostring(k):gsub("[%./]", "_")
+    end
+
+    local function prune(tbl, prefix)
+        local to_delete = {}
+        for k, v in pairs(tbl) do
+            local part = sanitize(k)
+            local flat_key = (prefix == "") and part or (prefix .. "_" .. part)
+            if remove_keys[flat_key] then
+                table.insert(to_delete, k)
+            elseif type(v) == "table" then
+                prune(v, flat_key)
+            end
+        end
+        for _, k in ipairs(to_delete) do
+            tbl[k] = nil
+        end
+    end
+
+    function remove_unwanted_fields(tag, timestamp, record)
+        prune(record, "")
         return 1, timestamp, record
     end
