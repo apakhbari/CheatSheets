@@ -26,6 +26,8 @@
 #   AUTO_CLEAR_BLOCK  "1" to auto-clear index.blocks.write if present (default: 1)
 #   LOG_FILE        Path to logfile (default: ./cleanup_fields_queue.log)
 #   PID_FILE        Path to pidfile (default: ./cleanup_fields_queue.pid)
+#   LOCK_FILE       Path to lockfile used for atomic single-instance enforcement
+#                    (default: ./cleanup_fields_queue.lock)
 #   BACKGROUND      "1" (default) to auto-detach into the background and survive SSH
 #                    disconnects; set to "0" to run in the foreground of the current shell.
 #
@@ -48,26 +50,57 @@ START_IDX="${START_IDX:-33}"
 END_IDX="${END_IDX:-50}"
 CONCURRENCY="${CONCURRENCY:-2}"
 MAX_DISK_PCT="${MAX_DISK_PCT:-88}"
-POLL_INTERVAL="${POLL_INTERVAL:-20}"
+POLL_INTERVAL="${POLL_INTERVAL:-200}"
 SCROLL_SIZE="${SCROLL_SIZE:-500}"
 AUTO_CLEAR_BLOCK="${AUTO_CLEAR_BLOCK:-1}"
 LOG_FILE="${LOG_FILE:-./cleanup_fields_queue.log}"
 PID_FILE="${PID_FILE:-./cleanup_fields_queue.pid}"
+LOCK_FILE="${LOCK_FILE:-./cleanup_fields_queue.lock}"
 BACKGROUND="${BACKGROUND:-1}"
 
-for bin in curl jq bc; do
+for bin in curl jq bc flock; do
   command -v "$bin" >/dev/null 2>&1 || { echo "ERROR: '$bin' is required but not installed."; exit 1; }
 done
+
+# Quick (non-authoritative) check: is the lock currently held by a live worker?
+# Authoritative enforcement happens later via 'exec N>lockfile; flock -n N' in the
+# actual worker process itself -- this helper is just for status/early messaging.
+lock_is_active() {
+  local rc
+  flock -n "$LOCK_FILE" true 2>/dev/null
+  rc=$?
+  # rc==0 => lock was free (not active); rc!=0 => lock busy (active)
+  [[ $rc -ne 0 ]]
+}
+
+# Kill $1 and everything descended from it (children, grandchildren, ...).
+# Deliberately scoped to the process's own subtree via pgrep -P, NOT its
+# process group -- killing by process group is unsafe here because in some
+# execution contexts (e.g. non-interactive shells without job control) a
+# backgrounded worker can share its PGID with the shell that launched it,
+# so a group-kill can take down the caller's own shell. Walking children
+# only ever touches processes actually spawned by the worker.
+kill_descendants() {
+  local p="$1" sig="${2:-TERM}" c
+  if command -v pgrep >/dev/null 2>&1; then
+    for c in $(pgrep -P "$p" 2>/dev/null); do
+      kill_descendants "$c" "$sig"
+    done
+  fi
+  kill "-${sig}" "$p" 2>/dev/null
+}
 
 # ---------------------------------------------------------------------------
 # Control-command mode: status / stop / tail
 # ---------------------------------------------------------------------------
 cmd="${1:-}"
 if [[ "$cmd" == "status" ]]; then
-  if [[ -f "$PID_FILE" ]] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
-    echo "Running. PID=$(cat "$PID_FILE")"
+  if lock_is_active; then
+    pid="unknown"
+    [[ -f "$PID_FILE" ]] && pid=$(cat "$PID_FILE")
+    echo "Running. PID=${pid}"
   else
-    echo "Not running (no live process for PID file: ${PID_FILE})."
+    echo "Not running."
   fi
   echo
   echo "--- last 20 log lines (${LOG_FILE}) ---"
@@ -76,17 +109,37 @@ if [[ "$cmd" == "status" ]]; then
 fi
 
 if [[ "$cmd" == "stop" ]]; then
-  if [[ -f "$PID_FILE" ]] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
-    pid=$(cat "$PID_FILE")
-    echo "Stopping queue manager (PID=${pid})..."
-    kill "$pid"
-    rm -f "$PID_FILE"
-    echo "Stopped. NOTE: any OpenSearch update_by_query tasks already dispatched"
-    echo "keep running server-side. Cancel individually if needed:"
-    echo "  curl -s '${OS_HOST}/_tasks?actions=*byquery&detailed=true&pretty'"
-    echo "  curl -s -X POST '${OS_HOST}/_tasks/<task_id>/_cancel'"
+  if lock_is_active; then
+    if [[ -f "$PID_FILE" ]] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+      pid=$(cat "$PID_FILE")
+      echo "Stopping queue manager (PID=${pid})..."
+      # Kill the worker's whole subtree, not just $pid: the worker may be
+      # blocked inside a foreground child (sleep/curl) that inherited the
+      # lock file descriptor, and that child would otherwise keep running
+      # (and keep the flock held) until it finished on its own.
+      kill_descendants "$pid" TERM
+      # wait up to ~10s for it to actually exit before reporting done
+      for _ in $(seq 1 20); do
+        kill -0 "$pid" 2>/dev/null || break
+        sleep 0.5
+      done
+      if kill -0 "$pid" 2>/dev/null; then
+        echo "Still shutting down (PID=${pid} still alive after 10s)."
+        echo "Force kill if needed: kill -9 -- -${pid}"
+      else
+        rm -f "$PID_FILE"
+        echo "Stopped."
+      fi
+      echo "NOTE: any OpenSearch update_by_query tasks already dispatched keep running"
+      echo "server-side -- that's expected. Cancel individually if needed:"
+      echo "  curl -s '${OS_HOST}/_tasks?actions=*byquery&detailed=true&pretty'"
+      echo "  curl -s -X POST '${OS_HOST}/_tasks/<task_id>/_cancel'"
+    else
+      echo "Lock is held but no matching live PID found in ${PID_FILE} -- check 'ps aux | grep cleanup_fields_queue' manually."
+    fi
   else
-    echo "Not running (no live process for PID file: ${PID_FILE})."
+    echo "Not running."
+    rm -f "$PID_FILE" 2>/dev/null
   fi
   exit 0
 fi
@@ -97,10 +150,12 @@ if [[ "$cmd" == "tail" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Prevent starting a second run while one is already active
+# Quick early check (non-authoritative -- avoids spawning a background
+# process needlessly). The real, race-free enforcement happens below via
+# flock, held by the worker for its entire lifetime.
 # ---------------------------------------------------------------------------
-if [[ -f "$PID_FILE" ]] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
-  echo "!! A queue run is already active (PID=$(cat "$PID_FILE"))."
+if [[ "${_QUEUE_DETACHED:-0}" != "1" ]] && lock_is_active; then
+  echo "!! A queue run is already active."
   echo "   Use '$0 status' or '$0 stop' first."
   exit 1
 fi
@@ -108,21 +163,46 @@ fi
 # ---------------------------------------------------------------------------
 # Self-detach into the background (survives SSH disconnects) unless BACKGROUND=0
 # or we're already the detached child (_QUEUE_DETACHED=1).
+#
+# NOTE: deliberately NOT using setsid here. setsid forks internally when the
+# calling process is already a process-group leader (true for backgrounded
+# jobs), which makes $! reference a short-lived intermediate PID rather than
+# the real worker -- that mismatch caused false "already active" detections.
+# Plain nohup (which ignores SIGHUP) + disown is sufficient to survive an
+# SSH disconnect, and keeps $! pointing at the actual worker process.
 # ---------------------------------------------------------------------------
 if [[ "$BACKGROUND" == "1" && "${_QUEUE_DETACHED:-0}" != "1" ]]; then
   echo "Launching in the background. Log: ${LOG_FILE}  PID file: ${PID_FILE}"
   export _QUEUE_DETACHED=1
-  nohup setsid "$0" "$@" >>"${LOG_FILE}" 2>&1 &
+  nohup "$0" "$@" </dev/null >>"${LOG_FILE}" 2>&1 &
+  WORKER_PID=$!
   disown
-  echo "$!" > "$PID_FILE"
-  echo "Started. PID=$! (survives SSH disconnect)"
-  echo "  Check progress : $0 status"
-  echo "  Follow live    : $0 tail    (or: tail -f ${LOG_FILE})"
-  echo "  Stop it        : $0 stop"
+  sleep 0.5
+  if kill -0 "$WORKER_PID" 2>/dev/null; then
+    echo "Started. PID=${WORKER_PID} (survives SSH disconnect)"
+    echo "  Check progress : $0 status"
+    echo "  Follow live    : $0 tail    (or: tail -f ${LOG_FILE})"
+    echo "  Stop it        : $0 stop"
+  else
+    echo "!! Worker exited immediately -- check ${LOG_FILE} for the error:"
+    tail -n 10 "$LOG_FILE" 2>/dev/null
+    exit 1
+  fi
   exit 0
 fi
 
-# from here on we are either the detached background process, or BACKGROUND=0
+# ---------------------------------------------------------------------------
+# From here on we ARE the real worker (either detached background process,
+# or running in the foreground because BACKGROUND=0). Acquire the lock
+# atomically and hold it for the lifetime of this process -- fd 200 stays
+# open until exit, at which point the OS releases the lock automatically.
+# ---------------------------------------------------------------------------
+exec 200>"$LOCK_FILE"
+if ! flock -n 200; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] !! Another queue run already holds the lock. Exiting." | tee -a "$LOG_FILE"
+  exit 1
+fi
+
 echo $$ > "$PID_FILE"
 trap 'rm -f "$PID_FILE"' EXIT
 
@@ -247,8 +327,8 @@ launch_job() {
 # ---------------------------------------------------------------------------
 # Main queue loop: keep CONCURRENCY jobs running until queue is drained
 # ---------------------------------------------------------------------------
-declare -A ACTIVE_TASK      # idx -> task_id
-declare -A ACTIVE_START     # idx -> epoch start time
+declare -A ACTIVE_TASK=()      # idx -> task_id
+declare -A ACTIVE_START=()     # idx -> epoch start time
 declare -a SUCCESS_LIST=()
 declare -a FAILED_LIST=()
 declare -a SKIPPED_LIST=()
