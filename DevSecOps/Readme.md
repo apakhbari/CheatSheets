@@ -1,4 +1,4 @@
-# DevSecOps
+# DevSecOps SANS 540
 ```
  ______   _______  __   __  _______  _______  _______  _______  _______  _______ 
 |      | |       ||  | |  ||       ||       ||       ||       ||       ||       |
@@ -9,11 +9,24 @@
 |______| |_______|  |___|  |_______||_______||_______||_______||___|    |_______|
 ```
 
+## Table of contents
 
+## Introduction
+- SAST: Static Appication Security Testing
+- DAST: Dynamic Appication Security Testing
 
+## Secret Management
+- Pre-commit security control
 
-
-
+```mermaid
+graph LR
+    A[Staging Area] -->|git commit| B[Pre-commit Hook]
+    B --> C[Secret Scanning]
+    B --> D[Linting]
+    C --> E[Local Repo]
+    D --> E
+    E -->|git push| F[Remote Repo]
+```
 
 
 
