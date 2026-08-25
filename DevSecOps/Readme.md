@@ -28,6 +28,13 @@ graph LR
     E -->|git push| F[Remote Repo]
 ```
 
+- For storing public/private keys
+
+## Version Control Threats
+- inside CI
+- threat actor add malisouce code to source code
+- It is best practice to use 2FA so prevents this
+
 
 
 
