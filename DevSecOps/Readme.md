@@ -11,6 +11,10 @@
 
 ## Table of contents
 
+## Cool Tools
+- ` scc ` --> is a tool that shows what code languages are being used inside a code repo
+- ` semgrep ` --> a tool for SAST
+
 ## Introduction
 - SAST: Static Appication Security Testing
 - DAST: Dynamic Appication Security Testing
@@ -35,8 +39,12 @@ graph LR
 - threat actor add malisouce code to source code
 - It is best practice to use 2FA so prevents this
 
-
-
+## SAST Scan
+- we use semgrep for scanning
+- for manually scanning:
+```
+$ docker run -v $(pwd)/src:src dmtools/builder_semgrep:stable semgrep scan -f /opt/semgrep/rules/java /src
+```
 
 
 
