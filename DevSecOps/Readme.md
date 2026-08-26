@@ -46,8 +46,10 @@ graph LR
 $ docker run -v $(pwd)/src:src dmtools/builder_semgrep:stable semgrep scan -f /opt/semgrep/rules/java /src
 ```
 
-
-
+- Cloud Service
+  - IAAS --> Infrastructure as a service
+  - PAAS --> Platform as a service
+  - SAAS --> Softwarer as a service
 
 
 # acknowledgment
