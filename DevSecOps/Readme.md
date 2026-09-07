@@ -1,4 +1,4 @@
-# DevSecOps SANS 540
+# DevSecOps  (based on SANS 540)
 ```
  ______   _______  __   __  _______  _______  _______  _______  _______  _______ 
 |      | |       ||  | |  ||       ||       ||       ||       ||       ||       |
@@ -51,7 +51,44 @@ $ docker run -v $(pwd)/src:src dmtools/builder_semgrep:stable semgrep scan -f /o
   - PAAS --> Platform as a service
   - SAAS --> Softwarer as a service
 
+## software supply chain security
 
+```mermaid
+flowchart TD
+    A[Software Supply Chain Security Threats] --> B[Source Integrity]
+    A --> C[Build Integrity]
+
+    B --> B1[a. Submit Bad Code]
+    B --> B2[b. Compromise Source Control]
+    B --> B3[c. Modify Code]
+
+    C --> C1[d. Compromise Build Platform]
+    C --> C2[e. Use Bad Package]
+    C --> C3[f. Bypass CI/CD]
+    C --> C4[g. Compromise Package Repo]
+    C --> C5[h. Use Bad Package]
+
+    B1 --> D[Malicious or vulnerable code introduced]
+    B2 --> D
+    B3 --> D
+
+    C1 --> E[Compromised build artifacts]
+    C2 --> E
+    C3 --> E
+    C4 --> E
+    C5 --> E
+
+    D --> F[Compromised Software Release]
+    E --> F
+
+    F --> G[End User / Production Environment at Risk]
+
+    style A fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ffd93d,stroke:#333,stroke-width:2px
+    style C fill:#ffd93d,stroke:#333,stroke-width:2px
+    style F fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    style G fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+```
 
 # acknowledgment
 ## Contributors
