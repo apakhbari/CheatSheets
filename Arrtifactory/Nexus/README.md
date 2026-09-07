@@ -27,8 +27,28 @@
     - How many active developers we have?
     - Do we have Anonymous access?
 - Nexus has 4 different architectures, 2 of them are community editions and 2 are ernterprise. visit their site for more info
-
 - Dedicated service install or container-based
+
+
+- Blob Store: real place data/artifacts is being saved in
+- Repository: controls metadata & access control lists, but data itself is being saved inside blob stores
+
+- It is best practice to store each of our repos on a dedicated blob store
+
+## Blob Stores Cases
+- Disk full: Cleanup process was not executed
+- Artifact not being deleted : Compact process was not executed
+- Upload not successfull: Quota is full
+
+## Users
+- users are two kinds:
+    - Users
+    - Services
+- Users can be nexus-local or external (Active Directory)
+- user <--> Role <--> Privilege
+
+## Realm
+- Used for authentication, for example local, LDAP, Token bearer
 
 
 # acknowledgment
