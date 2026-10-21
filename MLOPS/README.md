@@ -30,8 +30,10 @@
     3. Deciding on the best model suitable for project requirments
 
 - Usecases:
-    1. Experiment tracking --> Track parameters and metrics with UI
+    1. Experiment tracking --> Track parameters and metrics with *UI*
     2. Model selection and Deployment
+    3. Model performance monitoring
+    4. Collaborative project
 
 
 ## Core components
