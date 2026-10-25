@@ -35,5 +35,7 @@
     3. Model performance monitoring
     4. Collaborative project
 
+- Model Registry: a centralized repository and lifecycle management tool for machine learning models. It provides version control, stage transitions, model aliases, lineage tracking, and metadata annotations to move models safely from experimentation to production
+
 
 ## Core components

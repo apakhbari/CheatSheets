@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kubelet-cert-refresher
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: kubelet-cert-refresher
+  template:
+    metadata:
+      labels:
+        name: kubelet-cert-refresher
+    spec:
+      imagePullSecrets:
+      - name: internal-registry-secret
+      hostNetwork: true
+      hostPID: true
+      tolerations:
+        # Run on control-plane/master nodes as well
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: refresher
+          image: registry.eniac-tech.com/prometheus-stack/busybox:1.38.0 # Use any minimal utility image available in your air-gapped registry
+          securityContext:
+            privileged: true
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Checking and refreshing Kubelet certs on host..."
+              rm -f /host/var/lib/kubelet/pki/kubelet.crt /host/var/lib/kubelet/pki/kubelet.key
+              echo "Restarting kubelet via nsenter..."
+              nsenter --target 1 --mount -- systemctl restart kubelet
+              echo "Done. Sleeping indefinitely..."
+              sleep infinity
+          volumeMounts:
+            - name: host-pki
+              mountPath: /host/var/lib/kubelet/pki
+      volumes:
+        - name: host-pki
+          hostPath:
+            path: /var/lib/kubelet/pki
+            type: Directory
